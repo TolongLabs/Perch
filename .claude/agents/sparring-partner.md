@@ -3,7 +3,7 @@ name: sparring-partner
 description:
   Argues against an idea properly, then says which of its own objections actually kill it and which
   are survivable. Use before committing to a concept, after any significant change to one, and any
-  time an idea has gone unchallenged for a while. Writes its findings into decisions/.
+  time an idea has gone unchallenged for a while. Writes its findings into docs/decisions/.
 tools: Read, Grep, Glob, Write, Edit, WebSearch, WebFetch, Skill
 model: opus
 effort: high
@@ -21,8 +21,8 @@ tell them which parts actually matter. That second half is the whole value.
 
 - `README.md` and `AGENTS.md` on this branch, for how to talk to the person you are working with
 - `brief.md` for the rubric and the rules
-- The idea itself in `ideas/`, and anything in `users/` and `market/` that bears on it
-- `decisions/iteration-log.md`, so you do not re-raise something already settled
+- The idea itself in `docs/ideas/`, and anything in `docs/users/` and `docs/market/` that bears on it
+- `docs/decisions/iteration-log.md`, so you do not re-raise something already settled
 
 ## The Attack, In Order
 
@@ -52,8 +52,8 @@ you have not understood the idea well enough yet.
 
 ## What You Write
 
-Append to `decisions/iteration-log.md`: one row, dated, saying what you challenged and what changed as a result. If
-something was killed, move it to `decisions/dropped.md` with the reason - **never delete it**, dead ends are worth
+Append to `docs/decisions/iteration-log.md`: one row, dated, saying what you challenged and what changed as a result. If
+something was killed, move it to `docs/decisions/dropped.md` with the reason - **never delete it**, dead ends are worth
 marks.
 
 If the idea survives unchanged, say that too, and say which attacks it survived. **A documented "we considered this and

@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# SessionStart: orientation, plus which graded folders hold no evidence yet.
-# Exits 0 on any internal failure, so a broken guard never wedges a session.
+# SessionStart: orientation, unfiled dumps, and which graded folders hold no
+# evidence yet. Exits 0 on any internal failure, so a broken guard never wedges
+# a session.
 set -uo pipefail
 
 root="${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel 2>/dev/null)}"
@@ -17,13 +18,18 @@ echo "CodeNection research notebook | branch=$branch | unsaved=$dirty | ${left}d
 # READMEs, templates and .gitkeep are scaffolding, not evidence.
 real() { find "$1" -type f ! -name '.gitkeep' ! -name 'README.md' ! -name '_template.md' 2>/dev/null | wc -l; }
 
+# A dump with no "Filed:" line has been captured but never routed anywhere.
+unfiled=$(grep -rLl '^\*\*Filed:\*\*' docs/inbox/*.md 2>/dev/null | grep -v 'README.md' | wc -l | tr -d ' ')
+[[ "${unfiled:-0}" -gt 0 ]] && echo "$unfiled dump(s) in docs/inbox/ not filed yet. Run /tidy."
+
 empty=()
-[[ $(real ideas) -eq 0 ]] && empty+=("ideas/ (3%)")
-[[ $(real mentors/sessions) -eq 0 ]] && empty+=("mentors/ (7%)")
-[[ $(real users/interviews) -eq 0 ]] && empty+=("users/ (Impact, 20%)")
-[[ $(real diagrams/exports) -eq 0 ]] && empty+=("diagrams/ (8%)")
+[[ $(real docs/ideas) -eq 0 ]] && empty+=("ideas/ (3%)")
+[[ $(real docs/mentors/sessions) -eq 0 ]] && empty+=("mentors/ (7%)")
+[[ $(real docs/users/interviews) -eq 0 ]] && empty+=("users/ (Impact, 20%)")
+[[ $(real docs/diagrams/exports) -eq 0 ]] && empty+=("diagrams/ (8%)")
 
 [[ ${#empty[@]} -gt 0 ]] && echo "No evidence yet in: ${empty[*]}"
 
-echo "Rules and rubric: brief.md. How this branch works: README.md."
+echo "Dump anything with /dump. Sweep with /tidy. Draw with /mindmap."
+echo "Rules and rubric: docs/brief.md. How this branch works: docs/README.md."
 exit 0

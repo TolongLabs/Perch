@@ -2,7 +2,7 @@
 > `main` wins. To refresh this copy, from this branch run:
 >
 > ```bash
-> git fetch origin main && git checkout origin/main -- docs/brief.md && mv docs/brief.md brief.md && rmdir docs
+> git fetch origin main && git checkout origin/main -- docs/brief.md docs/source
 > ```
 >
 > It is copied here so that nobody working on ideation has to switch branches to check a date or a rule.
@@ -10,7 +10,7 @@
 # CodeNection 2026 - Brief
 
 The single source of truth for event facts. Sourced from the official information page, the Kick-Off Day deck (30 Aug)
-and the organiser handouts; full detail lives in [`source/`](https://github.com/TolongLabs/codenection-dev/blob/main/docs/source/). Records what the organisers stated, not our
+and the organiser handouts; full detail lives in [`source/`](./source/). Records what the organisers stated, not our
 status.
 
 **Where the Kick-Off Day deck and the website disagree, the deck wins.** It is the later of the two and it was presented
@@ -106,7 +106,7 @@ Industry and stay in the competition. Ten finalists per track, three winners per
 ### The Two Problem Statements
 
 Pick one. Full organiser wording, including all 11 general stipulations:
-[`source/problem-statements.md`](https://github.com/TolongLabs/codenection-dev/blob/main/docs/source/problem-statements.md).
+[`source/problem-statements.md`](./source/problem-statements.md).
 
 | Statement                     | The Ask                                                                                                                                                     |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -147,7 +147,7 @@ project link. At the end of the Deployment Phase, finalists also submit a user g
 ## How We Are Judged
 
 The prototype rubric. Band-by-band wording, with the mark ranges:
-[`source/prototype-judging-rubrics.md`](https://github.com/TolongLabs/codenection-dev/blob/main/docs/source/prototype-judging-rubrics.md).
+[`source/prototype-judging-rubrics.md`](./source/prototype-judging-rubrics.md).
 
 | Weight  | Category                   | Bands                                                                                               |
 | ------- | -------------------------- | --------------------------------------------------------------------------------------------------- |
@@ -260,7 +260,7 @@ finalists who submitted a resume at registration.
 
 ## Rulings From The Kick-Off Day Q&A
 
-Answered live on 30 August and recorded in [`source/kickoff-day-transcript.md`](https://github.com/TolongLabs/codenection-dev/blob/main/docs/source/kickoff-day-transcript.md).
+Answered live on 30 August and recorded in [`source/kickoff-day-transcript.md`](./source/kickoff-day-transcript.md).
 Several of these are not written down anywhere else, and one of them changes what the prototype phase is.
 
 ### The Prototype Phase Has No Code In It

@@ -19,17 +19,17 @@ They score four specific things, and each of them is a **file somebody has to ha
 
 | They Look For                                     | Worth | It Lives In     |
 | ------------------------------------------------- | ----- | --------------- |
-| Mindmaps, problem trees, user flows               | 8%    | `diagrams/`     |
-| How the idea changed, **including what we dropped**| 7%    | `decisions/`    |
-| Mentor feedback, and what we changed because of it| 7%    | `mentors/`      |
-| Several ideas compared before we picked one       | 3%    | `ideas/`        |
+| Mindmaps, problem trees, user flows               | 8%    | `docs/diagrams/`     |
+| How the idea changed, **including what we dropped**| 7%    | `docs/decisions/`    |
+| Mentor feedback, and what we changed because of it| 7%    | `docs/mentors/`      |
+| Several ideas compared before we picked one       | 3%    | `docs/ideas/`        |
 
 Two more folders feed the next-biggest category, **Impact at 20 percent**, and **Creativity at 15 percent**:
 
 | They Look For                                            | It Lives In |
 | -------------------------------------------------------- | ----------- |
-| A specific user and their real problem, not "students"   | `users/`    |
-| Why ours is different from what already exists           | `market/`   |
+| A specific user and their real problem, not "students"   | `docs/users/`    |
+| Why ours is different from what already exists           | `docs/market/`   |
 
 **None of this can be written on the last day.** It has to already exist, because it is a record of thinking that
 actually happened. That is the whole point of the branch.
@@ -59,18 +59,31 @@ The full wording is in `brief.md`, next to this file. Read it once before you st
 
 1. **Write things down as you think of them, not afterwards.** A half-finished note beats a perfect note that does not
    exist.
-2. **Never delete an idea.** When we drop something, it moves to `decisions/dropped.md` with a line about what killed
+2. **Never delete an idea.** When we drop something, it moves to `docs/decisions/dropped.md` with a line about what killed
    it. **Dead ends are worth marks.** Deleting them costs us marks.
 3. **Save changes often.** Every folder has a `_template.md` - copy it, rename it, fill it in.
 
 ### The Loop
 
+**Do not file things by hand unless you want to.** Say it to the agent and it files it for you.
+
 ```
-have a thought  ->  put it in ideas/ or users/ or market/
-talk to a mentor ->  write it up in mentors/ the same day
-change our mind  ->  add a row to decisions/iteration-log.md
-kill an idea     ->  move it to decisions/dropped.md and say why
+have a thought   ->  /dump it. The agent keeps your exact words, then files the pieces
+talk to a mentor ->  /dump the notes the same day, while you remember the wording
+lost the thread  ->  /tidy. Reads every dump together and says what you keep circling
+need a picture   ->  /mindmap. Draws it as a canvas you can then drag around
 ```
+
+### The Three Commands
+
+| Command    | Does                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| `/dump`    | **Use this constantly.** Saves your exact words, then files the pieces and tells you where       |
+| `/tidy`    | Sweeps the inbox and reads every dump together: what repeats, what contradicts, what is missing  |
+| `/mindmap` | Draws a mindmap, problem tree or user flow as a canvas file. This is the 8% band                 |
+
+`/dump` takes anything - half a sentence, three unrelated thoughts, a link with a reaction. **Do not tidy before you
+dump.** Tidying first is how ideas get lost.
 
 ### Saving Your Work
 
@@ -101,7 +114,7 @@ Things worth asking it:
 | To know who else does this        | "Use the scout agent to find what already exists for this"                     |
 | To know if an idea will score     | "Score idea 003 against the rubric and tell me where it loses marks"           |
 | A judge's hostile question        | "Simulate the judges and ask me the three questions I would least like"        |
-| To turn a messy chat into a file  | "Write that up as an entry in ideas/"                                          |
+| To turn a messy chat into a file  | "Write that up as an entry in docs/ideas/"                                          |
 
 **The agent will not just say yes.** It has been told that an idea nobody argued against has not been tested. That is
 deliberate and it is what the 25 percent is for.
@@ -124,16 +137,43 @@ into paperwork.
 
 ## The Folders
 
-| Folder       | What Goes In It                                                            |
-| ------------ | ---------------------------------------------------------------------------- |
-| `ideas/`     | One file per idea. Good ones, bad ones, half-formed ones                    |
-| `decisions/` | The running log of how our thinking changed, and the graveyard of what we killed |
-| `mentors/`   | One file per mentor session. What they said, what we did about it           |
-| `users/`     | Real people we talked to, and who exactly we are building for               |
-| `market/`    | What already exists, and why ours is different                              |
-| `diagrams/`  | Mindmaps, problem trees, user flows. Images live in `diagrams/exports/`     |
+| Folder            | What Goes In It                                                                  |
+| ----------------- | ---------------------------------------------------------------------------------- |
+| `docs/inbox/`     | **Raw dumps, unorganised, kept word for word.** This is where everything starts |
+| `docs/ideas/`     | One file per idea. Good ones, bad ones, half-formed ones                    |
+| `docs/decisions/` | The running log of how our thinking changed, and the graveyard of what we killed |
+| `docs/mentors/`   | One file per mentor session. What they said, what we did about it           |
+| `docs/users/`     | Real people we talked to, and who exactly we are building for               |
+| `docs/market/`    | What already exists, and why ours is different                              |
+| `docs/diagrams/`  | Mindmaps, problem trees, user flows. Images live in `docs/diagrams/exports/`     |
+| `docs/source/`    | What the organisers actually said, word for word. Read it, never edit it    |
 
 Each folder has its own README explaining what "done" looks like for it and what it is worth.
+
+---
+
+## Obsidian, If You Want A Visual Way In
+
+**This folder is already an Obsidian vault.** Nothing to convert - Obsidian just opens a folder of Markdown files, and
+that is what this is.
+
+1. Install [Obsidian](https://obsidian.md). Free, no account needed
+2. **Open folder as vault**, and pick this folder - the one holding `docs/` and `AGENTS.md`
+3. Open `docs/diagrams/start-here.canvas`
+
+Three things you do not get in a text editor:
+
+|                | |
+| -------------- | ----------------------------------------------------------------------------------------------- |
+| **Canvas**     | An infinite whiteboard. Drag boxes, draw arrows, then **export the whole thing as an image** - which is exactly what the 8% mindmap band asks for |
+| **Graph view** | Every note a dot, every link a line. Shows which ideas are actually connected and which float alone |
+| **Backlinks**  | Every place a note is mentioned, listed at the bottom of it                                    |
+
+The shared settings are committed, so it opens the same way for everyone. Your own window layout and any plugins you
+install stay on your machine.
+
+**None of this is required.** The agent writes plain Markdown either way, and **a mindmap drawn on paper and
+photographed scores exactly the same** - the organisers said so directly.
 
 ---
 

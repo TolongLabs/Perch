@@ -13,3 +13,20 @@ Thumbs.db
 # Nothing on this branch is secret, but keep the habit
 .env
 .env.*
+
+# Obsidian. The shared settings above are committed; the per-person and volatile
+# bits are not, or every teammate's window layout becomes a merge conflict.
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/cache
+.obsidian/plugins/
+.obsidian/themes/
+.obsidian/hotkeys.json
+.trash/
+
+# Raw recordings. The transcripts under docs/source/ are committed; the audio is not.
+docs/source/*.mp3
+docs/source/*.mp4
+docs/source/*.wav
+docs/source/*.m4a
+docs/source/*.webm

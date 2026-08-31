@@ -2,10 +2,14 @@
 
 Instructions for any agentic tool working on this branch. `CLAUDE.md` only points here.
 
+**Everything lives under `docs/`** - `inbox/`, `ideas/`, `decisions/`, `mentors/`, `users/`, `market/`, `diagrams/`,
+plus `brief.md` and a read-only copy of the organisers' `source/`. Same shape as `main`, so nobody has to hold two
+layouts in their head.
+
 **This branch is not the app.** There is no code, no build, no tests and no lint. It is the ideation notebook for
 CodeNection 2026, and the ideation trail it holds is **25 percent of the prototype score, scored directly**.
 
-**Read [`brief.md`](brief.md) before acting.** Read [`README.md`](README.md) too - it is written for the person you are
+**Read [`docs/brief.md`](docs/brief.md) before acting.** Read [`docs/README.md`](docs/README.md) too - it is written for the person you are
 most likely working with, and it sets the tone you should match.
 
 ---
@@ -22,7 +26,7 @@ What this changes about how you behave:
 - **Never answer a question with a command they have to run**, unless you also say what it will do and what a good
   result looks like. Better: run it yourself and tell them what came back
 - **Offer to write the file.** A good idea said out loud in chat and never written down scores zero. When something
-  worth keeping is said, say "I'll write that into `ideas/004-....md`" and do it
+  worth keeping is said, say "I'll write that into `docs/ideas/004-....md`" and do it
 - **Do not explain git.** Three commands live in `README.md`. If something goes wrong, diagnose it and fix it, then say
   in one sentence what happened
 - **Never say "as an AI".** Just do the work
@@ -48,7 +52,7 @@ Four questions to run any idea through, every time:
 
 **Say the uncomfortable thing once, clearly, and then help anyway.** Do not soften it into uselessness, and do not
 repeat it after it has been heard. If they decide to go ahead against your advice, **that is their call** - write down
-the disagreement in `decisions/iteration-log.md` and get on with it. A documented disagreement that we resolved is worth
+the disagreement in `docs/decisions/iteration-log.md` and get on with it. A documented disagreement that we resolved is worth
 marks; a lecture is worth nothing.
 
 ---
@@ -59,12 +63,13 @@ Every folder maps to marks. When work happens, it lands in the folder that score
 
 | Folder       | Scores                                                     | Worth   |
 | ------------ | ---------------------------------------------------------- | ------- |
-| `diagrams/`  | Visual diagrams and mindmaps                               | **8%**  |
-| `decisions/` | Iteration and idea evolution, including dropped directions | **7%**  |
-| `mentors/`   | Mentor consultation and feedback integration               | **7%**  |
-| `ideas/`     | Breadth of exploration                                     | **3%**  |
-| `users/`     | Problem context and target group alignment                 | **10%** of Impact |
-| `market/`    | Originality and differentiation                            | part of Creativity, 15% |
+| `docs/inbox/`     | Nothing directly. It is the raw material for all of them   | -       |
+| `docs/diagrams/`  | Visual diagrams and mindmaps                               | **8%**  |
+| `docs/decisions/` | Iteration and idea evolution, including dropped directions | **7%**  |
+| `docs/mentors/`   | Mentor consultation and feedback integration               | **7%**  |
+| `docs/ideas/`     | Breadth of exploration                                     | **3%**  |
+| `docs/users/`     | Problem context and target group alignment                 | **10%** of Impact |
+| `docs/market/`    | Originality and differentiation                            | part of Creativity, 15% |
 
 **Proactively file things.** If a conversation produced a real insight and nobody wrote it down, that is your job, not
 theirs. Say what you are filing and where, in one line.
@@ -73,17 +78,19 @@ theirs. Say what you are filing and where, in one line.
 
 ## Rules That Are Not Negotiable
 
-1. **Never delete an idea, a note or a session write-up.** When something is dropped it moves to `decisions/dropped.md`
-   with the reason. **Dead ends are worth marks.** Deleting one destroys evidence
-2. **Never invent a mentor's words, a user quote, or a competitor's feature.** If it was not said or seen, it does not
+1. **Never delete an idea, a note or a session write-up.** When something is dropped it moves to
+   `docs/decisions/dropped.md` with the reason. **Dead ends are worth marks.** Deleting one destroys evidence
+2. **Never edit or tidy a raw dump in `docs/inbox/`.** It is dated evidence of thinking that happened, kept word for
+   word. Route copies out of it; leave the original alone
+3. **Never invent a mentor's words, a user quote, or a competitor's feature.** If it was not said or seen, it does not
    go in a file. Mark a gap as `[not verified]` and say what would settle it
-3. **Never write a machine-specific path into a file.** `~/CS/...`, `/home/<you>/...`, `C:\Users\...`,
+4. **Never write a machine-specific path into a file.** `~/CS/...`, `/home/<you>/...`, `C:\Users\...`,
    `\\wsl.localhost\...` and scratch dirs under `/tmp` mean nothing to anyone else. Name the tool, not your copy of it
-4. **Do not start designing screens or choosing a tech stack here.** That is `main`'s job, and it is gated on
+5. **Do not start designing screens or choosing a tech stack here.** That is `main`'s job, and it is gated on
    `PRODUCT.md`, `PRD.md` and `TRD.md` existing there
-5. **Do not merge this branch into `main`, or open a PR from it.** It has unrelated history on purpose. Work here is
+6. **Do not merge this branch into `main`, or open a PR from it.** It has unrelated history on purpose. Work here is
    quoted into `main`, never merged
-6. **One problem statement.** The organisers confirmed a team may not submit against both. Exploring both is fine and
+7. **One problem statement.** The organisers confirmed a team may not submit against both. Exploring both is fine and
    is worth breadth marks; submitting both is not allowed
 
 ---
@@ -136,6 +143,18 @@ deliberately left out. All are optional: use one when it fits, not as a checkpoi
 | `lean-canvas`, `market-sizing`                                 | The business on one page, and a number we can defend            |
 | `claude-in-chrome`                                             | Looking at a real competitor's real product. Read its `SKILL.md` first |
 | `brainstorming`                                                | **Not the ideation skill.** It shapes a build once a concept is locked |
+
+**Three commands, and `/dump` is the important one.**
+
+| Command    | Use When                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| `/dump`    | Any message that reads as thinking-out-loud rather than a request. **Invoke it proactively** - do not wait to be asked |
+| `/tidy`    | The inbox has unfiled dumps, or the notebook has become a pile rather than an argument         |
+| `/mindmap` | A structure is worth drawing, or `docs/diagrams/` is empty                                     |
+
+**The capture rule outranks everything else in this file.** When someone gives you unstructured thinking, the raw text
+goes into `docs/inbox/` **before** you ask a question, analyse it, or route any of it. A question can wait ninety
+seconds; the words can be lost.
 
 **Two subagents**, both in `.claude/agents/`:
 

@@ -1,0 +1,10 @@
+{
+  "attachmentFolderPath": "docs/diagrams/exports",
+  "newFileLocation": "folder",
+  "newFileFolderPath": "docs/inbox",
+  "alwaysUpdateLinks": true,
+  "useMarkdownLinks": true,
+  "showLineNumber": false,
+  "readableLineLength": true,
+  "strictLineBreaks": false
+}
