@@ -89,8 +89,9 @@ vendored skills included. Only the contents of fenced code blocks are left alone
 ## How Work Ships
 
 **`main` is PR-gated.** Branch as `<type>/<slug>`, open a PR with `gh pr create`, merge with
-`gh pr merge --squash --delete-branch`. A human merges; nobody merges their own PR. `research` is the exception and
-commits directly, because gating a notebook defeats it.
+`gh pr merge --squash --delete-branch`. Anyone may merge, agents included - **the PR is there to make a change
+reviewable and revertable, not to make it wait.** `research` is the exception and commits directly, because gating a
+notebook defeats it.
 
 **Implementation is gated on three docs.** `PRODUCT.md` (who and why), `PRD.md` (what, and what is out of scope) and
 `TRD.md` (how) must all exist before build work starts. `DESIGN.md` joins them when frontend work does. All three cite

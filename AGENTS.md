@@ -306,15 +306,16 @@ rather than hand-writing a prompt.
 ## How Work Ships
 
 **`main` is PR-gated. No stray commits.** `.claude/hooks/guard-git.sh` enforces it. **Authorization is standing**: open
-the PR and expect it to be approved, as long as nothing in it breaks something already working.
+the PR, then merge it yourself, as long as nothing in it breaks something already working. The PR exists so the change
+is reviewable and revertable, not so it waits for a human.
 
 1. **Branch.** `<type>/<short-slug>`, matching the commit types below
 2. **Commit** in [Conventional Commits](https://www.conventionalcommits.org/) form: `<type>[scope]: <description>`, a
    single imperative sentence, lowercase, no trailing period. Allowed types: `feat`, `fix`, `refactor`, `docs`, `test`,
    `chore`, `style`, `perf`
 3. **Push the branch** and open a PR with `gh pr create`
-4. **A human merges** with `gh pr merge --squash --delete-branch`. Merging is denied to agents in
-   `.claude/settings.json`
+4. **Merge** with `gh pr merge --squash --delete-branch`. Agents may merge their own PRs; the gate is the review, not
+   the merge button
 
 Small fixes still go through a branch. The overhead is one command; the alternative is a `main` nobody can review or
 revert cleanly.
@@ -343,7 +344,6 @@ gh issue close <n>                     # done
 - **Do not** commit `.env` or any `sk-…` key. `.env.example` carries key names, never values
 - **Do not** commit directly to `main`, force-push, rewrite published history, or delete a branch other than a merged
   feature branch
-- **Do not** merge your own PR. Propose it; a human merges
 - **Do not** merge `research` into `main`. Cite it, quote it, do not merge it
 - **Do not** track TODOs in a markdown file
 - **Do not** create `docs/architecture.md`, `docs/README.md`, or any second README. The root `README.md` is the only one
