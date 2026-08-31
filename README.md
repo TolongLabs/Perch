@@ -92,6 +92,12 @@ vendored skills included. Only the contents of fenced code blocks are left alone
 `gh pr merge --squash --delete-branch`. A human merges; nobody merges their own PR. `research` is the exception and
 commits directly, because gating a notebook defeats it.
 
+**The gate is enforced client-side, for now.** GitHub only offers branch protection on a private repo under a paid plan,
+so today the rule is held up by `.claude/hooks/guard-git.sh`, which blocks a direct or force push to `main`, and by the
+deny list in `.claude/settings.json`. **That stops an agent, not a determined human.** Protection becomes free the
+moment the repo goes public, which it must before submission anyway - tracked in
+[issue #13](https://github.com/TolongLabs/codenection-dev/issues/13).
+
 **Implementation is gated on three docs.** `PRODUCT.md` (who and why), `PRD.md` (what, and what is out of scope) and
 `TRD.md` (how) must all exist before build work starts. `DESIGN.md` joins them when frontend work does. All three cite
 `research`.
