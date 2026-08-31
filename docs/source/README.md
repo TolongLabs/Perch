@@ -52,3 +52,8 @@ Two things worth doing every time:
 
 Speakers are inferred from content, not detected: Whisper does not diarise. Say so in the file's header rather than
 implying the attribution is certain.
+
+**Use `medium`, not the `small` default.** On the Kick-Off recording, `small` misheard "CodeNection" on 11 of 16
+occurrences and garbled two phrases past reading; `medium` got all 15 right and segmented finer, 620 lines against 404.
+It does not fit in 4 GB of VRAM, so force CPU with `CUDA_VISIBLE_DEVICES=""` and expect it to take roughly as long as
+the recording itself.
