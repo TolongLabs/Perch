@@ -23,8 +23,10 @@ narration with it rather than drifting out of sync with it.
 
 ## Provenance, And Why It Is Declared Here
 
-**Carried in from `TolongLabs/MakanLah`, where it was written on 28-29 August 2026 - before CodeNection's problem
-statements were released on 30 August.**
+**Carried in from `TolongLabs/MakanLah`, where it was written between 28 and 30 August 2026.** CodeNection's problem
+statements were released on Kick-Off Day, 30 August, so most of it predates them: `record.mjs` and `narrate.sh` were
+first committed on 28 August, two days before. The Chatterbox backend landed on 30 August itself and could fall either
+side of the 10:30 AM release. Dates are from that repo's git history, not from memory.
 
 That matters, because the competition rules say the project must be developed after the problem statements were
 released, and list _"incorporating unauthorized external code without declaration"_ among the grounds for immediate
