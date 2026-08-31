@@ -185,6 +185,11 @@ rewritten.
 `.env.example` is empty of keys on purpose: nothing external is wired yet. Add a key name there the moment you add one
 to `.env`, because the `env-drift` hook is what tells the next teammate their `.env` is stale.
 
+**`scripts/demo/` is the exception to all of the above.** The demo recorder runs on system `python3`, `ffmpeg` and a
+Playwright installed outside the repo, and it deliberately adds nothing to `package.json` - a browser and a 3 GB torch
+stack have no business in the app's dependency tree. It is experimental and expected to be edited in place. Read
+[`scripts/demo/README.md`](scripts/demo/README.md) before running it, especially the Chatterbox section.
+
 `rtk` and `graphify`, both optional and per-machine, are documented in [`docs/agent-tooling.md`](docs/agent-tooling.md).
 The layout tree lives in [`README.md`](README.md#layout), because a reviewer must read it without opening this file.
 Source layout is not decided; add it there when it is.
@@ -337,8 +342,11 @@ gh issue close <n>                     # done
 
 ## Critical Do-Nots
 
-- **Do not** import or adapt code written before 30 Aug 2026, including anything the team privately owned. It is a
-  disqualification, not a style violation
+- **Do not** import or adapt code written before 30 Aug 2026 **into the product**, including anything the team privately
+  owned. It is a disqualification, not a style violation. The one carried-in exception is `scripts/demo/`, build tooling
+  that records a video and ships nothing to a user; its provenance is declared in
+  [`scripts/demo/README.md`](scripts/demo/README.md) and must be declared again in the submission. **Do not widen that
+  exception** - if a second piece of prior work looks tempting, that is the moment to ask a mentor, not to copy it
 - **Do not** share assets with, or take them from, another competing team, or bring in an outside developer
 - **Do not** land a major feature during the deployment phase, 12 - 31 Oct. Bug fixes only
 - **Do not** commit `.env` or any `sk-…` key. `.env.example` carries key names, never values
