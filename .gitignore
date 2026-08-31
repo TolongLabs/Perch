@@ -50,3 +50,10 @@ docs/source/*.mp4
 docs/source/*.wav
 docs/source/*.m4a
 docs/source/*.webm
+
+# Demo recorder output. Everything is written to DEMO_DIR outside the repo, but
+# a stray run inside it must never be committed: the renders are tens of MB.
+*.mp4
+*.webm
+*.srt
+scripts/demo/**/*.png

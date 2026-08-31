@@ -1,0 +1,26 @@
+# Narration, keyed to the beats record.mjs measures rather than to fixed
+# timestamps. Each line is:  beat | offset_ms | text
+#
+# The offset is from that beat, so a page that gets slower moves the narration
+# with it. schedule.py then pushes any line that would still be speaking when the
+# next one starts -- an overlap no mechanical audio check can hear, because level,
+# clipping, silence and dynamics are all normal when two voices talk at once.
+#
+# Naming a beat that never happened drops the line with a warning rather than
+# narrating over the wrong picture. Run record.mjs first and read its output: it
+# prints every beat it recorded and every surface it failed to film.
+#
+# THREE RULES FOR THE TEXT ITSELF
+#
+# 1. Every number spoken here is measured, and you say where you measured it.
+#    A figure that came from a chat message and not from the running system is
+#    the fastest way to lose a Q&A.
+# 2. One claim per line. Two claims in one breath and the subtitle splits across
+#    two cards while the picture only shows the first.
+# 3. Say what is on screen. The video is judged on Presentation, and a line that
+#    describes a feature the viewer cannot see reads as a claim, not a demo.
+#
+# The whole read has to land between 3 and 5 minutes: the organisers set both a
+# floor and a ceiling. narrate.sh prints the narration length every run.
+
+landing | 0    | Replace this line once there is something to film.
