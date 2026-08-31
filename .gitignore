@@ -1,0 +1,15 @@
+# OS and editor noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/settings.json
+*.swp
+
+# Agent local state
+.claude/settings.local.json
+.claude/projects/
+
+# Nothing on this branch is secret, but keep the habit
+.env
+.env.*
