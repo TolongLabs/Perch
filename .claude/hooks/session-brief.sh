@@ -13,4 +13,4 @@ dirty=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
 
 echo "CodeNection 2026 | branch=$branch | uncommitted=$dirty | ${left}d to prototype submission"
 echo "TODOs live in GitHub Issues (gh issue list). Rules and judging: docs/brief.md."
-echo "Ideation happens on the 'research' branch and feeds docs/PRODUCT.md. See README.md."
+echo "Ideation happens on the 'research' branch and feeds docs/PRODUCT.md. See docs/README.md."

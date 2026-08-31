@@ -52,7 +52,7 @@ your report and keep going.
 - `docs/source/kickoff-day-transcript.md` and `docs/source/kickoff-day-slides.md` for what the organisers said out loud
 - **The `research` branch.** `git show research:<path>`. The ideation trail is 25 percent of the score and it is the
   strongest material you have. Quote it: the ideas we dropped, the mentor who changed our mind, the pivot and why
-- `README.md` for what we actually claim
+- `docs/README.md` for what we actually claim
 - `docs/TRD.md` for the architecture slide, and `docs/DESIGN.md` for the palette and type pairing if one is recorded
 
 ---
