@@ -119,13 +119,25 @@ what it submits**. Solutions must be deployable, not local-only.
 By **13 Sept, 11:59 PM**, via the organisers' Google Form. **The team leader submits, and only the team leader.** The
 deck says to submit 15 minutes early. Late submissions are not accepted.
 
-| #   | Deliverable                | Notes                                                                      |
-| --- | -------------------------- | -------------------------------------------------------------------------- |
-| 1   | **Public GitHub repo**     | With a README containing the project overview. **Public**, not private     |
-| 2   | **Ideation assets**        | The mindmaps, problem trees, iteration log and mentor notes. Scored at 25% |
-| 3   | **Design prototype links** | The mockups, covering the core flow end to end                             |
-| 4   | **Slides**                 |                                                                            |
-| 5   | **Video link**             | **3 - 5 minutes, YouTube, unlisted, titled with the team name**            |
+**What is actually submitted is one URL: a public GitHub repository.** Everything else lives in its README. In the
+organisers' words at Kick-Off:
+
+> "A public GitHub repository URL, so **everything must live in the README of your repo.** The README must include
+> project overview, a link to your visual presentation, your ideation and process assets, and your design and prototype
+> artifacts. So you can have links to your Figma and Canva, **but make sure that it's set to public view.**"
+
+| #   | Goes In The README                 | Notes                                                                   |
+| --- | ---------------------------------- | ----------------------------------------------------------------------- |
+| 1   | **Project overview**               | The README is the landing page a judge reads                            |
+| 2   | **Visual presentation link**       | The slides                                                              |
+| 3   | **Ideation and process assets**    | Mindmaps, problem trees, the iteration log, mentor notes. Scored at 25% |
+| 4   | **Design and prototype artifacts** | Figma, Canva or equivalent, **set to public view**                      |
+| 5   | **Video link**                     | **Strictly 3 - 5 minutes, YouTube, unlisted**                           |
+
+> **"About the video - this is the primary thing that will be used to evaluate you."**
+
+That is a stronger claim than the rubric's Presentation 15% implies, and it is worth taking at face value: the video is
+the artifact the judges actually watch, and the repo is what they check afterwards.
 
 **Every link must be viewable.** A private repo or a restricted prototype link is a zero on that deliverable, not a
 request for access.
@@ -232,6 +244,12 @@ Per the Kick-Off Day deck. Awarded per track, and there are two tracks.
 | **3rd Place**        | 2        | RM500     | RM1,000     |
 | **Best Female Team** | 1        | RM250     | RM250       |
 | **Grand total**      |          |           | **RM7,250** |
+
+**Only the Lifestyle track pays in cash.** Said at Kick-Off while presenting the prize table: _"For the lifestyle track,
+it will be in cash, and for the industry track, it will be in exciting items of the same value."_ The figures above are
+the same for both; the form the prize takes is not.
+
+**Track 2 gets its own prototype phase and its own mentorship period**, run after the Lifestyle prototype phase closes.
 
 **Everyone who registers and submits gets a digital certificate of participation.** Finalists who attend the physical
 final round receive a CodeNection Kit: event shirt, tote bag, lanyard, badge and sticker. An extra goodie goes to
