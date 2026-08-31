@@ -149,7 +149,11 @@ wrong, but a long list makes an agent pick worse. Re-add any the same way.
 here instead. It previously lived in a top-level `description` key, which is not in the schema.
 
 The posture is deliberately broad so the harness does not stop to ask mid-phase. What stays denied is the short list a
-human should own: merging a PR, deleting the repo, force-pushing, `git reset --hard`, and `rm -rf /`.
+human should own: deleting the repo, force-pushing, `git reset --hard`, and `rm -rf /`.
+
+**`gh pr merge` is allowed.** It was denied at first, on the reasoning that a human should own the merge button. That
+cost more than it bought: `main` is PR-gated, so every change is already reviewable and revertable, and a queue of open
+PRs waiting on a human is just a slower branch. The PR is the artifact; the merge is bookkeeping.
 
 Three rules that are easy to get wrong:
 
