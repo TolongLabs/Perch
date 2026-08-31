@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+.next/
+.output/
+*.tsbuildinfo
+
+# Caches
+.cache/
+.turbo/
+.vite/
+
+# Secrets
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+
+# Editor and OS
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+logs/
+*.log
+
+# Agent local state
+.claude/settings.local.json
+.claude/projects/
+
+# skills.sh writes this universal tree; we install with -a claude-code only
+/agent/
+
+# Derived
+graphify-out/
+
+# Raw recordings. Transcripts under docs/source/ are committed
+docs/source/*.mp3
+docs/source/*.mp4
+docs/source/*.wav
+docs/source/*.m4a
+docs/source/*.webm
