@@ -26,10 +26,10 @@ None of that can be reconstructed on 13 September from a finished idea. It is bu
 
 ## Start Here
 
-| File                             | What's In It                                                                 |
-| -------------------------------- | ---------------------------------------------------------------------------- |
-| [`docs/brief.md`](docs/brief.md) | The whole competition: phases, rules, deliverables, judging, mentors, judges |
-| [`AGENTS.md`](AGENTS.md)         | Project instructions for agentic tools, and humans                           |
+| File                           | What's In It                                                                 |
+| ------------------------------ | ---------------------------------------------------------------------------- |
+| [`brief.md`](brief.md)         | The whole competition: phases, rules, deliverables, judging, mentors, judges |
+| [`../AGENTS.md`](../AGENTS.md) | Project instructions for agentic tools, and humans                           |
 
 Work in progress lives in the [Issues board](https://github.com/TolongLabs/codenection-dev/issues), not in a checklist
 here.
@@ -38,12 +38,12 @@ here.
 
 Verbatim, append-only. We cite these instead of relying on memory.
 
-| File                                                                                   | Source                                                          |
-| -------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [`docs/source/kickoff-day-transcript.md`](docs/source/kickoff-day-transcript.md)       | Kick-Off Day recording, 30 Aug. Whisper transcript              |
-| [`docs/source/kickoff-day-slides.md`](docs/source/kickoff-day-slides.md)               | Kick-Off Day deck, 30 slides. Authoritative on dates and rubric |
-| [`docs/source/problem-statements.md`](docs/source/problem-statements.md)               | The two problem statements and the general stipulations         |
-| [`docs/source/prototype-judging-rubrics.md`](docs/source/prototype-judging-rubrics.md) | The prototype rubric, band by band                              |
+| File                                                                         | Source                                                          |
+| ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| [`source/kickoff-day-transcript.md`](source/kickoff-day-transcript.md)       | Kick-Off Day recording, 30 Aug. Whisper transcript              |
+| [`source/kickoff-day-slides.md`](source/kickoff-day-slides.md)               | Kick-Off Day deck, 30 slides. Authoritative on dates and rubric |
+| [`source/problem-statements.md`](source/problem-statements.md)               | The two problem statements and the general stipulations         |
+| [`source/prototype-judging-rubrics.md`](source/prototype-judging-rubrics.md) | The prototype rubric, band by band                              |
 
 ---
 
@@ -111,8 +111,8 @@ moment the repo goes public, which it must before submission anyway - tracked in
 ## Layout
 
 ```
-README.md                this file. The submission surface, at the repo root on purpose
 docs/
+  README.md              this file. The submission surface, and the GitHub landing page
   brief.md               competition facts, the single source of truth
   PRODUCT.md             who, why, the demo moment
   PRD.md                 what: requirements, acceptance criteria, out of scope
@@ -131,10 +131,12 @@ docs/
 `PRODUCT.md`, `PRD.md`, `TRD.md` and `DESIGN.md` are listed but **not written yet**. Source layout is not decided; add
 it here when it is.
 
-Skill provenance and what each hook does: [`.agents/skills/VENDORED.md`](.agents/skills/VENDORED.md).
+Skill provenance and what each hook does: [`../.agents/skills/VENDORED.md`](../.agents/skills/VENDORED.md).
 
-**This README lives at the repo root, not in `docs/`, and that is deliberate.** Asked at Kick-Off Day what the
-submission format is, the organisers answered: the Google Form takes the repo link, and _"whatever you want to write or
-show, it should be in the readme of your GitHub repo - the links to your YouTube video, the links to your Figma design,
-any screenshots."_ GitHub only renders the root README on the landing page, so that is where it goes. **There is exactly
-one README and this is it.**
+**This README is the submission.** Asked at Kick-Off Day what the submission format is, the organisers answered that the
+Google Form takes a public repo URL and _"everything must live in the README of your repo - project overview, a link to
+your visual presentation, your ideation and process assets, and your design and prototype artifacts."_
+
+It lives in `docs/` rather than the repo root, and still renders as the repository landing page: **GitHub surfaces a
+README from the root, `.github/` or `docs/`.** Keeping it here keeps the root uncluttered and the docs together. **There
+is exactly one README and this is it**, so keep its links relative to `docs/`.

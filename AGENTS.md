@@ -191,8 +191,8 @@ stack have no business in the app's dependency tree. It is experimental and expe
 [`scripts/demo/README.md`](scripts/demo/README.md) before running it, especially the Chatterbox section.
 
 `rtk` and `graphify`, both optional and per-machine, are documented in [`docs/agent-tooling.md`](docs/agent-tooling.md).
-The layout tree lives in [`README.md`](README.md#layout), because a reviewer must read it without opening this file.
-Source layout is not decided; add it there when it is.
+The layout tree lives in [`docs/README.md`](docs/README.md#layout), because a reviewer must read it without opening this
+file. Source layout is not decided; add it there when it is.
 
 ---
 
@@ -247,7 +247,7 @@ the screen, do the navigation, hand back the one action that is theirs. **Screen
 
 Both may describe architecture. They differ in **depth and audience**, not subject.
 
-|              | `README.md`                                                      | `docs/TRD.md`                                  |
+|              | `docs/README.md`                                                 | `docs/TRD.md`                                  |
 | ------------ | ---------------------------------------------------------------- | ---------------------------------------------- |
 | **Audience** | Judges, external reviewers, anyone landing on the repo           | Developers implementing against it             |
 | **Depth**    | High-level narrative: the whats, hows and whys                   | Canonical implementation-level reference       |
@@ -257,8 +257,8 @@ Both may describe architecture. They differ in **depth and audience**, not subje
 "It is in the TRD" is a valid answer for implementation detail, **not** for anything a reviewer needs. **The README is
 the submission.** Asked at Kick-Off Day what gets submitted, the organisers answered that the Google Form takes the repo
 link and everything else - the YouTube link, the design links, the ideation screenshots - lives in the repo's README.
-GitHub only renders the **root** README on the landing page, so `README.md` sits at the root and its links are relative
-to the root. There is exactly one README in this repo.
+GitHub surfaces a README from the repo root, `.github/` or `docs/`, so `docs/README.md` renders as the repository
+landing page from where it sits. Keep its links relative to `docs/`. There is exactly one README in this repo.
 
 ---
 
@@ -354,7 +354,7 @@ gh issue close <n>                     # done
   feature branch
 - **Do not** merge `research` into `main`. Cite it, quote it, do not merge it
 - **Do not** track TODOs in a markdown file
-- **Do not** create `docs/architecture.md`, `docs/README.md`, or any second README. The root `README.md` is the only one
+- **Do not** create `docs/architecture.md`, a root `README.md`, or any second README. `docs/README.md` is the only one
 - **Do not** start implementation before `PRODUCT.md`, `PRD.md` and `TRD.md` all exist
 - **Do not** rewrite `docs/source/`. It is the verbatim record
 - **Do not** commit a path that only exists on your machine. `~/CS/...`, `/home/<you>/...`, `C:\Users\...`,
