@@ -9,7 +9,8 @@ Copy the idea's content in whole, then add why it died. Keep the original date.
 
 ## Split planning - members claim days of the itinerary to fill
 
-**Explored:** 2026-09-01 to 2026-09-02 · **Came from:** `ideas/001-travel-planner.md`
+**Explored:** 2026-09-01 to 2026-09-02 · **Came from:** `ideas/001-travel-planner.md` · **Fuller working note:**
+[`group-preferences.md`](group-preferences.md)
 
 **What it was.** A group would divide the itinerary by days rather than co-edit it. Start and end airports fixed; member
 one takes days 1-3, member two takes days 3-6, and so on. Each person nominates places to fill their own stretch, and
