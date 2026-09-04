@@ -3,11 +3,13 @@
 Instructions for any agentic tool working on this branch. `CLAUDE.md` only points here.
 
 **Everything lives under `docs/`** - `inbox/`, `ideas/`, `decisions/`, `mentors/`, `users/`, `market/`, `diagrams/`,
-plus `brief.md` and a read-only copy of the organisers' `source/`. Same shape as `main`, so nobody has to hold two
-layouts in their head.
+`prototype/`, plus `brief.md` and a read-only copy of the organisers' `source/`. Same shape as `main`, so nobody has to
+hold two layouts in their head.
 
-**This branch is not the app.** There is no code, no build, no tests and no lint. It is the ideation notebook for
-CodeNection 2026, and the ideation trail it holds is **25 percent of the prototype score, scored directly**.
+**This branch is not the app.** There is no build, no tests and no lint. It is the ideation notebook for CodeNection
+2026, and the ideation trail it holds is **25 percent of the prototype score, scored directly**. The one file that is
+not prose is `docs/prototype/travel-planner.html`, a self-contained clickable mockup with invented data - evidence of
+what the ideation produced, not an implementation, and rule 5 below still stands.
 
 **Read [`docs/brief.md`](docs/brief.md) before acting.** Read [`docs/README.md`](docs/README.md) too - it is written for the person you are
 most likely working with, and it sets the tone you should match.

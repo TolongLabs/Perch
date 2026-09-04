@@ -146,6 +146,7 @@ into paperwork.
 | `docs/users/`     | Real people we talked to, and who exactly we are building for               |
 | `docs/market/`    | What already exists, and why ours is different                              |
 | `docs/diagrams/`  | Mindmaps, problem trees, user flows. Images live in `docs/diagrams/exports/`     |
+| `docs/prototype/` | The clickable mockup. Open it in a browser - it is a mockup, not the app         |
 | `docs/source/`    | What the organisers actually said, word for word. Read it, never edit it    |
 
 Each folder has its own README explaining what "done" looks like for it and what it is worth.
