@@ -75,6 +75,51 @@ and a departure-time model for Malaysian traffic.
 It is a mockup, not an implementation. Sample costs, appeal scores and nightly rates are invented; weather events are
 simulated.
 
+## Checked Against The Rubric
+
+Scored 1 September 2026 in the `playground` repo against the official 2026 prototype rubric - **not** the 2025 one an
+earlier pass had been reading - and re-checked on 4 September when the note moved here. The percentages are the
+rubric's.
+
+### Ideation - 25%, The Largest Category
+
+| Criterion                    |   % | Where We Stand                                                                                                                     |
+| ---------------------------- | --: | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Visual Diagrams And Mindmaps | **8** | **Nothing yet.** The top band wants a mindmap plus a problem tree or user flow. The biggest single unclaimed block on the board   |
+| Iteration And Idea Evolution |   7 | **Partly banked.** `../decisions/` holds the log, the graveyard, and the two working notes behind them                              |
+| Mentor Consultation          |   7 | **Nothing yet.** The window is 31 Aug - 13 Sept, first come first served, two slots a day                                           |
+| Breadth Of Exploration       |   3 | **One idea logged here**, where the band asks for several compared. `../decisions/iteration-log.md` records why the earlier `playground` ideas cannot fill it |
+
+### Impact - 20%
+
+| Criterion                       |   % | Where We Stand                                                                                     |
+| ------------------------------- | --: | ---------------------------------------------------------------------------------------------------- |
+| Effectiveness                   |   7 | Judged against whoever we name, and we have not named them                                         |
+| Understanding The Problem Context | 5 | `../market/` gives the market context; the *causes* of stressful trip planning are still unargued  |
+| Target Group Alignment          |   5 | **Blank.** "Travellers" is the 2-3 band, "broad everyone audience". See Who Exactly above           |
+| Reach And Scalability           |   3 | Unargued                                                                                           |
+
+### Creativity And Novelty - 15%
+
+Originality **7** - heavy prior art drags toward the 2-3 band, "similar to existing apps with small changes"; the
+round-trip decision is the case for 4-5. Novel Features Or Twists **5** - the round-trip strategy choice is the genuine
+standout. Differentiation **3** - `../market/competitors.md` answers this directly.
+
+### Feasibility - 15%
+
+Tech Viability **6** - name the stack, and cite the **Tourist Trip Design Problem / Orienteering Problem** literature;
+standing on known research reads as competence. Scope Realism **5** and Resource And Time Awareness **4** are cheap
+marks and still unwritten.
+
+### Design - 10%
+
+Visual Consistency **4**, Usability **4**, Mockup Completeness **2**. `../prototype/travel-planner.html` covers most of
+this already, and one judge is a product designer.
+
+### Presentation - 15%
+
+Clarity 5, Structure 4, Delivery 4, Engagement 2 - the 3-5 minute video. Not started.
+
 ## Open Questions
 
 - **Who is this for.** Everything above is weaker until this is answered, and it cannot be answered from a desk
