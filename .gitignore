@@ -57,3 +57,6 @@ docs/source/*.webm
 *.webm
 *.srt
 scripts/demo/**/*.png
+
+# Playwright MCP scratch output
+.playwright-mcp/
