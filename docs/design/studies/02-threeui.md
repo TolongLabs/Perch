@@ -79,16 +79,44 @@ colours. **That is a much more reproducible target than any of the shaders it se
 
 ## What Does Not, And Why
 
-**The templates themselves are a competition-rule problem, and this is the finding that matters most.** Kage's own
-`Skill.md` instructs, in its Guardrails:
+> **Corrected 2026-09-07, the same day.** The first version of this section said the templates were a competition-rule
+> problem and must not be used. **That was wrong on the facts and the correction is kept in the open**, because getting
+> a licence question backwards is exactly the kind of error that should be visible rather than quietly patched.
+
+**The Community tier is MIT, verified at both ends.** The npm package `@designcodeio/threeui` v1.2.0 declares `MIT`, and
+the repository it points at - `github.com/MengTo/threeui`, 5,239 stars, last pushed 3 September 2026 - carries an MIT
+`LICENSE` file. Its own description reads "Open-source ThreeUI Community catalog with live interactive components and
+complete Community source."
+
+**MIT permits commercial use, modification and redistribution**, requiring only that the copyright and licence notice be
+retained. **So using a free template, including changing it, is permitted**, and AGENTS.md's reuse rule does not bite
+either - that rule covers work the team owned before 30 August, and a third-party open-source library installed after it
+is explicitly allowed.
+
+**What produced the error.** Kage's `Skill.md` carries this in its Guardrails:
 
 > Copy the complete Kage HTML file **byte-for-byte**; do not extract, rewrite, shorten, or rebrand any section. Preserve
 > every embedded style, script, media payload, text string, interaction, responsive rule, and document-level lifecycle.
 
-That is a licensed authored document, several of the family are marked **PRO**, and every renderer is "tied to its
-first-party source revision". **Adapting one into our prototype is taking somebody else's finished design work into a
-repo that must be public on 13 September.** AGENTS.md's rule is about prior work by the team, but the spirit here is
-worse, not better: it is somebody else's work entirely. **Do not use the templates. Use the measurements.**
+**That is a build-fidelity instruction to a coding agent, not a licence term.** It exists so an agent reproducing the
+effect does not approximate it from a screenshot. Reading it as a restriction on us was the mistake.
+
+**Two limits do survive, and only two.**
+
+1. **PRO items are paid and are not covered by the MIT package.** Sylva's Sakura Sunset, Maple Autumn and Sequoia Mist
+   are marked PRO; Kage, Sketchbook, Complete Shelf, Structure Flow, Predictive Arc and sublevel.studio are not. **Free
+   means free; PRO means bought or not used**
+2. **Retain the MIT notice**, and say in the README which template was used. That is one line, and the repo already
+   declares provenance for `scripts/demo/`
+
+**The team's decision, 7 September: if it is free, we use it.** Recorded here so the rebuild does not relitigate it.
+
+**The remaining argument is about marks, not permission, and it is a judgement rather than a finding.** A whole authored
+landing page carries an authored worldview - Kage is a mountain-temple scroll piece whose accent is described as "the
+vermilion accent and the ember tint it drives" - and our screens are an itinerary, a vote, a disruption alert and a
+checklist. **Taking the components is uncontroversial; taking a complete page means our design decisions were made by
+someone else for a different subject.** Design is 10 marks and Creativity is 15. Use the components freely; weigh a
+whole template against what it costs on those two bands.
 
 **The Three.js catalogue does not fit the brief.** 395 items of WebGL backgrounds, particle fields and shader heroes
 answer "how do I make a portfolio hero look expensive". Our judged surfaces are an itinerary, a vote and a checklist -
