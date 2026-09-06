@@ -152,6 +152,28 @@
   .hotelopt .tally{flex:0 0 auto;text-align:center;font-size:11px;color:var(--dim);min-width:34px}
   .hotelopt .tally i{display:block;font-style:normal;font-size:15px;font-weight:700;color:var(--ink)}
 
+  /* what to expect, and the photo matcher */
+  .expect{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .ecard{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .ecard svg{display:block;width:100%;height:104px}
+  .ecard .body{padding:10px 12px}
+  .ecard b{display:block;font-size:13px}
+  .ecard .view{font-size:12px;color:#374151;margin-top:3px}
+  .ecard .light{font-size:11px;color:var(--warn);background:var(--warn-soft);border-radius:6px;padding:5px 7px;margin-top:8px}
+  .matcher{margin-top:16px;border:1px dashed var(--accent);border-radius:12px;padding:14px 16px;background:var(--accent-soft)}
+  .matcher .mrow{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+  .matcher b{font-size:14px}
+  .matcher p{margin:3px 0 0;font-size:12.5px;color:#374151;max-width:60ch}
+  .matcher label.btn{cursor:pointer;white-space:nowrap}
+  .mout{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:13px 15px;font-size:13px}
+  .mout h4{margin:0 0 9px;font-size:14px}
+  .mout dl{display:grid;grid-template-columns:112px 1fr;gap:5px 14px;margin:0;font-size:12.5px}
+  .mout dt{color:var(--dim)}
+  .mout dd{margin:0}
+  .mout .tip{margin-top:11px;padding:9px 11px;border-radius:8px;background:var(--warn-soft);color:#78350f;font-size:12.5px}
+  .mout .miss{margin-top:11px;padding:9px 11px;border-radius:8px;background:#f3f4f6;color:#374151;font-size:12.5px}
+  .compass{display:inline-flex;align-items:center;gap:7px}
+  .compass svg{width:34px;height:34px;flex:0 0 34px}
   /* the day's map, and source chips on an option */
   .daymap{margin-top:18px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#eef2f7}
   .daymap svg{display:block;width:100%;height:210px}
@@ -231,7 +253,7 @@
   .trustlab{font-size:11px;color:var(--dim);margin-top:4px;display:flex;justify-content:space-between}
   .stopnote{margin-top:22px;padding:14px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;font-size:13px}
   .stopnote b{display:block;margin-bottom:4px}
-  @media (max-width:900px){.hero,.two,.route,.buyhead{grid-template-columns:1fr}.slots,.hotels,.pair{grid-template-columns:1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
+  @media (max-width:900px){.hero,.two,.route,.buyhead{grid-template-columns:1fr}.slots,.hotels,.pair{grid-template-columns:1fr}.expect{grid-template-columns:1fr 1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
 </style>
 </head>
 <body>
@@ -315,6 +337,21 @@
       <div class="daytabs" id="daytabs"></div>
       <div class="slots" id="slots"></div>
       <div class="daymap" id="daymap"></div>
+
+      <h3 class="step">4 &middot; What to expect that day</h3>
+      <div class="expect" id="expect"></div>
+
+      <div class="matcher">
+        <div class="mrow">
+          <div>
+            <b>Got a photo you want to copy?</b>
+            <p>Drop in a picture and it will work out where it was taken, which way the camera was pointing, and what you need to do to get the same shot.</p>
+          </div>
+          <label class="btn" for="photo">Match a photo</label>
+          <input type="file" id="photo" accept="image/jpeg,image/*" hidden>
+        </div>
+        <div id="mresult"></div>
+      </div>
 
       <h3 class="step">3 &middot; Where we sleep</h3>
       <div class="hotels" id="hotels"></div>
@@ -644,6 +681,7 @@
       : '<div><b>Checked out</b><span class="sub">Bags at the hotel until 13:00</span></div>'
         + '<div class="price"><b>-</b><br><span class="sub">no bed tonight</span></div>';
     renderDayMap('daymap', d);
+    renderExpect(d);
     renderFinal();
   }
 
@@ -776,6 +814,200 @@
       + '<span><b>' + total.toFixed(1) + ' km</b> between them, straight line</span>'
       + '<span>Schematic. Approximate positions, not a real map or a driving route</span></div>';
   }
+
+  // ---- 2d: what to expect, and matching a photo ----
+  var SCENE = {
+    'Borobudur sunrise':                {k:'temple',  v:'Stupas above the mist, the sun coming up behind you from the east stairs', t:'Gate opens 04:30. Be on the upper terrace by 05:15 or the light has gone.'},
+    'Borobudur at opening, no sunrise': {k:'temple',  v:'The same stupas, flat mid-morning light, far fewer people', t:'08:00 opening. Harsher light, but you can actually walk around.'},
+    'Mendut and Pawon temples':         {k:'temple',  v:'A single dark stone temple under big trees', t:'Shaded most of the day. Bring something fast, it is dim inside.'},
+    'Merapi jeep tour from Kaliadem':   {k:'volcano', v:'Black lava field with the summit behind and jeeps in the foreground', t:'Go early. By 10:00 the summit is usually swallowed by cloud.'},
+    'Merapi museum only':               {k:'volcano', v:'Exhibits indoors, the cone visible from the car park', t:'Indoor light. The view outside is best before 09:00.'},
+    'Prambanan temple complex':         {k:'temple',  v:'Three tall towers together, seen from the south lawn', t:'Late afternoon lights the west faces. From 16:30.'},
+    'Ratu Boko for the sunset':         {k:'temple',  v:'The gateway in silhouette with the sun dropping behind it', t:'Arrive 16:00 so you are up the hill before the sun goes.'},
+    'Ramayana ballet at Prambanan':     {k:'temple',  v:'Lit temple towers behind the open-air stage', t:'Stage lighting is low. No flash, and it will not reach anyway.'},
+    'Taman Sari water castle':          {k:'temple',  v:'The bathing pool square-on from the upper walkway', t:'08:00 to 09:00, before the tour groups fill the frame.'},
+    "Kraton, the Sultan's palace":      {k:'temple',  v:'Open pavilions, painted beams, courtiers in batik', t:'Closes early afternoon. Go in the morning.'},
+    'Kraton and the water palace':      {k:'temple',  v:'Pavilions and the pool in one walk', t:'Closes early afternoon. Go in the morning.'},
+    'Taman Sari, if we skipped it':     {k:'temple',  v:'The bathing pool from the upper walkway', t:'08:00 to 09:00, before the groups.'},
+    'Malioboro street food crawl':      {k:'street',  v:'Becak row, neon signs, steam off the carts', t:'After 20:00. Brace on something, the exposure will be long.'},
+    'Angkringan and kopi joss':         {k:'street',  v:'Charcoal dropped into glasses of coffee, sparks and all', t:'The sparks need a fast shutter. Ask before shooting the vendor.'},
+    'Beringharjo Market':               {k:'market',  v:'Stacked batik in the upper hall, light from the roof vents', t:'Before 10:00 while the vents still throw light down.'},
+    'Kotagede silver quarter':          {k:'market',  v:'Silversmiths at the bench, fine work under a lamp', t:'Ask before photographing anyone working. Most will say yes.'},
+    'Bakpia run in Pathok':             {k:'market',  v:'Trays coming out of the oven, boxes stacked to the ceiling', t:'Early. The queues and the fresh trays are both a morning thing.'},
+    'Parangtritis sunset and seafood':  {k:'beach',   v:'Dunes, surf and silhouettes on wet sand', t:'Sun goes around 17:45. Do not go in the water, the rips are real.'},
+    'Prawirotaman bar crawl':           {k:'street',  v:'Low-lit bars and a narrow street', t:'Nothing will be sharp. Lean into it or leave the camera.'},
+    'Bar crawl, second attempt':        {k:'street',  v:'Same street, second go', t:'Nothing will be sharp. Lean into it.'},
+    'Last coffee in Prawirotaman':      {k:'street',  v:'A quiet cafe courtyard', t:'Soft morning light in the courtyards until about 10:00.'},
+    'Land at YIA, transfer to Prawirotaman': {k:'street', v:'A new airport and an hour of ricefields', t:'Nothing to shoot. Sleep in the car.'},
+    'YIA, fly home 14:20':              {k:'street',  v:'Departures', t:'Last chance for bakpia, and it costs triple here.'}
+  };
+
+  function scene(kind, seed){
+    var g = 's' + seed;
+    var sky = {temple:['#fcd9a6','#f6b27a'], volcano:['#cfd6de','#8f9aa8'], beach:['#ffd6a5','#ff9e7d'], street:['#2b3352','#4c3f63'], market:['#e8e0cf','#cbbfa6']}[kind] || ['#dbe7ff','#eef2f7'];
+    var ground = {temple:'#6b4b2a', volcano:'#3f4550', beach:'#c9a97a', street:'#1b2033', market:'#8a7757'}[kind] || '#6b7280';
+    var body = '';
+    if (kind === 'temple'){
+      body = '<g fill="#3a2a18"><rect x="46" y="70" width="108" height="10"/><rect x="58" y="60" width="84" height="10"/><rect x="70" y="50" width="60" height="10"/>'
+           + '<path d="M100 26 q-14 4 -14 22 h28 q0 -18 -14 -22z"/><rect x="97" y="18" width="6" height="10"/>'
+           + '<circle cx="76" cy="47" r="4"/><circle cx="124" cy="47" r="4"/></g>';
+    } else if (kind === 'volcano'){
+      body = '<path d="M22 84 L82 30 L104 44 L124 30 L178 84 Z" fill="#4a5260"/><path d="M82 30 L92 38 L104 44 L96 30 Z" fill="#6b7280"/>'
+           + '<ellipse cx="100" cy="28" rx="20" ry="6" fill="#9aa3af" opacity=".7"/>';
+    } else if (kind === 'beach'){
+      body = '<path d="M0 66 q50 -8 100 0 t100 -2 V104 H0Z" fill="#3f83a3" opacity=".8"/><path d="M0 76 q50 6 100 0 t100 2 V104 H0Z" fill="#c9a97a"/>'
+           + '<circle cx="150" cy="46" r="13" fill="#fff3d6"/><g fill="#2b2b2b"><rect x="60" y="62" width="4" height="16"/><rect x="72" y="64" width="4" height="14"/></g>';
+    } else if (kind === 'street'){
+      body = '<g fill="#0f1422"><rect x="10" y="26" width="40" height="62"/><rect x="58" y="16" width="34" height="72"/><rect x="100" y="30" width="44" height="58"/><rect x="152" y="20" width="38" height="68"/></g>'
+           + '<g fill="#ffd166"><rect x="18" y="36" width="8" height="6"/><rect x="34" y="48" width="8" height="6"/><rect x="66" y="30" width="8" height="6"/><rect x="110" y="44" width="8" height="6"/><rect x="162" y="34" width="8" height="6"/><rect x="172" y="56" width="8" height="6"/></g>';
+    } else {
+      body = '<g fill="#6b5b3e"><rect x="16" y="52" width="52" height="36"/><rect x="78" y="46" width="44" height="42"/><rect x="132" y="54" width="52" height="34"/></g>'
+           + '<g fill="#c05621" opacity=".85"><rect x="16" y="46" width="52" height="8"/><rect x="78" y="40" width="44" height="8"/><rect x="132" y="48" width="52" height="8"/></g>';
+    }
+    return '<svg viewBox="0 0 200 104" role="img" aria-label="Drawn impression, not a photograph">'
+      + '<defs><linearGradient id="' + g + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + sky[0] + '"/><stop offset="1" stop-color="' + sky[1] + '"/></linearGradient></defs>'
+      + '<rect width="200" height="104" fill="url(#' + g + ')"/>' + body
+      + '<rect y="88" width="200" height="16" fill="' + ground + '"/></svg>';
+  }
+
+  function renderExpect(dayIdx){
+    var host = document.getElementById('expect');
+    if (!host) return;
+    var seen = {}, cards = [];
+    schedule(dayIdx).items.forEach(function(it){
+      if (it.kind !== 'do') return;
+      var sc = SCENE[it.what];
+      if (!sc || seen[it.what]) return;
+      seen[it.what] = 1;
+      cards.push({ n: it.what, sc: sc, when: fmt(it.s) });
+    });
+    host.innerHTML = cards.length
+      ? cards.map(function(c, i){
+          return '<div class="ecard">' + scene(c.sc.k, i + dayIdx * 7)
+            + '<div class="body"><b>' + c.n + '</b>'
+            + '<div class="view">' + c.sc.v + '</div>'
+            + '<div class="light">' + c.when + ' \u00b7 ' + c.sc.t + '</div></div></div>';
+        }).join('')
+      : '<p class="sample" style="margin:0">Nothing voted in for this day yet.</p>';
+  }
+
+  // ---------- the photo matcher ----------
+  // This reads real EXIF out of the file in the browser. No upload, no server, no API.
+  function exif(buf){
+    var v = new DataView(buf), out = {};
+    if (v.byteLength < 4 || v.getUint16(0) !== 0xFFD8) return out;      // not a JPEG
+    var off = 2, app1 = -1;
+    while (off + 4 < v.byteLength){
+      if (v.getUint16(off) === 0xFFE1){ app1 = off + 4; break; }
+      if ((v.getUint16(off) & 0xFF00) !== 0xFF00) break;
+      off += 2 + v.getUint16(off + 2);
+    }
+    if (app1 < 0) return out;
+    var tiff = app1 + 6;                                                 // skip "Exif\0\0"
+    var le = v.getUint16(tiff) === 0x4949;
+    function u16(o){ return v.getUint16(o, le); }
+    function u32(o){ return v.getUint32(o, le); }
+    if (u16(tiff + 2) !== 0x002A) return out;
+
+    function rational(o){ var n = u32(o), d = u32(o + 4); return d ? n / d : 0; }
+    function dms(o, count){
+      var d = rational(o), m = rational(o + 8), sec = rational(o + 16);
+      return d + m / 60 + sec / 3600;
+    }
+    function walk(dirOff, want){
+      if (dirOff <= 0 || tiff + dirOff + 2 > v.byteLength) return;
+      var n = u16(tiff + dirOff), base = tiff + dirOff + 2;
+      for (var i = 0; i < n; i++){
+        var e = base + i * 12, tag = u16(e), type = u16(e + 2), cnt = u32(e + 4);
+        var sizes = {1:1, 2:1, 3:2, 4:4, 5:8, 7:1, 9:4, 10:8};
+        var len = (sizes[type] || 1) * cnt;
+        var val = len > 4 ? tiff + u32(e + 8) : e + 8;
+        want(tag, type, cnt, val);
+      }
+    }
+    var gpsOff = 0, exifOff = 0;
+    walk(u32(tiff + 4), function(tag, type, cnt, val){
+      if (tag === 0x8825) gpsOff = u32(val);
+      if (tag === 0x8769) exifOff = u32(val);
+    });
+    if (exifOff) walk(exifOff, function(tag, type, cnt, val){
+      if (tag === 0x9003 || tag === 0x9004){
+        var str = '';
+        for (var k = 0; k < cnt - 1 && k < 24; k++) str += String.fromCharCode(v.getUint8(val + k));
+        if (!out.when) out.when = str;
+      }
+    });
+    if (gpsOff){
+      var latR, lonR, lat, lon, dirRef;
+      walk(gpsOff, function(tag, type, cnt, val){
+        if (tag === 0x0001) latR = String.fromCharCode(v.getUint8(val));
+        if (tag === 0x0002) lat = dms(val, cnt);
+        if (tag === 0x0003) lonR = String.fromCharCode(v.getUint8(val));
+        if (tag === 0x0004) lon = dms(val, cnt);
+        if (tag === 0x0010) dirRef = String.fromCharCode(v.getUint8(val));
+        if (tag === 0x0011) out.bearing = rational(val);
+      });
+      if (lat != null && lon != null){
+        out.lat = latR === 'S' ? -lat : lat;
+        out.lon = lonR === 'W' ? -lon : lon;
+        out.bearingRef = dirRef === 'M' ? 'magnetic' : 'true';
+      }
+    }
+    return out;
+  }
+
+  function compassName(deg){
+    var pts = ['north','north-north-east','north-east','east-north-east','east','east-south-east','south-east','south-south-east',
+               'south','south-south-west','south-west','west-south-west','west','west-north-west','north-west','north-north-west'];
+    return pts[Math.round(((deg % 360) + 360) % 360 / 22.5) % 16];
+  }
+  function compassSvg(deg){
+    return '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="#fff" stroke="#e3e6ec"/>'
+      + '<text x="20" y="9" font-size="7" text-anchor="middle" fill="#9aa1ad">N</text>'
+      + '<g transform="rotate(' + deg.toFixed(0) + ' 20 20)"><path d="M20 7 L24 24 L20 21 L16 24 Z" fill="#2563eb"/></g></svg>';
+  }
+
+  function nearestPlace(lat, lon){
+    var best = null;
+    for (var n in COORD){
+      var d = km([lat, lon], COORD[n]);
+      if (!best || d < best.d) best = { n: n, d: d };
+    }
+    return best;
+  }
+
+  var fileInput = document.getElementById('photo');
+  if (fileInput) fileInput.addEventListener('change', function(){
+    var f = this.files && this.files[0];
+    var out = document.getElementById('mresult');
+    if (!f){ out.innerHTML = ''; return; }
+    var fr = new FileReader();
+    fr.onload = function(){
+      var d = {};
+      try { d = exif(fr.result); } catch (e) { d = {}; }
+      var html = '<div class="mout"><h4>' + f.name + '</h4>';
+      if (d.lat != null){
+        var near = nearestPlace(d.lat, d.lon);
+        var sc = SCENE[near.n];
+        html += '<dl>'
+          + '<dt>Taken at</dt><dd>' + d.lat.toFixed(5) + ', ' + d.lon.toFixed(5) + '</dd>'
+          + '<dt>Nearest stop</dt><dd><b>' + near.n + '</b>' + (near.d < 0.05 ? ', standing right at it' : ', about ' + (near.d < 1 ? Math.round(near.d * 1000) + ' m' : near.d.toFixed(1) + ' km') + ' away') + '</dd>'
+          + (d.bearing != null
+              ? '<dt>Camera faced</dt><dd><span class="compass">' + compassSvg(d.bearing) + '<span>' + d.bearing.toFixed(0) + '\u00b0 ' + compassName(d.bearing) + ' (' + d.bearingRef + ')</span></span></dd>'
+              : '<dt>Camera faced</dt><dd>Not recorded in this file</dd>')
+          + (d.when ? '<dt>Time taken</dt><dd>' + d.when + '</dd>' : '')
+          + '</dl>';
+        if (sc) html += '<div class="tip"><b>To get the same shot.</b> ' + sc.t + ' You are looking for: ' + sc.v.charAt(0).toLowerCase() + sc.v.slice(1) + '.</div>';
+        if (near.d > 5) html += '<div class="miss">That is a long way from anything on this trip, so the advice above is probably the wrong place.</div>';
+      } else {
+        html += '<div class="miss"><b>No location in this file.</b> Most photos saved from Instagram, RedNote or WhatsApp have their EXIF stripped, so there is nothing to read. '
+             + 'A real build would fall back to <b>landmark recognition</b> here - Google Cloud Vision or an equivalent - which costs money per call and returns a place rather than an exact spot. '
+             + 'Try a photo straight off a phone with location switched on.</div>';
+      }
+      out.innerHTML = html + '</div>';
+    };
+    fr.readAsArrayBuffer(f.slice(0, 262144));   // EXIF lives at the front
+  });
 
   // ---- 2c: where we sleep ----
   var HOTELS = [

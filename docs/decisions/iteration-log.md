@@ -40,6 +40,8 @@ is what earns the marks.
 | 2026-09-06 | Deck resequenced: Take care moved from page 3 to page 6, with the other reference pages | It sat between the planner and its output, splitting the one flow a judge needs to follow | Jin Siang |
 | 2026-09-06 | Every voted option carries a RedNote chip and a Map chip | A place has a source and a location, and neither was reachable from the option | Jin Siang |
 | 2026-09-06 | A schematic day map on both the planner and the final plan | Nothing showed how far a day actually spreads, so a day could be voted into three hours of driving | Jin Siang |
+| 2026-09-06 | A "what to expect" strip per day: a drawn view, what you will see, and the light window | The plan said where and when but never what it would look like when you got there | Jin Siang |
+| 2026-09-06 | A photo matcher that reads EXIF in the browser and names the stop, the bearing and the shot | Asked for; and it is the first feature in the mockup that genuinely works rather than being drawn | Jin Siang |
 
 ## Longer Entries
 
@@ -395,6 +397,39 @@ is no real post to link. A build with the social-post front door from
 **Two cleanups found while testing.** Options that are not places - "Nothing. Sleep off the flight" - were getting a
 map pin and both chips; they now get neither. And the searches were firing on whole sentences, so "Merapi museum only"
 now searches Museum Gunung Merapi and "Land at YIA, transfer to Prawirotaman" searches the airport.
+
+**Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - The one feature in the mockup that is real
+
+**Before.** The planner told you where to be and when, and page 4 held photo angles on a separate reference page that
+the deck scan had already found beaten by PhotoHound and Xiaohongshu. Nothing on the planning page said what a day
+would actually look like.
+
+**After.** Two additions to "plan it together".
+
+- **A "what to expect" strip**, four cards derived from whatever is winning that day. Each has a drawn impression of
+  the view, a sentence on what you will actually see, and the light window with the time. Vote the Merapi jeep in and
+  the card changes from an indoor museum to a lava field with a 10:00 cloud warning
+- **A photo matcher.** Drop in a photo and it tells you where it was taken, which way the camera was pointing, and
+  what you need to do to get the same shot
+
+**The matcher is not simulated, and that is the point.** It reads the JPEG's **EXIF block in the browser** - a real
+parser walking the TIFF header and the GPS IFD - and pulls latitude, longitude, `GPSImgDirection` and
+`DateTimeOriginal`. No upload, no server, no API key, no network. It then finds the nearest stop on the trip, converts
+the bearing to a 16-point compass, and pairs it with the shot advice for that place. Tested against a JPEG built
+byte-by-byte with known GPS: it returns Borobudur, "standing right at it", 285 degrees west-north-west.
+
+**Every other feature in this deck is drawn. This one runs.** For Feasibility that is worth more than another page,
+because it is demonstrable in the video rather than asserted.
+
+**And the honest half is on the screen.** Photos saved from Instagram, RedNote or WhatsApp have their EXIF stripped, so
+most pictures anyone actually has will return nothing. The panel says so, and names what a real build would fall back
+to: **landmark recognition, Google Cloud Vision or equivalent, which costs money per call and returns a place rather
+than a spot.** That is a better answer to "how would you really do this" than a confident mockup would have produced.
+
+**What it does to page 4.** Photo spots is now the weaker copy of something this page does properly. It should either
+fold into the expect strip or go. Not resolved today.
 
 **Live** at https://codenection-travel-planner.vercel.app
 

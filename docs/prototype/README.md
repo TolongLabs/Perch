@@ -49,7 +49,7 @@ Six sections. Every place, price, caution and news item in it is a sample.
 | Section                 | What It Shows                                                                          |
 | ----------------------- | ---------------------------------------------------------------------------------------- |
 | **The trip**            | A poster and the day-by-day itinerary                                                   |
-| **Plan it together**    | **The important one.** Availability dates set the trip length; then each day is morning, afternoon and night with every option voted on, losers kept as a ranked bench, a long morning that closes the afternoon, and three hotels to vote between. Every option carries a RedNote chip and a Map chip, and a schematic day map under the slots shows how far the day spreads |
+| **Plan it together**    | **The important one.** Availability dates set the trip length; then each day is morning, afternoon and night with every option voted on, losers kept as a ranked bench, a long morning that closes the afternoon, and three hotels to vote between. Every option carries a RedNote chip and a Map chip, a schematic day map shows how far the day spreads, a "what to expect" strip shows the view and the light window per stop, and a photo matcher **actually reads EXIF in the browser** to name the stop, the compass bearing and the shot advice |
 | **Take care**           | Local cautions and a dated news feed the group adds to                                  |
 | **Photo spots**         | Per stop: where to stand and the time of day                                            |
 | **The route**           | One button opening every stop as waypoints in Google Maps. **This link is real**        |
