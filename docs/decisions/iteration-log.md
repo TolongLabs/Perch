@@ -23,6 +23,8 @@ is what earns the marks.
 | 2026-09-06 | Rejected "all-in-one platform" as the differentiation argument | The incumbents own breadth, and five thin pages cost more under Feasibility than they gain under Creativity | Same verdict |
 | 2026-09-06 | Competitor set rebuilt around heavyweights; the enemy is a five-app stack, not Wanderlog | Both scans searched for products shaped like ours and found niche apps a judge would never name | Jin Siang: "none of them are actual usable products" |
 | 2026-09-06 | Group voting dropped as an originality claim; the bench is now the whole claim | Tripeza, SwipeSights and Plan Harmony all ship vote-then-generate for groups. Nothing found re-plans after a closure | Third scan, `../market/competitors.md` Tier 1b |
+| 2026-09-06 | Added a "worth buying" page: what to buy, where, and the tourist markup | Tourist-facing markets price for people who will not walk further, and nothing in the trip tells you that | Jin Siang, `../inbox/2026-09-06-worth-buying-dump.md` |
+| 2026-09-06 | Mockup deployed to Vercel on a public URL | Submission requires viewable design-prototype links; a local file cannot be submitted | Jin Siang |
 
 ## Longer Entries
 
@@ -209,4 +211,31 @@ a ranked, pre-approved replacement set behind it, and the itinerary spends it au
 
 **Outstanding, and now the most valuable check on the branch.** Nobody has opened **Tripeza**. It is closer to our idea
 than Troupe. If it turns out to keep losing swipes as a backup pool, the claim is gone and the idea needs rethinking.
+
+### 2026-09-06 - Worth buying, and the pattern it finally makes visible
+
+**Before.** Pages 3 and 4 were built as standalone reference pages sitting beside the itinerary, and the deck scan
+found both categories occupied.
+
+**After.** A sixth page, "worth buying": what is actually worth carrying home, roughly what a local pays for it, and
+which markets price for locals versus for people who will not walk three streets further. Yogyakarta sample data,
+prices invented and labelled as such on the page.
+
+**Why.** Jin Siang's observation, and it is a good one: most markets a traveller is routed to are built for tourists
+and priced accordingly, so the useful question is not "where is the market" but "which market, and what is it fair to
+pay there".
+
+**The pattern this makes visible, which is worth more than the page.** Cautions (page 3), photo angles (page 4) and
+now prices (page 6) are all the same thing: **local knowledge that only matters at one specific stop.** As separate
+reference pages they each lose to a category incumbent - Travel Smart, PhotoHound, and for prices, Xiaohongshu.
+Attached to the stop they belong to, they are the one seam `../market/deck-scan.md` could not fill. The new page says
+this in a box on the page itself rather than pretending otherwise.
+
+**The disagreement, recorded once.** This is the sixth page on a five-page deck, and the verdict this morning said
+breadth of features is a liability under this rubric. Adding a page is the opposite of what that concluded. It is
+worth having because the pricing insight is specific, regional and true, and because it strengthens the
+attach-to-the-stop argument. It is **not** worth pitching as a feature, and the deck now needs the vote and the bench
+back more urgently than it needs a seventh page.
+
+**Live at** https://codenection-travel-planner.vercel.app - deployed from a copy, so it does not update on push.
 

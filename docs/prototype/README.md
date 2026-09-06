@@ -6,7 +6,7 @@ to run.
 | File                                                        | Made       | Shape                                                                   |
 | ----------------------------------------------------------- | ---------- | ----------------------------------------------------------------------- |
 | [`travel-planner.html`](travel-planner.html)                | 1-2 Sept   | Map on the right, controls on the left. Holds the round-trip choice, the vote, the bench and the simulated disruption |
-| [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck: trip poster and itinerary, dates then places, "take care" cautions and news, photo spots, and a Google Maps route button |
+| [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck, six sections: trip poster and itinerary, dates then places, "take care" cautions and news, photo spots, a Google Maps route button, and what is worth buying and where |
 
 The second one drops what the first one argued for; that is deliberate and unresolved, and the reasoning is in
 [`../decisions/iteration-log.md`](../decisions/iteration-log.md) under 6 September. Neither is the design - screens
@@ -52,6 +52,12 @@ sample; the places on the "where should we go" page are literally "Option 1" to 
 | **Take care**          | Local cautions (language, water, dress, cash) and a dated news feed the group adds to   |
 | **Photo spots**        | Per stop: where to stand, the time of day, and the number of the option it belongs to   |
 | **The route**          | One button opening every stop as waypoints in Google Maps. **This link is real** and needs no key |
+| **Worth buying**       | What to carry home, what a local pays versus the strip price, and which markets price for locals |
+
+**The slide-deck one is deployed** at **https://codenection-travel-planner.vercel.app** - public, verified anonymously.
+Two other Vercel URLs exist for it and both sit behind SSO; **only the address above is viewable**, and a restricted
+link scores zero. It is deployed from a copy of the file, so **editing the file here does not update the site** - it
+has to be redeployed.
 
 ## Where Else The Map-First File Lives
 

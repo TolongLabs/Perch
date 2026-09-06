@@ -109,7 +109,27 @@
   .mapbox{border:1px solid var(--line);border-radius:12px;padding:24px;background:linear-gradient(135deg,#f5f7fa,#e9eef5);text-align:center}
   .mapbox p{color:var(--dim);font-size:13px;margin:12px 0 0}
   .mapbox code{font-size:11px;color:var(--dim);word-break:break-all;display:block;margin-top:14px;text-align:left;background:#fff;padding:8px;border-radius:6px;border:1px solid var(--line)}
-  @media (max-width:900px){.hero,.two,.route{grid-template-columns:1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
+  /* 6 - worth buying */
+  .buyhead{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+  .buys{list-style:none;margin:0;padding:0}
+  .buys li{display:grid;grid-template-columns:1fr auto;gap:14px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center}
+  .buys b{display:block;font-size:14px}
+  .buys .where{font-size:12px;color:var(--dim)}
+  .prices{text-align:right;white-space:nowrap;font-size:13px}
+  .prices .fair{color:var(--good);font-weight:700}
+  .prices .tour{color:var(--bad);text-decoration:line-through;opacity:.8;margin-left:8px}
+  .prices .mult{display:block;font-size:11px;color:var(--dim)}
+  .mkt{list-style:none;margin:0;padding:0}
+  .mkt li{padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px}
+  .mkt .top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .mkt b{font-size:14px}
+  .mkt p{margin:4px 0 8px;font-size:13px;color:#374151}
+  .trust{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+  .trust i{display:block;height:100%;border-radius:3px}
+  .trustlab{font-size:11px;color:var(--dim);margin-top:4px;display:flex;justify-content:space-between}
+  .stopnote{margin-top:22px;padding:14px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;font-size:13px}
+  .stopnote b{display:block;margin-bottom:4px}
+  @media (max-width:900px){.hero,.two,.route,.buyhead{grid-template-columns:1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
 </style>
 </head>
 <body>
@@ -123,6 +143,7 @@
       <li data-go="3"><span class="num">3</span><div class="thumb"><b>Take care</b><span class="swatch" style="background:#fff1d6"></span><div class="bar w2"></div><div class="bar w1"></div></div></li>
       <li data-go="4"><span class="num">4</span><div class="thumb"><b>Photo spots</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w3"></div></div></li>
       <li data-go="5"><span class="num">5</span><div class="thumb"><b>The route</b><span class="swatch" style="background:#2563eb"></span><div class="bar w2"></div></div></li>
+      <li data-go="6"><span class="num">6</span><div class="thumb"><b>Worth buying</b><span class="swatch" style="background:#15803d"></span><div class="bar w1"></div><div class="bar w3"></div></div></li>
     </ol>
     <div class="foot"><kbd>←</kbd> <kbd>→</kbd> to move between sections. Mockup, invented data.</div>
   </nav>
@@ -251,13 +272,41 @@
       <p class="sample">The link is real and works today; it is a plain Google Maps directions URL built from the stop names.</p>
     </section>
 
+
+    <!-- 6 -->
+    <section class="slide" id="s6">
+      <h2>Worth buying <span class="tag good">local price, not tourist price</span></h2>
+      <p class="lead">Most of what is sold on the tourist strip is sold again three streets away for a fraction of it. This page is what to buy, where to buy it, and roughly what it should cost before anyone quotes you a number.</p>
+
+      <div class="buyhead">
+        <div>
+          <h3 style="margin:0 0 10px;font-size:15px">What is actually worth carrying home</h3>
+          <ul class="buys" id="buys"></ul>
+          <p style="font-size:12px;color:var(--dim);margin-top:10px">Green is what a local pays. The struck-through figure is the opening price on the tourist strip.</p>
+        </div>
+        <div>
+          <h3 style="margin:0 0 10px;font-size:15px">Which market to trust</h3>
+          <ul class="mkt" id="mkt"></ul>
+        </div>
+      </div>
+
+      <div class="stopnote">
+        <b>This is not a separate page in the real thing.</b>
+        Each market below is already a stop on the itinerary, so the buying advice attaches to the day you are there,
+        not to a page you have to remember to open. Beringharjo sits on Day 1 next to Malioboro; Kotagede is a Day 4
+        detour. Same for the cautions on page 3.
+      </div>
+
+      <p class="sample">Every price here is invented. They are plausible ratios, not sourced figures, and a real build would need a price source or crowd-submitted reports before showing a number to anyone.</p>
+    </section>
+
   </main>
 </div>
 
 <script>
 (function(){
   // ---- navigation ----
-  var cur = 1, N = 5;
+  var cur = 1, N = 6;
   function go(n){
     cur = Math.max(1, Math.min(N, n));
     document.querySelectorAll('.slide').forEach(function(s){ s.removeAttribute('data-on'); });
@@ -349,6 +398,45 @@
     + '&destination=' + enc(stops[stops.length-1][0])
     + '&waypoints=' + stops.slice(1,-1).map(function(s){return enc(s[0]);}).join('%7C')
     + '&travelmode=driving';
+  // ---- 6: worth buying ----
+  var buys = [
+    ['Hand-drawn batik (tulis)', 'Beringharjo Market, upper floor', 120, 380],
+    ['Silver filigree', 'Kotagede silver quarter, at the workshop', 65, 190],
+    ['Bakpia pathok, box of 20', 'Pathok bakery street', 12, 32],
+    ['Wayang kulit puppet', 'Beringharjo Market', 95, 260],
+    ['Local coffee beans, 250g', 'Beringharjo Market', 24, 68],
+    ['Salak (snake fruit), per kg', 'Any neighbourhood pasar', 5, 16]
+  ];
+  var bl = document.getElementById('buys');
+  buys.forEach(function(b){
+    var li = document.createElement('li');
+    var mult = (b[3] / b[2]).toFixed(1);
+    li.innerHTML = '<div><b>' + b[0] + '</b><span class="where">' + b[1] + '</span></div>'
+      + '<div class="prices"><span class="fair">RM ' + b[2] + '</span>'
+      + '<span class="tour">RM ' + b[3] + '</span>'
+      + '<span class="mult">' + mult + 'x on the strip</span></div>';
+    bl.appendChild(li);
+  });
+
+  var markets = [
+    ['Beringharjo Market', 'traditional', 90, 'Where the city actually shops. Batik, textiles, spices, puppets. Bargaining is expected and starting at half the quote is normal.'],
+    ['Kotagede silver quarter', 'at source', 85, 'Buy from the workshop that made it. Prices are close to fixed because the maker is standing there.'],
+    ['Pathok bakery street', 'at source', 80, 'Bakpia straight from the ovens. Cheaper and fresher than the boxed version sold at the airport.'],
+    ['Malioboro Street stalls', 'tourist strip', 35, 'Convenient, open late, and priced for people who will not walk further. Fine for a fridge magnet, bad for anything above RM 50.'],
+    ['Hotel gift shop', 'tourist strip', 15, 'Fixed high prices and no bargaining. The most expensive way to buy anything on this list.']
+  ];
+  var ml = document.getElementById('mkt');
+  markets.forEach(function(m){
+    var col = m[2] >= 70 ? 'var(--good)' : (m[2] >= 40 ? 'var(--warn)' : 'var(--bad)');
+    var lab = m[2] >= 70 ? 'Local prices' : (m[2] >= 40 ? 'Mixed' : 'Tourist pricing');
+    var li = document.createElement('li');
+    li.innerHTML = '<div class="top"><b>' + m[0] + '</b><span class="tag' + (m[2] >= 70 ? ' good' : (m[2] >= 40 ? ' warn' : ' bad')) + '">' + m[1] + '</span></div>'
+      + '<p>' + m[3] + '</p>'
+      + '<div class="trust"><i style="width:' + m[2] + '%;background:' + col + '"></i></div>'
+      + '<div class="trustlab"><span>' + lab + '</span><span>' + m[2] + '/100</span></div>';
+    ml.appendChild(li);
+  });
+
   document.getElementById('maplink').href = url;
   document.getElementById('mapurl').textContent = url;
 })();
