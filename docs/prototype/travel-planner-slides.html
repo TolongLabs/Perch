@@ -152,6 +152,16 @@
   .hotelopt .tally{flex:0 0 auto;text-align:center;font-size:11px;color:var(--dim);min-width:34px}
   .hotelopt .tally i{display:block;font-style:normal;font-size:15px;font-weight:700;color:var(--ink)}
 
+  /* the day's map, and source chips on an option */
+  .daymap{margin-top:18px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#eef2f7}
+  .daymap svg{display:block;width:100%;height:210px}
+  .daymap .cap{display:flex;justify-content:space-between;gap:12px;padding:8px 13px;font-size:12px;color:var(--dim);border-top:1px solid var(--line);background:#fff;flex-wrap:wrap}
+  .daymap .cap b{color:var(--ink)}
+  .chips{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+  .chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);text-decoration:none;line-height:1.7}
+  .chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .chip.red{color:#c2185b;border-color:#f3c6d6}
+  .chip.red:hover{background:#fde8ef;border-color:#c2185b;color:#c2185b}
   /* 6 - where to shop, accordion */
   .srcnote{font-size:12px;color:#374151;background:#f6f8fb;border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin-bottom:16px}
   .srcnote b{color:var(--ink)}
@@ -230,13 +240,13 @@
     <h1>Trip book</h1>
     <div class="trip">Yogyakarta, 5 days<br><span style="font-weight:400;color:#8b93a3;font-size:12px">TolongLabs · 4 people · sample data</span></div>
     <ol id="rail">
-      <li data-go="1" aria-current="true"><span class="num">1</span><div class="thumb"><b>The trip</b><span class="swatch" style="background:linear-gradient(#f59e0b,#7c2d12)"></span><div class="bar w1"></div><div class="bar w2"></div><div class="bar w3"></div></div></li>
-      <li data-go="2"><span class="num">2</span><div class="thumb"><b>Plan it together</b><span class="swatch" style="background:#2563eb"></span><div class="bar w2"></div><div class="bar w1"></div><div class="bar w3"></div></div></li>
-      <li data-go="3"><span class="num">3</span><div class="thumb"><b>Take care</b><span class="swatch" style="background:#fff1d6"></span><div class="bar w2"></div><div class="bar w1"></div></div></li>
-      <li data-go="4"><span class="num">4</span><div class="thumb"><b>Photo spots</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w3"></div></div></li>
-      <li data-go="5"><span class="num">5</span><div class="thumb"><b>The route</b><span class="swatch" style="background:#2563eb"></span><div class="bar w2"></div></div></li>
-      <li data-go="6"><span class="num">6</span><div class="thumb"><b>Worth buying</b><span class="swatch" style="background:#15803d"></span><div class="bar w1"></div><div class="bar w3"></div></div></li>
-      <li data-go="7"><span class="num">7</span><div class="thumb"><b>The final plan</b><span class="swatch" style="background:#111827"></span><div class="bar w1"></div><div class="bar w2"></div><div class="bar w3"></div></div></li>
+      <li data-go="1" aria-current="true"><span class="num">1</span><div class="thumb"><b>The trip</b><span class="swatch" style="background:linear-gradient(#f59e0b,#7c2d12)"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="2"><span class="num">2</span><div class="thumb"><b>Plan it together</b><span class="swatch" style="background:#2563eb"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="3"><span class="num">3</span><div class="thumb"><b>The route</b><span class="swatch" style="background:#2563eb"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="4"><span class="num">4</span><div class="thumb"><b>Photo spots</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="5"><span class="num">5</span><div class="thumb"><b>Where to shop</b><span class="swatch" style="background:#15803d"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="6"><span class="num">6</span><div class="thumb"><b>Take care</b><span class="swatch" style="background:#fff1d6"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="7"><span class="num">7</span><div class="thumb"><b>The final plan</b><span class="swatch" style="background:#111827"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
     </ol>
     <div class="foot"><kbd>←</kbd> <kbd>→</kbd> to move between sections. Mockup, invented data.</div>
   </nav>
@@ -304,6 +314,7 @@
       <h3 class="step">2 &middot; What to do each day</h3>
       <div class="daytabs" id="daytabs"></div>
       <div class="slots" id="slots"></div>
+      <div class="daymap" id="daymap"></div>
 
       <h3 class="step">3 &middot; Where we sleep</h3>
       <div class="hotels" id="hotels"></div>
@@ -320,6 +331,50 @@
     </section>
 
     <section class="slide" id="s3">
+      <h2>The route <span class="tag good">opens in Google Maps</span></h2>
+      <p class="lead">The whole trip as one set of directions. No map of our own, no API key. One tap, then it is in the app everyone already has.</p>
+      <div class="route">
+        <ol class="stops" id="stops"></ol>
+        <div class="mapbox">
+          <a class="btn big" id="maplink" href="#" target="_blank" rel="noopener">Open the trip route in Google Maps ↗</a>
+          <p>Opens a new tab with every stop as a waypoint, in itinerary order, driving mode.</p>
+          <code id="mapurl"></code>
+        </div>
+      </div>
+      <p class="sample">The link is real and works today; it is a plain Google Maps directions URL built from the stop names.</p>
+    </section>
+
+    <section class="slide" id="s4">
+      <h2>Photo spots <span class="tag">where to stand</span></h2>
+      <p class="lead">For each stop: the angle, the time of day, and what to avoid. Placeholders until we have been there or found a source.</p>
+      <div class="shots">
+        <div class="shot"><div class="frame"><span class="cam" style="left:14px;bottom:14px">camera here</span></div><div class="body"><b>Borobudur, east stairs</b>Shoot west across the stupas as the sun comes up behind you.<div class="row"><span>05:30 – 06:15</span><span>Option 1</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="right:14px;top:14px">camera here</span></div><div class="body"><b>Merapi, Kaliadem bunker</b>Low angle, jeep in the foreground, summit behind. Skip if hazy.<div class="row"><span>07:00 – 09:00</span><span>Option 2</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="left:14px;top:14px">camera here</span></div><div class="body"><b>Prambanan, south lawn</b>All three main towers in frame from the lawn, not the courtyard.<div class="row"><span>16:30 – 17:30</span><span>Option 3</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="right:14px;bottom:14px">camera here</span></div><div class="body"><b>Taman Sari, bathing pool</b>From the upper walkway, pool centred, before the tour groups.<div class="row"><span>08:00 – 09:00</span><span>Option 4</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="left:14px;bottom:14px">camera here</span></div><div class="body"><b>Parangtritis, dunes</b>Sunset silhouettes on the sand dunes west of the beach.<div class="row"><span>17:30 – 18:15</span><span>Option 5</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="right:14px;top:14px">camera here</span></div><div class="body"><b>Malioboro, becak row</b>Night, long exposure, from the Tugu end looking south.<div class="row"><span>20:00 – 22:00</span><span>Option 6</span></div></div></div>
+      </div>
+      <p class="sample">Angles and times are illustrative. None of them has been checked on site.</p>
+    </section>
+
+    <section class="slide" id="s5">
+      <h2>Where to shop <span class="tag good">rated, then priced</span></h2>
+      <p class="lead">Open a street or market to see how it actually scores, and which ones are only there because tourists walk past. The last one is the gift list.</p>
+
+      <div class="srcnote">
+        <b>Where the scores would come from.</b>
+        A real build would pull these from the <b>TripAdvisor Content API</b>, <b>Trip.com</b> and <b>Google Places</b>,
+        which review places. <b>Trustpilot reviews companies, not streets</b>, so it is the wrong source for this and
+        is not used. Every number below is invented for the mockup.
+      </div>
+
+      <div id="acc"></div>
+
+      <p class="sample">Scores, review counts and prices are all invented. The ratios are plausible; the figures are not sourced.</p>
+    </section>
+
+    <section class="slide" id="s6">
       <h2>Take care <span class="tag warn">before and during</span></h2>
       <p class="lead">Things about this place that are easy to get wrong, plus a feed of what is happening there right now.</p>
       <div class="two">
@@ -348,57 +403,12 @@
       <p class="sample">Every entry above is a sample written to show the page. A real build would pull the feed from a source and mark what a person added by hand.</p>
     </section>
 
-    <section class="slide" id="s4">
-      <h2>Photo spots <span class="tag">where to stand</span></h2>
-      <p class="lead">For each stop: the angle, the time of day, and what to avoid. Placeholders until we have been there or found a source.</p>
-      <div class="shots">
-        <div class="shot"><div class="frame"><span class="cam" style="left:14px;bottom:14px">camera here</span></div><div class="body"><b>Borobudur, east stairs</b>Shoot west across the stupas as the sun comes up behind you.<div class="row"><span>05:30 – 06:15</span><span>Option 1</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="right:14px;top:14px">camera here</span></div><div class="body"><b>Merapi, Kaliadem bunker</b>Low angle, jeep in the foreground, summit behind. Skip if hazy.<div class="row"><span>07:00 – 09:00</span><span>Option 2</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="left:14px;top:14px">camera here</span></div><div class="body"><b>Prambanan, south lawn</b>All three main towers in frame from the lawn, not the courtyard.<div class="row"><span>16:30 – 17:30</span><span>Option 3</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="right:14px;bottom:14px">camera here</span></div><div class="body"><b>Taman Sari, bathing pool</b>From the upper walkway, pool centred, before the tour groups.<div class="row"><span>08:00 – 09:00</span><span>Option 4</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="left:14px;bottom:14px">camera here</span></div><div class="body"><b>Parangtritis, dunes</b>Sunset silhouettes on the sand dunes west of the beach.<div class="row"><span>17:30 – 18:15</span><span>Option 5</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="right:14px;top:14px">camera here</span></div><div class="body"><b>Malioboro, becak row</b>Night, long exposure, from the Tugu end looking south.<div class="row"><span>20:00 – 22:00</span><span>Option 6</span></div></div></div>
-      </div>
-      <p class="sample">Angles and times are illustrative. None of them has been checked on site.</p>
-    </section>
-
-    <section class="slide" id="s5">
-      <h2>The route <span class="tag good">opens in Google Maps</span></h2>
-      <p class="lead">The whole trip as one set of directions. No map of our own, no API key. One tap, then it is in the app everyone already has.</p>
-      <div class="route">
-        <ol class="stops" id="stops"></ol>
-        <div class="mapbox">
-          <a class="btn big" id="maplink" href="#" target="_blank" rel="noopener">Open the trip route in Google Maps ↗</a>
-          <p>Opens a new tab with every stop as a waypoint, in itinerary order, driving mode.</p>
-          <code id="mapurl"></code>
-        </div>
-      </div>
-      <p class="sample">The link is real and works today; it is a plain Google Maps directions URL built from the stop names.</p>
-    </section>
-
-
-    <section class="slide" id="s6">
-      <h2>Where to shop <span class="tag good">rated, then priced</span></h2>
-      <p class="lead">Open a street or market to see how it actually scores, and which ones are only there because tourists walk past. The last one is the gift list.</p>
-
-      <div class="srcnote">
-        <b>Where the scores would come from.</b>
-        A real build would pull these from the <b>TripAdvisor Content API</b>, <b>Trip.com</b> and <b>Google Places</b>,
-        which review places. <b>Trustpilot reviews companies, not streets</b>, so it is the wrong source for this and
-        is not used. Every number below is invented for the mockup.
-      </div>
-
-      <div id="acc"></div>
-
-      <p class="sample">Scores, review counts and prices are all invented. The ratios are plausible; the figures are not sourced.</p>
-    </section>
-
-
     <section class="slide" id="s7">
       <h2>The final plan <span class="tag good">what the group voted for</span></h2>
       <p class="lead">No choices left on this page. This is the itinerary the votes produced, hour by hour, with meals dropped into the gaps. Hover a place to see it, click to open it in Google Maps.</p>
 
       <div class="daytabs" id="fdaytabs"></div>
+      <div class="daymap" id="fdaymap"></div>
       <div id="finalday"></div>
 
       <p class="sample">Times are derived from the winning options on page 2, so changing a vote there changes this page. The pictures are drawn placeholders, not photographs of the real places.</p>
@@ -598,10 +608,12 @@
         if (mine[d + ':' + key] === i) b.setAttribute('data-mine', '');
         if (off || o.fixed) b.disabled = true;
         b.innerHTML = '<div class="txt"><b>' + o.n + '</b>'
-          + '<span class="hrs">' + fmt(o.s) + ' - ' + fmt(o.e) + (o.fixed ? ' · <span class="fixed">fixed</span>' : '') + '</span></div>'
+          + '<span class="hrs">' + fmt(o.s) + ' - ' + fmt(o.e) + (o.fixed ? ' · <span class="fixed">fixed</span>' : '') + '</span>'
+          + optChips(o.n) + '</div>'
           + (o.fixed ? '' : '<div class="tally"><i>' + tally(d, key, i) + '</i>of 4</div>');
         if (!o.fixed && !off){
-          b.addEventListener('click', function(){
+          b.addEventListener('click', function(ev){
+            if (ev.target.closest && ev.target.closest('.chip')) return;   // chip opens a link, not a vote
             var k = d + ':' + key;
             mine[k] = (mine[k] === i) ? null : i;
             renderSlots();
@@ -631,7 +643,138 @@
         + '<div class="price"><b>RM ' + bed.p + '</b><br><span class="sub">per room, per night</span></div>'
       : '<div><b>Checked out</b><span class="sub">Bags at the hotel until 13:00</span></div>'
         + '<div class="price"><b>-</b><br><span class="sub">no bed tonight</span></div>';
+    renderDayMap('daymap', d);
     renderFinal();
+  }
+
+  // ---- 2b: where each option is, and where it came from ----
+  // Approximate coordinates, good enough for a schematic. Not survey data.
+  var COORD = {
+    'Land at YIA, transfer to Prawirotaman': [-7.905, 110.057],
+    'YIA, fly home 14:20':                   [-7.905, 110.057],
+    'Taman Sari water castle':               [-7.810, 110.359],
+    "Kraton, the Sultan's palace":           [-7.805, 110.364],
+    'Kraton and the water palace':           [-7.805, 110.364],
+    'Malioboro street food crawl':           [-7.793, 110.366],
+    'Angkringan and kopi joss':              [-7.789, 110.364],
+    'Borobudur sunrise':                     [-7.608, 110.204],
+    'Borobudur at opening, no sunrise':      [-7.608, 110.204],
+    'Mendut and Pawon temples':              [-7.605, 110.230],
+    'Prawirotaman bar crawl':                [-7.818, 110.368],
+    'Merapi jeep tour from Kaliadem':        [-7.598, 110.447],
+    'Merapi museum only':                    [-7.630, 110.420],
+    'Prambanan temple complex':              [-7.752, 110.491],
+    'Ratu Boko for the sunset':              [-7.771, 110.489],
+    'Ramayana ballet at Prambanan':          [-7.752, 110.491],
+    'Kotagede silver quarter':               [-7.827, 110.399],
+    'Taman Sari, if we skipped it':          [-7.810, 110.359],
+    'Beringharjo Market':                    [-7.799, 110.365],
+    'Parangtritis sunset and seafood':       [-8.021, 110.328],
+    'Bar crawl, second attempt':             [-7.818, 110.368],
+    'Bakpia run in Pathok':                  [-7.796, 110.353],
+    'Last coffee in Prawirotaman':           [-7.818, 110.368],
+    'Greenhost Boutique Hotel':              [-7.818, 110.368],
+    'Adhisthana Hotel':                      [-7.800, 110.348],
+    'Omah Pari Boutique':                    [-7.819, 110.370]
+  };
+
+  // what to actually search for, when the option name is a sentence
+  var QUERY = {
+    'Land at YIA, transfer to Prawirotaman': 'Yogyakarta International Airport',
+    'YIA, fly home 14:20':                   'Yogyakarta International Airport',
+    'Taman Sari water castle':               'Taman Sari',
+    'Taman Sari, if we skipped it':          'Taman Sari',
+    "Kraton, the Sultan's palace":           'Kraton Yogyakarta',
+    'Kraton and the water palace':           'Kraton Yogyakarta',
+    'Malioboro street food crawl':           'Malioboro',
+    'Angkringan and kopi joss':              'Angkringan Malioboro',
+    'Borobudur sunrise':                     'Borobudur',
+    'Borobudur at opening, no sunrise':      'Borobudur',
+    'Mendut and Pawon temples':              'Candi Mendut',
+    'Prawirotaman bar crawl':                'Prawirotaman',
+    'Bar crawl, second attempt':             'Prawirotaman',
+    'Last coffee in Prawirotaman':           'Prawirotaman',
+    'Merapi jeep tour from Kaliadem':        'Kaliadem Merapi',
+    'Merapi museum only':                    'Museum Gunung Merapi',
+    'Prambanan temple complex':              'Prambanan',
+    'Ramayana ballet at Prambanan':          'Prambanan',
+    'Ratu Boko for the sunset':              'Ratu Boko',
+    'Kotagede silver quarter':               'Kotagede',
+    'Parangtritis sunset and seafood':       'Parangtritis Beach',
+    'Bakpia run in Pathok':                  'Bakpia Pathok'
+  };
+  function q(n){ return (QUERY[n] || n) + ', Yogyakarta, Indonesia'; }
+
+  function mapsUrl(n){
+    return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q(n));
+  }
+  // a real build would link the saved post itself; with none to link, this opens the search
+  function redUrl(n){
+    return 'https://www.xiaohongshu.com/search_result?keyword=' + encodeURIComponent(QUERY[n] || n);
+  }
+  function optChips(n){
+    if (!COORD[n]) return '';
+    return '<span class="chips">'
+      + '<a class="chip red" href="' + redUrl(n) + '" target="_blank" rel="noopener" title="Where this came from">RedNote</a>'
+      + '<a class="chip" href="' + mapsUrl(n) + '" target="_blank" rel="noopener" title="Where this is">Map</a>'
+      + '</span>';
+  }
+
+  function km(a, b){
+    var R = 6371, t = Math.PI / 180;
+    var dLat = (b[0] - a[0]) * t, dLon = (b[1] - a[1]) * t;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+          + Math.cos(a[0] * t) * Math.cos(b[0] * t) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+
+  // schematic map of one day: the winning stops, in order
+  function renderDayMap(hostId, dayIdx){
+    var host = document.getElementById(hostId);
+    if (!host) return;
+    var plan = schedule(dayIdx);
+    var pts = [];
+    plan.items.forEach(function(it){
+      var c = COORD[it.what];
+      if (c && (!pts.length || pts[pts.length - 1].what !== it.what)) pts.push({ what: it.what, c: c, kind: it.kind });
+    });
+    if (pts.length < 1){ host.innerHTML = ''; return; }
+
+    var lats = pts.map(function(x){ return x.c[0]; }), lons = pts.map(function(x){ return x.c[1]; });
+    var minLa = Math.min.apply(null, lats), maxLa = Math.max.apply(null, lats);
+    var minLo = Math.min.apply(null, lons), maxLo = Math.max.apply(null, lons);
+    var padLa = Math.max((maxLa - minLa) * 0.22, 0.012), padLo = Math.max((maxLo - minLo) * 0.22, 0.012);
+    minLa -= padLa; maxLa += padLa; minLo -= padLo; maxLo += padLo;
+    var W = 760, H = 210;
+    function X(lo){ return (lo - minLo) / (maxLo - minLo) * W; }
+    function Y(la){ return H - (la - minLa) / (maxLa - minLa) * H; }
+
+    var total = 0;
+    for (var i = 1; i < pts.length; i++) total += km(pts[i - 1].c, pts[i].c);
+
+    var path = pts.map(function(x, i){ return (i ? 'L' : 'M') + X(x.c[1]).toFixed(1) + ' ' + Y(x.c[0]).toFixed(1); }).join(' ');
+    var dots = pts.map(function(x, i){
+      var cx = X(x.c[1]), cy = Y(x.c[0]);
+      var fill = x.kind === 'bed' ? '#111827' : '#2563eb';
+      var lab = x.what.length > 26 ? x.what.slice(0, 25) + '\u2026' : x.what;
+      var anchor = cx > W - 130 ? 'end' : 'start';
+      var dx = anchor === 'end' ? -11 : 11;
+      return '<circle cx="' + cx.toFixed(1) + '" cy="' + cy.toFixed(1) + '" r="7" fill="' + fill + '" stroke="#fff" stroke-width="2"/>'
+        + '<text x="' + cx.toFixed(1) + '" y="' + (cy + 3.5).toFixed(1) + '" font-size="9" fill="#fff" text-anchor="middle" font-weight="700">' + (i + 1) + '</text>'
+        + '<text x="' + (cx + dx).toFixed(1) + '" y="' + (cy - 11).toFixed(1) + '" font-size="10.5" fill="#374151" text-anchor="' + anchor + '">' + lab + '</text>';
+    }).join('');
+
+    host.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Schematic map of the day">'
+      + '<rect width="' + W + '" height="' + H + '" fill="#eef2f7"/>'
+      + '<g stroke="#dbe1ea" stroke-width="1">'
+      + [1, 2, 3].map(function(k){ return '<line x1="0" y1="' + (H * k / 4) + '" x2="' + W + '" y2="' + (H * k / 4) + '"/>'; }).join('')
+      + [1, 2, 3, 4, 5].map(function(k){ return '<line x1="' + (W * k / 6) + '" y1="0" x2="' + (W * k / 6) + '" y2="' + H + '"/>'; }).join('')
+      + '</g>'
+      + '<path d="' + path + '" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-dasharray="7 5" stroke-linejoin="round" opacity=".75"/>'
+      + dots + '</svg>'
+      + '<div class="cap"><span><b>' + pts.length + '</b> stops today</span>'
+      + '<span><b>' + total.toFixed(1) + ' km</b> between them, straight line</span>'
+      + '<span>Schematic. Approximate positions, not a real map or a driving route</span></div>';
   }
 
   // ---- 2c: where we sleep ----
@@ -808,6 +951,7 @@
         + '<div><div class="what">' + body + '</div>'
         + '<div class="meta">' + (it.kind === 'bed' ? (it.sub || 'Tonight') : (it.kind === 'meal' ? 'Kept clear' : 'Voted in by the group')) + '</div></div></li>';
     });
+    renderDayMap('fdaymap', fDay);
     host.innerHTML = html + '</ul>';
 
     host.querySelectorAll('.place').forEach(function(a){

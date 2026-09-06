@@ -37,6 +37,9 @@ is what earns the marks.
 | 2026-09-06 | Added a read-only final page that derives the schedule from the votes | A plan nobody can read back is not a plan; and it proves the votes actually drive something | Jin Siang |
 | 2026-09-06 | "Worth buying" became "Where to shop": a drawer per market, scored, gifts as the last drawer | The question is not what to buy, it is which of these places is worth walking to at all | Jin Siang |
 | 2026-09-06 | Trustpilot dropped from the named sources; TripAdvisor, Trip.com and Google Places kept | Trustpilot rates companies, not streets or markets. Naming it in a pitch would be a wrong answer to an easy question | Checking the ask |
+| 2026-09-06 | Deck resequenced: Take care moved from page 3 to page 6, with the other reference pages | It sat between the planner and its output, splitting the one flow a judge needs to follow | Jin Siang |
+| 2026-09-06 | Every voted option carries a RedNote chip and a Map chip | A place has a source and a location, and neither was reachable from the option | Jin Siang |
+| 2026-09-06 | A schematic day map on both the planner and the final plan | Nothing showed how far a day actually spreads, so a day could be voted into three hours of driving | Jin Siang |
 
 ## Longer Entries
 
@@ -360,3 +363,38 @@ TripAdvisor's Content API, Trip.com and Google Places instead, and says on the p
 invented. Naming Trustpilot in the pitch would be a wrong answer to a question a judge could ask easily.
 
 **Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - Order, sources, and how far a day actually goes
+
+**Before.** Take care sat at page 3, between the planning page and everything else, so the deck went plan, cautions,
+photos, route, shopping, final plan. Options in a slot were text with hours and a vote count and nothing else. Nothing
+anywhere showed the shape of a day on the ground.
+
+**After.** Three changes, all asked for.
+
+- **Resequenced.** Take care moved to page 6, next to the other reference pages, so the deck now reads: the trip, plan
+  it together, the route, photo spots, where to shop, take care, the final plan. **The planner and the plan it
+  produces are no longer separated by a page about drinking water.** Reference material sits between them and the
+  conclusion
+- **Every option carries two chips.** A **RedNote** chip opening a Xiaohongshu search for the place, and a **Map**
+  chip opening Google Maps. A place has a source and a location, and neither was reachable from the row it was voted
+  on. Clicking a chip does not cast a vote
+- **A schematic day map**, on both the planner and the final plan. The winning stops in order, numbered, joined by a
+  dashed line, with a straight-line distance under it. It repaints when a vote changes
+
+**What the map turned out to be for.** Not decoration. Day 3 with the Merapi jeep voted in is **three stops and 34 km**
+of straight-line spread; with the museum instead it is four stops in 32 km. **The map is where "we have voted
+ourselves into a day of driving" becomes visible**, and it is the second thing after the closing afternoon that shows
+one group decision costing another.
+
+**Honesty on the map.** Coordinates are approximate and the caption says so on the page: schematic, not a real map,
+and a straight line rather than a driving route. **The RedNote chip opens a search, not a saved post**, because there
+is no real post to link. A build with the social-post front door from
+[`storybook-shape.md`](storybook-shape.md) would link the post itself.
+
+**Two cleanups found while testing.** Options that are not places - "Nothing. Sleep off the flight" - were getting a
+map pin and both chips; they now get neither. And the searches were firing on whole sentences, so "Merapi museum only"
+now searches Museum Gunung Merapi and "Land at YIA, transfer to Prawirotaman" searches the airport.
+
+**Live** at https://codenection-travel-planner.vercel.app
+

@@ -6,7 +6,7 @@ to run.
 | File                                                        | Made       | Shape                                                                   |
 | ----------------------------------------------------------- | ---------- | ----------------------------------------------------------------------- |
 | [`travel-planner.html`](travel-planner.html)                | 1-2 Sept   | Map on the right, controls on the left. Holds the round-trip choice, the vote, the bench and the simulated disruption |
-| [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck, six sections: the trip, plan-it-together with dates, slot voting and hotels, cautions and news, photo spots, a Google Maps route button, where to shop, and a read-only final plan |
+| [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck, six sections: the trip, plan-it-together with dates, slot voting, hotels and a day map, the route, photo spots, where to shop, cautions and news, and a read-only final plan |
 | [`storybook-a-one-book.html`](storybook-a-one-book.html) | 6 Sept | **Fork draft A.** One book in two states. Voting happens on the book's own pages; finalising re-presents the same object as a flipbook; a closure repairs the page you are reading |
 | [`storybook-b-planner-then-book.html`](storybook-b-planner-then-book.html) | 6 Sept | **Fork draft B.** A planner page the group votes on, then a read-only flipbook generated on finalise. Editing means going back; a closure blocks the reprint until Day 3 is re-settled |
 
@@ -49,7 +49,7 @@ Six sections. Every place, price, caution and news item in it is a sample.
 | Section                 | What It Shows                                                                          |
 | ----------------------- | ---------------------------------------------------------------------------------------- |
 | **The trip**            | A poster and the day-by-day itinerary                                                   |
-| **Plan it together**    | **The important one.** Availability dates set the trip length; then each day is morning, afternoon and night with every option voted on, losers kept as a ranked bench, a long morning that closes the afternoon, and three hotels to vote between |
+| **Plan it together**    | **The important one.** Availability dates set the trip length; then each day is morning, afternoon and night with every option voted on, losers kept as a ranked bench, a long morning that closes the afternoon, and three hotels to vote between. Every option carries a RedNote chip and a Map chip, and a schematic day map under the slots shows how far the day spreads |
 | **Take care**           | Local cautions and a dated news feed the group adds to                                  |
 | **Photo spots**         | Per stop: where to stand and the time of day                                            |
 | **The route**           | One button opening every stop as waypoints in Google Maps. **This link is real**        |
