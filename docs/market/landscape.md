@@ -53,16 +53,45 @@ even that needs Troupe read directly first, since Troupe ships ranked group voti
 
 ## Why Ours Exists
 
-The version that survives everything in `competitors.md`:
+> **Rewritten 2026-09-06**, after the Tier 1 scan in [`competitors.md`](competitors.md) replaced a list of niche apps
+> with the products a judge would actually name. The earlier version of this section aimed the pitch at Wanderlog. That
+> was aiming at the wrong thing.
 
-> Every trip planner treats a same-airport round trip as a line out and the same line back, so the traveller solves the
-> interesting half in their head. We make it the first decision, and then let the group vote rather than argue - and
-> when the monsoon closes a stop, the trip repairs itself from choices the group already approved.
+**What we are actually competing with**, for four Malaysians planning a trip in 2026, in the order they reach for them:
 
-What that argument deliberately does not claim: that our suggestions are better (Roadtrippers wins), that our layout is
-new (Wanderlog wins), that our routing is clever (the literature wins), or that group collaboration is novel (Wanderlog
-again).
+1. **ChatGPT**, to generate the plan. Around 40% of travellers worldwide have now used AI to plan a trip
+2. **Xiaohongshu or Instagram**, for where to go and where the photo is taken
+3. **A WhatsApp group with native polls**, to decide
+4. **Google Maps lists**, to hold the places
+5. **Traveloka or Trip.com**, to book it
 
-**The thing to beat is not Wanderlog. It is the WhatsApp group.** That means the planner must produce a complete trip
-before asking anyone to do anything - which is why the day-claiming design was dropped (see
-`../decisions/dropped.md`).
+**Not one of those is a trip planner, and that is the point.** The stack is free, already installed, and socially
+default. Any pitch that positions us against Wanderlog is answering a question nobody asked.
+
+**Where that stack breaks**, and this is the whole argument:
+
+- **ChatGPT gives you a plan and forgets it.** There is no state, so nothing can be repaired later
+- **Google Maps holds places, not decisions.** Its own reviewers say collaborative editing is "glitchy and not
+  real-time", leaving invitees stuck read-only
+- **A WhatsApp poll produces a result, not a plan.** Nobody turns thirty votes into a routed itinerary
+- **Xiaohongshu inspires and never commits.** It is a feed, not a trip
+- **Nothing in the stack knows the trip exists once the trip starts.** When a stop closes, all five tools are silent
+  and the group chat reopens
+
+The version that survives all of that:
+
+> Every tool a group already uses can produce a plan. **None of them owns the plan afterwards.** We hold the trip as
+> something the group has approved, so that when a stop closes it repairs itself from options they already voted for -
+> no new argument, no reopened group chat.
+
+What that argument deliberately does not claim: that our suggestions are better (Tripadvisor's billion reviews and
+Roadtrippers' 42 million trips win), that generating an itinerary is impressive (ChatGPT commoditised it), that our
+layout is new (Wanderlog wins), that our routing is clever (the literature wins), that group voting is novel (WhatsApp
+ships it), or that photo spots are our territory (Xiaohongshu owns that, not PhotoHound).
+
+**The thing to beat is still not Wanderlog. It is the five-app stack**, and specifically the moment it fails - which is
+the moment the problem statement itself names, "re-planning when something changes mid-trip". Our differentiator and
+the brief are the same sentence. That is the strongest position available to us and it should open the pitch.
+
+**Why the planner proposes rather than asks.** The competitor above that asks least of the user is the group chat,
+which asks nothing. That is why day-claiming was dropped - see [`../decisions/dropped.md`](../decisions/dropped.md).

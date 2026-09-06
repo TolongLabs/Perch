@@ -15,6 +15,28 @@ forbids describing a feature nobody saw.
 
 ---
 
+## Tier 1 - The Heavyweights
+
+Added 2026-09-06. **All from search summaries and press coverage; none of these product pages was opened.**
+
+| Product / claim                        | Link                                                                                          |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| AI travel adoption, ~40% of travellers | https://www.travala.com/blog/how-many-travelers-use-ai-for-booking-key-insights-for-2026/       |
+| AI changing travel behaviour 2026      | https://travelspike.com/how-ai-trip-planning-is-changing-travel-behavior-in-2026/               |
+| Gen Z and millennials lead AI travel   | https://www.emarketer.com/content/gen-z-millennials-lead-ai-travel-boom                         |
+| Google Maps as a trip planner          | https://www.howtogeek.com/itinerary-in-google-maps-lists-better-than-any-travel-app/            |
+| Google Maps collaboration is glitchy   | https://www.places.is/guides/best-google-maps-alternatives-for-trip-planning                    |
+| Trip.com TripGenie                     | https://traveltomorrow.com/trip-com-introduces-smarter-travel-planning-with-ai-assistant-tripgenie/ |
+| Trip.com Trip.Planner launch           | https://www.ttgasia.com/2025/09/01/trip-com-launches-ai-powered-trip-planner-for-personalised-travel-itineraries/ |
+| TripGenie usage, HK/SG/Malaysia        | https://tools.prnewswire.com/en-us/live/20823/release/20260315EN09481                           |
+| Tripadvisor AI itinerary generator     | https://tripadvisor.mediaroom.com/Tripadvisor-launches-AI-powered-travel-planning-product        |
+| Tripadvisor and OpenAI                 | https://www.hoteldive.com/news/tripadvisor-openai-ai-travel-trip-itinerary/688500/               |
+| Xiaohongshu drives tourism             | https://hongkongfp.com/2026/07/19/indispensable-xiaohongshu-app-fuels-chinese-tourism/          |
+| Xiaohongshu vs Instagram and TikTok    | https://www.malaymail.com/news/tech-gadgets/2026/07/13/xiaohongshu-is-coming-for-instagram-tiktok-and-your-travel-plans-all-at-once/227370 |
+| Traveloka, Malaysia                    | https://www.traveloka.com/en-my/explore/activities/traveloka-as-your-trip-planner/349358        |
+| WhatsApp polls                         | https://graziadaily.co.uk/life/in-the-news/how-to-use-polls-on-whatsapp/                        |
+| The WhatsApp-plus-spreadsheet stack    | https://nomadcrew.uk/blog/best-group-trip-planning-apps-2026/                                   |
+
 ## The Original Four - Trip Planners
 
 Scanned 1 September, unchanged.

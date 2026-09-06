@@ -21,6 +21,7 @@ is what earns the marks.
 | 2026-09-06 | Photo spots demoted from feature to nice-to-have; never to be pitched as novel | It is a whole product category - Locationscout has 233,000 spots, PhotoHound gives angle, time and gear | Same scan |
 | 2026-09-06 | Kept the idea, but the headline claim moved from the round trip to the self-repairing itinerary | Originality risks ~4 marks; 30 marks sit unclaimed in diagrams, mentors, breadth and the unnamed user | Verdict, `build-verdict.md` |
 | 2026-09-06 | Rejected "all-in-one platform" as the differentiation argument | The incumbents own breadth, and five thin pages cost more under Feasibility than they gain under Creativity | Same verdict |
+| 2026-09-06 | Competitor set rebuilt around heavyweights; the enemy is a five-app stack, not Wanderlog | Both scans searched for products shaped like ours and found niche apps a judge would never name | Jin Siang: "none of them are actual usable products" |
 
 ## Longer Entries
 
@@ -140,4 +141,39 @@ That is now an argument for merging the two mockups rather than choosing between
 
 **Still open.** `Troupe` ships polls with **ranked voting** for group trips and has not been read directly. Our ranked
 bench is claimed as novel and that claim is `[not verified]` until someone opens Troupe.
+
+### 2026-09-06 - The competitor set was aimed at the wrong target
+
+**Before.** Two scans, both searching for products *shaped like ours*: trip planners, route planners, photo-spot
+databases, group-voting apps. The list that came back was mostly niche, and Jin Siang rejected it in one line - "none
+of them are actual usable products".
+
+**After.** He was right about the method and wrong about the conclusion. Searching by product shape surfaces whatever
+affiliate round-up articles rank for, which is long-tail apps. Searching by **what a group actually does** surfaces a
+much harder list, now Tier 1 in `../market/competitors.md`:
+
+- **ChatGPT and Gemini.** Around 40% of travellers have used AI to plan a trip, 42% to build an itinerary, and
+  roughly two-thirds of under-45s would use it for recommendations. Itinerary generation is commoditised
+- **Google Maps lists**, the actual default, with collaborative lists and offline sync
+- **Trip.com TripGenie**, whose own figures name **Hong Kong, Singapore and Malaysia** as the heaviest AI-travel users
+- **Tripadvisor Trips**, an OpenAI-built generator standing on a billion reviews
+- **Xiaohongshu**, 300 million monthly users aged 18 to 40, where young travellers plan itineraries around check-in
+  photo spots. This, not PhotoHound, is what beats our photo page
+- **WhatsApp with native polls**, which removes voting as a reason to leave the group chat
+
+**Why.** Jin Siang pushed back on the quality of the list. The pushback was correct and produced a better one.
+
+**What we gave up by doing this.** Any comfort. The heavyweight list is worse for us than the niche list was:
+generation is free, our demographic is named as the world's heaviest AI-travel users, our photo page is beaten by a
+social network, and our vote is matched by a chat app.
+
+**What it hands us instead, and it is worth more.** Every one of them stops at the same place. ChatGPT forgets the
+plan. Google Maps holds places rather than decisions, and its own reviewers call collaborative editing "glitchy and
+not real-time". Tripadvisor generates once. Xiaohongshu never commits. TripGenie advises but does not own the group's
+approved itinerary. **Nothing holds a committed group plan and repairs it when the world changes** - which is the
+verdict reached this morning, and the sentence the problem statement itself asks for.
+
+**The correction to the disagreement, kept because it matters.** Dismissing Contour and calimoto for being small is a
+mistake. **Prior art does not care about user counts.** They still end any "nobody does this" claim about the round
+trip. Tier 2 in `../market/competitors.md` now says so explicitly.
 

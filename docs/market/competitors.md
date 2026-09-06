@@ -7,6 +7,141 @@ Malaysian entries come from search results and are marked accordingly.
 
 ---
 
+> **Restructured 2026-09-06.** Both earlier scans went looking for products *shaped like ours* and came back with
+> niche apps. That was the wrong question, and the list it produced was easy to dismiss. **This section is what a judge
+> would actually name**, and it is a much harder list. Read it before anything below it.
+>
+> Everything in this section comes from search summaries and press coverage read on 6 September 2026, not from opening
+> the products. Treat the feature claims as `[snippet only]` and check any one of them before it goes in a pitch.
+
+# Tier 1 - The Ones A Judge Will Name
+
+## ChatGPT and Gemini
+
+**The single biggest competitor, and it is not a travel product.**
+
+| Finding                                                    | Figure |
+| ---------------------------------------------------------- | ------ |
+| Travellers worldwide who have used AI tools to plan a trip | ~40%   |
+| Of those, who use it for most or every trip                | 63%    |
+| Who used generative AI to build an itinerary               | 42%    |
+| Travellers under 45 who would use AI for recommendations   | ~two-thirds |
+
+ChatGPT now carries app integrations with Booking.com, Expedia and Uber, and Google Search has an itinerary-building
+Canvas.
+
+**Why this matters to us.** "Plan me a five-day trip to Yogyakarta on RM1,500" is a solved, free, zero-install
+interaction that a large minority of travellers already perform. **Any feature of ours that is only "generate a plan"
+is already commoditised.** What a chat window cannot do is hold the plan as shared, committed state that a group has
+approved and that something can later break. That is the whole opening.
+
+---
+
+## Google Maps and Google My Maps
+
+**The actual default.** Lists can be private, shared by link, or **collaborative**; they sync across devices, carry
+notes per place and custom icons, and appear on downloaded offline maps. My Maps adds layers, drawn routes and
+collaborative editing for multi-day trips.
+
+**And here is the citable weakness**, in the words of a 2026 review: Google Maps lists "let you save and share places,
+which sounds like collaboration but is not really. Editing together is glitchy and not real-time, so invitees often end
+up stuck in a read-only view even when you meant to give them edit access."
+
+**Why this matters to us.** Our page 5 hands the route to Google Maps, so Google is simultaneously our dependency and
+our competitor. That is survivable and normal. The named collaboration weakness is the most useful sentence in this
+whole file: **the default tool is bad at exactly the group part we are claiming.**
+
+---
+
+## Trip.com - TripGenie and Trip.Planner
+
+**The one aimed straight at our market.** TripGenie is an in-app AI assistant, three years old, taking text and voice,
+producing "personalised editable itineraries in under a minute" with attraction lists, booking links and city maps.
+Trip.Planner is a separate AI planning hub.
+
+**The line that should worry us most:** travellers from **Hong Kong, Singapore and Malaysia use AI the most** during
+their trips, interacting with TripGenie more often per trip as a real-time decision-making partner.
+
+**Why this matters to us.** Our target users are named, by a company with the data, as the heaviest users of exactly
+this. We cannot pitch AI trip planning as new to Malaysians.
+
+---
+
+## Tripadvisor Trips
+
+AI itinerary generator built with OpenAI. Enter destination, dates, who you are travelling with and activity types;
+get a day-by-day itinerary in seconds that you can **save, edit and share with travel companions**. Built on over a
+billion reviews across more than eight million businesses.
+
+**Why this matters to us.** The review corpus is a moat, like Roadtrippers' 42 million trips. Do not compete on
+recommendation quality. **One opening:** the AI planner launched **US-only on desktop and mobile web**, with expansion
+stated as a plan `[snippet only, and the date of that reporting is not established]`. Worth confirming before claiming
+a regional gap.
+
+---
+
+## Xiaohongshu / RedNote
+
+**The one that actually kills our photo-spots page**, and nobody on the team listed it.
+
+- Over 300 million monthly active users, mostly aged 18 to 40, around 70% women
+- "The first place a lot of younger travellers seek inspiration"
+- Users plan itineraries **around photogenic locations** - the "daka" or check-in spot
+- Searching "citywalk" returns day itineraries including where to eat and routes between attractions
+
+**Why this matters to us.** This is the real incumbent for "where should we go and where do we take the photo", for
+precisely our demographic, and it is social rather than a planner - which is why a competitor scan looking for trip
+planners missed it entirely. Our photo-spots page is not competing with PhotoHound. **It is competing with
+Xiaohongshu, and it loses.**
+
+---
+
+## Traveloka
+
+**The Malaysian default travel app.** Flights, hotels, buses, trains, car rental, activities, eSIM and insurance, paid
+with Touch 'n Go eWallet, GrabPay or Maybank2u. AI-powered personalised recommendations, and an in-app assistant called
+IVAN.
+
+**Why this matters to us.** Not an itinerary planner, but it owns the travel-app slot on a Malaysian phone and the
+payment rails. If a judge asks "why would anyone install this instead of using Traveloka", the answer must not be
+about booking.
+
+---
+
+## WhatsApp, upgraded
+
+**The existing entry below understated this. WhatsApp now ships native polls.** Groups agree on times, places and
+activities inside the chat. The pattern named in the literature is the "WhatsApp plus spreadsheet stack", and its
+documented failure is that chat "creates noise without resolving anything" - stronger tools "add polls, pinned
+decisions, and a record of what was actually agreed, kept separate from casual conversation".
+
+**Why this matters to us.** Voting is no longer a reason to leave the group chat, because the group chat has voting.
+**What WhatsApp still cannot do is turn a poll result into a plan, or repair that plan when a stop closes.** Our claim
+has to sit on that, not on the vote.
+
+---
+
+## What Tier 1 Changes
+
+**It makes our position harder, not easier.** The heavyweights are more threatening than the niche apps: generation is
+commoditised by ChatGPT, our demographic is named as the world's heaviest AI-travel users by Trip.com, our photo page
+is beaten by Xiaohongshu, and our vote is matched by WhatsApp polls.
+
+**But every one of them stops at the same place.** ChatGPT gives you a plan and forgets it. Google Maps lists hold
+places, not decisions, and collaborate badly by their own reviewers' account. Tripadvisor generates once. Xiaohongshu
+inspires and never commits. TripGenie advises in real time but does not own the group's approved itinerary as state.
+**None of them holds a committed group plan and repairs it when the world changes.**
+
+That is the verdict in [`../decisions/build-verdict.md`](../decisions/build-verdict.md), reached before this section
+was written, and Tier 1 strengthens it rather than weakening it.
+
+---
+
+# Tier 2 - Products Shaped Like Ours
+
+The original scans. Smaller, and easy to dismiss on quality - **but prior art does not care about user counts.** A
+niche product that already ships our trick still ends a "nobody does this" claim.
+
 ## Wanderlog
 
 |                       |                                                                              |
