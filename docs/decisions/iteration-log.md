@@ -52,6 +52,8 @@ is what earns the marks.
 | 2026-09-06 | Timed-ticket items on the checklist derive from the winning votes | A checklist that does not know what you chose is a template, and templates are free everywhere | Building it |
 | 2026-09-06 | The free-text request box replaced by a structured "suggest something" form | A form cannot misparse, and an empty name field is a better demo of the agent than free text is | Jin Siang |
 | 2026-09-06 | The suggest form covers beds too, and hotels gained ratings | The bed is the biggest line in the budget and was the only thing you could vote on but not propose | Jin Siang |
+| 2026-09-06 | Photo spots replaced by "Notes on where we are going", derived from the winning votes | It was a static reference page beaten by PhotoHound and Xiaohongshu; the same space derived is ours | Jin Siang |
+| 2026-09-06 | Pictures added throughout eat-shop-do: a thumbnail per drawer and three inside | "so a layman can plan a trip as well" - a wall of ratings is a page for people who already know | Jin Siang |
 
 ## Longer Entries
 
@@ -643,6 +645,43 @@ only thing on the page with no rating on them while every restaurant and market 
 winner card, the final-plan bed line and the day summary. The first fix silently matched nothing and I deployed the
 broken version before noticing. Fixed by editing the four call sites by line number and re-testing: it now reads
 "Price not set", "no price yet", "Price still to be worked out" and "TBC" respectively.
+
+**Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - The weakest page becomes the second-most derived one
+
+**Before.** "Photo spots": six static cards of camera angles. The deck scan had already found the category owned by
+PhotoHound, Locationscout and Xiaohongshu, and the "what to expect" strip on the planner had made it redundant twice
+over. It had been flagged as the page to fix or drop three times without being touched.
+
+**After.** **"Notes on where we are going"**, and it holds only the places that actually won the vote.
+
+Each picked place gets a card with a drawn impression, a rough cost, how long it takes, how to get there, then the
+notes - practical points in blue, the light-and-photo line in pink, and the things that catch people out in amber.
+Fourteen places, eleven cautions, grouped by day. The summary at the top counts them.
+
+**The point is that it is derived.** Vote the Merapi jeep in and the page swaps the museum's notes for the jeep's,
+including "runs to 14:30 and takes the afternoon with it" and "summit usually in cloud after 10:00". A static
+photo-spot page is a worse PhotoHound. **A page that only tells you about the places your group chose is not something
+PhotoHound can be.** The photo advice survives as one line among many rather than as the whole idea.
+
+### 2026-09-06 - Pictures, because a wall of ratings is a page for experts
+
+**The ask, and it is the right instinct.** Eat-shop-do was "pretty flat", and the reason given was the useful part:
+**"so a layman can plan a trip as well"**. A page of numbers and bullet lists assumes you already know what
+Beringharjo looks like. Someone who has never been needs to see it before a 4.4 means anything.
+
+**What changed.** Every drawer now carries a thumbnail in its header and three larger images inside, so the page reads
+as places rather than as a spreadsheet. Forty drawn images across the deck.
+
+**Five new scene types were needed** and they are drawn, not photographed: **food** (a plate, chopsticks and steam),
+**spa** (stones, towels and leaves), **craft** (a workbench with tools), **stage** (lit temple towers with stage
+lighting) and **hotel** (a lit facade). Existing kinds - temple, volcano, beach, street, market - were reused.
+
+**Said once: these are drawn placeholders, and at some point that stops being enough.** They give the page shape and
+they are honest about being impressions. But "a layman can plan a trip" is finally an argument for **real photography**,
+and real photos of real places means a place API with image rights, which is the same deployment cost the idea log
+already flags. Worth naming in the pitch as a known next step rather than letting a judge ask.
 
 **Live** at https://codenection-travel-planner.vercel.app
 

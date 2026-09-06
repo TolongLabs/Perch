@@ -176,6 +176,36 @@
   .ctag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:middle;font-weight:700}
   .ctag.must{background:var(--bad-soft);color:#7f1d1d}
   .ctag.auto{background:var(--accent-soft);color:var(--accent)}
+  /* pictures on the eat/shop/do drawers */
+  .acc summary .thumbpic{flex:0 0 84px;width:84px;height:52px;border-radius:8px;overflow:hidden;display:block}
+  .acc summary .thumbpic svg{width:100%;height:100%;display:block}
+  .gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:13px 0 4px}
+  .gallery > div{border-radius:9px;overflow:hidden;height:96px}
+  .gallery svg{width:100%;height:100%;display:block}
+  @media (max-width:760px){.gallery{grid-template-columns:1fr 1fr}.acc summary .thumbpic{flex-basis:60px;width:60px;height:40px}}
+  /* notes on our picks */
+  .picksum{display:flex;gap:20px;margin:0 0 18px;padding:0;list-style:none;font-size:12px;color:var(--dim);flex-wrap:wrap}
+  .picksum span{display:block}
+  .picksum b{display:block;color:var(--ink);font-size:17px}
+  .pday{margin-bottom:20px}
+  .pday > h3{margin:0 0 9px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
+  .pcard{border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:10px;overflow:hidden;display:grid;grid-template-columns:172px 1fr}
+  .pcard .pic svg{display:block;width:100%;height:100%;min-height:150px}
+  .pcard .in{padding:13px 15px;min-width:0}
+  .pcard .top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+  .pcard h4{margin:0;font-size:15px}
+  .pcard .when{font-size:12px;color:var(--dim);white-space:nowrap}
+  .pcard .view{font-size:12.5px;color:#374151;margin:4px 0 10px}
+  .facts2{display:flex;gap:18px;flex-wrap:wrap;margin:0 0 10px;padding:0;list-style:none;font-size:12px;color:var(--dim)}
+  .facts2 b{display:block;color:var(--ink);font-size:13.5px}
+  .notes{list-style:none;margin:0;padding:0;font-size:12.5px}
+  .notes li{padding:3px 0 3px 20px;position:relative;color:#374151}
+  .notes li::before{content:"";position:absolute;left:4px;top:10px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .notes li.w::before{background:var(--warn)}
+  .notes li.p::before{background:#c2185b}
+  .notes li.w{color:#78350f}
+  .pempty{border:1px dashed var(--line);border-radius:12px;padding:22px;text-align:center;color:var(--dim);font-size:13px}
+  @media (max-width:760px){.pcard{grid-template-columns:1fr}.pcard .pic svg{min-height:110px}}
   /* edges and remarks on a bed */
   .hotelopt.gold{border-color:transparent;background-image:linear-gradient(#fffdf5,#fffdf5),linear-gradient(115deg,#d4a017,#fff3c4,#c9971c,#fff8dc,#b8860b);background-origin:border-box;background-clip:padding-box,border-box;border-width:2px}
   .hotelopt.chrome{border-color:transparent;background-image:linear-gradient(#fbfcfe,#fbfcfe),linear-gradient(115deg,#9aa3af,#ffffff,#6b7280,#e5e7eb,#9aa3af);background-origin:border-box;background-clip:padding-box,border-box;border-width:2px}
@@ -345,7 +375,7 @@
     <ol id="rail">
       <li data-go="1" aria-current="true"><span class="num">1</span><div class="thumb"><b>The trip</b><span class="swatch" style="background:linear-gradient(#f59e0b,#7c2d12)"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
       <li data-go="2"><span class="num">2</span><div class="thumb"><b>Plan it together</b><span class="swatch" style="background:#2563eb"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
-      <li data-go="3"><span class="num">3</span><div class="thumb"><b>Photo spots</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="3"><span class="num">3</span><div class="thumb"><b>Notes on our picks</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
       <li data-go="4"><span class="num">4</span><div class="thumb"><b>Eat, shop, do</b><span class="swatch" style="background:#15803d"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
       <li data-go="5"><span class="num">5</span><div class="thumb"><b>Take care</b><span class="swatch" style="background:#fff1d6"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
       <li data-go="6"><span class="num">6</span><div class="thumb"><b>The final plan</b><span class="swatch" style="background:#111827"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
@@ -482,17 +512,11 @@
     </section>
 
     <section class="slide" id="s3">
-      <h2>Photo spots <span class="tag">where to stand</span></h2>
-      <p class="lead">For each stop: the angle, the time of day, and what to avoid. Placeholders until we have been there or found a source.</p>
-      <div class="shots">
-        <div class="shot"><div class="frame"><span class="cam" style="left:14px;bottom:14px">camera here</span></div><div class="body"><b>Borobudur, east stairs</b>Shoot west across the stupas as the sun comes up behind you.<div class="row"><span>05:30 – 06:15</span><span>Option 1</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="right:14px;top:14px">camera here</span></div><div class="body"><b>Merapi, Kaliadem bunker</b>Low angle, jeep in the foreground, summit behind. Skip if hazy.<div class="row"><span>07:00 – 09:00</span><span>Option 2</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="left:14px;top:14px">camera here</span></div><div class="body"><b>Prambanan, south lawn</b>All three main towers in frame from the lawn, not the courtyard.<div class="row"><span>16:30 – 17:30</span><span>Option 3</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="right:14px;bottom:14px">camera here</span></div><div class="body"><b>Taman Sari, bathing pool</b>From the upper walkway, pool centred, before the tour groups.<div class="row"><span>08:00 – 09:00</span><span>Option 4</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="left:14px;bottom:14px">camera here</span></div><div class="body"><b>Parangtritis, dunes</b>Sunset silhouettes on the sand dunes west of the beach.<div class="row"><span>17:30 – 18:15</span><span>Option 5</span></div></div></div>
-        <div class="shot"><div class="frame"><span class="cam" style="right:14px;top:14px">camera here</span></div><div class="body"><b>Malioboro, becak row</b>Night, long exposure, from the Tugu end looking south.<div class="row"><span>20:00 – 22:00</span><span>Option 6</span></div></div></div>
-      </div>
-      <p class="sample">Angles and times are illustrative. None of them has been checked on site.</p>
+      <h2>Notes on where we are going <span class="tag">built from what won the vote</span></h2>
+      <p class="lead">Only the places the group actually picked. What each one costs, how long it takes, what to bring, and the thing that catches people out. Change a vote on page 2 and this page changes with it.</p>
+
+      <div class="picksum" id="picksum"></div>
+      <div id="picked"></div>
     </section>
 
     <section class="slide" id="s4">
@@ -781,6 +805,7 @@
         + '<div class="price"><b>-</b><br><span class="sub">no bed tonight</span></div>';
     renderDayMap('daymap', d);
     renderExpect(d);
+    renderPicked();
     renderFinal();
   }
 
@@ -946,8 +971,12 @@
 
   function scene(kind, seed){
     var g = 's' + seed;
-    var sky = {temple:['#fcd9a6','#f6b27a'], volcano:['#cfd6de','#8f9aa8'], beach:['#ffd6a5','#ff9e7d'], street:['#2b3352','#4c3f63'], market:['#e8e0cf','#cbbfa6']}[kind] || ['#dbe7ff','#eef2f7'];
-    var ground = {temple:'#6b4b2a', volcano:'#3f4550', beach:'#c9a97a', street:'#1b2033', market:'#8a7757'}[kind] || '#6b7280';
+    var sky = {temple:['#fcd9a6','#f6b27a'], volcano:['#cfd6de','#8f9aa8'], beach:['#ffd6a5','#ff9e7d'],
+               street:['#2b3352','#4c3f63'], market:['#e8e0cf','#cbbfa6'], food:['#ffe8cc','#ffc9a0'],
+               spa:['#dff0e6','#bcdccb'], craft:['#efe3d0','#d8c3a5'], stage:['#241a3a','#4a2f5e'],
+               hotel:['#dce8f5','#c3d6ea']}[kind] || ['#dbe7ff','#eef2f7'];
+    var ground = {temple:'#6b4b2a', volcano:'#3f4550', beach:'#c9a97a', street:'#1b2033', market:'#8a7757',
+                  food:'#7a4b25', spa:'#4b7a5e', craft:'#7a6244', stage:'#17102b', hotel:'#4a5b6e'}[kind] || '#6b7280';
     var body = '';
     if (kind === 'temple'){
       body = '<g fill="#3a2a18"><rect x="46" y="70" width="108" height="10"/><rect x="58" y="60" width="84" height="10"/><rect x="70" y="50" width="60" height="10"/>'
@@ -962,9 +991,38 @@
     } else if (kind === 'street'){
       body = '<g fill="#0f1422"><rect x="10" y="26" width="40" height="62"/><rect x="58" y="16" width="34" height="72"/><rect x="100" y="30" width="44" height="58"/><rect x="152" y="20" width="38" height="68"/></g>'
            + '<g fill="#ffd166"><rect x="18" y="36" width="8" height="6"/><rect x="34" y="48" width="8" height="6"/><rect x="66" y="30" width="8" height="6"/><rect x="110" y="44" width="8" height="6"/><rect x="162" y="34" width="8" height="6"/><rect x="172" y="56" width="8" height="6"/></g>';
+    } else if (kind === 'food'){
+      body = '<ellipse cx="100" cy="66" rx="52" ry="16" fill="#fff" opacity=".9"/>'
+           + '<ellipse cx="100" cy="62" rx="44" ry="12" fill="#e8b06a"/>'
+           + '<path d="M76 60 q10 -8 22 -2 t26 -1" stroke="#8a4b1e" stroke-width="3" fill="none" stroke-linecap="round"/>'
+           + '<circle cx="88" cy="58" r="5" fill="#c0392b"/><circle cx="114" cy="60" r="4" fill="#4a7c2f"/>'
+           + '<g stroke="#6b5b3e" stroke-width="2.5" stroke-linecap="round"><line x1="152" y1="46" x2="158" y2="72"/><line x1="162" y1="46" x2="166" y2="72"/></g>'
+           + '<g fill="#fff" opacity=".55"><path d="M84 40 q6 -8 0 -14 M100 38 q7 -9 0 -16 M116 40 q6 -8 0 -14" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/></g>';
+    } else if (kind === 'spa'){
+      body = '<rect x="48" y="52" width="104" height="34" rx="17" fill="#fff" opacity=".85"/>'
+           + '<circle cx="72" cy="69" r="7" fill="#a3c9b3"/><circle cx="100" cy="69" r="7" fill="#8fbca3"/><circle cx="128" cy="69" r="7" fill="#a3c9b3"/>'
+           + '<g fill="#4b7a5e"><path d="M40 88 q8 -22 24 -28 q-4 20 -24 28z"/><path d="M160 88 q-8 -22 -24 -28 q4 20 24 28z"/></g>'
+           + '<g stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" opacity=".7"><path d="M88 42 q6 -8 0 -14"/><path d="M112 42 q6 -8 0 -14"/></g>';
+    } else if (kind === 'craft'){
+      body = '<rect x="34" y="62" width="132" height="26" fill="#8a6f4a"/>'
+           + '<g fill="#5d4630"><rect x="52" y="46" width="30" height="18" rx="3"/><rect x="92" y="40" width="22" height="24" rx="3"/><rect x="124" y="50" width="30" height="14" rx="3"/></g>'
+           + '<g stroke="#c9a227" stroke-width="2.5" fill="none" stroke-linecap="round"><path d="M60 52 h14 M60 58 h10 M98 48 v12 M132 56 h14"/></g>'
+           + '<circle cx="103" cy="34" r="6" fill="#e8c34a" opacity=".85"/>';
+    } else if (kind === 'stage'){
+      body = '<rect x="24" y="58" width="152" height="30" fill="#3a2a52"/>'
+           + '<g fill="#1c1330"><rect x="46" y="30" width="16" height="30"/><rect x="92" y="18" width="18" height="42"/><rect x="140" y="32" width="16" height="28"/><path d="M101 8 l9 12 h-18z"/></g>'
+           + '<g fill="#f6c453" opacity=".9"><circle cx="80" cy="52" r="5"/><circle cx="122" cy="52" r="5"/></g>'
+           + '<g stroke="#f6c453" stroke-width="1.6" opacity=".5"><path d="M80 52 L60 88 M80 52 L100 88 M122 52 L102 88 M122 52 L142 88"/></g>';
+    } else if (kind === 'hotel'){
+      body = '<rect x="46" y="34" width="108" height="54" fill="#7a8ba0"/>'
+           + '<g fill="#e8eef5"><rect x="56" y="42" width="14" height="12"/><rect x="78" y="42" width="14" height="12"/><rect x="100" y="42" width="14" height="12"/><rect x="122" y="42" width="14" height="12"/>'
+           + '<rect x="56" y="60" width="14" height="12"/><rect x="78" y="60" width="14" height="12"/><rect x="122" y="60" width="14" height="12"/></g>'
+           + '<rect x="96" y="60" width="22" height="28" fill="#3f4d5e"/>'
+           + '<rect x="42" y="28" width="116" height="7" fill="#5b6a7d"/>';
     } else {
       body = '<g fill="#6b5b3e"><rect x="16" y="52" width="52" height="36"/><rect x="78" y="46" width="44" height="42"/><rect x="132" y="54" width="52" height="34"/></g>'
-           + '<g fill="#c05621" opacity=".85"><rect x="16" y="46" width="52" height="8"/><rect x="78" y="40" width="44" height="8"/><rect x="132" y="48" width="52" height="8"/></g>';
+           + '<g fill="#c05621" opacity=".85"><rect x="16" y="46" width="52" height="8"/><rect x="78" y="40" width="44" height="8"/><rect x="132" y="48" width="52" height="8"/></g>'
+           + '<g fill="#fff" opacity=".5"><rect x="24" y="60" width="36" height="4"/><rect x="24" y="68" width="28" height="4"/><rect x="86" y="54" width="28" height="4"/><rect x="140" y="62" width="36" height="4"/></g>';
     }
     return '<svg viewBox="0 0 200 104" role="img" aria-label="Drawn impression, not a photograph">'
       + '<defs><linearGradient id="' + g + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="' + sky[0] + '"/><stop offset="1" stop-color="' + sky[1] + '"/></linearGradient></defs>'
@@ -1195,6 +1253,116 @@
         renderChecklist();
       });
     });
+  }
+
+  // ---- notes on our picks ----
+  // Sample advice. A real build would source cost and duration from a place API
+  // and the cautions from an editorial layer or the group itself.
+  var ADVICE = {
+    'Borobudur sunrise':            {cost:'RM 155', len:'4h 30', get:'About 1h 15 by car from Prawirotaman. Leave by 03:15.',
+      notes:['Sunrise ticket is separate from normal entry and sells out.', 'Sarong provided at the gate; shoulders and knees covered.', 'Torch or phone light for the terraces before dawn.'],
+      warn:['Climbing quota per session. Booking ahead is not optional.']},
+    'Borobudur at opening, no sunrise': {cost:'RM 90', len:'3h', get:'1h 15 by car. Leave by 06:30.',
+      notes:['Cheaper than the sunrise slot and far less rushed.', 'Sarong at the gate.'], warn:['Quota still applies, book the day before.']},
+    'Mendut and Pawon temples':     {cost:'RM 15', len:'2h', get:'10 minutes from Borobudur, do them the same trip.',
+      notes:['Tiny compared to Borobudur, and almost empty.', 'The big Buddha inside Mendut is the reason to go.'], warn:[]},
+    'Merapi jeep tour from Kaliadem': {cost:'RM 190 per jeep', len:'8h door to door', get:'1h to Kaliadem. One jeep takes four.',
+      notes:['Price is per jeep, not per person, so four of us is the efficient number.', 'Bandana or mask, it is genuinely dusty.', 'Bring more water than you think.'],
+      warn:['Runs to 14:30 and the drive back takes the afternoon with it.', 'Summit usually in cloud after 10:00.']},
+    'Merapi museum only':           {cost:'RM 12', len:'2h 30', get:'50 minutes by car, easy road.',
+      notes:['Indoor, so it survives bad weather.', 'The cone is visible from the car park on a clear morning.'], warn:[]},
+    'Prambanan temple complex':     {cost:'RM 120', len:'2h 30', get:'40 minutes east. Combined Borobudur ticket is cheaper.',
+      notes:['Buy the combined ticket if Borobudur is also in the plan.', 'The south lawn gets all three main towers in one frame.'],
+      warn:['Closes earlier than people expect; check the last entry.']},
+    'Ratu Boko for the sunset':     {cost:'RM 130', len:'2h', get:'15 minutes uphill from Prambanan.',
+      notes:['Pairs naturally with Prambanan on the same afternoon.'], warn:['Arrive by 16:00 or the walk up eats the sunset.']},
+    'Ramayana ballet at Prambanan': {cost:'RM 60 to RM 190', len:'2h', get:'Same site as the temple, evening entrance.',
+      notes:['No language needed, it is danced.', 'Open-air stage with the lit temple behind it.'],
+      warn:['Open-air season only; it moves indoors in the wet months.']},
+    'Taman Sari water castle':      {cost:'RM 20', len:'1h 30', get:'In town, 10 minutes from Prawirotaman.',
+      notes:['Guides wait at the entrance and are worth the small fee.', 'The underground mosque is the part people miss.'],
+      warn:['Fills with tour groups after 09:00.']},
+    "Kraton, the Sultan's palace":  {cost:'RM 25', len:'2h', get:'In town, next to Taman Sari.',
+      notes:['Gamelan or dance performances most mornings, included.', 'Do the Kraton and Taman Sari as one walk.'],
+      warn:['Closes early afternoon. Morning only.']},
+    'Kraton and the water palace':  {cost:'RM 45', len:'3h', get:'In town, both within a short walk.',
+      notes:['One ticket each, done as one loop.'], warn:['Both close early afternoon.']},
+    'Taman Sari, if we skipped it': {cost:'RM 20', len:'1h 30', get:'In town.', notes:['See above.'], warn:['Groups after 09:00.']},
+    'Malioboro street food crawl':  {cost:'RM 25 a head', len:'3h', get:'Walkable from most of the city centre.',
+      notes:['Sit down before ordering; lesehan mats are charged per item.', 'Agree a price before you eat at a cart.'],
+      warn:['Tourist-strip pricing. One street back is much cheaper.']},
+    'Angkringan and kopi joss':     {cost:'RM 10 a head', len:'2h', get:'Near the station, a short walk from Malioboro.',
+      notes:['Nasi kucing is a few ringgit a portion.', 'Kopi joss is coffee with burning charcoal dropped in.'], warn:[]},
+    'Beringharjo Market':           {cost:'free to enter', len:'2h', get:'On Malioboro, walkable.',
+      notes:['Upper floor is quieter and cheaper than the ground floor.', 'Start at half the opening quote.', 'Cash only in most stalls.'],
+      warn:['Closes mid-afternoon, earlier than the shops around it.']},
+    'Kotagede silver quarter':      {cost:'free to browse', len:'2h 30', get:'20 minutes south-east of the centre.',
+      notes:['Buy from the workshop that made it.', 'Ask before photographing anyone working.'], warn:['Some workshops close on Sunday.']},
+    'Parangtritis sunset and seafood': {cost:'RM 10 entry, RM 35 to eat', len:'4h', get:'1h south. Last one back is late.',
+      notes:['Dunes west of the main beach are the quiet end.', 'Seafood warungs along the sand.'],
+      warn:['Do not swim. The rip currents here kill people every year.']},
+    'Bakpia run in Pathok':         {cost:'RM 12 a box', len:'1h 30', get:'Walkable from Malioboro.',
+      notes:['Numbered brands; ask which is fresh that morning.', 'Sealed boxes travel; the fresh ones keep two days.'],
+      warn:['Airport branches cost roughly triple.']},
+    'Prawirotaman bar crawl':       {cost:'RM 60 a head', len:'4h', get:'On the doorstep if we are staying in Prawirotaman.',
+      notes:['Walkable, so nobody has to drive.'], warn:['Late finish against an early start the next day.']},
+    'Javanese massage and jamu, Prawirotaman': {cost:'RM 45', len:'1h 30', get:'Walking distance in Prawirotaman.',
+      notes:['Book the same morning; small places fill up.', 'Jamu, a herbal drink, is usually included.'],
+      warn:['Firmer than most visitors expect. Say so if it is too much.']},
+    'Batik workshop, half day':     {cost:'RM 95', len:'4h', get:'In town, most studios are central.',
+      notes:['You draw with hot wax and dye it yourself.', 'You leave with the piece you made.'],
+      warn:['Wax does not come out of good clothes. Wear something you do not care about.']},
+    'Silver-smithing class, Kotagede': {cost:'RM 120 plus silver', len:'2h 30', get:'20 minutes out, pair it with the silver quarter.',
+      notes:['Make a ring or a pendant.'], warn:['Silver is weighed and charged on top of the class fee.']},
+    'Land at YIA, transfer to Prawirotaman': {cost:'RM 55 by car', len:'1h 45', get:'YIA is 40km out. Airport train plus taxi also works.',
+      notes:['Grab works from the airport.', 'Buy a SIM or activate an eSIM before leaving arrivals.'], warn:[]},
+    'YIA, fly home 14:20':          {cost:'RM 55 by car', len:'1h 45', get:'Leave the city by 11:30 to be safe.',
+      notes:['Last bakpia stop on the way if the timing works.'], warn:['YIA is far out. Do not cut this fine.']}
+  };
+
+  function renderPicked(){
+    var host = document.getElementById('picked');
+    if (!host) return;
+    var days = [], nPlaces = 0, cautions = 0, seen = {};
+
+    DAYS.forEach(function(_, i){
+      var cards = [];
+      schedule(i).items.forEach(function(it){
+        if (it.kind !== 'do' || seen[it.what]) return;
+        seen[it.what] = 1;
+        var ad = ADVICE[it.what], sc = SCENE[it.what];
+        if (!ad && !sc) return;
+        nPlaces++;
+        if (ad && ad.warn) cautions += ad.warn.length;
+        cards.push({ n: it.what, when: fmt(it.s) + ' - ' + fmt(it.e), ad: ad, sc: sc });
+      });
+      if (cards.length) days.push({ label: DAYS[i].label + ', ' + DAYS[i].date, cards: cards, idx: i });
+    });
+
+    document.getElementById('picksum').innerHTML =
+      '<span><b>' + nPlaces + '</b>places picked</span>'
+      + '<span><b>' + cautions + '</b>things to watch</span>'
+      + '<span><b>' + days.length + '</b>days with something on</span>';
+
+    if (!days.length){ host.innerHTML = '<div class="pempty">Nothing is voted in yet. Pick some options on <b>Plan it together</b> and the notes will appear here.</div>'; return; }
+
+    host.innerHTML = days.map(function(d){
+      return '<div class="pday"><h3>' + d.label + '</h3>' + d.cards.map(function(c, j){
+        var ad = c.ad || {}, sc = c.sc || {};
+        var notes = (ad.notes || []).map(function(x){ return '<li>' + x + '</li>'; }).join('')
+          + (sc.t ? '<li class="p">' + sc.t + '</li>' : '')
+          + (ad.warn || []).map(function(x){ return '<li class="w">' + x + '</li>'; }).join('');
+        return '<div class="pcard"><div class="pic">' + scene((sc.k || 'street'), d.idx * 9 + j) + '</div>'
+          + '<div class="in"><div class="top"><h4>' + c.n + '</h4><span class="when">' + c.when + '</span></div>'
+          + (sc.v ? '<div class="view">' + sc.v + '</div>' : '')
+          + '<ul class="facts2">'
+          + (ad.cost ? '<li><b>' + ad.cost + '</b>roughly</li>' : '')
+          + (ad.len ? '<li><b>' + ad.len + '</b>takes about</li>' : '')
+          + '</ul>'
+          + (ad.get ? '<div class="view" style="margin:0 0 8px"><b>Getting there.</b> ' + ad.get + '</div>' : '')
+          + '<ul class="notes">' + notes + '</ul></div></div>';
+      }).join('') + '</div>';
+    }).join('');
   }
 
   // ---- 2e: suggest something ----
@@ -1634,75 +1802,75 @@
   // is described by category rather than named.
   var PICKS = {
     eat: [
-      { n:'Gudeg Yu Djum, Wijilan', t:'traditional Javanese', day:'Day 2, lunch',
+      { n:'Gudeg Yu Djum, Wijilan', t:'traditional Javanese', k:'food', day:'Day 2, lunch',
         srcs:[['TripAdvisor',4.3,2140],['Trip.com',4.4,610],['Google Places',4.4,18900]], red:9800,
         good:['Gudeg the city is actually known for','Open early, good before a temple run','Takeaway tins travel home'],
         watch:['Sweet, much sweeter than visitors expect','Queues at 12:00','Cash preferred'] },
-      { n:'Bu Ageng', t:'modern Javanese', day:'Day 4, dinner',
+      { n:'Bu Ageng', t:'modern Javanese', k:'food', day:'Day 4, dinner',
         srcs:[['TripAdvisor',4.5,890],['Trip.com',4.3,210],['Google Places',4.6,6400]], red:4100,
         good:['Old recipes, done carefully','Small room, good for four','Vegetarian options that are not an afterthought'],
         watch:['Book ahead at weekends','Closed one day a week, check first'] },
-      { n:'Angkringan carts, Jalan Wongsodirjan', t:'street food', day:'Day 1, night',
+      { n:'Angkringan carts, Jalan Wongsodirjan', t:'street food', k:'street', day:'Day 1, night',
         srcs:[['TripAdvisor',4.2,1360],['Trip.com',4.1,300],['Google Places',4.5,22400]], red:26500,
         good:['Nasi kucing at a few ringgit a portion','Kopi joss, coffee with hot charcoal dropped in','Open until very late'],
         watch:['Sit down before you order, prices are per item','Busiest after 21:00'] },
-      { n:'Restaurants on the Malioboro strip', t:'tourist strip', day:'Day 1, evening',
+      { n:'Restaurants on the Malioboro strip', t:'tourist strip', k:'street', day:'Day 1, evening',
         srcs:[['TripAdvisor',3.4,7600],['Trip.com',3.7,1800],['Google Places',4.1,54000]], red:41000,
         good:['Convenient, English menus, air conditioning'],
         watch:['Most reviewed and worst rated of anything here','Pricing is the commonest complaint','The same dishes are half the price one street back'] },
-      { n:'Hotel breakfast buffet', t:'convenience', day:'every morning',
+      { n:'Hotel breakfast buffet', t:'convenience', k:'hotel', day:'every morning',
         srcs:[['TripAdvisor',3.1,220],['Trip.com',3.3,90],['Google Places',3.6,1100]], red:600,
         good:['It is included and it is there'],
         watch:['Fixed and dull','You are in a city that eats well for almost nothing'] }
     ],
     shop: [
-      { n:'Beringharjo Market', t:'traditional market', day:'Day 4, afternoon',
+      { n:'Beringharjo Market', t:'traditional market', k:'market', day:'Day 4, afternoon',
         srcs:[['TripAdvisor',4.2,3180],['Trip.com',4.4,890],['Google Places',4.5,41200]], red:15200,
         good:['Batik by the metre and ready-made','Spices, dried goods, palm sugar','Wayang puppets upstairs'],
         watch:['Upper floor is quieter and cheaper','Opening quote is roughly double','Cash only in most stalls'] },
-      { n:'Kotagede silver quarter', t:'craft district', day:'Day 4, morning',
+      { n:'Kotagede silver quarter', t:'craft district', k:'craft', day:'Day 4, morning',
         srcs:[['TripAdvisor',4.5,760],['Trip.com',4.3,140],['Google Places',4.6,5900]], red:3300,
         good:['Filigree work, bought at the workshop','Watch the silversmiths before buying','Certificates for higher-value pieces'],
         watch:['Small sample on Trip.com','Some workshops close on Sunday','Weigh-priced items should be weighed in front of you'] },
-      { n:'Pathok bakpia street', t:'food street', day:'Day 5, morning',
+      { n:'Pathok bakpia street', t:'food street', k:'food', day:'Day 5, morning',
         srcs:[['TripAdvisor',4.1,410],['Trip.com',4.2,220],['Google Places',4.4,12400]], red:7700,
         good:['Bakpia straight from the oven','Boxes sealed for the flight home','Free samples at most bakeries'],
         watch:['Numbered brands, not all equal','Two-day shelf life on the fresh ones','Airport branches cost roughly triple'] },
-      { n:'Malioboro Street stalls', t:'tourist strip', day:'Day 1, evening',
+      { n:'Malioboro Street stalls', t:'tourist strip', k:'street', day:'Day 1, evening',
         srcs:[['TripAdvisor',3.6,9400],['Trip.com',3.9,2100],['Google Places',4.3,98000]], red:88000,
         good:['Open late, right by the hotel','Fine for magnets and t-shirts','Good for a walk, less for a purchase'],
         watch:['Highest attention, lowest score','Pricing complaints dominate the negative reviews','The same batik is 2 to 3x cheaper in Beringharjo'] },
-      { n:'Souvenir shops on an attraction approach road', t:'attraction gate', day:'Day 3, evening',
+      { n:'Souvenir shops on an attraction approach road', t:'attraction gate', k:'market', day:'Day 3, evening',
         srcs:[['TripAdvisor',2.4,880],['Trip.com',2.8,190],['Google Places',3.4,4100]], red:900,
         good:['Convenient if you forgot something'],
         watch:['Aggressive pricing is the commonest complaint','No fixed prices displayed','A captive audience leaving the temple'] },
-      { n:'Hotel gift shop and airport retail', t:'convenience', day:'any',
+      { n:'Hotel gift shop and airport retail', t:'convenience', k:'hotel', day:'any',
         srcs:[['TripAdvisor',2.9,140],['Trip.com',3.1,60],['Google Places',3.6,900]], red:400,
         good:['Open when nothing else is'],
         watch:['Fixed prices, no bargaining','Roughly triple the market price','Thin selection'] }
     ],
     do: [
-      { n:'Javanese massage and jamu, Prawirotaman', t:'spa', day:'Day 2, afternoon',
+      { n:'Javanese massage and jamu, Prawirotaman', t:'spa', k:'spa', day:'Day 2, afternoon',
         srcs:[['TripAdvisor',4.6,540],['Trip.com',4.4,130],['Google Places',4.7,3900]], red:5600,
         good:['An hour and a half for roughly RM 45','Good on the afternoon after the 04:30 Borobudur start','Jamu, the local herbal drink, usually thrown in'],
         watch:['Book the same morning, small places fill up','Firmer than most visitors expect'] },
-      { n:'Batik workshop, half day', t:'make something', day:'Day 2, afternoon',
+      { n:'Batik workshop, half day', t:'make something', k:'craft', day:'Day 2, afternoon',
         srcs:[['TripAdvisor',4.7,1120],['Trip.com',4.5,240],['Google Places',4.7,4800]], red:12800,
         good:['You draw with wax and dye it yourself','You leave with the thing you made','Better value than buying batik you did not make'],
         watch:['Three to four hours, not one','Wax does not come out of good clothes'] },
-      { n:'Silver-smithing class, Kotagede', t:'make something', day:'Day 4, morning',
+      { n:'Silver-smithing class, Kotagede', t:'make something', k:'craft', day:'Day 4, morning',
         srcs:[['TripAdvisor',4.6,380],['Trip.com',4.2,70],['Google Places',4.6,2100]], red:2400,
         good:['Make a ring or a pendant in about two hours','Pairs with the silver quarter on the same morning'],
         watch:['Small workshops, book ahead','Silver is weighed and charged on top of the class'] },
-      { n:'Merapi jeep tour from Kaliadem', t:'outdoors', day:'Day 3, morning',
+      { n:'Merapi jeep tour from Kaliadem', t:'outdoors', k:'volcano', day:'Day 3, morning',
         srcs:[['TripAdvisor',4.4,5200],['Trip.com',4.3,1400],['Google Places',4.5,29000]], red:34000,
         good:['Lava field, bunker and the summit view','Jeeps take four, which is exactly us'],
         watch:['Runs to 14:30 and eats the afternoon','Cloud usually closes the summit after 10:00','Dusty, take something over your face'] },
-      { n:'Ramayana ballet at Prambanan', t:'performance', day:'Day 3, night',
+      { n:'Ramayana ballet at Prambanan', t:'performance', k:'stage', day:'Day 3, night',
         srcs:[['TripAdvisor',4.5,3100],['Trip.com',4.4,780],['Google Places',4.6,11200]], red:9100,
         good:['Open-air, lit temple behind the stage','Two hours, no language needed'],
         watch:['Open-air season only, indoors in the wet months','Cheapest seats are far back'] },
-      { n:'Tours booked at the hotel desk', t:'convenience', day:'any',
+      { n:'Tours booked at the hotel desk', t:'convenience', k:'hotel', day:'any',
         srcs:[['TripAdvisor',3.2,260],['Trip.com',3.4,110],['Google Places',3.7,1400]], red:500,
         good:['Someone else does the arranging'],
         watch:['The same tour, with a margin on top','Fixed group sizes and fixed timings'] }
@@ -1769,10 +1937,12 @@
       }).join('');
       d.innerHTML =
         '<summary><span class="chev">&#9656;</span>'
+        + '<span class="thumbpic">' + scene(m.k || 'market', idx * 5 + 3) + '</span>'
         + '<span class="lbl"><b>' + (idx + 1) + ' &middot; ' + m.n + '</b>'
         + '<span>' + m.t + ' &middot; ' + m.day + '</span></span>'
         + '<span class="score"><i>' + avg.toFixed(1) + '</i><em>' + verdictWord(v) + '</em></span></summary>'
         + '<div class="accbody">'
+        + '<div class="gallery">' + [0, 1, 2].map(function(g){ return '<div>' + scene(m.k || 'market', idx * 13 + g * 7 + 1) + '</div>'; }).join('') + '</div>'
         + '<ul class="srcs">' + srcRows + '</ul>'
         + buzzRow(m, avg)
         + '<div class="pair"><div><h4>Good for</h4><ul>' + m.good.map(function(g){ return '<li>' + g + '</li>'; }).join('') + '</ul></div>'
