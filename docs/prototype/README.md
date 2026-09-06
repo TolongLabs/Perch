@@ -9,6 +9,7 @@ to run.
 | [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck, six sections: the trip, plan-it-together with dates, slot voting, hotels, a day map and a photo matcher, photo spots, eat-shop-do, cautions and news, and a read-only final plan carrying the Google Maps handoff |
 | [`storybook-a-one-book.html`](storybook-a-one-book.html) | 6 Sept | **Fork draft A.** One book in two states. Voting happens on the book's own pages; finalising re-presents the same object as a flipbook; a closure repairs the page you are reading |
 | [`storybook-b-planner-then-book.html`](storybook-b-planner-then-book.html) | 6 Sept | **Fork draft B.** A planner page the group votes on, then a read-only flipbook generated on finalise. Editing means going back; a closure blocks the reprint until Day 3 is re-settled |
+| [`skeleton-app-flow.html`](skeleton-app-flow.html) | 6 Sept | **Whole-app skeleton, shape B.** Eleven screens from landing to settings, wireframe greys on purpose, with the UX intent and the open questions annotated under each one |
 
 The second one drops what the first one argued for; that is deliberate and unresolved, and the reasoning is in
 [`../decisions/iteration-log.md`](../decisions/iteration-log.md) under 6 September. Neither is the design - screens
@@ -91,4 +92,22 @@ Iteration And Idea Evolution. Neither is the design.
 
 **Note, 6 Sept:** the deployed slide deck has meanwhile grown a read-only final-plan section of its own, which is a
 partial move toward B. Worth weighing when the fork is decided.
+
+## The Skeleton
+
+`skeleton-app-flow.html` is the whole app as structure, not as design. Eleven screens, arrow keys or the rail to move
+between them, every box a placeholder. **The greys are deliberate** - the visual language is not chosen yet, and
+skinning a skeleton before the direction exists means building it twice.
+
+Its value is the annotations. Each screen carries a **Behaviour** block saying what the screen has to do, and several
+carry an **Open** block naming a question nobody has answered. The three that matter most:
+
+| Screen | The Open Question |
+| ------ | ------------------ |
+| **8, Plan It Together** | If the group settles it in one sitting rather than living there across days, this is interview-part-two with a progress bar and the fork back to A deserves reopening |
+| **10, Something Broke** | A closure needs a rule for who accepts the substitution. Auto-apply with an undo is the only version that demos in one shot |
+| **9, The Storybook** | A real page-flip or a spread that cross-fades. A true flip has to survive the deployed link, the video and demo scale |
+
+**Screen 10 also carries the fix for B's weakest moment.** A one-tap "Use The Bench" straight from the alert skips the
+planner entirely, which gets most of A's immediacy back without giving up the finished book.
 
