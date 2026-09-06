@@ -1,0 +1,61 @@
+:root {
+  --ink: #20242b;
+  --dim: #6b7280;
+  --line: #e3e6ec;
+  --bg: #f4f5f7;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font:
+    15px / 1.6 ui-sans-serif,
+    system-ui,
+    "Segoe UI",
+    Roboto,
+    sans-serif;
+}
+main {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+h1 {
+  font-size: 21px;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+.sub {
+  color: var(--dim);
+  margin: 0 0 28px;
+}
+.card {
+  display: block;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+.card:hover {
+  border-color: #b9c1cf;
+}
+.note {
+  margin-top: 30px;
+  border-left: 3px solid var(--line);
+  padding-left: 14px;
+  color: var(--dim);
+  font-size: 13px;
+}
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px;
+  background: #eceef2;
+  padding: 1px 5px;
+  border-radius: 3px;
+}

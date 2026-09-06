@@ -4,21 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CodeNection 2026 - TolongLabs</title>
-<style>
-  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f4f5f7;
-    font:15px/1.6 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;color:#20242b}
-  main{max-width:520px;padding:40px 28px}
-  h1{font-size:20px;margin:0 0 6px;letter-spacing:-.01em}
-  p{color:#6b7280;margin:0 0 14px}
-  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;background:#eceef2;padding:2px 6px;border-radius:3px}
-</style>
+<link rel="icon" href="assets/mark.svg">
+<link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
 <main>
+  <img src="assets/mark.svg" alt="" width="40" height="40">
   <h1>TolongLabs &middot; CodeNection 2026</h1>
-  <p>Track 1, Lifestyle &amp; Personal Productivity. The prototype is not published here yet.</p>
-  <p>This page exists to prove the deploy pipeline works. Anything committed to <code>public/</code> on the default
-  branch is built and served from Cloud Run automatically, whichever teammate pushed it.</p>
+  <p class="sub">Track 1, Lifestyle &amp; Personal Productivity. The prototype is not published here yet.</p>
+
+  <a class="card" href="app/planner.html">Nested page &mdash; deploy smoke test</a>
+
+  <p class="note">This is a placeholder that proves the pipeline. It serves from <code>public/</code> and redeploys on
+  any merge to the default branch, whichever teammate pushed it. <strong>The prototype rebuild replaces everything on
+  this page.</strong></p>
 </main>
 </body>
 </html>
