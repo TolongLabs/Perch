@@ -152,6 +152,30 @@
   .hotelopt .tally{flex:0 0 auto;text-align:center;font-size:11px;color:var(--dim);min-width:34px}
   .hotelopt .tally i{display:block;font-style:normal;font-size:15px;font-weight:700;color:var(--ink)}
 
+  /* the request box */
+  .ask{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:#f9fbfd;margin-bottom:16px}
+  .asklog{max-height:168px;overflow-y:auto;margin-bottom:10px;display:none}
+  .asklog[data-on]{display:block}
+  .asklog .msg{font-size:13px;padding:7px 11px;border-radius:10px;margin-bottom:7px;max-width:82%}
+  .asklog .me{background:var(--accent);color:#fff;margin-left:auto;border-bottom-right-radius:3px}
+  .asklog .bot{background:#fff;border:1px solid var(--line);border-bottom-left-radius:3px}
+  .asklog .bot b{color:var(--ink)}
+  .askrow{display:flex;gap:8px}
+  .askrow input{flex:1;font:inherit;font-size:13px;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff}
+  .askeg{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+  .askeg button{font:inherit;font-size:11.5px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--dim);cursor:pointer}
+  .askeg button:hover{border-color:var(--accent);color:var(--accent)}
+  .askfoot{margin:10px 0 0;font-size:11.5px;color:var(--dim)}
+  .kgold{color:#8a6d1a;font-weight:600}
+  .kchrome{color:#4b5563;font-weight:600}
+
+  /* the two edges */
+  .optrow.gold{border-color:transparent;background-image:linear-gradient(#fffdf5,#fffdf5),linear-gradient(115deg,#d4a017,#fff3c4,#c9971c,#fff8dc,#b8860b);background-origin:border-box;background-clip:padding-box,border-box;border-width:2px;box-shadow:0 1px 8px rgba(200,150,20,.18)}
+  .optrow.chrome{border-color:transparent;background-image:linear-gradient(#fbfcfe,#fbfcfe),linear-gradient(115deg,#9aa3af,#ffffff,#6b7280,#e5e7eb,#9aa3af);background-origin:border-box;background-clip:padding-box,border-box;border-width:2px;box-shadow:0 1px 8px rgba(80,90,110,.16)}
+  .optrow.gold[data-lead],.optrow.chrome[data-lead]{box-shadow:0 1px 8px rgba(21,128,61,.22),inset 0 0 0 99em rgba(220,252,231,.55)}
+  .edge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:middle;font-weight:700;letter-spacing:.02em}
+  .edge.g{background:#fdf3d3;color:#8a6d1a;border:1px solid #e6cf87}
+  .edge.c{background:#eef1f5;color:#4b5563;border:1px solid #cfd6de}
   /* RedNote buzz row, distinct from a star rating */
   .buzz{display:grid;grid-template-columns:110px 1fr 118px;gap:12px;align-items:center;padding:8px 0 2px;margin-top:6px;border-top:1px dashed var(--line);font-size:12px}
   .buzz .lab{color:#c2185b}
@@ -344,6 +368,17 @@
       <div class="datehint" id="datehint"></div>
 
       <h3 class="step">2 &middot; What to do each day</h3>
+
+      <div class="ask">
+        <div class="asklog" id="asklog"></div>
+        <div class="askrow">
+          <input id="askin" placeholder="Ask for something: &ldquo;add a massage on day 2 afternoon&rdquo;">
+          <button class="btn" id="asksend">Ask</button>
+        </div>
+        <div class="askeg" id="askeg"></div>
+        <p class="askfoot">This does not plan anything. It puts what you asked for onto the day as <b>one more option to vote on</b>, so the group still decides. Requests come in with a <span class="kgold">gold edge</span>; things the ratings put near the top come in with a <span class="kchrome">chrome edge</span>.</p>
+      </div>
+
       <div class="daytabs" id="daytabs"></div>
       <div class="slots" id="slots"></div>
       <div class="daymap" id="daymap"></div>
@@ -622,11 +657,13 @@
 
       opts.forEach(function(o, i){
         var b = document.createElement('button');
-        b.className = 'optrow';
+        b.className = 'optrow' + (o.gold ? ' gold' : (o.chrome ? ' chrome' : ''));
         if (!off && i === li) b.setAttribute('data-lead', '');
         if (mine[d + ':' + key] === i) b.setAttribute('data-mine', '');
         if (off || o.fixed) b.disabled = true;
-        b.innerHTML = '<div class="txt"><b>' + o.n + '</b>'
+        var edge = o.gold ? '<span class="edge g">asked for by ' + (o.by || 'the group') + '</span>'
+                          : (o.chrome ? '<span class="edge c">&#9670; top rated</span>' : '');
+        b.innerHTML = '<div class="txt"><b>' + o.n + edge + '</b>'
           + '<span class="hrs">' + fmt(o.s) + ' - ' + fmt(o.e) + (o.fixed ? ' · <span class="fixed">fixed</span>' : '') + '</span>'
           + optChips(o.n) + '</div>'
           + (o.fixed ? '' : '<div class="tally"><i>' + tally(d, key, i) + '</i>of 4</div>');
@@ -695,7 +732,10 @@
     'Last coffee in Prawirotaman':           [-7.818, 110.368],
     'Greenhost Boutique Hotel':              [-7.818, 110.368],
     'Adhisthana Hotel':                      [-7.800, 110.348],
-    'Omah Pari Boutique':                    [-7.819, 110.370]
+    'Omah Pari Boutique':                    [-7.819, 110.370],
+    'Javanese massage and jamu, Prawirotaman': [-7.818, 110.368],
+    'Batik workshop, half day':              [-7.805, 110.362],
+    'Silver-smithing class, Kotagede':        [-7.827, 110.399]
   };
 
   // what to actually search for, when the option name is a sentence
@@ -989,6 +1029,149 @@
       out.innerHTML = html + '</div>';
     };
     fr.readAsArrayBuffer(f.slice(0, 262144));   // EXIF lives at the front
+  });
+
+  // ---- 2e: the request box ----
+  // Deliberately NOT a planning chat. It turns a sentence into one more option on a day,
+  // and the group still votes. Conversational planning is where ChatGPT and TripGenie win;
+  // see ../decisions/storybook-shape.md.
+  var SLOTWORDS = [
+    ['morning',   ['morning', 'sunrise', 'breakfast', 'early']],
+    ['afternoon', ['afternoon', 'lunch', 'midday', 'noon']],
+    ['night',     ['night', 'evening', 'dinner', 'late', 'bar', 'drinks']]
+  ];
+  var SLOTHOURS = { morning: [8.5, 11], afternoon: [14, 16.5], night: [19.5, 22] };
+
+  // things the ratings put near the top get the chrome edge when they are added.
+  // built lazily: PICKS is defined further down the file.
+  var _top = null;
+  function topRated(){
+    if (_top) return _top;
+    _top = {};
+    if (typeof PICKS === 'undefined') return _top;
+    ['eat', 'shop', 'do'].forEach(function(k){
+      (PICKS[k] || []).forEach(function(m){ if (weighted(m.srcs) >= 4.45) _top[m.n.toLowerCase()] = m.n; });
+    });
+    return _top;
+  }
+  function allPicks(){
+    if (typeof PICKS === 'undefined') return [];
+    return ['eat', 'shop', 'do'].reduce(function(acc, k){ return acc.concat(PICKS[k] || []); }, []);
+  }
+
+  function knownPlace(text){
+    var t = text.toLowerCase(), hit = null;
+    function tryList(names){
+      names.forEach(function(n){
+        if (t.indexOf(n.toLowerCase()) >= 0 && (!hit || n.length > hit.length)) hit = n;
+      });
+    }
+    tryList(Object.keys(COORD));
+    tryList(allPicks().map(function(m){ return m.n; }));
+    // a loose match on any distinctive word, so "massage" finds the massage entry.
+    // generic words are excluded or "workshop" would match three different things.
+    var GENERIC = {workshop:1, class:1, tours:1, tour:1, street:1, shops:1, shop:1, market:1,
+                   restaurants:1, hotel:1, stalls:1, quarter:1, buffet:1, carts:1, souvenir:1,
+                   breakfast:1, approach:1, booked:1, desk:1, half:1, road:1, attraction:1};
+    if (!hit){
+      allPicks().forEach(function(m){
+        if (hit) return;
+        m.n.toLowerCase().split(/[^a-z]+/).forEach(function(word){
+          if (!hit && word.length > 4 && !GENERIC[word] && t.indexOf(word) >= 0) hit = m.n;
+        });
+      });
+    }
+    return hit;
+  }
+
+  // does this even read like a request? guards against a stray keypress becoming a stop.
+  var ASKVERB = /(add|put|can we|could we|i want|i'd like|id like|let'?s|please|go to|visit|book|do)/i;
+
+  function parseAsk(text){
+    var t = text.toLowerCase();
+    var dm = t.match(/day\s*(\d)/);
+    var day = dm ? Math.min(DAYS.length, Math.max(1, +dm[1])) - 1 : curDay;
+    var slot = null;
+    SLOTWORDS.forEach(function(pair){
+      pair[1].forEach(function(w){ if (!slot && t.indexOf(w) >= 0) slot = pair[0]; });
+    });
+    var place = knownPlace(text);
+    var custom = false;
+    if (!place){
+      place = text
+        .replace(/\b(add|put|can we|could we|i want|i'd like|id like|lets|let's|please|do|go to|visit|on|for)\b/gi, ' ')
+        .replace(/day\s*\d/gi, ' ')
+        .replace(/\b(morning|afternoon|evening|night|lunch|dinner|breakfast|midday|noon|early|late)\b/gi, ' ')
+        .replace(/\s+/g, ' ').trim();
+      custom = true;
+    }
+    if (!place) return null;
+    // a bare single lowercase word with no request verb is almost certainly a typo, not a place
+    if (custom && !ASKVERB.test(text) && place.indexOf(' ') < 0 && place === place.toLowerCase()) return null;
+    if (custom && place.replace(/[^a-z]/gi, '').length < 3) return null;
+    if (!slot) slot = 'afternoon';
+    return { day: day, slot: slot, place: place.charAt(0).toUpperCase() + place.slice(1), custom: custom };
+  }
+
+  function log(who, html){
+    var box = document.getElementById('asklog');
+    box.setAttribute('data-on', '');
+    var m = document.createElement('div');
+    m.className = 'msg ' + who;
+    m.innerHTML = html;
+    box.appendChild(m);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  function submitAsk(text){
+    text = (text || '').trim();
+    if (!text) return;
+    log('me', text);
+    var r = parseAsk(text);
+    if (!r){
+      log('bot', 'I could not find a place in that. Try naming somewhere, and a day if you have one in mind.');
+      return;
+    }
+    var top = topRated()[r.place.toLowerCase()];
+    var hrs = SLOTHOURS[r.slot];
+    var opt = {
+      n: top || r.place,
+      s: hrs[0], e: hrs[1], v: 0,
+      gold: r.custom || !top,
+      chrome: !!top,
+      by: 'you'
+    };
+    if (opt.chrome) opt.gold = false;
+    DAYS[r.day].slots[r.slot].push(opt);
+    mine[r.day + ':' + r.slot] = DAYS[r.day].slots[r.slot].length - 1;   // your ask is your vote
+    curDay = r.day;
+
+    log('bot', 'Added <b>' + opt.n + '</b> to <b>' + DAYS[r.day].label + ' ' + r.slot + '</b> as an option, '
+      + (opt.chrome ? 'with a chrome edge - the ratings put it near the top.' : 'with a gold edge because you asked for it.')
+      + ' It has your vote. Three others still have to agree.');
+
+    renderDays(); renderSlots();
+  }
+
+  var askIn = document.getElementById('askin');
+  var askSend = document.getElementById('asksend');
+  if (askSend) askSend.addEventListener('click', function(){ submitAsk(askIn.value); askIn.value = ''; });
+  if (askIn) askIn.addEventListener('keydown', function(e){
+    if (e.key === 'Enter'){ submitAsk(askIn.value); askIn.value = ''; }
+  });
+
+  var EGS = [
+    'add a massage on day 2 afternoon',
+    'can we do a batik workshop on day 4 morning',
+    'i want to see the Ramayana ballet on day 5 evening',
+    'add my aunt\u2019s house in Bantul on day 4 afternoon'
+  ];
+  var egHost = document.getElementById('askeg');
+  if (egHost) EGS.forEach(function(t){
+    var b = document.createElement('button');
+    b.textContent = t;
+    b.addEventListener('click', function(){ submitAsk(t); });
+    egHost.appendChild(b);
   });
 
   // ---- 2c: where we sleep ----

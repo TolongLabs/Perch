@@ -45,6 +45,8 @@ is what earns the marks.
 | 2026-09-06 | "The route" deleted as a page and merged into the final plan | It was one button and a stop list, and the list was hardcoded so it ignored every vote | Jin Siang |
 | 2026-09-06 | "Where to shop" became "Eat, shop, do": one page, three tabs, same accordion | Three near-identical pages would be three features; one page with three tabs is one idea | Jin Siang asked which; this is the answer |
 | 2026-09-06 | RedNote added as a source, but kept out of the score | It measures attention, not quality. The gap between the two is the tourist-strip signal, and averaging them destroys it | Building the eat tab |
+| 2026-09-06 | A request box on the planner: ask in a sentence, it becomes one more option to vote on | Asked for as a chatbot. Built as a proposer rather than a planner so the vote stays the mechanism | Jin Siang |
+| 2026-09-06 | Two edges on an option: gold for asked-for, chrome for top-rated | The itinerary never showed why something was on it. Provenance is now visible on the row | Jin Siang |
 
 ## Longer Entries
 
@@ -494,6 +496,43 @@ different thing from inventing one for a street, and the page says this out loud
 **What is on the Do tab.** The massage example from the ask is the first entry, at RM 45 for ninety minutes, placed on
 the Day 2 afternoon after the 04:30 Borobudur start. Then a batik workshop, a silver-smithing class, the Merapi jeep,
 the Ramayana ballet, and hotel-desk tours as the thing to skip.
+
+**Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - A chatbot that is deliberately not a planning chatbot
+
+**Before.** Options appeared on a day because the planner put them there. Nobody could ask for anything, and an option
+carried no record of why it was on the list.
+
+**After.** A request box at the top of step 2. Type a sentence - "add a massage on day 2 afternoon" - and it lands on
+that day as **one more option, carrying your vote, with three people still to convince.**
+
+**The design constraint, and it comes from our own notes.** Hee Zi Jie's
+[`storybook-shape.md`](storybook-shape.md) says the agent belongs on the bench rather than on a chat panel, because
+"conversational planning is where ChatGPT and TripGenie win". The Tier 1 scan in
+[`../market/competitors.md`](../market/competitors.md) says the same thing with numbers: roughly 40% of travellers
+already generate itineraries in a chat window for free.
+
+So this box **does not plan**. It parses a day, a slot and a place, and proposes. The group still votes. That sentence
+is printed under the input so a judge cannot mistake it for a ChatGPT clone. **A planning chat would have been the
+single most replaceable thing in the deck; a proposer that feeds the vote is the one mechanism we still own.**
+
+**The two edges make provenance visible**, which is the part worth keeping.
+
+| Edge | Means | Why it matters |
+| ---- | ----- | -------------- |
+| **Gold** | Somebody asked for this by name | The must-go idea kept from `dropped.md`, finally visible on the row |
+| **Chrome, with a diamond** | The ratings on the eat-shop-do page put it near the top | Ties the two pages together: a 4.45+ weighted score earns the edge automatically |
+
+An option now says why it is on the list, which nothing in the deck did before.
+
+**Three bugs found by driving it headlessly rather than by looking at it.**
+
+| Bug | Fix |
+| --- | --- |
+| The whole box crashed on load - it read the ratings data before that data was defined | The top-rated lookup is built lazily on first use |
+| "add a massage" created a custom gold entry instead of matching the top-rated massage | Matching now checks every distinctive word of a place name, with a stop-list so "workshop" does not match three things |
+| "asdfgh" was accepted and added as a stop on Day 2 | A bare single lowercase word with no request verb is now rejected |
 
 **Live** at https://codenection-travel-planner.vercel.app
 
