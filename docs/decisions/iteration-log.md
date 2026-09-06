@@ -730,3 +730,36 @@ being an overnight.
 
 **Live** at https://codenection-travel-planner.vercel.app
 
+
+### 2026-09-07 - Tripeza was opened, and the bench survived
+
+**The question.** `docs/.alaskantuna-resume.md` carried it as the highest-value unchecked item on the board: our own
+notes called Tripeza "our pages 1 and 2, shipped", and if it kept losing swipes as a backup pool the bench claim - the
+only originality claim still standing after three competitor scans - was gone.
+
+**It does not, and it is further from us than we thought.** Tripeza's site and Google Play listing were read directly.
+Four features: Democratic Destination Voting, AI-Powered Daily Itineraries, Auto-Split Expenses, Shared Trip Notes.
+**The vote is on the destination, not the stops** - "swipe right on destinations your group loves, majority rules" -
+and the AI then generates the day-by-day itinerary with no vote inside it. Losing destinations are never mentioned
+again. Nothing about a closed venue, a cancellation or a mid-trip change.
+
+**The overstatement came from a snippet, and that is the second time.** The mentor-shortlist error was a text export
+discarding cell formatting; this was a search summary compressing "suggests destinations" into "destinations and
+attractions". Both times the summary produced a scarier answer than the source. **Read the source before a claim goes
+in a pitch, including a claim against ourselves.**
+
+**SwipeSights was read at the same time and is now the closest competitor**, which the third pass had it second for.
+It swipes on real places inside a trip, and the favourites become the plan. It also **already computes a weighted
+ranking** - super-likes carry double weight, the algorithm allocates extra time at those places, and premium sells
+vote analytics.
+
+**That is the strongest evidence for the bench found so far, not against it.** A competitor had the group's ranked
+preference order in its hands and spent it on **dwell time**. Nobody spends it on repair. And on disruption its own
+FAQ tells the group to "double-check opening hours closer to your trip date" - the category's closest product handing
+the problem back to the user by hand.
+
+**Neither app was installed.** Both entries now read "site and store listing read directly, app not installed", which
+is weaker than using the product and much stronger than the `[snippet only]` and `[not verified]` labels they carried.
+
+**What changed.** [`../market/competitors.md`](../market/competitors.md) - both entries rewritten, and a fourth-pass
+verdict added. **Troupe is now the most important unchecked product.**

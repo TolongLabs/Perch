@@ -143,37 +143,76 @@ was written, and Tier 1 strengthens it rather than weakening it.
 This pass searched for the *behaviour* - vote on attractions, then generate the trip, then handle it breaking - rather
 than for product categories. **It found closer competitors than either earlier pass.**
 
-## Tripeza  -  the closest thing found to our idea
+## Tripeza  -  checked directly, and it is further from us than the third pass thought
 
-|                   |                                                    |
-| ----------------- | -------------------------------------------------- |
-| **Link**          | https://tripeza.in/                                |
-| **Checked**       | 2026-09-06, search summaries `[snippet only]`      |
-| **Tagline**       | "Your Group Trip on Autopilot"                     |
+|                  |                                                                        |
+| ---------------- | ---------------------------------------------------------------------- |
+| **Link**         | https://tripeza.in/ , plus Google Play `com.tripeza.app`               |
+| **Checked**      | 2026-09-07, **site and store listing read directly. App not installed** |
+| **Tagline**      | "Your Group Trip on Autopilot"                                         |
+| **Distribution** | Mobile only, App Store and Google Play. Live, not a waitlist           |
 
-**What it does.** Positions itself against exactly our competitor: it replaces "messy WhatsApp arguments and Excel
-sheets with a clean, democratic, and fast way to plan adventures together". Group enters budget and vibe; the app
-suggests destinations **and attractions**; the group **swipes and votes**; "once votes are in, the destination is
-locked". AI then generates a day-by-day itinerary tailored to the group's budget. Plus expense splitting.
+**Four named features, and that is the whole product:** Democratic Destination Voting, AI-Powered Daily Itineraries,
+Auto-Split Expenses, and Shared Trip Notes for flight details, Airbnb links and packing lists.
 
-**Why this matters to us.** That is our page 2 and our page 1, shipped, with the same enemy named in the same words.
-**The group-vote half of our idea is not novel.** What is not described anywhere in what was found: a ranked bench of
-losing options, or anything happening when a stop closes.
+**The correction that matters. Tripeza votes on the destination, not on the stops.** The third pass, working from
+search summaries, recorded that it "suggests destinations **and attractions**" and called it "our page 2 and our page
+1, shipped". Read directly, the vote is "Swipe right on destinations your group loves. Majority rules", after which
+**the AI generates the day-by-day itinerary unvoted**. The group picks the city; the machine picks everything inside
+it. That is our page 1 with a swipe on it. **It is not our page 2 at all**, because in ours the vote is what produces
+the stops.
 
-**`[not verified]`** - the product page has not been opened. **This is now the most important unchecked item on the
-branch**, ahead of Troupe.
+**On the two things we care about, both answers are no.**
+
+| Question                                    | Answer                                                                |
+| ------------------------------------------- | --------------------------------------------------------------------- |
+| Are losing swipes kept anywhere - shortlist, backup pool, ranked alternates? | **Nothing.** "Majority rules", "the best destination winning fair and square". Losers are never mentioned again |
+| Anything when a place closes, or mid-trip?  | **Nothing.** No re-planning, substitution or contingency on either page |
+
+**Why this matters to us.** The bench claim survives its most dangerous challenger. And the sentence in the previous
+entry - "our pages 1 and 2, shipped" - **was an overstatement produced by a snippet**, which is the second time on this
+branch that reading formatting-poor summaries has produced a scarier answer than reading the source. Say "Tripeza
+swipes on where to go" in the pitch, not "Tripeza does what we do".
 
 ---
 
-## SwipeSights
+## SwipeSights  -  the closest competitor found, now that Tripeza has been read
 
-| | |
-| --- | --- |
-| **Link** | https://swipesights.com/ |
-| **Checked** | 2026-09-06 `[snippet only]` |
+|                  |                                                                        |
+| ---------------- | ---------------------------------------------------------------------- |
+| **Link**         | https://swipesights.com/ , plus App Store `id6761259466`               |
+| **Checked**      | 2026-09-07, **site and store listing read directly. App not installed** |
+| **Tagline**      | "Plan Group Trips by Swiping. Free Itinerary Maker."                    |
+| **Distribution** | iOS app plus web. Flights and eSIMs marked coming soon                  |
 
-"Plan Group Trips by Swiping. Free Itinerary Maker." Same mechanism as Tripeza. Also publishes its own comparison of
-group trip planners, which is a fast way to find the rest of this category.
+**This, not Tripeza, is the product that overlaps our page 2.** The swipe is on the actual places inside a trip, and
+the vote is what builds the itinerary: "Swipe right on the places you love, left on the ones you don't. **Your
+favorites become the plan**, ordered into a smart day by day route with opening hours and travel time built in."
+
+**It already ships a weighted ranking, which is closer to the bench than anything else found.** Everyone swipes the
+same attractions, right for yes, left for skip, **up for must-see, with super-likes carrying double weight and the
+algorithm allocating extra time at those places**. Premium adds **vote analytics**. So the group's preference order
+exists, is computed, and is shown back to them.
+
+**And it still does not have a bench, because the ranking is spent on the wrong problem.** The order decides **how
+long you stay** at the places that won. It is never held as a pool of pre-approved substitutes, and the left swipes are
+discarded rather than benched - the description contrasts the loved against "the ones you don't", and only favourites
+become the plan.
+
+**On disruption it is not just silent, it hands us the quote.** Opening hours are built into the route at planning
+time, which is prevention, not repair. Its own FAQ tells the group to "double-check opening hours closer to your trip
+date" - **the closest competitor in the category telling users to handle the disruption case by hand.**
+
+**Everything else it does**, so nobody pitches a feature it already has: live map of nearby places, events and
+nightlife, TikTok and Instagram spot import, instant itinerary from one sentence or a pasted group chat, multi-city
+trips with per-city routed days, hotel, restaurant, tour and attraction-ticket booking, Collections of saved places,
+bill splitting, opt-in live group location, PDF and calendar export, group concierge for non-trip decisions, hosted
+local events, and one-payer-covers-the-group premium.
+
+**Why this matters to us.** Two things. **The instant itinerary from a pasted group chat is the strongest single
+feature in this file** and it is aimed at the same enemy as our front door. And **a competitor computing a ranked
+preference order and not using it for repair is the best possible evidence** that the bench is a real idea rather than
+an obvious one: they had the ranking in their hands and spent it on dwell time.
 
 ---
 
@@ -240,6 +279,33 @@ articles tell groups to build backup options **by hand**.
 **So the claim narrows again, and lands where the verdict already put it.** Not voting. Not visualisation. **The bench:
 that the vote leaves behind a ranked, pre-approved set of replacements, and that the itinerary uses them by itself when
 something breaks.**
+
+---
+
+## What The Fourth Pass Establishes  -  2026-09-07
+
+**The third pass named Tripeza "the most important unchecked item on the branch". It has now been checked, and so has
+SwipeSights.** Neither app was installed; both the marketing site and the store listing were read directly for each,
+which is a weaker claim than using the product and a much stronger one than the `[snippet only]` label they carried.
+
+**The bench survives, and it survives the hard way.** Not because nobody in the category collects preferences -
+SwipeSights computes a weighted ranking, sells the analytics for it, and lets a super-like buy extra time at a place -
+but because **nobody spends that ranking on repair**. The order decides dwell time and nothing else. Losing swipes are
+discarded in both products.
+
+**The disruption half is now empty by direct reading rather than by absence of search results**, which is the stronger
+form of the finding. Tripeza says nothing about it. SwipeSights builds opening hours into the route at planning time
+and then tells the group, in its own FAQ, to "double-check opening hours closer to your trip date".
+
+**Two things changed in the pitch as a result.**
+
+- **Stop saying Tripeza ships our pages 1 and 2.** It votes on the destination, then generates the stops unvoted. A
+  judge who opens it will find a weaker competitor than our own notes claimed, and overstating a rival is its own kind
+  of error
+- **SwipeSights replaces it as the product to name.** If a judge asks what is closest, the honest answer is
+  SwipeSights, and the honest follow-up is that it had the ranking and used it for dwell time
+
+**The most important unchecked item is now Troupe**, which the third pass already put second.
 
 ---
 
