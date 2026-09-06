@@ -43,6 +43,8 @@ is what earns the marks.
 | 2026-09-06 | A "what to expect" strip per day: a drawn view, what you will see, and the light window | The plan said where and when but never what it would look like when you got there | Jin Siang |
 | 2026-09-06 | A photo matcher that reads EXIF in the browser and names the stop, the bearing and the shot | Asked for; and it is the first feature in the mockup that genuinely works rather than being drawn | Jin Siang |
 | 2026-09-06 | "The route" deleted as a page and merged into the final plan | It was one button and a stop list, and the list was hardcoded so it ignored every vote | Jin Siang |
+| 2026-09-06 | "Where to shop" became "Eat, shop, do": one page, three tabs, same accordion | Three near-identical pages would be three features; one page with three tabs is one idea | Jin Siang asked which; this is the answer |
+| 2026-09-06 | RedNote added as a source, but kept out of the score | It measures attention, not quality. The gap between the two is the tourist-strip signal, and averaging them destroys it | Building the eat tab |
 
 ## Longer Entries
 
@@ -458,6 +460,40 @@ and points at the per-day link as the complete one, rather than quietly truncati
 **What this leaves.** Six pages: the trip, plan it together, photo spots, where to shop, take care, the final plan.
 **Photo spots is now the weakest of them** and does less than the "what to expect" strip on page 2 already does. That
 question is still open from the last change.
+
+**Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - Three questions, one page, and what RedNote is actually for
+
+**The question asked.** Should "where to eat" be its own page or a section of plan-it-together? And then the same for
+"what to do".
+
+**The answer, and it is neither.** Three near-identical accordions as three pages is three features, and the verdict
+in [`build-verdict.md`](build-verdict.md) already established that breadth of features is a liability under this
+rubric. Plan-it-together is the wrong home too - it already carries dates, slots, hotels, a day map, an expect strip
+and the photo matcher, and burying the vote under three more accordions would hide the only claim we have left.
+
+So: **one page, three tabs.** "Where to shop" became **"Eat, shop, do"** - the same component asking the same question
+three times. Six pages, unchanged. The gift list stays as the last drawer under Shop, where it belongs.
+
+**RedNote went in, and how it went in is the interesting part.** Xiaohongshu has no star rating; it has posts. Averaging
+a post count into a star score would be nonsense, so it sits on its own row, in its own colour, **explicitly outside
+the score**, with the line "attention only, it does not move the score".
+
+**And then the gap does the work.** When a place is heavily posted about and rated under 4.0, the row turns amber and
+says so: *"Heavily posted about and only 4.0 rated. That gap is what a tourist strip looks like."* Malioboro shop
+stalls have 88,000 posts and a 4.0. The Malioboro restaurant strip has 41,000 and a 3.8. **That is the product in one
+line**, and it only exists because the two numbers were kept apart. This also sharpens the competitor argument in
+`../market/landscape.md`: Xiaohongshu is where the trip starts, and it is inspiration rather than judgement.
+
+**One rule set while writing the data.** Named real businesses appear **only** where the verdict is positive. Anything
+we would tell a traveller to skip is described by category - "restaurants on the Malioboro strip", "tours booked at the
+hotel desk", "souvenir shops on an attraction approach road". Inventing a 2.4 rating for a real named restaurant is a
+different thing from inventing one for a street, and the page says this out loud.
+
+**What is on the Do tab.** The massage example from the ask is the first entry, at RM 45 for ninety minutes, placed on
+the Day 2 afternoon after the 04:30 Borobudur start. Then a batik workshop, a silver-smithing class, the Merapi jeep,
+the Ramayana ballet, and hotel-desk tours as the thing to skip.
 
 **Live** at https://codenection-travel-planner.vercel.app
 
