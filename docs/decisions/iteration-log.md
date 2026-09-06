@@ -17,6 +17,8 @@ is what earns the marks.
 | 2026-09-02 | Votes became a draft with an explicit Apply step                             | Live re-planning on every toggle made the trip feel unstable while the group was deciding | Jin Siang                                       |
 | 2026-09-04 | Travel-planner notes moved here; the other `playground` ideas stayed put     | Those ideas predate the 30 Aug problem-statement release and cannot be entered as ours    | Workspace audit                                 |
 | 2026-09-06 | A second mockup: a slide-deck layout with five sections, and the map handed to Google Maps | The custom map was the biggest cost and the least novel part; a deck with pages reads faster in a demo | Jin Siang, `../inbox/2026-09-06-slides-prototype-dump.md` |
+| 2026-09-06 | The round-trip differentiator stopped being "nobody does this" and became a much thinner claim | Contour ships a loop that goes out one way and back another; calimoto makes the loop a set of controls | International scan, `../market/deck-scan.md` |
+| 2026-09-06 | Photo spots demoted from feature to nice-to-have; never to be pitched as novel | It is a whole product category - Locationscout has 233,000 spots, PhotoHound gives angle, time and gear | Same scan |
 
 ## Longer Entries
 
@@ -102,4 +104,38 @@ news page gestures at disruption but a person updates it by hand; nothing re-pla
 and photo angles, are not in the brief's four capabilities and neither has a data source yet. If this layout is the
 one we keep, Originality (7%) needs the round-trip choice put back on the trip page, and the news page needs to do
 something to the itinerary rather than sit beside it. Not resolved today; both mockups stay.
+
+### 2026-09-06 - The international scan, and what it took away
+
+**Before.** One originality claim survived the 1 September competitor scan: nobody treats the shape of a same-airport
+round trip as the traveller's decision. The slide-deck mockup then added photo spots, cultural cautions and a news feed
+on the assumption that those were open ground.
+
+**After.** A second scan, this time looking internationally and at Japan specifically, and searching for *route*
+planners rather than only *trip* planners. Four of the five new pages are occupied, and the round-trip claim is
+damaged. Full detail in `../market/deck-scan.md`.
+
+- **Contour** plans a loop that "goes out on good roads and comes back on different ones, sized to the time you have".
+  Read directly. That is our sentence, shipped
+- **calimoto** already exposes the round trip as controls: distance, one of eight compass directions, road character
+- **Photo spots are a category**, not a feature. Locationscout lists 233,000+ spots across 184+ countries; PhotoHound
+  gives the angle, the time, the gear and the weather, and builds itineraries from spots
+- **Cautions and destination news are two mature categories.** Sitata alerts against your exact itinerary; for Japan
+  the Tourism Agency itself ships a free 14-language disaster-alert app
+- **The poster-deck format is a B2B genre** - Travefy, Axus, Vamoos sell exactly that to travel agents
+
+**Why.** Asked for a deep search before any of this got pitched. The first scan searched the wrong category name.
+
+**What we gave up by doing this.** The clean version of the originality pitch. What is left is narrower and true:
+route planners vary the return leg for drivers, but no multi-day trip planner puts the shape of the round trip to the
+travellers as a decision and then plans places, budget and a group vote around the answer. That sentence must be said
+in full. Compressed to "nobody does this", it is now false, and a judge who finds Contour stops believing the rest.
+
+**What this hands us instead.** Two seams the scan could not fill. Nothing found attaches a cultural caution to the
+**stop it applies to** inside an itinerary. And Sitata proves the valuable version of our news page is the
+itinerary-aware one - which is what the map-first mockup already does with the bench, and what the deck mockup dropped.
+That is now an argument for merging the two mockups rather than choosing between them.
+
+**Still open.** `Troupe` ships polls with **ranked voting** for group trips and has not been read directly. Our ranked
+bench is claimed as novel and that claim is `[not verified]` until someone opens Troupe.
 

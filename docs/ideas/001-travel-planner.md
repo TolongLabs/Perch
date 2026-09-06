@@ -37,14 +37,28 @@ itinerary does not.
 
 ## What Makes It Different
 
-One thing survived the competitor scan (see `../market/`): **nobody offers the shape of a same-airport round trip as a
-choice.** Go out and retrace the last leg, or reach the furthest point at the halfway mark and come back a different
-way. Furkot supports loops, Roadtrippers has a start and a destination, optimisers hold the endpoints fixed and reorder
-the middle. None of them ask.
+**Corrected 2026-09-06 and weaker than it was.** The 1 September scan concluded "nobody offers the shape of a
+same-airport round trip as a choice". A second scan looking internationally found two products that do something very
+close, both filed as *route* planners rather than *trip* planners: **Contour** plans a loop that "goes out on good
+roads and comes back on different ones, sized to the time you have", and **calimoto** exposes the loop as controls for
+distance, compass direction and road character. See `../market/deck-scan.md`.
+
+What honestly survives, and it has to be said in full rather than compressed:
+
+> Route planners already vary the return leg for drivers. **No multi-day trip planner puts the shape of the round trip
+> to the travellers as a decision** - retrace, or go out and come back a different way - **and then plans places,
+> budget and a group vote around the answer.**
+
+Furkot supports loops, Roadtrippers only closes them by adding the start as the final stop, and optimisers hold the
+endpoints fixed and reorder the middle. None of those ask. But "nobody does this" is now false and must not be said.
 
 Secondary, and weaker because it is a well-trodden mechanism: voting produces the plan, the cut list when over budget,
 **and** the pre-approved replacement when something breaks. One mechanism doing three jobs is a cleaner story than
 three features.
+
+**This is now the stronger of the two claims**, since the round-trip one lost ground on 6 September. It carries its own
+`[not verified]` though: **Troupe** ships polls with ranked voting for group trips and nobody has opened it. Read it
+before the ranked bench is pitched as ours.
 
 ## The Honest Reason This Might Fail
 
@@ -55,6 +69,15 @@ mentioned.
 
 The second risk is the Deployment Phase. Attracting real public users in October needs real place data and metered map
 APIs. The mockup avoids this with invented sample data; a deployed build cannot.
+
+**Partly answered 2026-09-06.** The slide-deck mockup hands the map to Google Maps with a plain directions URL, which
+needs no key and works today. That removes the metered map API from the critical path. Real *place* data is still
+unsolved.
+
+**A third risk, found 2026-09-06.** The slide-deck mockup added photo spots, cultural cautions and a destination news
+feed. All three are occupied by mature categories - Locationscout and PhotoHound for spots, Sitata and the Japan
+Tourism Agency's own free app for alerts. Pitching any of them as a novel feature is the fastest way to lose
+Originality. `../market/deck-scan.md` has the detail.
 
 ## Could We Build It
 

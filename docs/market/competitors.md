@@ -112,6 +112,62 @@ planner must produce something before anyone is asked to do anything.
 
 ---
 
+## Contour  -  the one that hurts
+
+|                   |                                                                    |
+| ----------------- | ------------------------------------------------------------------ |
+| **Link**          | https://contourmaps.app/route-planner                              |
+| **Checked**       | 2026-09-06, **page read directly**                                 |
+| **Who it is for** | Drivers planning a scenic drive, Australia-focused                 |
+
+**What it does well.** This, in their own words:
+
+> "Set the destination the same as the origin and Contour plans a loop - a round trip that goes out on good roads and
+> comes back on different ones, sized to the time you have."
+
+**That is our differentiator, shipped.** Out one way, back another, and sized to a time budget - which is also Furkot's
+trick. The 1 September scan missed it because it searched for trip planners, and Contour files itself under route
+planners.
+
+**What it does not do.** It **decides** the shape; it does not offer the traveller a choice between named strategies.
+There is no group, no vote, no budget for the trip as a whole, no places-and-appeal layer - it optimises roads, not a
+holiday. Whether the return leg is presented as a decision or just happens is `[not verified]`; only the marketing
+sentence above was read.
+
+**Why this matters to us.** Our claim can no longer be "nobody does this". At best it is now "nobody offers it as the
+traveller's choice, and nobody does it for a multi-day group trip with places and a budget". That is a much thinner
+claim and it must be said in exactly those words, because a judge who finds Contour after hearing "nobody does this"
+stops believing the rest of the pitch.
+
+---
+
+## calimoto
+
+|                   |                                                                    |
+| ----------------- | ------------------------------------------------------------------ |
+| **Link**          | https://support.calimoto.com/hc/en-us/articles/7989918956572-How-Do-I-Plan-a-Round-Trip |
+| **Checked**       | 2026-09-06, via search summaries `[snippet only]`                  |
+| **Who it is for** | Motorcyclists                                                      |
+
+**What it does well.** A round-trip generator where the rider picks a distance from 30 to 300 miles, a compass
+direction out of eight (or lets the app choose), and a routing profile such as winding or twisty. Re-running the same
+distance and direction gives different loops rather than the same ride.
+
+**Why this matters to us.** **The round trip is already a set of user-facing controls here**, not a routing artefact.
+The controls are distance, direction and road character rather than trip shape, and there is no group or itinerary -
+but "the loop is something the user configures" is demonstrably not a new idea.
+
+---
+
+## Roadtrippers, revisited
+
+**Checked again 2026-09-06.** Roadtrippers has a **"Make Round Trip"** feature that adds the starting point as the
+final destination `[snippet only, the support page returned 403]`. That is the weak version - it closes the loop and
+retraces; it does not choose a different return. **This one does not damage our claim**, and the 1 September entry
+above stands.
+
+---
+
 ## The academic position
 
 Our routing is not novel and should not be claimed as such. It is the **Tourist Trip Design Problem**, a documented
