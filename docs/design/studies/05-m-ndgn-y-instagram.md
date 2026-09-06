@@ -290,6 +290,19 @@ approach reads as fresh to an audience of designers, not only to us:
 The single best performer is the Apollo build at **6,293 likes**, and the format's origin post - the one carrying the
 four prompt rules - is second at **2,748**.
 
-**Nothing here is from the pinned comments**, where she puts the actual prompts. Several captions
-say「使ったプロンプトは固定コメントへ」 and one notes an English prompt is there too. **Those prompts are the most
-valuable unread thing about this account**, and reading them is a follow-up worth doing before the rebuild starts.
+**The prompts she points at are not there, and this was chased to the end.** Eleven captions
+say「使ったプロンプトは固定コメントへ」 - _the prompt I used is in the pinned comment_ - and the Kinoko no Yama post
+adds「English prompt is also in the pinned comment!」
+
+**Three things were tried and all three came back empty.** The posts were opened logged in and the comment pane scrolled
+to the end; every comment authored by her was extracted from the DOM; and finally the account owner checked the three
+highest-value posts in the mobile app directly, where pinned comments do surface. **Instagram's desktop web does not
+expose pinned comments at all, and in the app there is no prompt comment to find.**
+
+**So the promised prompts are unavailable rather than merely unread**, and this study should not be read as carrying a
+gap waiting to be filled. Whether she removed them, moved them behind the link in her bio, or never posted them is
+unknown and not worth more time.
+
+**It costs us less than it looks.** The origin post states the four-rule architecture in the caption itself, in her own
+words, and the Apollo post lists the six extracted characteristics verbatim. **The method is fully recorded above from
+the captions; only her literal working text is missing**, and a prompt written from the four rules does the same job.
