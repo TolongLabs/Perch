@@ -135,7 +135,7 @@ cancelled for haze, Prambanan was your number two for that slot, and the day sta
 
 ---
 
-## The Fork, Unresolved
+## The Fork, Resolved On 6 September: B
 
 Both branches start identically - interview, then generate. They differ in what you land on.
 
@@ -165,3 +165,31 @@ finished things, and that is a real product idea rather than a concession.
 
 **How this gets decided:** two draft prototypes, built to be looked at side by side and then thrown away or promoted.
 Recorded here before they exist so the decision is legible afterwards.
+
+---
+
+## Resolved: B, And Why
+
+**Decided 2026-09-06** by Hee Zi Jie, after looking at both drafts.
+
+**What settled it was a question about A, not about B.** Asked whether B's planner page was "basically part of the
+interview steps", and it is - a bounded set of decisions with a progress meter that unlocks the next thing is the same
+machine as a five-question interview, only chunkier. Followed through, that says B's planner and B's interview are one
+object, and B collapses into A.
+
+**B was chosen anyway, and the collapse is the reason it has to earn its separation.** The planner is only a different
+thing from the interview if it is a **durable shared surface the group lives in over days** - votes landing Tuesday and
+Thursday, people wandering in and out, notifications - rather than a screen passed through on the way to the book. That
+is now a requirement of the design rather than an open question about it.
+
+**What B costs us, recorded honestly.** The repair no longer happens where the user is. When a stop closes, the book
+cannot reprint until the group re-settles that day, and draft B makes those four steps visible on purpose. That is a
+weaker demonstration of "the itinerary repairs itself" than A gave, and the video has to work harder to sell the claim.
+
+**What B buys.** The book is a finished thing, which is what makes it a keepsake worth sharing after the trip, and each
+surface does one job. A flipbook never has to host a voting widget.
+
+**A third shape was raised and not taken.** No boundary at all: New Storybook opens a nearly blank book, early questions
+are big and fast, they narrow into slot votes as it fills, and it stops asking when it is full. Rejected for the
+prototype because with no boundary nobody can tell when they are done, and a judge watching a four-minute video cannot
+tell what they are looking at. Kept here because it is a real shape and may be right later.

@@ -48,3 +48,36 @@ into.
 2. **The principle.** The planner proposes a complete trip first; the group only ever reacts. That now shapes the whole
    group flow - shortlist, vote, bench - and it is why the pitch line changed from _"we divide the planning"_ to
    **"we plan it, you veto it."**
+
+---
+
+## One book in two states - the storybook as its own working surface
+
+**Explored:** 2026-09-06 · **Built:** [`../prototype/storybook-a-one-book.html`](../prototype/storybook-a-one-book.html)
+· **Fuller working note:** [`storybook-shape.md`](storybook-shape.md)
+
+**What it was.** One object, two presentations. The storybook existed from the moment the trip was generated, in a
+drafting state: a plain scrolling surface where each day was three slots, the group voted on the book's own pages, and
+the losing options sat underneath as the bench. Finalising did not produce a new artifact - it re-presented the same
+object as a flipbook. The bench stayed live underneath, so tapping any stop on a finished page slid its bench up and
+swapped it in one tap, with no edit mode and no new vote.
+
+It was built and working, including the part that mattered most: pressing **Simulate: Merapi Closes** rewrote the page
+being read and the agent explained itself in a sentence - _"Swapped the Merapi jeep tour for the Merapi museum - jeep
+operators are suspended for haze until Sunday, the museum was your number two for that slot, and Day 3 stays at RM 40 a
+head."_
+
+**Why we dropped it.** Not because it was worse at the demo - it was better at the demo. Two things beat it. A flipbook
+is built for reading, and hosting vote widgets and swap menus inside one fights the format; A only avoided that by
+making its drafting state not a flipbook, which quietly reintroduced the two surfaces it claimed to collapse. And the
+book being editable forever means it is never a finished thing, which is exactly what a keepsake has to be.
+
+**What that cost us, and it is not small.** A put the repair where the user already was. B has to narrate _"the
+itinerary repairs itself"_ across four steps and a screen change, and that is the headline claim from
+[`build-verdict.md`](build-verdict.md). **The video now has to carry what the interaction used to show.** Taken
+knowingly.
+
+**What we kept from it.** The bench-slides-up interaction. It moved from the book to the planner rather than dying, so
+"a stop closed" and "I changed my mind" are still one interaction - just one that happens on the planner instead of
+under the reader's thumb.
+

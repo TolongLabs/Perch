@@ -31,6 +31,7 @@ is what earns the marks.
 | 2026-09-06 | "Edit my plan" dropped as a global button; every edit routes through the bench | A generic edit mode is a fight with Wanderlog and Google Docs. It also makes "a stop closed" and "I changed my mind" one interaction |
 | 2026-09-06 | The AI agent moved off the chat panel and onto the bench | Conversational planning is where ChatGPT and TripGenie win. Tool use earns its place on post-to-places, re-derivation and the storybook prose |
 | 2026-09-06 | Social-media reference posts added as a second front door, replacing the empty New Trip state | Xiaohongshu is where the trip actually starts for 18-40s, and nothing found turns a saved post into a plan |
+| 2026-09-06 | Fork resolved: B. The storybook is read-only output; the group decides on a separate planner surface | Both drafts were built and looked at. A demoed the repair better but a flipbook cannot host voting, and a book you can always edit is never a keepsake | Hee Zi Jie, `storybook-shape.md` |
 | 2026-09-06 | "What to do today": three slots a day, group voting, and a long morning that eats the afternoon | The deck had no vote and no bench, which is the only surviving originality claim | Jin Siang, `../inbox/2026-09-06-what-to-do-today-dump.md` |
 | 2026-09-06 | Pages 2 and 3 merged into one "plan it together" page; the Option 1-8 grid dropped | Dates, day slots and the bed are one decision, and the slots had made the placeholder grid redundant | Jin Siang |
 | 2026-09-06 | The hotel became a voted choice like everything else | It is the largest single cost in the trip and was the only thing the group could not vote on | Jin Siang |
@@ -569,4 +570,23 @@ deliberately about checking rather than asserting.
 it up for a vote, and only what wins gets booked. That is the vote staying load-bearing rather than being decorative.
 
 **Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - The fork closed, and what closing it cost
+
+**Before.** Two drafts, deliberately undecided: one book in two states, or a planner that prints a read-only book.
+
+**After.** **B.** The planner is where the group decides; the storybook is output.
+
+**Why, and the reasoning is not the one we expected.** The question that settled it was aimed at A's rival, not at A:
+is B's planner just more interview? It is - a bounded set of decisions with a progress meter is the same machine as a
+five-question interview. That argument says B collapses into A. B was chosen anyway, which means **the planner now has
+to earn its separation by being a durable shared surface the group lives in across days**, not a screen passed through.
+That is a requirement the design has inherited, not a question still open.
+
+**What we gave up by doing this.** The best demonstration we had of the headline claim. In A, a closure rewrote the page
+under the reader. In B it raises an alert and hands back four steps. `dropped.md` records the whole of A rather than
+summarising it, because the interaction may need to come back.
+
+**Still open.** Whether the group actually hangs around in the planner for a week or settles it in one sitting. If it is
+one sitting, B is interview-part-two with a progress bar and the fork deserves reopening.
 
