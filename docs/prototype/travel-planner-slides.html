@@ -176,6 +176,22 @@
   .ctag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:middle;font-weight:700}
   .ctag.must{background:var(--bad-soft);color:#7f1d1d}
   .ctag.auto{background:var(--accent-soft);color:var(--accent)}
+  /* the suggest form */
+  .askhead{margin-bottom:11px}
+  .askhead b{display:block;font-size:14px}
+  .askhead span{font-size:12px;color:var(--dim)}
+  .form{display:grid;grid-template-columns:1.1fr 2fr 1fr 1fr;gap:10px;align-items:end}
+  .f{display:flex;flex-direction:column;gap:4px;min-width:0}
+  .f > span{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--dim)}
+  .f > span em{font-style:normal;text-transform:none;letter-spacing:0;opacity:.75}
+  .f select,.f input{font:inherit;font-size:13px;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:#fff;width:100%}
+  .f-note{grid-column:1 / span 3}
+  .f-go{grid-column:4;height:37px}
+  .askout{margin-top:12px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:13px}
+  .askout.warn{border-color:#e6cf87;background:#fffdf5}
+  .askout b{color:var(--ink)}
+  .askout .why{display:block;font-size:12px;color:var(--dim);margin-top:4px}
+  .optrow .remark{display:block;font-size:11.5px;color:#6b5b23;font-style:italic;margin-top:3px}
   /* the request box */
   .ask{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:#f9fbfd;margin-bottom:16px}
   .asklog{max-height:168px;overflow-y:auto;margin-bottom:10px;display:none}
@@ -312,7 +328,7 @@
   .trustlab{font-size:11px;color:var(--dim);margin-top:4px;display:flex;justify-content:space-between}
   .stopnote{margin-top:22px;padding:14px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;font-size:13px}
   .stopnote b{display:block;margin-bottom:4px}
-  @media (max-width:900px){.hero,.two,.route,.buyhead{grid-template-columns:1fr}.slots,.hotels,.pair{grid-template-columns:1fr}.expect{grid-template-columns:1fr 1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
+  @media (max-width:900px){.hero,.two,.route,.buyhead{grid-template-columns:1fr}.slots,.hotels,.pair{grid-template-columns:1fr}.form{grid-template-columns:1fr 1fr}.f-note,.f-go{grid-column:1 / span 2}.expect{grid-template-columns:1fr 1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
 </style>
 </head>
 <body>
@@ -394,13 +410,35 @@
       <h3 class="step">2 &middot; What to do each day</h3>
 
       <div class="ask">
-        <div class="asklog" id="asklog"></div>
-        <div class="askrow">
-          <input id="askin" placeholder="Ask for something: &ldquo;add a massage on day 2 afternoon&rdquo;">
-          <button class="btn" id="asksend">Ask</button>
+        <div class="askhead"><b>Suggest something</b><span>Anyone can put an idea up. It joins that day as one more option and the group votes on it.</span></div>
+        <div class="form">
+          <label class="f f-type"><span>What kind</span>
+            <select id="f-type">
+              <option value="do">Attraction</option>
+              <option value="eat">Food</option>
+              <option value="shop">Market</option>
+            </select>
+          </label>
+          <label class="f f-name"><span>Name <em>optional</em></span>
+            <input id="f-name" placeholder="Leave empty and we will suggest one">
+          </label>
+          <label class="f f-slot"><span>When</span>
+            <select id="f-slot">
+              <option value="morning">Morning</option>
+              <option value="afternoon" selected>Afternoon</option>
+              <option value="night">Night</option>
+            </select>
+          </label>
+          <label class="f f-day"><span>Which day</span>
+            <select id="f-day"></select>
+          </label>
+          <label class="f f-note"><span>Remarks <em>optional</em></span>
+            <input id="f-note" placeholder="e.g. my sister has been and says go early">
+          </label>
+          <button class="btn f-go" id="f-go">Add to the vote</button>
         </div>
-        <div class="askeg" id="askeg"></div>
-        <p class="askfoot">This does not plan anything. It puts what you asked for onto the day as <b>one more option to vote on</b>, so the group still decides. Requests come in with a <span class="kgold">gold edge</span>; things the ratings put near the top come in with a <span class="kchrome">chrome edge</span>.</p>
+        <div id="askout"></div>
+        <p class="askfoot">Leaving the name empty is the useful case: we pick the highest-rated thing of that kind that is not already on the day, from the ratings on <b>Eat, shop, do</b>. Suggestions come in with a <span class="kchrome">chrome edge</span>, anything you name yourself with a <span class="kgold">gold edge</span>. Either way it still has to win the vote.</p>
       </div>
 
       <div class="daytabs" id="daytabs"></div>
@@ -699,6 +737,7 @@
                           : (o.chrome ? '<span class="edge c">&#9670; top rated</span>' : '');
         b.innerHTML = '<div class="txt"><b>' + o.n + edge + '</b>'
           + '<span class="hrs">' + fmt(o.s) + ' - ' + fmt(o.e) + (o.fixed ? ' · <span class="fixed">fixed</span>' : '') + '</span>'
+          + (o.note ? '<span class="remark">“' + o.note + '”</span>' : '')
           + optChips(o.n) + '</div>'
           + (o.fixed ? '' : '<div class="tally"><i>' + tally(d, key, i) + '</i>of 4</div>');
         if (!o.fixed && !off){
@@ -1151,147 +1190,124 @@
     });
   }
 
-  // ---- 2e: the request box ----
-  // Deliberately NOT a planning chat. It turns a sentence into one more option on a day,
-  // and the group still votes. Conversational planning is where ChatGPT and TripGenie win;
-  // see ../decisions/storybook-shape.md.
-  var SLOTWORDS = [
-    ['morning',   ['morning', 'sunrise', 'breakfast', 'early']],
-    ['afternoon', ['afternoon', 'lunch', 'midday', 'noon']],
-    ['night',     ['night', 'evening', 'dinner', 'late', 'bar', 'drinks']]
-  ];
+  // ---- 2e: suggest something ----
+  // A form, not a chat. Conversational planning is where ChatGPT and TripGenie win
+  // (see ../decisions/storybook-shape.md); a structured suggestion that feeds the vote
+  // is the mechanism we still own, and it cannot misread what someone typed.
   var SLOTHOURS = { morning: [8.5, 11], afternoon: [14, 16.5], night: [19.5, 22] };
+  var KINDWORD = { do: 'attraction', eat: 'place to eat', shop: 'market' };
 
-  // things the ratings put near the top get the chrome edge when they are added.
-  // built lazily: PICKS is defined further down the file.
-  var _top = null;
-  function topRated(){
-    if (_top) return _top;
-    _top = {};
-    if (typeof PICKS === 'undefined') return _top;
-    ['eat', 'shop', 'do'].forEach(function(k){
-      (PICKS[k] || []).forEach(function(m){ if (weighted(m.srcs) >= 4.45) _top[m.n.toLowerCase()] = m.n; });
-    });
-    return _top;
-  }
   function allPicks(){
     if (typeof PICKS === 'undefined') return [];
     return ['eat', 'shop', 'do'].reduce(function(acc, k){ return acc.concat(PICKS[k] || []); }, []);
   }
+  var _top = null;
+  function topRated(){
+    if (_top) return _top;
+    _top = {};
+    allPicks().forEach(function(m){ if (weighted(m.srcs) >= 4.45) _top[m.n.toLowerCase()] = m.n; });
+    return _top;
+  }
 
   function knownPlace(text){
-    var t = text.toLowerCase(), hit = null;
-    function tryList(names){
-      names.forEach(function(n){
-        if (t.indexOf(n.toLowerCase()) >= 0 && (!hit || n.length > hit.length)) hit = n;
-      });
-    }
-    tryList(Object.keys(COORD));
-    tryList(allPicks().map(function(m){ return m.n; }));
-    // a loose match on any distinctive word, so "massage" finds the massage entry.
-    // generic words are excluded or "workshop" would match three different things.
+    var t = (text || '').toLowerCase().trim();
+    if (!t) return null;
+    var hit = null;
+    Object.keys(COORD).concat(allPicks().map(function(m){ return m.n; })).forEach(function(n){
+      if (t.indexOf(n.toLowerCase()) >= 0 && (!hit || n.length > hit.length)) hit = n;
+    });
     var GENERIC = {workshop:1, class:1, tours:1, tour:1, street:1, shops:1, shop:1, market:1,
                    restaurants:1, hotel:1, stalls:1, quarter:1, buffet:1, carts:1, souvenir:1,
                    breakfast:1, approach:1, booked:1, desk:1, half:1, road:1, attraction:1};
-    if (!hit){
-      allPicks().forEach(function(m){
-        if (hit) return;
-        m.n.toLowerCase().split(/[^a-z]+/).forEach(function(word){
-          if (!hit && word.length > 4 && !GENERIC[word] && t.indexOf(word) >= 0) hit = m.n;
-        });
+    if (!hit) allPicks().forEach(function(m){
+      if (hit) return;
+      m.n.toLowerCase().split(/[^a-z]+/).forEach(function(word){
+        if (!hit && word.length > 4 && !GENERIC[word] && t.indexOf(word) >= 0) hit = m.n;
       });
-    }
+    });
     return hit;
   }
 
-  // does this even read like a request? guards against a stray keypress becoming a stop.
-  var ASKVERB = /(add|put|can we|could we|i want|i'd like|id like|let'?s|please|go to|visit|book|do)/i;
-
-  function parseAsk(text){
-    var t = text.toLowerCase();
-    var dm = t.match(/day\s*(\d)/);
-    var day = dm ? Math.min(DAYS.length, Math.max(1, +dm[1])) - 1 : curDay;
-    var slot = null;
-    SLOTWORDS.forEach(function(pair){
-      pair[1].forEach(function(w){ if (!slot && t.indexOf(w) >= 0) slot = pair[0]; });
+  function alreadyOn(day, name){
+    var found = false;
+    ['morning', 'afternoon', 'night'].forEach(function(k){
+      (DAYS[day].slots[k] || []).forEach(function(o){ if (o.n === name) found = true; });
     });
-    var place = knownPlace(text);
-    var custom = false;
-    if (!place){
-      place = text
-        .replace(/\b(add|put|can we|could we|i want|i'd like|id like|lets|let's|please|do|go to|visit|on|for)\b/gi, ' ')
-        .replace(/day\s*\d/gi, ' ')
-        .replace(/\b(morning|afternoon|evening|night|lunch|dinner|breakfast|midday|noon|early|late)\b/gi, ' ')
-        .replace(/\s+/g, ' ').trim();
-      custom = true;
-    }
-    if (!place) return null;
-    // a bare single lowercase word with no request verb is almost certainly a typo, not a place
-    if (custom && !ASKVERB.test(text) && place.indexOf(' ') < 0 && place === place.toLowerCase()) return null;
-    if (custom && place.replace(/[^a-z]/gi, '').length < 3) return null;
-    if (!slot) slot = 'afternoon';
-    return { day: day, slot: slot, place: place.charAt(0).toUpperCase() + place.slice(1), custom: custom };
+    return found;
   }
 
-  function log(who, html){
-    var box = document.getElementById('asklog');
-    box.setAttribute('data-on', '');
-    var m = document.createElement('div');
-    m.className = 'msg ' + who;
-    m.innerHTML = html;
-    box.appendChild(m);
-    box.scrollTop = box.scrollHeight;
+  // the empty-name case: the best-rated thing of that kind that is not already on the day
+  function suggestFor(kind, day){
+    if (typeof PICKS === 'undefined') return null;
+    var list = (PICKS[kind] || []).map(function(m){ return { m: m, score: weighted(m.srcs) }; })
+      .sort(function(a2, b2){ return b2.score - a2.score; });
+    for (var i = 0; i < list.length; i++){
+      if (!alreadyOn(day, list[i].m.n)) return list[i];
+    }
+    return null;
   }
 
-  function submitAsk(text){
-    text = (text || '').trim();
-    if (!text) return;
-    log('me', text);
-    var r = parseAsk(text);
-    if (!r){
-      log('bot', 'I could not find a place in that. Try naming somewhere, and a day if you have one in mind.');
-      return;
+  function out(html, warn){
+    var el = document.getElementById('askout');
+    el.innerHTML = '<div class="askout' + (warn ? ' warn' : '') + '">' + html + '</div>';
+  }
+
+  var dayPicker = document.getElementById('f-day');
+  if (dayPicker) DAYS.forEach(function(d, i){
+    var o = document.createElement('option');
+    o.value = String(i);
+    o.textContent = d.label + ', ' + d.date;
+    dayPicker.appendChild(o);
+  });
+
+  function submitSuggestion(){
+    var kind = document.getElementById('f-type').value;
+    var typed = document.getElementById('f-name').value.trim();
+    var slot = document.getElementById('f-slot').value;
+    var day = +document.getElementById('f-day').value;
+    var note = document.getElementById('f-note').value.trim();
+
+    var name, chrome = false, why;
+
+    if (!typed){
+      var sug = suggestFor(kind, day);
+      if (!sug){ out('Everything we have of that kind is already on <b>' + DAYS[day].label + '</b>. Name something yourself and it goes up as a custom pick.', true); return; }
+      name = sug.m.n;
+      chrome = sug.score >= 4.45;
+      why = 'Best-rated ' + KINDWORD[kind] + ' we have at <b>' + sug.score.toFixed(1) + '</b>, and it was not on this day yet.';
+    } else {
+      var match = knownPlace(typed);
+      name = match || typed.charAt(0).toUpperCase() + typed.slice(1);
+      chrome = !!(match && topRated()[match.toLowerCase()]);
+      why = match
+        ? (chrome ? 'Matched a place the ratings put near the top, so it comes in with a chrome edge.'
+                  : 'Matched a place we already know about.')
+        : 'We have never heard of this one, so it goes up as your own pick with a gold edge.';
     }
-    var top = topRated()[r.place.toLowerCase()];
-    var hrs = SLOTHOURS[r.slot];
-    var opt = {
-      n: top || r.place,
-      s: hrs[0], e: hrs[1], v: 0,
-      gold: r.custom || !top,
-      chrome: !!top,
-      by: 'you'
-    };
-    if (opt.chrome) opt.gold = false;
-    DAYS[r.day].slots[r.slot].push(opt);
-    mine[r.day + ':' + r.slot] = DAYS[r.day].slots[r.slot].length - 1;   // your ask is your vote
-    curDay = r.day;
 
-    log('bot', 'Added <b>' + opt.n + '</b> to <b>' + DAYS[r.day].label + ' ' + r.slot + '</b> as an option, '
-      + (opt.chrome ? 'with a chrome edge - the ratings put it near the top.' : 'with a gold edge because you asked for it.')
-      + ' It has your vote. Three others still have to agree.');
+    if (alreadyOn(day, name)){ out('<b>' + name + '</b> is already an option on ' + DAYS[day].label + '. Vote for it rather than adding it twice.', true); return; }
 
+    var hrs = SLOTHOURS[slot];
+    DAYS[day].slots[slot].push({
+      n: name, s: hrs[0], e: hrs[1], v: 0,
+      gold: !chrome, chrome: chrome, by: 'you', note: note || null
+    });
+    mine[day + ':' + slot] = DAYS[day].slots[slot].length - 1;   // suggesting it is voting for it
+    curDay = day;
+
+    out('Added <b>' + name + '</b> to <b>' + DAYS[day].label + ', ' + slot + '</b>. It has your vote, and three others still have to agree.'
+      + '<span class="why">' + why + (note ? ' Your remark is on the option.' : '') + '</span>');
+
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-note').value = '';
     renderDays(); renderSlots();
   }
 
-  var askIn = document.getElementById('askin');
-  var askSend = document.getElementById('asksend');
-  if (askSend) askSend.addEventListener('click', function(){ submitAsk(askIn.value); askIn.value = ''; });
-  if (askIn) askIn.addEventListener('keydown', function(e){
-    if (e.key === 'Enter'){ submitAsk(askIn.value); askIn.value = ''; }
-  });
-
-  var EGS = [
-    'add a massage on day 2 afternoon',
-    'can we do a batik workshop on day 4 morning',
-    'i want to see the Ramayana ballet on day 5 evening',
-    'add my aunt\u2019s house in Bantul on day 4 afternoon'
-  ];
-  var egHost = document.getElementById('askeg');
-  if (egHost) EGS.forEach(function(t){
-    var b = document.createElement('button');
-    b.textContent = t;
-    b.addEventListener('click', function(){ submitAsk(t); });
-    egHost.appendChild(b);
+  var goBtn = document.getElementById('f-go');
+  if (goBtn) goBtn.addEventListener('click', submitSuggestion);
+  ['f-name', 'f-note'].forEach(function(id){
+    var el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', function(e){ if (e.key === 'Enter') submitSuggestion(); });
   });
 
   // ---- 2c: where we sleep ----

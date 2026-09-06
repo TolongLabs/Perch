@@ -50,6 +50,7 @@ is what earns the marks.
 | 2026-09-06 | Two edges on an option: gold for asked-for, chrome for top-rated | The itinerary never showed why something was on it. Provenance is now visible on the row | Jin Siang |
 | 2026-09-06 | A "before we go" checklist on the final plan, with a progress bar and critical items called out | Nothing in the deck covered the part that actually ruins trips: unbooked beds, an unchecked passport | Jin Siang |
 | 2026-09-06 | Timed-ticket items on the checklist derive from the winning votes | A checklist that does not know what you chose is a template, and templates are free everywhere | Building it |
+| 2026-09-06 | The free-text request box replaced by a structured "suggest something" form | A form cannot misparse, and an empty name field is a better demo of the agent than free text is | Jin Siang |
 
 ## Longer Entries
 
@@ -589,4 +590,32 @@ summarising it, because the interaction may need to come back.
 
 **Still open.** Whether the group actually hangs around in the planner for a week or settles it in one sitting. If it is
 one sitting, B is interview-part-two with a progress bar and the fork deserves reopening.
+
+### 2026-09-06 - The chat lasted about an hour
+
+**Before.** A free-text box: type "add a massage on day 2 afternoon" and it parsed a day, a slot and a place out of
+the sentence.
+
+**After.** A form with five fields: **what kind** (attraction, food, market), **name** (optional), **when** (morning,
+afternoon, night), **which day**, and **remarks**. Same destination - it becomes one more option on that day, carrying
+your vote, with three people still to convince.
+
+**Why the form is better, and it is not only that parsing is fragile.**
+
+- **It cannot misread you.** The chat needed three separate guards against typos becoming stops on the itinerary, and
+  it was still guessing
+- **The empty name field is a stronger demo than the chat ever was.** Leave the name blank and the agent picks the
+  best-rated thing of that kind that is not already on the day, drawn from the ratings on Eat, shop, do, and says why:
+  *"Best-rated attraction we have at 4.6, and it was not on this day yet."* **That is the agent doing something a chat
+  window cannot** - reasoning over our own data - rather than doing the thing ChatGPT already does for free
+- **Remarks were not possible in the chat.** They now sit on the option row in quotes, so "my sister has been and says
+  go early" travels with the suggestion into the vote
+
+**What was kept.** The gold and chrome edges, and the rule that suggesting something is voting for it. A duplicate is
+refused with "vote for it rather than adding it twice".
+
+**What it cost.** The chat transcript, which looked more impressive in a screenshot and was worse in every other way.
+Recorded here rather than quietly dropped.
+
+**Live** at https://codenection-travel-planner.vercel.app
 
