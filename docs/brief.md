@@ -134,6 +134,29 @@ organisers' words at Kick-Off:
 | 4   | **Design and prototype artifacts** | Figma, Canva or equivalent, **set to public view**                      |
 | 5   | **Video link**                     | **Strictly 3 - 5 minutes, YouTube, unlisted**                           |
 
+### The Submission Template
+
+The organisers publish a README template and a video outline as a Google Doc:
+[README.md Template](https://docs.google.com/document/d/1RLKNs8RveYK3xNjJB9gRtrqGcYEq-MNniRXXrYAV-u4/edit), transcribed
+verbatim at [`source/submission-template.md`](./source/submission-template.md). **It is a recommendation, not a rule** -
+no rule anywhere requires the structure. Its five numbered sections nonetheless map onto the rubric one for one, so
+following it means a reviewer finds each scored thing where they expect it.
+
+Six specifics in it are not stated anywhere else:
+
+| The Template Says                                                                                                       | Section |
+| ----------------------------------------------------------------------------------------------------------------------- | ------- |
+| **Every distinct idea** goes in a table with why it was kept or dropped, **ordered so the chosen ones come first**      | 2.1     |
+| Mentor consultation is a four-column table: **Date, Mentor, Feedback Received, What Was Changed**                       | 2.3     |
+| **Disagreeing with a mentor is not penalised** - _"it will still count as engaging with it"_ - as long as you say why   | 2.3     |
+| The prototype link **must open in an incognito window**, and 4 - 8 key screens should be embedded with a caption each   | 3       |
+| Each stack choice needs its **reason and its expected constraint**, and a narrow build scope _"will read as realistic"_ | 5       |
+| The video is **titled with the team name only**, and should aim for **4:30** against the 5:00 ceiling                   | Video   |
+
+**Ideation, mentor consultations and idea evolution are judged from the README, not the video.** The template says so
+outright, which resolves how to spend the 3 - 5 minutes: _"the video should be focused on making the reviewer what your
+project is, not how you got there"_ [sic].
+
 > **"About the video - this is the primary thing that will be used to evaluate you."**
 
 That is a stronger claim than the rubric's Presentation 15% implies, and it is worth taking at face value: the video is
@@ -185,42 +208,60 @@ scope, and a stated grasp of time, skills and cost all score during the prototyp
 **31 Aug - 13 Sept**, running alongside the prototype phase. **Seven of the 100 marks depend on using it and writing
 down what came out of it.**
 
-| Rule            | Detail                                                                                                    |
-| --------------- | --------------------------------------------------------------------------------------------------------- |
-| **Booking**     | Mentors post their own slots in a shared spreadsheet and you book yourself in. First come, first served   |
-| **Length**      | Up to 25 minutes per slot                                                                                 |
-| **Platform**    | **Discord**, per the Kick-Off Day briefing. The website says Microsoft Teams                              |
-| **Daily limit** | **Two sessions per day per team.** No cap on the total                                                    |
-| **Format**      | Private, one team to one mentor. Teams pick their preferred mentor when booking                           |
-| **Expertise**   | Each mentor lists a domain - AI, web, mobile, UX, pitching. Pick the one who matches what you need        |
-| **Etiquette**   | Be punctual. Do not edit another team's slot. Release a slot at least 2 hours ahead if you cannot make it |
+**Booking happens in the organisers' spreadsheet:**
+[CodeNection 2026 Mentorship Session](https://docs.google.com/spreadsheets/d/1cqAZJmy9vEOCEP4oiHqG_Z6RGrbol0Is9So6XxMMM6w/edit).
+One tab per mentor, each carrying that mentor's domains, Discord handle, LinkedIn and a grid of dates against 25-minute
+start times. **The grid is live and teams edit it directly**, so anything read out of it is a snapshot, and a slot that
+was open an hour ago may not be.
+
+| Rule            | Detail                                                                                                            |
+| --------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Booking**     | Open the mentor's tab, find an empty cell under a date, **type your team name into it**. First come, first served |
+| **Lead time**   | **Book at least one day before the session.** Same-day booking is not provided for                                |
+| **Length**      | Up to 25 minutes per slot                                                                                         |
+| **Platform**    | **Discord.** Find the Mentor Channel, join the voice call labelled with your mentor's name at your booked time    |
+| **Daily limit** | **Two slots per day per team.** No cap on the total                                                               |
+| **Format**      | Private, one team to one mentor. Teams pick their preferred mentor when booking                                   |
+| **Expertise**   | Each mentor declares their domains on their own tab. Pick the one who matches what you need                       |
+| **Lateness**    | **More than 7 minutes late and the session is cancelled automatically**                                           |
+| **Cancelling**  | Remove your team name at least 2 hours ahead so another team can take it. Do not edit another team's slot         |
+| **Setup**       | The sheet asks for a stable connection and a quiet environment                                                    |
 
 Mentors are not assigned to teams. **They will not design your solution or write code for you** - they ask questions and
 challenge your thinking. Asking whether a scope is too ambitious is exactly what they are for. Good slots go fast, so
 book early.
 
+Enquiries go through a Discord ticket in the official channel, or to **Nickleirsch, HOD Competition (`@i_blame_nick`)**
+or **Adrianna, AHOD Competition (`@danasourr`)**.
+
 ### Mentors
 
-| Name               | Role And Credentials                                                                                |
-| ------------------ | --------------------------------------------------------------------------------------------------- |
-| Teh Ming En        | Cloud Application Development at Intel · MSc Data Science USM · Champion, AI Tinkerers Hackathon    |
-| Faris Imran        | Data Scientist at Grab · UM Hackathon 2026 1st runner-up · Top 3, Lovable Vibeathon                 |
-| Lim Zi Yang        | Founder of UMscout and Ymage · Champion, UM Technothon 2025                                         |
-| Jarod Tan          | AI Solution Architect at Annata · CompTIA Security+ · AWS Certified AI Practitioner                 |
-| Janelle Tan        | Product Design Intern at Cleve · UM Hackathon 2026 1st runner-up · Ex-Co-President, Hackerspace MMU |
-| Kueh Pang Teng     | Ex-intern at iFast · Multiple hackathon winner                                                      |
-| Khor Jia Quan      | Software Engineer at Intel · Champion, CodeNection 2024                                             |
-| Iris Yan Ning      | Software Engineer at CoinGecko · Judge, Google Workspace Hackathon                                  |
-| Zach Khong         | Full Stack Engineer at Solana Foundation · Won Cursor x Anthropic Hackathon                         |
-| Teng Wei Herr      | Frontend Engineer at Binance · Won Cursor x Anthropic Hackathon                                     |
-| Varsha Selvakumar  | Ex-Program Manager Intern at Grab · 5x hackathon finalist · UMH 2026 1st runner-up                  |
-| Sim Hong Bing      | 19x hackathon wins · Co-Founder and Vice President, AI Hackerdorm                                   |
-| Lau Wei Han        | Digital Analyst at Bank Negara Malaysia · Ex-President USMCS · USM valedictorian                    |
-| Mah Qing Fung      | Champion, NexG GodamLah 2.0 · **CodeNection 2025 Champion** · 5x hackathon winner                   |
-| Daniel Koh Yu Hang | Java Backend Engineer Intern at Ant International · V Hack 2026 Champion                            |
-| Looi Wei En        | Mobile Engineer at MoneyLion · Hibiscus Petroleum Berhad scholarship holder                         |
-| Yeong Chiau Wen    | AI Engineer · Ex-lecturer at MMU · 6x hackathon and invention competition winner                    |
-| Zhu Heng Chua      | Yayasan Sime Darby scholar · V Hack 2026 Champion · UM Technothon Vice Director                     |
+| Name               | Discord       | Domains, As They Declared Them                                                      | Role And Credentials                                                                                |
+| ------------------ | ------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Teh Ming En        | @teh_me       | Web · AI/ML · UI/UX · Data · Pitching                                               | Cloud Application Development at Intel · MSc Data Science USM · Champion, AI Tinkerers Hackathon    |
+| Faris Imran        | @fries.jpg    | UI/UX · Strategy · Pitching · Data                                                  | Data Scientist at Grab · UM Hackathon 2026 1st runner-up · Top 3, Lovable Vibeathon                 |
+| Lim Zi Yang        | @zyyy0702     | AI/ML · Mobile · Cloud                                                              | Founder of UMscout and Ymage · Champion, UM Technothon 2025                                         |
+| Jarod Tan          | @jarod02227   | AI/ML · Security · Cloud · IoT · Strategy · Pitching                                | AI Solution Architect at Annata · CompTIA Security+ · AWS Certified AI Practitioner                 |
+| Janelle Tan        | @nokzon       | UI/UX · Pitching                                                                    | Product Design Intern at Cleve · UM Hackathon 2026 1st runner-up · Ex-Co-President, Hackerspace MMU |
+| Kueh Pang Teng     | @imptyeah     | Pitching · AI/ML · Data · Databases                                                 | Ex-intern at iFast · Multiple hackathon winner                                                      |
+| Khor Jia Quan      | @stefankhor   | UI/UX · Strategy · Pitching · AI/ML · Web · Cloud · Data · Software Eng · Databases | Software Engineer at Intel · Champion, CodeNection 2024                                             |
+| Iris Yan Ning      | @peanutooo    | Strategy · Pitching · Databases · UI/UX · Web · Cloud · Software Eng                | Software Engineer at CoinGecko · Judge, Google Workspace Hackathon                                  |
+| Zach Khong         | @bashtwig     | UI/UX · Strategy · Pitching · AI/ML · Web · Security · Cloud · Data · Software Eng  | Full Stack Engineer at Solana Foundation · Won Cursor x Anthropic Hackathon                         |
+| Teng Wei Herr      | @weiherr      | Web · AI/ML · UI/UX · Cloud · Software Eng · Databases · Strategy                   | Frontend Engineer at Binance · Won Cursor x Anthropic Hackathon                                     |
+| Varsha Selvakumar  | @varsha5182   | Strategy · Pitching · AI/ML                                                         | Ex-Program Manager Intern at Grab · 5x hackathon finalist · UMH 2026 1st runner-up                  |
+| Sim Hong Bing      | @torcn        | UI/UX · Pitching · AI/ML · Software Eng                                             | 19x hackathon wins · Co-Founder and Vice President, AI Hackerdorm                                   |
+| Lau Wei Han        | @workintech88 | Strategy · Pitching · AI/ML · Web · Security · Software Eng                         | Digital Analyst at Bank Negara Malaysia · Ex-President USMCS · USM valedictorian                    |
+| Mah Qing Fung      | @marcusmah69  | Mobile · Web · UI/UX · Software Eng                                                 | Champion, NexG GodamLah 2.0 · **CodeNection 2025 Champion** · 5x hackathon winner                   |
+| Daniel Koh Yu Hang | @Daniao       | Web · AI/ML · Security · Software Eng · Pitching · UI/UX · Mobile                   | Java Backend Engineer Intern at Ant International · V Hack 2026 Champion                            |
+| Looi Wei En        | @diminecjean  | Software Eng · Mobile                                                               | Mobile Engineer at MoneyLion · Hibiscus Petroleum Berhad scholarship holder                         |
+| Yeong Chiau Wen    | @c.wennn      | Strategy · AI/ML · Data                                                             | AI Engineer · Ex-lecturer at MMU · 6x hackathon and invention competition winner                    |
+| Zhu Heng Chua      | @justme5153   | UI/UX · IoT · Pitching · AI/ML · Databases                                          | Yayasan Sime Darby scholar · V Hack 2026 Champion · UM Technothon Vice Director                     |
+
+**Domains are shortened here**: Strategy is Business Strategy & Product Development, Pitching is Presentation &
+Pitching, Data is Data Science & Analytics, Cloud is Cloud Computing & DevOps, Mobile is Mobile Application Development,
+Databases is Database Systems, Security is Cybersecurity. **Three names are spelled differently on the booking sheet** -
+Jeremy Lau Wei Han, Iris Yan, Chua Zhu Heng - and Lau Wei Han's tab labels his handle `Platform:` rather than
+`Discord:`.
 
 ### Judges Revealed At Kick-Off
 
@@ -351,22 +392,22 @@ The website was not updated after Kick-Off Day. Recorded so nobody re-derives th
 | **Finalist count**      | "Top 40 teams, 10 per track", implying four tracks                   | Two tracks, 10 per track, 20 finalists, 6 winners     | **The deck**                                                                    |
 | **Prize pool**          | RM11,350 total                                                       | RM7,250 across competitive categories                 | **The deck**, for the award table. The gap is presumably non-competitive awards |
 | **Video length**        | "Not exceeding 5 minutes"                                            | **3 - 5 minutes**, YouTube, unlisted, named by team   | **The deck**, which sets a floor as well as a ceiling                           |
-| **Mentor slot**         | "20 to 25 minutes"                                                   | "Shall not exceed 25 minutes"                         | Treat 25 as the ceiling                                                         |
-| **Mentorship platform** | Microsoft Teams                                                      | Discord, per the Kick-Off Day briefing                | **Discord**, and watch the channel for a correction                             |
-| **Mentor booking**      | "Official Google Sheet provided by the organizers"                   | Mentors post slots in a shared spreadsheet themselves | Same mechanism, no practical difference                                         |
+| **Mentor slot**         | "20 to 25 minutes"                                                   | "Shall not exceed 25 minutes"                         | **25 is the ceiling.** The booking sheet uses the deck's wording                |
+| **Mentorship platform** | Microsoft Teams                                                      | Discord, per the Kick-Off Day briefing                | **Discord. Settled** - the booking sheet says "Fully Virtual via Discord"       |
+| **Mentor booking**      | "Official Google Sheet provided by the organizers"                   | Mentors post slots in a shared spreadsheet themselves | **Settled** - one sheet, one tab per mentor, teams type their own name in       |
 | **Final round venue**   | Agmo Space, FCM, MMU Cyberjaya for the final round; Grand Finals TBA | Grand Finals venue TBA                                | Both say TBA for 15 Nov                                                         |
 
 ---
 
 ## Channels
 
-| Channel             | Use                                                                                              |
-| ------------------- | ------------------------------------------------------------------------------------------------ |
-| **Discord**         | [discord.gg/G9SWJntWhy](https://discord.gg/G9SWJntWhy). The main channel. Open a ticket for help |
-| **Email**           | ask.codenection@gmail.com                                                                        |
-| **Instagram**       | [@code_nection](https://www.instagram.com/code_nection)                                          |
-| **Official site**   | [itsocietymmu.com/codenection-2026](https://itsocietymmu.com/codenection-2026/)                  |
-| **Microsoft Teams** | Workshops, briefings and mentorship sessions                                                     |
+| Channel             | Use                                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Discord**         | [discord.gg/G9SWJntWhy](https://discord.gg/G9SWJntWhy). The main channel, and where mentor sessions run. Open a ticket for help |
+| **Email**           | ask.codenection@gmail.com                                                                                                       |
+| **Instagram**       | [@code_nection](https://www.instagram.com/code_nection)                                                                         |
+| **Official site**   | [itsocietymmu.com/codenection-2026](https://itsocietymmu.com/codenection-2026/)                                                 |
+| **Microsoft Teams** | Workshops and briefings. **Not mentorship** - the booking sheet puts that on Discord                                            |
 
 ---
 

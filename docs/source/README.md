@@ -13,6 +13,7 @@ summary and reality disagree.
 | [`kickoff-day-slides.md`](kickoff-day-slides.md)               | Kick-Off Day deck, 30 slides           | 2026-09-01 |
 | [`problem-statements.md`](problem-statements.md)               | Organiser problem-statement handout    | 2026-09-01 |
 | [`prototype-judging-rubrics.md`](prototype-judging-rubrics.md) | Organiser prototype rubric handout     | 2026-09-01 |
+| [`submission-template.md`](submission-template.md)             | Organiser README and video template    | 2026-09-06 |
 
 **The deck is the authority on dates, the rubric weightings, the prize table and the submission checklist.** The public
 information page was not updated after Kick-Off Day and disagrees in several places; every disagreement is recorded in

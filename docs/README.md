@@ -44,6 +44,7 @@ Verbatim, append-only. We cite these instead of relying on memory.
 | [`source/kickoff-day-slides.md`](source/kickoff-day-slides.md)               | Kick-Off Day deck, 30 slides. Authoritative on dates and rubric |
 | [`source/problem-statements.md`](source/problem-statements.md)               | The two problem statements and the general stipulations         |
 | [`source/prototype-judging-rubrics.md`](source/prototype-judging-rubrics.md) | The prototype rubric, band by band                              |
+| [`source/submission-template.md`](source/submission-template.md)             | The organisers' README template and video outline               |
 
 ---
 
@@ -140,3 +141,8 @@ your visual presentation, your ideation and process assets, and your design and 
 It lives in `docs/` rather than the repo root, and still renders as the repository landing page: **GitHub surfaces a
 README from the root, `.github/` or `docs/`.** Keeping it here keeps the root uncluttered and the docs together. **There
 is exactly one README and this is it**, so keep its links relative to `docs/`.
+
+**The organisers publish a template for it**, transcribed at
+[`source/submission-template.md`](source/submission-template.md). It is a recommendation rather than a rule, but its
+five numbered sections line up with the rubric, so this file grows into that shape rather than a shape of our own. What
+it prescribes that is easy to miss is summarised in [`brief.md`](brief.md#the-submission-template).
