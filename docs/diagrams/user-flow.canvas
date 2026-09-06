@@ -1,0 +1,450 @@
+{
+  "nodes": [
+    {
+      "id": "s0",
+      "type": "text",
+      "text": "### 0 \u00b7 Before us\n\nA WhatsApp group and a shared sheet",
+      "x": 0,
+      "y": 0,
+      "width": 380,
+      "height": 130,
+      "color": "1"
+    },
+    {
+      "id": "s1",
+      "type": "text",
+      "text": "### 1 \u00b7 First screen\n\n**A trip that already exists.** Yogyakarta, 12-16 Nov, poster and a day-by-day itinerary",
+      "x": 500,
+      "y": 0,
+      "width": 380,
+      "height": 156,
+      "color": "5"
+    },
+    {
+      "id": "s2",
+      "type": "text",
+      "text": "### 2 \u00b7 When is everyone free\n\nA 21-day strip on real dates. Each person taps the days they can go",
+      "x": 1000,
+      "y": 0,
+      "width": 380,
+      "height": 130,
+      "color": "5"
+    },
+    {
+      "id": "s3",
+      "type": "text",
+      "text": "### 3 \u00b7 What to do each day\n\nThree slots a day - morning, afternoon, night. Four travellers, one vote each per slot",
+      "x": 1500,
+      "y": 0,
+      "width": 380,
+      "height": 156,
+      "color": "5"
+    },
+    {
+      "id": "s4",
+      "type": "text",
+      "text": "### 4 \u00b7 Where we sleep\n\nThree beds at RM 168, RM 112 and RM 74 a night. The winner appears on every night of the trip",
+      "x": 2000,
+      "y": 0,
+      "width": 380,
+      "height": 156,
+      "color": "5"
+    },
+    {
+      "id": "s5",
+      "type": "text",
+      "text": "### 5 \u00b7 The final plan\n\nRead-only, hour by hour, derived from whatever is winning right now",
+      "x": 2500,
+      "y": 0,
+      "width": 380,
+      "height": 130,
+      "color": "4"
+    },
+    {
+      "id": "s6",
+      "type": "text",
+      "text": "### 6 \u00b7 Out of the app\n\nOne button opens the whole day in Google Maps",
+      "x": 3000,
+      "y": 0,
+      "width": 380,
+      "height": 130,
+      "color": "5"
+    },
+    {
+      "id": "s7",
+      "type": "text",
+      "text": "### 7 \u00b7 On the trip, it breaks\n\nMerapi closed. A flood warning. A ferry cancelled",
+      "x": 3500,
+      "y": 0,
+      "width": 380,
+      "height": 130,
+      "color": "1"
+    },
+    {
+      "id": "s8",
+      "type": "text",
+      "text": "### 8 \u00b7 It repairs itself\n\nThe top of the bench takes the slot. **No new vote** - the group already approved everything on it",
+      "x": 4000,
+      "y": 0,
+      "width": 380,
+      "height": 156,
+      "color": "4"
+    },
+    {
+      "id": "b0",
+      "type": "text",
+      "text": "Dates get settled by scrolling back through messages. Places get suggested and lost. Somebody invents the route in their head, and it is a straight line out and the same line back.",
+      "x": 0,
+      "y": 230,
+      "width": 380,
+      "height": 182
+    },
+    {
+      "id": "b1",
+      "type": "text",
+      "text": "Not a blank form, and not \"where do you want to go?\". **The planner proposes; the group only reacts.**",
+      "x": 500,
+      "y": 230,
+      "width": 380,
+      "height": 104
+    },
+    {
+      "id": "b2",
+      "type": "text",
+      "text": "Trip length is an **output**, not an input - the group's calendar decides how many days there are.",
+      "x": 1000,
+      "y": 230,
+      "width": 380,
+      "height": 104
+    },
+    {
+      "id": "b3",
+      "type": "text",
+      "text": "The losing options stay on screen, ranked, labelled already approved. **That is the bench.** A long morning greys the afternoon out and says why: Day 3's Merapi jeep runs to 14:30.",
+      "x": 1500,
+      "y": 230,
+      "width": 380,
+      "height": 182
+    },
+    {
+      "id": "b4",
+      "type": "text",
+      "text": "The largest single cost in the trip, and until 6 Sept the only thing the group could not vote on.",
+      "x": 2000,
+      "y": 230,
+      "width": 380,
+      "height": 104
+    },
+    {
+      "id": "b5",
+      "type": "text",
+      "text": "Lunch and dinner drop into the gaps. The day ends on the bed. Change one vote back on step 3 and this page changes underneath.",
+      "x": 2500,
+      "y": 230,
+      "width": 380,
+      "height": 130
+    },
+    {
+      "id": "b6",
+      "type": "text",
+      "text": "A plain Google Maps directions URL. No API key, no metered map - this is the feasibility answer, not a shortcut.",
+      "x": 3000,
+      "y": 230,
+      "width": 380,
+      "height": 130
+    },
+    {
+      "id": "b7",
+      "type": "text",
+      "text": "The problem statement asks in its own words for \"re-planning when something changes mid-trip\".",
+      "x": 3500,
+      "y": 230,
+      "width": 380,
+      "height": 104
+    },
+    {
+      "id": "b8",
+      "type": "text",
+      "text": "Three competitor scans found nothing that does this. Sitata alerts against your itinerary but does not re-plan it. Tripeza votes but does nothing when a plan breaks.",
+      "x": 4000,
+      "y": 230,
+      "width": 380,
+      "height": 156
+    },
+    {
+      "id": "a1",
+      "type": "text",
+      "text": "**Decided.** \"We plan it, you veto it.\" The first screen shows a finished trip because our real competitor is a WhatsApp group, which asks nothing of anybody. Distributing work is not removing it.",
+      "x": 500,
+      "y": -322,
+      "width": 380,
+      "height": 182,
+      "color": "4"
+    },
+    {
+      "id": "a2",
+      "type": "text",
+      "text": "**Open, and it is the first thing a real group hits.** How does anyone get in - an invite link, an account, nothing at all? Not designed yet.",
+      "x": 1000,
+      "y": -296,
+      "width": 380,
+      "height": 156,
+      "color": "3"
+    },
+    {
+      "id": "a3",
+      "type": "text",
+      "text": "**Every originality claim now lives on this one screen.** The deck had dropped the vote and the bench; they were put back on 6 Sept because without them the deck is a pretty itinerary with no argument.",
+      "x": 1500,
+      "y": -322,
+      "width": 380,
+      "height": 182,
+      "color": "4"
+    },
+    {
+      "id": "a5",
+      "type": "text",
+      "text": "**Derived, not written.** The first time in either mockup that the group's decisions visibly produce an artefact. This is the fifteen-second demo: vote the Merapi jeep in, watch the afternoon vanish and lunch move onto the road.",
+      "x": 2500,
+      "y": -348,
+      "width": 380,
+      "height": 208,
+      "color": "4"
+    },
+    {
+      "id": "a8",
+      "type": "text",
+      "text": "**[not verified] and it is the most valuable half-hour on the branch.** Nobody has opened **Tripeza**. If it already keeps losing swipes as a backup pool, this stage stops being ours and the idea needs rethinking.",
+      "x": 4000,
+      "y": -348,
+      "width": 380,
+      "height": 208,
+      "color": "1"
+    },
+    {
+      "id": "attach",
+      "type": "text",
+      "text": "**Attached, never beside.**\n\nCautions, photo angles and what is worth buying hang off the **stop they apply to** - they are not their own pages. On their own each loses to a category incumbent: Travel Smart, PhotoHound, Xiaohongshu. Attached to a stop they are the one seam the scans could not fill.",
+      "x": 1500,
+      "y": 620,
+      "width": 760,
+      "height": 182,
+      "color": "3"
+    },
+    {
+      "id": "legend",
+      "type": "text",
+      "text": "## How to read this\n\nLeft to right is time. **Red** is the moment it hurts. **Cyan** is a screen that exists in the mockup. **Green** is the claim - the part no competitor was found doing. **Yellow** is still open.\n\nAbove the line: the decision or the doubt. Below: what you actually see.\n\nDrag anything. Delete nothing.",
+      "x": -560,
+      "y": -60,
+      "width": 440,
+      "height": 338,
+      "color": "6"
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "text": "# Travel planner - what a group actually does\n\nStages, start to finish, and the loop that is the whole claim.\nDrawn 6 Sept 2026 from the mockup at codenection-travel-planner.vercel.app",
+      "x": -560,
+      "y": -520,
+      "width": 440,
+      "height": 208,
+      "color": "4"
+    },
+    {
+      "id": "proto",
+      "type": "file",
+      "file": "docs/prototype/travel-planner-slides.html",
+      "x": -560,
+      "y": 300,
+      "width": 440,
+      "height": 260
+    }
+  ],
+  "edges": [
+    {
+      "id": "e0",
+      "fromNode": "s0",
+      "fromSide": "right",
+      "toNode": "s1",
+      "toSide": "left",
+      "label": "they leave it"
+    },
+    {
+      "id": "e1",
+      "fromNode": "s1",
+      "fromSide": "right",
+      "toNode": "s2",
+      "toSide": "left",
+      "label": "open the link"
+    },
+    {
+      "id": "e2",
+      "fromNode": "s2",
+      "fromSide": "right",
+      "toNode": "s3",
+      "toSide": "left",
+      "label": "dates fall out"
+    },
+    {
+      "id": "e3",
+      "fromNode": "s3",
+      "fromSide": "right",
+      "toNode": "s4",
+      "toSide": "left",
+      "label": "days become slots"
+    },
+    {
+      "id": "e4",
+      "fromNode": "s4",
+      "fromSide": "right",
+      "toNode": "s5",
+      "toSide": "left",
+      "label": "the bed is a vote too"
+    },
+    {
+      "id": "e5",
+      "fromNode": "s5",
+      "fromSide": "right",
+      "toNode": "s6",
+      "toSide": "left",
+      "label": "the votes are spent"
+    },
+    {
+      "id": "e6",
+      "fromNode": "s6",
+      "fromSide": "right",
+      "toNode": "s7",
+      "toSide": "left",
+      "label": "hand off"
+    },
+    {
+      "id": "e7",
+      "fromNode": "s7",
+      "fromSide": "right",
+      "toNode": "s8",
+      "toSide": "left",
+      "label": "mid-trip"
+    },
+    {
+      "id": "e8",
+      "fromNode": "s8",
+      "fromSide": "bottom",
+      "toNode": "s5",
+      "toSide": "bottom",
+      "label": "re-derives the plan, no one re-votes"
+    },
+    {
+      "id": "e9",
+      "fromNode": "s0",
+      "fromSide": "bottom",
+      "toNode": "b0",
+      "toSide": "top"
+    },
+    {
+      "id": "e10",
+      "fromNode": "s1",
+      "fromSide": "bottom",
+      "toNode": "b1",
+      "toSide": "top"
+    },
+    {
+      "id": "e11",
+      "fromNode": "s2",
+      "fromSide": "bottom",
+      "toNode": "b2",
+      "toSide": "top"
+    },
+    {
+      "id": "e12",
+      "fromNode": "s3",
+      "fromSide": "bottom",
+      "toNode": "b3",
+      "toSide": "top"
+    },
+    {
+      "id": "e13",
+      "fromNode": "s4",
+      "fromSide": "bottom",
+      "toNode": "b4",
+      "toSide": "top"
+    },
+    {
+      "id": "e14",
+      "fromNode": "s5",
+      "fromSide": "bottom",
+      "toNode": "b5",
+      "toSide": "top"
+    },
+    {
+      "id": "e15",
+      "fromNode": "s6",
+      "fromSide": "bottom",
+      "toNode": "b6",
+      "toSide": "top"
+    },
+    {
+      "id": "e16",
+      "fromNode": "s7",
+      "fromSide": "bottom",
+      "toNode": "b7",
+      "toSide": "top"
+    },
+    {
+      "id": "e17",
+      "fromNode": "s8",
+      "fromSide": "bottom",
+      "toNode": "b8",
+      "toSide": "top"
+    },
+    {
+      "id": "e18",
+      "fromNode": "a1",
+      "fromSide": "bottom",
+      "toNode": "s1",
+      "toSide": "top"
+    },
+    {
+      "id": "e19",
+      "fromNode": "a2",
+      "fromSide": "bottom",
+      "toNode": "s2",
+      "toSide": "top"
+    },
+    {
+      "id": "e20",
+      "fromNode": "a3",
+      "fromSide": "bottom",
+      "toNode": "s3",
+      "toSide": "top"
+    },
+    {
+      "id": "e21",
+      "fromNode": "a5",
+      "fromSide": "bottom",
+      "toNode": "s5",
+      "toSide": "top"
+    },
+    {
+      "id": "e22",
+      "fromNode": "a8",
+      "fromSide": "bottom",
+      "toNode": "s8",
+      "toSide": "top"
+    },
+    {
+      "id": "e23",
+      "fromNode": "attach",
+      "fromSide": "right",
+      "toNode": "s5",
+      "toSide": "bottom"
+    },
+    {
+      "id": "e24",
+      "fromNode": "s3",
+      "fromSide": "bottom",
+      "toNode": "attach",
+      "toSide": "left"
+    }
+  ]
+}

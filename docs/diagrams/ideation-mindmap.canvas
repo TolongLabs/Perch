@@ -1,0 +1,741 @@
+{
+  "nodes": [
+    {
+      "id": "root",
+      "type": "text",
+      "x": 0,
+      "y": 4317,
+      "width": 340,
+      "height": 130,
+      "text": "# Travel planner\n\nHow the idea moved,\n1 to 6 September 2026",
+      "color": "1"
+    },
+    {
+      "id": "claim",
+      "type": "text",
+      "x": 470,
+      "y": 647,
+      "width": 300,
+      "height": 60,
+      "text": "## What we say is ours",
+      "color": "4"
+    },
+    {
+      "id": "c1",
+      "type": "text",
+      "x": 940,
+      "y": 0,
+      "width": 330,
+      "height": 104,
+      "text": "**1 Sept.** A map-first trip planner with budgeting, routing and recommended stops"
+    },
+    {
+      "id": "c2",
+      "type": "text",
+      "x": 940,
+      "y": 254,
+      "width": 330,
+      "height": 130,
+      "text": "**1 Sept.** Narrowed: the shape of a same-airport round trip is the traveller's decision, not a routing accident"
+    },
+    {
+      "id": "c3",
+      "type": "text",
+      "x": 940,
+      "y": 534,
+      "width": 330,
+      "height": 182,
+      "text": "~~Nobody does the round trip~~\n\n**6 Sept.** False. Contour ships a loop that goes out one way and back another; calimoto exposes it as controls",
+      "color": "6"
+    },
+    {
+      "id": "c4",
+      "type": "text",
+      "x": 940,
+      "y": 866,
+      "width": 330,
+      "height": 208,
+      "text": "**6 Sept, and this is the claim now**\n\nThe itinerary knows what can break it, and repairs itself from options the group already approved",
+      "color": "4"
+    },
+    {
+      "id": "c4f",
+      "type": "file",
+      "x": 1410,
+      "y": 915,
+      "width": 300,
+      "height": 110,
+      "file": "docs/decisions/build-verdict.md"
+    },
+    {
+      "id": "c5",
+      "type": "text",
+      "x": 940,
+      "y": 1224,
+      "width": 330,
+      "height": 130,
+      "text": "The round trip stays as a **secondary** twist, stated narrowly. Worth marks under Novel Features. No longer the headline",
+      "color": "3"
+    },
+    {
+      "id": "mech",
+      "type": "text",
+      "x": 470,
+      "y": 2034,
+      "width": 300,
+      "height": 60,
+      "text": "## One mechanism, three jobs",
+      "color": "5"
+    },
+    {
+      "id": "m1",
+      "type": "text",
+      "x": 940,
+      "y": 1504,
+      "width": 330,
+      "height": 78,
+      "text": "The group votes, and the vote produces the itinerary"
+    },
+    {
+      "id": "m2",
+      "type": "text",
+      "x": 940,
+      "y": 1732,
+      "width": 330,
+      "height": 104,
+      "text": "Everything that lost becomes a **ranked bench** - already approved, still on screen"
+    },
+    {
+      "id": "m3",
+      "type": "text",
+      "x": 940,
+      "y": 1986,
+      "width": 330,
+      "height": 78,
+      "text": "The bench is the **cut list** when we are over budget"
+    },
+    {
+      "id": "m4",
+      "type": "text",
+      "x": 940,
+      "y": 2214,
+      "width": 330,
+      "height": 130,
+      "text": "The bench is the **replacement pool** when a stop closes. A monsoon substitution needs no new vote",
+      "color": "4"
+    },
+    {
+      "id": "m5",
+      "type": "text",
+      "x": 940,
+      "y": 2494,
+      "width": 330,
+      "height": 130,
+      "text": "**The cost, recorded.** Three behaviours are now coupled. Changing voting changes how disruption recovers",
+      "color": "3"
+    },
+    {
+      "id": "enemy",
+      "type": "text",
+      "x": 470,
+      "y": 3487,
+      "width": 300,
+      "height": 78,
+      "text": "## Who we are actually against",
+      "color": "5"
+    },
+    {
+      "id": "e1",
+      "type": "text",
+      "x": 940,
+      "y": 2774,
+      "width": 330,
+      "height": 104,
+      "text": "**Scan 1, 1 Sept.** Wanderlog, Roadtrippers, Furkot. Killed \"a travel planner\" as a claim"
+    },
+    {
+      "id": "e2",
+      "type": "text",
+      "x": 940,
+      "y": 3028,
+      "width": 330,
+      "height": 130,
+      "text": "**Scan 2, 6 Sept.** Contour, calimoto, Locationscout, Sitata. Killed the round trip and the photo page"
+    },
+    {
+      "id": "e3",
+      "type": "text",
+      "x": 940,
+      "y": 3308,
+      "width": 330,
+      "height": 104,
+      "text": "**Scan 3, 6 Sept.** Tripeza, SwipeSights, Plan Harmony. Killed voting as a claim"
+    },
+    {
+      "id": "e4",
+      "type": "text",
+      "x": 940,
+      "y": 3562,
+      "width": 330,
+      "height": 130,
+      "text": "**The correction that mattered.** Searching by product shape only finds long-tail apps. Search by what a group actually does",
+      "color": "3"
+    },
+    {
+      "id": "e5",
+      "type": "text",
+      "x": 940,
+      "y": 3842,
+      "width": 330,
+      "height": 156,
+      "text": "**The real enemy is a five-app stack** - ChatGPT, Google Maps lists, Xiaohongshu, WhatsApp polls, Trip.com. All free, all huge",
+      "color": "1"
+    },
+    {
+      "id": "e6",
+      "type": "text",
+      "x": 940,
+      "y": 4148,
+      "width": 330,
+      "height": 130,
+      "text": "**And every one stops at the same place.** None of them holds a committed group plan and repairs it when the world changes",
+      "color": "4"
+    },
+    {
+      "id": "e6f",
+      "type": "file",
+      "x": 1410,
+      "y": 4158,
+      "width": 300,
+      "height": 110,
+      "file": "docs/market/competitors.md"
+    },
+    {
+      "id": "build",
+      "type": "text",
+      "x": 470,
+      "y": 5036,
+      "width": 300,
+      "height": 60,
+      "text": "## What got built",
+      "color": "5"
+    },
+    {
+      "id": "b1",
+      "type": "text",
+      "x": 940,
+      "y": 4428,
+      "width": 330,
+      "height": 130,
+      "text": "**Mockup 1.** Map-first: custom map, control panel, round-trip strategy, vote, bench, simulated disruption"
+    },
+    {
+      "id": "b1f",
+      "type": "file",
+      "x": 1410,
+      "y": 4438,
+      "width": 300,
+      "height": 110,
+      "file": "docs/prototype/travel-planner.html"
+    },
+    {
+      "id": "b2",
+      "type": "text",
+      "x": 940,
+      "y": 4708,
+      "width": 330,
+      "height": 130,
+      "text": "**Mockup 2, 6 Sept.** A slide deck. Map handed to Google Maps, which removed the metered-API feasibility risk"
+    },
+    {
+      "id": "b3",
+      "type": "text",
+      "x": 940,
+      "y": 4988,
+      "width": 330,
+      "height": 156,
+      "text": "**Same day.** The deck had quietly dropped the vote, the bench and the substitution - the entire argument. Put back as \"what to do today\"",
+      "color": "3"
+    },
+    {
+      "id": "b4",
+      "type": "text",
+      "x": 940,
+      "y": 5294,
+      "width": 330,
+      "height": 130,
+      "text": "**Merged.** Pages 2 and 3 became one; the hotel became a vote; a read-only final plan is derived from the votes",
+      "color": "4"
+    },
+    {
+      "id": "b5",
+      "type": "text",
+      "x": 940,
+      "y": 5574,
+      "width": 330,
+      "height": 130,
+      "text": "Live at codenection-travel-planner.vercel.app. Six bugs found by driving it headlessly, not by looking"
+    },
+    {
+      "id": "drop",
+      "type": "text",
+      "x": 470,
+      "y": 6566,
+      "width": 300,
+      "height": 60,
+      "text": "## Dropped, kept on purpose",
+      "color": "6"
+    },
+    {
+      "id": "d1",
+      "type": "text",
+      "x": 940,
+      "y": 5854,
+      "width": 330,
+      "height": 182,
+      "text": "~~Day-claiming~~ \u00b7 2 Sept\n\nMembers claim days and fill their own stretch. Built and working. Splitting work between four people does not remove it",
+      "color": "6"
+    },
+    {
+      "id": "d2",
+      "type": "text",
+      "x": 940,
+      "y": 6186,
+      "width": 330,
+      "height": 208,
+      "text": "~~All-in-one platform~~ \u00b7 6 Sept\n\nThe most common thing a team says, the incumbents own it, and Feasibility punishes every thin page",
+      "color": "6"
+    },
+    {
+      "id": "d3",
+      "type": "text",
+      "x": 940,
+      "y": 6544,
+      "width": 330,
+      "height": 182,
+      "text": "~~Voting is our differentiator~~ \u00b7 6 Sept\n\nFour products ship vote-then-generate. Saying it invites a judge to name one",
+      "color": "6"
+    },
+    {
+      "id": "d4",
+      "type": "text",
+      "x": 940,
+      "y": 6876,
+      "width": 330,
+      "height": 182,
+      "text": "~~Photo spots as a feature~~ \u00b7 6 Sept\n\nXiaohongshu, not PhotoHound, is what beats it. 300m users planning around check-in spots",
+      "color": "6"
+    },
+    {
+      "id": "d5",
+      "type": "text",
+      "x": 940,
+      "y": 7208,
+      "width": 330,
+      "height": 130,
+      "text": "**Kept from day-claiming.** Must-go places, and the principle \"we plan it, you veto it\" - which now shapes the whole product",
+      "color": "4"
+    },
+    {
+      "id": "d5f",
+      "type": "file",
+      "x": 1410,
+      "y": 7218,
+      "width": 300,
+      "height": 110,
+      "file": "docs/decisions/dropped.md"
+    },
+    {
+      "id": "gap",
+      "type": "text",
+      "x": 470,
+      "y": 8087,
+      "width": 300,
+      "height": 78,
+      "text": "## Still unclaimed - 30 marks",
+      "color": "3"
+    },
+    {
+      "id": "g1",
+      "type": "text",
+      "x": 940,
+      "y": 7488,
+      "width": 330,
+      "height": 104,
+      "text": "**Diagrams \u00b7 8%.** This canvas and the user flow beside it are the start of it"
+    },
+    {
+      "id": "g2",
+      "type": "text",
+      "x": 940,
+      "y": 7742,
+      "width": 330,
+      "height": 104,
+      "text": "**Mentors \u00b7 7%.** sessions/ is empty and the window closes 13 Sept",
+      "color": "1"
+    },
+    {
+      "id": "g3",
+      "type": "text",
+      "x": 940,
+      "y": 7996,
+      "width": 330,
+      "height": 156,
+      "text": "**Breadth \u00b7 3%.** One idea logged where the band asks for several compared. The `playground` ideas predate the 30 Aug release and cannot be used"
+    },
+    {
+      "id": "g4",
+      "type": "text",
+      "x": 940,
+      "y": 8302,
+      "width": 330,
+      "height": 156,
+      "text": "**Target group \u00b7 5%.** \"Travellers\" is the 2-3 band. Nobody named, nobody interviewed. Everything above is weaker until this is answered",
+      "color": "1"
+    },
+    {
+      "id": "g5",
+      "type": "text",
+      "x": 940,
+      "y": 8608,
+      "width": 330,
+      "height": 156,
+      "text": "**Open Tripeza.** If it already keeps losing swipes as a backup pool, the bench claim is gone and the idea needs rethinking, not repositioning",
+      "color": "1"
+    },
+    {
+      "id": "legend",
+      "type": "text",
+      "x": -560,
+      "y": -80,
+      "width": 420,
+      "height": 300,
+      "color": "6",
+      "text": "## How to read this\n\n**Red** is a question still open. **Cyan** is a live branch. **Green** is what survived pressure and is the claim today. **Yellow** is a cost or a caveat. **Purple, struck through**, is a branch we dropped - kept on purpose, because dead ends are scored twice here.\n\nThe **edge labels** are the argument. An arrow with no label says only \"these are related\", which you already knew.\n\nDrag anything. Delete nothing."
+    },
+    {
+      "id": "title",
+      "type": "text",
+      "x": -560,
+      "y": -520,
+      "width": 420,
+      "height": 380,
+      "color": "4",
+      "text": "# The ideation, drawn\n\nSix days, four claims killed, one left standing.\n\nEvery branch here is a thing that actually happened in `docs/decisions/iteration-log.md` - nothing is invented to fill the picture. The four struck-through branches are worth marks twice: as the ideation process, and as the dropped directions.\n\nPair this with `user-flow.canvas`, which draws what a group does start to finish."
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-claim-c1",
+      "fromNode": "claim",
+      "fromSide": "right",
+      "toNode": "c1",
+      "toSide": "left",
+      "label": "started as"
+    },
+    {
+      "id": "e-claim-c2",
+      "fromNode": "claim",
+      "fromSide": "right",
+      "toNode": "c2",
+      "toSide": "left",
+      "label": "scan cut it"
+    },
+    {
+      "id": "e-claim-c3",
+      "fromNode": "claim",
+      "fromSide": "right",
+      "toNode": "c3",
+      "toSide": "left",
+      "label": "prior art"
+    },
+    {
+      "id": "e-c4-c4f",
+      "fromNode": "c4",
+      "fromSide": "right",
+      "toNode": "c4f",
+      "toSide": "left"
+    },
+    {
+      "id": "e-claim-c4",
+      "fromNode": "claim",
+      "fromSide": "right",
+      "toNode": "c4",
+      "toSide": "left",
+      "label": "what survived"
+    },
+    {
+      "id": "e-claim-c5",
+      "fromNode": "claim",
+      "fromSide": "right",
+      "toNode": "c5",
+      "toSide": "left",
+      "label": "demoted to"
+    },
+    {
+      "id": "e-root-claim",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "claim",
+      "toSide": "left",
+      "label": "the pitch"
+    },
+    {
+      "id": "e-mech-m1",
+      "fromNode": "mech",
+      "fromSide": "right",
+      "toNode": "m1",
+      "toSide": "left"
+    },
+    {
+      "id": "e-mech-m2",
+      "fromNode": "mech",
+      "fromSide": "right",
+      "toNode": "m2",
+      "toSide": "left",
+      "label": "leaves behind"
+    },
+    {
+      "id": "e-mech-m3",
+      "fromNode": "mech",
+      "fromSide": "right",
+      "toNode": "m3",
+      "toSide": "left",
+      "label": "job 2"
+    },
+    {
+      "id": "e-mech-m4",
+      "fromNode": "mech",
+      "fromSide": "right",
+      "toNode": "m4",
+      "toSide": "left",
+      "label": "job 3"
+    },
+    {
+      "id": "e-mech-m5",
+      "fromNode": "mech",
+      "fromSide": "right",
+      "toNode": "m5",
+      "toSide": "left",
+      "label": "what it costs"
+    },
+    {
+      "id": "e-root-mech",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "mech",
+      "toSide": "left",
+      "label": "how it works"
+    },
+    {
+      "id": "e-enemy-e1",
+      "fromNode": "enemy",
+      "fromSide": "right",
+      "toNode": "e1",
+      "toSide": "left"
+    },
+    {
+      "id": "e-enemy-e2",
+      "fromNode": "enemy",
+      "fromSide": "right",
+      "toNode": "e2",
+      "toSide": "left"
+    },
+    {
+      "id": "e-enemy-e3",
+      "fromNode": "enemy",
+      "fromSide": "right",
+      "toNode": "e3",
+      "toSide": "left"
+    },
+    {
+      "id": "e-enemy-e4",
+      "fromNode": "enemy",
+      "fromSide": "right",
+      "toNode": "e4",
+      "toSide": "left",
+      "label": "Jin Siang pushed back"
+    },
+    {
+      "id": "e-enemy-e5",
+      "fromNode": "enemy",
+      "fromSide": "right",
+      "toNode": "e5",
+      "toSide": "left",
+      "label": "which gives"
+    },
+    {
+      "id": "e-e6-e6f",
+      "fromNode": "e6",
+      "fromSide": "right",
+      "toNode": "e6f",
+      "toSide": "left"
+    },
+    {
+      "id": "e-enemy-e6",
+      "fromNode": "enemy",
+      "fromSide": "right",
+      "toNode": "e6",
+      "toSide": "left",
+      "label": "but"
+    },
+    {
+      "id": "e-root-enemy",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "enemy",
+      "toSide": "left",
+      "label": "the ground"
+    },
+    {
+      "id": "e-b1-b1f",
+      "fromNode": "b1",
+      "fromSide": "right",
+      "toNode": "b1f",
+      "toSide": "left"
+    },
+    {
+      "id": "e-build-b1",
+      "fromNode": "build",
+      "fromSide": "right",
+      "toNode": "b1",
+      "toSide": "left"
+    },
+    {
+      "id": "e-build-b2",
+      "fromNode": "build",
+      "fromSide": "right",
+      "toNode": "b2",
+      "toSide": "left",
+      "label": "then"
+    },
+    {
+      "id": "e-build-b3",
+      "fromNode": "build",
+      "fromSide": "right",
+      "toNode": "b3",
+      "toSide": "left",
+      "label": "and lost"
+    },
+    {
+      "id": "e-build-b4",
+      "fromNode": "build",
+      "fromSide": "right",
+      "toNode": "b4",
+      "toSide": "left",
+      "label": "then fixed"
+    },
+    {
+      "id": "e-build-b5",
+      "fromNode": "build",
+      "fromSide": "right",
+      "toNode": "b5",
+      "toSide": "left",
+      "label": "deployed"
+    },
+    {
+      "id": "e-root-build",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "build",
+      "toSide": "left",
+      "label": "evidence"
+    },
+    {
+      "id": "e-drop-d1",
+      "fromNode": "drop",
+      "fromSide": "right",
+      "toNode": "d1",
+      "toSide": "left",
+      "label": "cost us a novelty claim"
+    },
+    {
+      "id": "e-drop-d2",
+      "fromNode": "drop",
+      "fromSide": "right",
+      "toNode": "d2",
+      "toSide": "left"
+    },
+    {
+      "id": "e-drop-d3",
+      "fromNode": "drop",
+      "fromSide": "right",
+      "toNode": "d3",
+      "toSide": "left"
+    },
+    {
+      "id": "e-drop-d4",
+      "fromNode": "drop",
+      "fromSide": "right",
+      "toNode": "d4",
+      "toSide": "left"
+    },
+    {
+      "id": "e-d5-d5f",
+      "fromNode": "d5",
+      "fromSide": "right",
+      "toNode": "d5f",
+      "toSide": "left"
+    },
+    {
+      "id": "e-drop-d5",
+      "fromNode": "drop",
+      "fromSide": "right",
+      "toNode": "d5",
+      "toSide": "left",
+      "label": "but salvaged"
+    },
+    {
+      "id": "e-root-drop",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "drop",
+      "toSide": "left",
+      "label": "dead ends"
+    },
+    {
+      "id": "e-gap-g1",
+      "fromNode": "gap",
+      "fromSide": "right",
+      "toNode": "g1",
+      "toSide": "left"
+    },
+    {
+      "id": "e-gap-g2",
+      "fromNode": "gap",
+      "fromSide": "right",
+      "toNode": "g2",
+      "toSide": "left"
+    },
+    {
+      "id": "e-gap-g3",
+      "fromNode": "gap",
+      "fromSide": "right",
+      "toNode": "g3",
+      "toSide": "left"
+    },
+    {
+      "id": "e-gap-g4",
+      "fromNode": "gap",
+      "fromSide": "right",
+      "toNode": "g4",
+      "toSide": "left"
+    },
+    {
+      "id": "e-gap-g5",
+      "fromNode": "gap",
+      "fromSide": "right",
+      "toNode": "g5",
+      "toSide": "left",
+      "label": "the one check"
+    },
+    {
+      "id": "e-root-gap",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "gap",
+      "toSide": "left",
+      "label": "the honest column"
+    }
+  ]
+}
