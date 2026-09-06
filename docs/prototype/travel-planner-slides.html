@@ -176,6 +176,12 @@
   .ctag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:middle;font-weight:700}
   .ctag.must{background:var(--bad-soft);color:#7f1d1d}
   .ctag.auto{background:var(--accent-soft);color:var(--accent)}
+  /* edges and remarks on a bed */
+  .hotelopt.gold{border-color:transparent;background-image:linear-gradient(#fffdf5,#fffdf5),linear-gradient(115deg,#d4a017,#fff3c4,#c9971c,#fff8dc,#b8860b);background-origin:border-box;background-clip:padding-box,border-box;border-width:2px}
+  .hotelopt.chrome{border-color:transparent;background-image:linear-gradient(#fbfcfe,#fbfcfe),linear-gradient(115deg,#9aa3af,#ffffff,#6b7280,#e5e7eb,#9aa3af);background-origin:border-box;background-clip:padding-box,border-box;border-width:2px}
+  .hotelopt .remark{display:block;font-size:11.5px;color:#6b5b23;font-style:italic;margin-top:3px}
+  .f[data-off]{opacity:.42}
+  .f[data-off] select{pointer-events:none;background:#f3f4f6}
   /* the suggest form */
   .askhead{margin-bottom:11px}
   .askhead b{display:block;font-size:14px}
@@ -417,19 +423,20 @@
               <option value="do">Attraction</option>
               <option value="eat">Food</option>
               <option value="shop">Market</option>
+              <option value="bed">Somewhere to stay</option>
             </select>
           </label>
           <label class="f f-name"><span>Name <em>optional</em></span>
             <input id="f-name" placeholder="Leave empty and we will suggest one">
           </label>
-          <label class="f f-slot"><span>When</span>
+          <label class="f f-slot" id="l-slot"><span>When</span>
             <select id="f-slot">
               <option value="morning">Morning</option>
               <option value="afternoon" selected>Afternoon</option>
               <option value="night">Night</option>
             </select>
           </label>
-          <label class="f f-day"><span>Which day</span>
+          <label class="f f-day" id="l-day"><span>Which day</span>
             <select id="f-day"></select>
           </label>
           <label class="f f-note"><span>Remarks <em>optional</em></span>
@@ -438,7 +445,7 @@
           <button class="btn f-go" id="f-go">Add to the vote</button>
         </div>
         <div id="askout"></div>
-        <p class="askfoot">Leaving the name empty is the useful case: we pick the highest-rated thing of that kind that is not already on the day, from the ratings on <b>Eat, shop, do</b>. Suggestions come in with a <span class="kchrome">chrome edge</span>, anything you name yourself with a <span class="kgold">gold edge</span>. Either way it still has to win the vote.</p>
+        <p class="askfoot">Leaving the name empty is the useful case: we pick the highest-rated thing of that kind that is not already on the day, from the ratings on <b>Eat, shop, do</b>. Pick <b>somewhere to stay</b> and it suggests a bed instead, and tells you what it does to the nightly price. Suggestions come in with a <span class="kchrome">chrome edge</span>, anything you name yourself with a <span class="kgold">gold edge</span>. Either way it still has to win the vote.</p>
       </div>
 
       <div class="daytabs" id="daytabs"></div>
@@ -769,7 +776,7 @@
     var bed = bedFor(d);
     document.getElementById('hotel').innerHTML = bed
       ? '<div><b>Winning: ' + bed.n + '</b><span class="sub">' + bed.a + '</span></div>'
-        + '<div class="price"><b>RM ' + bed.p + '</b><br><span class="sub">per room, per night</span></div>'
+        + '<div class="price"><b>' + (bed.p ? 'RM ' + bed.p : '—') + '</b><br><span class="sub">' + (bed.p ? 'per room, per night' : 'no price yet') + '</span></div>'
       : '<div><b>Checked out</b><span class="sub">Bags at the hotel until 13:00</span></div>'
         + '<div class="price"><b>-</b><br><span class="sub">no bed tonight</span></div>';
     renderDayMap('daymap', d);
@@ -1260,12 +1267,63 @@
     dayPicker.appendChild(o);
   });
 
+  // a bed is for the whole trip, so the day and slot pickers do not apply to it
+  function syncFormKind(){
+    var bed = document.getElementById('f-type').value === 'bed';
+    ['l-slot', 'l-day'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el){ if (bed) el.setAttribute('data-off', ''); else el.removeAttribute('data-off'); }
+    });
+    document.getElementById('f-name').placeholder = bed
+      ? 'Leave empty and we will suggest a bed'
+      : 'Leave empty and we will suggest one';
+  }
+  var typeSel = document.getElementById('f-type');
+  if (typeSel) typeSel.addEventListener('change', syncFormKind);
+
+  function addBed(typed, note){
+    var lead = HOTELS[hotelLeader()];
+    var name, chrome = false, why;
+
+    if (!typed){
+      var pool = BEDPOOL
+        .filter(function(h){ return !HOTELS.some(function(x){ return x.n === h.n; }); })
+        .map(function(h){ return { h: h, score: weighted(h.srcs) }; })
+        .sort(function(a2, b2){ return b2.score - a2.score; });
+      if (!pool.length){ out('Every bed we know about is already up for the vote.', true); return; }
+      var pick = pool[0];
+      var diff = pick.h.p - lead.p;
+      HOTELS.push({ n: pick.h.n, a: pick.h.a, p: pick.h.p, v: 0, srcs: pick.h.srcs, red: pick.h.red,
+                    chrome: pick.score >= 4.45, gold: pick.score < 4.45, note: note || null });
+      why = 'Best-rated bed we have not already listed, at <b>' + pick.score.toFixed(1) + '</b>, and '
+          + (diff === 0 ? 'the same price as' : 'RM ' + Math.abs(diff) + ' a night ' + (diff > 0 ? 'more than' : 'less than'))
+          + ' what is currently winning.';
+      name = pick.h.n;
+    } else {
+      if (HOTELS.some(function(x){ return x.n.toLowerCase() === typed.toLowerCase(); })){
+        out('<b>' + typed + '</b> is already up for the vote. Vote for it rather than adding it twice.', true); return;
+      }
+      name = typed.charAt(0).toUpperCase() + typed.slice(1);
+      HOTELS.push({ n: name, a: 'Added by you \u00b7 no rating yet', p: 0, v: 0, gold: true, note: note || null });
+      why = 'We have no rating for this one, so it goes up as your own pick with a gold edge and no price on it yet.';
+    }
+
+    myHotel = HOTELS.length - 1;
+    out('Added <b>' + name + '</b> to the beds. It has your vote, and three others still have to agree.'
+      + '<span class="why">' + why + (note ? ' Your remark is on the option.' : '') + '</span>');
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-note').value = '';
+    renderHotels(); renderSlots();
+  }
+
   function submitSuggestion(){
     var kind = document.getElementById('f-type').value;
     var typed = document.getElementById('f-name').value.trim();
     var slot = document.getElementById('f-slot').value;
     var day = +document.getElementById('f-day').value;
     var note = document.getElementById('f-note').value.trim();
+
+    if (kind === 'bed'){ addBed(typed, note); return; }
 
     var name, chrome = false, why;
 
@@ -1303,6 +1361,7 @@
     renderDays(); renderSlots();
   }
 
+  syncFormKind();
   var goBtn = document.getElementById('f-go');
   if (goBtn) goBtn.addEventListener('click', submitSuggestion);
   ['f-name', 'f-note'].forEach(function(id){
@@ -1312,9 +1371,22 @@
 
   // ---- 2c: where we sleep ----
   var HOTELS = [
-    {n:'Greenhost Boutique Hotel', a:'Prawirotaman \u00b7 design hotel, pool, breakfast', p:168, v:1},
-    {n:'Adhisthana Hotel',         a:'Wirobrajan \u00b7 quiet, 15 min to Malioboro',      p:112, v:2},
-    {n:'Omah Pari Boutique',       a:'Prawirotaman \u00b7 guesthouse, shared kitchen',    p:74,  v:0}
+    {n:'Greenhost Boutique Hotel', a:'Prawirotaman \u00b7 design hotel, pool, breakfast', p:168, v:1,
+     srcs:[['TripAdvisor',4.4,2100],['Trip.com',4.3,620],['Google Places',4.5,3800]], red:4200},
+    {n:'Adhisthana Hotel',         a:'Wirobrajan \u00b7 quiet, 15 min to Malioboro',      p:112, v:2,
+     srcs:[['TripAdvisor',4.5,980],['Trip.com',4.4,260],['Google Places',4.6,2100]], red:1800},
+    {n:'Omah Pari Boutique',       a:'Prawirotaman \u00b7 guesthouse, shared kitchen',    p:74,  v:0,
+     srcs:[['TripAdvisor',4.2,310],['Trip.com',4.0,90],['Google Places',4.3,760]], red:500}
+  ];
+
+  // beds nobody has put up yet. The empty-name case draws from here.
+  var BEDPOOL = [
+    {n:'Ndalem Suratin Guest House', a:'Wirobrajan \u00b7 old Javanese house, family run', p:88,
+     srcs:[['TripAdvisor',4.6,420],['Trip.com',4.4,110],['Google Places',4.7,1300]], red:900},
+    {n:'Hotel Tentrem',              a:'Jalan Magelang \u00b7 five star, spa, big rooms',  p:420,
+     srcs:[['TripAdvisor',4.7,3100],['Trip.com',4.6,900],['Google Places',4.8,6400]], red:8800},
+    {n:'Losmen on Sosrowijayan',     a:'Sosrowijayan \u00b7 backpacker street, shared bath', p:38,
+     srcs:[['TripAdvisor',3.6,640],['Trip.com',3.5,180],['Google Places',3.9,1900]], red:1400}
   ];
   var myHotel = null;
 
@@ -1331,12 +1403,17 @@
     var lead = hotelLeader();
     HOTELS.forEach(function(h, i){
       var b = document.createElement('button');
-      b.className = 'hotelopt';
+      b.className = 'hotelopt' + (h.gold ? ' gold' : (h.chrome ? ' chrome' : ''));
       if (i === lead) b.setAttribute('data-lead', '');
       if (myHotel === i) b.setAttribute('data-mine', '');
-      b.innerHTML = '<div class="txt"><b>Option ' + (i + 1) + ' \u00b7 ' + h.n + '</b>'
+      var sc = h.srcs ? weighted(h.srcs) : null;
+      var edge = h.gold ? '<span class="edge g">your pick</span>'
+                        : (h.chrome ? '<span class="edge c">&#9670; top rated</span>' : '');
+      b.innerHTML = '<div class="txt"><b>Option ' + (i + 1) + ' \u00b7 ' + h.n + edge + '</b>'
         + '<span class="sub">' + h.a + '</span>'
-        + '<span class="rm">RM ' + h.p + ' <span class="sub" style="font-weight:400">per room, per night</span></span></div>'
+        + (h.note ? '<span class="remark">\u201c' + h.note + '\u201d</span>' : '')
+        + '<span class="rm">' + (h.p ? 'RM ' + h.p : 'Price not set') + ' <span class="sub" style="font-weight:400">' + (h.p ? 'per room, per night' : 'nobody has priced it')
+        + (sc ? ' \u00b7 rated ' + sc.toFixed(1) : ' \u00b7 not rated yet') + '</span></span></div>'
         + '<div class="tally"><i>' + hotelTally(i) + '</i>of 4</div>';
       b.addEventListener('click', function(){
         myHotel = (myHotel === i) ? null : i;
@@ -1444,7 +1521,7 @@
 
     var bed = bedFor(d);
     var lastEnd = out.length ? out[out.length - 1].e : 22;
-    if (bed) out.push({ s: lastEnd, e: null, what: bed.n, kind: 'bed', sub: 'RM ' + bed.p + ' per room, per night' });
+    if (bed) out.push({ s: lastEnd, e: null, what: bed.n, kind: 'bed', sub: bed.p ? 'RM ' + bed.p + ' per room, per night' : 'Price still to be worked out' });
     else out.push({ s: lastEnd, e: null, what: 'No bed tonight, flying home', kind: 'bed', sub: 'Checked out this morning; bags stay at the hotel until 13:00', plain: true });
 
     return { items: out, eaten: eaten };
@@ -1519,7 +1596,7 @@
     var html = '<ul class="fsum">'
       + '<li><b>' + doing + '</b>things booked in</li>'
       + '<li><b>' + plan.items.filter(function(x){ return x.kind === 'meal'; }).length + '</b>meals</li>'
-      + '<li><b>' + (bed ? 'RM ' + bed.p : '-') + '</b>bed tonight</li>'
+      + '<li><b>' + (bed ? (bed.p ? 'RM ' + bed.p : 'TBC') : '-') + '</b>bed tonight</li>'
       + (plan.eaten ? '<li><b>No</b>afternoon slot</li>' : '')
       + '</ul><ul class="tl">';
 

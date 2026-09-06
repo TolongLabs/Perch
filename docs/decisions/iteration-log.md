@@ -51,6 +51,7 @@ is what earns the marks.
 | 2026-09-06 | A "before we go" checklist on the final plan, with a progress bar and critical items called out | Nothing in the deck covered the part that actually ruins trips: unbooked beds, an unchecked passport | Jin Siang |
 | 2026-09-06 | Timed-ticket items on the checklist derive from the winning votes | A checklist that does not know what you chose is a template, and templates are free everywhere | Building it |
 | 2026-09-06 | The free-text request box replaced by a structured "suggest something" form | A form cannot misparse, and an empty name field is a better demo of the agent than free text is | Jin Siang |
+| 2026-09-06 | The suggest form covers beds too, and hotels gained ratings | The bed is the biggest line in the budget and was the only thing you could vote on but not propose | Jin Siang |
 
 ## Longer Entries
 
@@ -616,6 +617,32 @@ refused with "vote for it rather than adding it twice".
 
 **What it cost.** The chat transcript, which looked more impressive in a screenshot and was worse in every other way.
 Recorded here rather than quietly dropped.
+
+**Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - Beds join the suggestion form, and gain a rating
+
+**Before.** Three hotels, seeded, votable, and closed. You could vote for a bed but not put one up, and beds were the
+only thing on the page with no rating on them while every restaurant and market had three.
+
+**After.** "Somewhere to stay" is the fourth kind on the suggest form.
+
+- **The three seeded hotels now carry ratings** from the same three sources as everything else, so a bed reads
+  4.5 or 4.2 the way a market does
+- **Leave the name empty and it proposes a bed**, drawn from a pool of three nobody has listed yet, and the reason
+  names the price consequence: *"Best-rated bed we have not already listed, at 4.6, and RM 24 a night less than what
+  is currently winning."* **The price delta is the part worth having** - a bed is the biggest recurring line in the
+  trip, so a suggestion that ignores what it does to the budget is not a suggestion
+- **Name one yourself** and it goes up gold-edged with no price and no rating, which is honest: *"nobody has priced
+  it"*. Someone's cousin's spare room is a real answer to where to sleep and the app should not pretend to know what it
+  costs
+- **The day and slot pickers grey out** when the kind is a bed, because a bed is for the whole trip rather than an
+  afternoon
+
+**One bug, and it took two attempts.** An unpriced bed printed **"RM 0"** in four separate places - the option row, the
+winner card, the final-plan bed line and the day summary. The first fix silently matched nothing and I deployed the
+broken version before noticing. Fixed by editing the four call sites by line number and re-testing: it now reads
+"Price not set", "no price yet", "Price still to be worked out" and "TBC" respectively.
 
 **Live** at https://codenection-travel-planner.vercel.app
 
