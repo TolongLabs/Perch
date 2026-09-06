@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Draft A - one book, two states</title>
+<style>
+  :root{
+    --bg:#e9ecf1; --card:#fff; --ink:#1b1f27; --dim:#6b7280; --line:#e3e6ec;
+    --accent:#2563eb; --accent-soft:#dbe7ff; --good:#15803d; --good-soft:#dcfce7;
+    --warn:#b45309; --warn-soft:#fff1d6; --bad:#b91c1c; --bad-soft:#fee2e2;
+    --rail:#1f2430; --rail-ink:#c9cfda;
+    --paper:#faf9f7; --paper-ink:#23201c; --paper-dim:#7a736a; --paper-rule:#ded8cf;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.55 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+
+  .topbar{display:flex;align-items:center;gap:16px;background:var(--rail);color:#fff;padding:12px 22px;position:sticky;top:0;z-index:40}
+  .topbar .name{font-weight:650;font-size:15px}
+  .topbar .sub{color:#8b93a3;font-size:12.5px}
+  .topbar .spacer{flex:1}
+  .statepill{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:650;padding:4px 11px;border-radius:999px;background:#2c3340;color:#c9cfda}
+  .statepill .dot{width:7px;height:7px;border-radius:50%;background:#f59e0b}
+  .statepill[data-final] .dot{background:#34d399}
+  .btn{font:inherit;font-size:13.5px;font-weight:600;border:0;border-radius:8px;padding:8px 15px;cursor:pointer;background:var(--accent);color:#fff}
+  .btn.ghost{background:#2c3340;color:#c9cfda}
+  .btn.sm{font-size:12.5px;padding:6px 11px}
+  .btn:disabled{opacity:.45;cursor:not-allowed}
+
+  .draftbanner{background:#fff5d6;border-bottom:1px solid #f0dfa8;color:#7a5b12;font-size:12.5px;padding:7px 22px}
+  .draftbanner b{font-weight:700}
+
+  .wrap{max-width:1040px;margin:0 auto;padding:26px 22px 90px}
+  h2{font-size:22px;margin:0 0 3px;letter-spacing:-.01em}
+  .lead{color:var(--dim);margin:0 0 22px}
+
+  /* ---------- DRAFT: working surface ---------- */
+  .day{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:16px;overflow:hidden}
+  .day > header{display:flex;align-items:baseline;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .day h3{margin:0;font-size:15px}
+  .day header small{color:var(--dim);font-size:12.5px}
+  .day header .done{margin-left:auto;font-size:12px;color:var(--good);font-weight:650}
+  .day header .open{margin-left:auto;font-size:12px;color:var(--warn);font-weight:650}
+  .slots{display:grid;grid-template-columns:repeat(3,1fr)}
+  .slot{padding:14px 18px 16px;border-right:1px solid var(--line)}
+  .slot:last-child{border-right:0}
+  .slot h4{margin:0 0 2px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+  .opt{border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin-top:8px;cursor:pointer;background:#fff;display:block;width:100%;text-align:left;font:inherit}
+  .opt:hover{border-color:#c3cbd8}
+  .opt[data-lead]{border-color:#bbe7c9;background:var(--good-soft)}
+  .opt .t{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+  .opt .nm{font-weight:640;font-size:13.5px;line-height:1.3}
+  .opt .vt{font-size:12px;color:var(--dim);white-space:nowrap}
+  .opt .hr{font-size:11.5px;color:var(--dim);margin-top:2px}
+  .bench{margin-top:9px;font-size:11.5px;color:var(--dim);line-height:1.45}
+  .bench b{color:#4b5563;font-weight:650}
+
+  /* ---------- swap sheet ---------- */
+  .sheet{position:fixed;inset:0;background:rgba(20,24,31,.42);display:none;align-items:flex-end;justify-content:center;z-index:60}
+  .sheet[data-on]{display:flex}
+  .sheet .panel{background:#fff;border-radius:14px 14px 0 0;width:min(560px,100%);padding:20px 22px 26px;box-shadow:0 -8px 40px rgba(0,0,0,.2)}
+  .sheet h3{margin:0 0 3px;font-size:17px}
+  .sheet .why{color:var(--dim);font-size:13px;margin:0 0 14px}
+  .sheet .row{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-bottom:8px;cursor:pointer;background:#fff}
+  .sheet .row:hover{border-color:var(--accent);background:#f7faff}
+  .sheet .row .nm{font-weight:640;font-size:14px}
+  .sheet .row .meta{font-size:12px;color:var(--dim)}
+  .sheet .row .rank{margin-left:auto;font-size:11.5px;color:var(--good);font-weight:700;background:var(--good-soft);padding:3px 8px;border-radius:999px}
+
+  /* ---------- FINAL: the book ---------- */
+  .bookstage{display:none;padding:34px 22px 70px}
+  .bookstage[data-on]{display:block}
+  .book{perspective:2200px;max-width:1000px;margin:0 auto}
+  .spread{position:relative;display:grid;grid-template-columns:1fr 1fr;background:var(--paper);border-radius:4px;
+    box-shadow:0 2px 6px rgba(0,0,0,.14),0 26px 60px rgba(0,0,0,.22);min-height:560px;overflow:hidden}
+  .spread::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:34px;transform:translateX(-50%);pointer-events:none;
+    background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.10) 42%,rgba(0,0,0,.16) 50%,rgba(0,0,0,.10) 58%,rgba(0,0,0,0))}
+  .pg{padding:44px 46px;color:var(--paper-ink);backface-visibility:hidden}
+  .pg.turning{transform-origin:left center;animation:turn .62s cubic-bezier(.4,0,.2,1)}
+  @keyframes turn{from{transform:rotateY(0);opacity:1}55%{opacity:.45}to{transform:rotateY(-92deg);opacity:0}}
+  .pg .eyebrow{font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--paper-dim);margin:0 0 14px}
+  .pg h3{font:400 34px/1.12 Georgia,"Iowan Old Style","Times New Roman",serif;margin:0 0 10px;letter-spacing:-.015em}
+  .pg h4{font:400 20px/1.2 Georgia,"Iowan Old Style","Times New Roman",serif;margin:26px 0 6px}
+  .pg p{font-size:14px;line-height:1.7;color:#3c372f;margin:0 0 12px;max-width:34em}
+  .pg .drop::first-letter{float:left;font:400 54px/.82 Georgia,serif;padding:4px 8px 0 0;color:#8a5a2b}
+  .pg .rule{height:1px;background:var(--paper-rule);margin:18px 0}
+  .stoplist{list-style:none;margin:0;padding:0}
+  .stoplist li{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:11px 0;border-bottom:1px solid var(--paper-rule);cursor:pointer}
+  .stoplist li:hover{background:rgba(0,0,0,.025)}
+  .stoplist .tm{font-size:11.5px;color:var(--paper-dim);padding-top:3px;letter-spacing:.03em}
+  .stoplist .nm{font-weight:600;font-size:14.5px}
+  .stoplist .no{display:block;font-size:12px;color:var(--paper-dim);margin-top:2px}
+  .plate{aspect-ratio:4/3;border-radius:2px;overflow:hidden;margin-bottom:16px;box-shadow:0 6px 20px rgba(0,0,0,.16)}
+  .plate svg{display:block;width:100%;height:100%}
+  .cap{font-size:11.5px;color:var(--paper-dim);font-style:italic;margin-top:-6px}
+  .folio{position:absolute;bottom:16px;font-size:11px;color:var(--paper-dim);letter-spacing:.1em}
+  .folio.l{left:46px}.folio.r{right:46px}
+  .booknav{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:20px}
+  .booknav .pgn{font-size:12.5px;color:var(--dim);min-width:120px;text-align:center}
+  .nudge{max-width:1000px;margin:16px auto 0;font-size:12.5px;color:var(--dim);text-align:center}
+
+  .repair{max-width:1000px;margin:0 auto 18px;background:#fff;border:1px solid #f0dfa8;border-left:3px solid var(--warn);
+    border-radius:10px;padding:13px 16px;display:none}
+  .repair[data-on]{display:block}
+  .repair b{color:var(--warn)}
+  .repair .said{margin-top:6px;font-size:13.5px;color:#3c372f}
+  .toolrow{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap}
+  .tool{font-size:11px;background:#f2f4f8;border:1px solid var(--line);border-radius:999px;padding:2px 9px;color:#4b5563}
+
+  .note{max-width:1040px;margin:26px auto 0;padding:0 22px;font-size:12.5px;color:var(--dim);border-left:3px solid var(--line)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div class="name">Yogyakarta, 12&ndash;16 November</div>
+    <div class="sub">TolongLabs &middot; 4 travellers &middot; sample data</div>
+  </div>
+  <span class="statepill" id="pill"><span class="dot"></span><span id="pilltext">Drafting</span></span>
+  <div class="spacer"></div>
+  <button class="btn ghost sm" id="backToDraft" hidden>Back To Drafting</button>
+  <button class="btn" id="finalise">Finalise Trip</button>
+</div>
+
+<div class="draftbanner" id="banner">
+  <b>Draft A &mdash; one book, two states.</b> The book exists now. Voting happens on its pages; finalising changes how
+  the same object is presented. Throwaway mockup, invented data.
+</div>
+
+<!-- ============ DRAFTING ============ -->
+<div class="wrap" id="draftView">
+  <h2>The Trip, Being Decided</h2>
+  <p class="lead">Each day is three slots. The planner proposed everything; the group only votes. Whatever loses stays
+  ranked underneath as the bench.</p>
+  <div id="days"></div>
+</div>
+
+<!-- ============ FINAL ============ -->
+<div class="bookstage" id="bookView">
+  <div class="repair" id="repair">
+    <b>The itinerary repaired itself.</b>
+    <div class="said" id="repairSaid"></div>
+    <div class="toolrow">
+      <span class="tool">opening_hours()</span><span class="tool">weather()</span><span class="tool">bench.rank()</span>
+    </div>
+  </div>
+  <div class="book">
+    <div class="spread" id="spread"></div>
+  </div>
+  <div class="booknav">
+    <button class="btn ghost sm" id="prev">&larr; Previous</button>
+    <span class="pgn" id="pgn"></span>
+    <button class="btn ghost sm" id="next">Next &rarr;</button>
+  </div>
+  <p class="nudge">Tap any stop on the page to swap it from the bench &mdash; no separate edit mode.
+    <button class="btn sm" id="breakit" style="margin-left:8px">Simulate: Merapi Closes</button>
+  </p>
+</div>
+
+<div class="sheet" id="sheet">
+  <div class="panel">
+    <h3 id="sheetTitle">Swap This Stop</h3>
+    <p class="why" id="sheetWhy"></p>
+    <div id="sheetRows"></div>
+    <button class="btn ghost sm" id="sheetClose" style="margin-top:6px">Cancel</button>
+  </div>
+</div>
+
+<p class="note">Draft A. Built 2026-09-06 to be compared against <code>storybook-b-planner-then-book.html</code>, then
+thrown away or promoted. Every place, price and vote count is invented.</p>
+
+<script>
+const DAYS = [
+  { d:'Day 1', dt:'Thu 12 Nov', settled:true, slots:[
+    {k:'Morning',   picked:0, opts:[{n:'Land at YIA',h:'10:40'}]},
+    {k:'Afternoon', picked:0, opts:[{n:'Check in, Prawirotaman',h:'13:00 - 15:00'},{n:'Kotagede silver quarter',h:'14:00 - 16:00'}]},
+    {k:'Night',     picked:0, opts:[{n:'Malioboro Street',h:'19:00 - 22:00'},{n:'Alun-Alun Kidul',h:'20:00 - 22:30'}]}
+  ]},
+  { d:'Day 2', dt:'Fri 13 Nov', settled:true, slots:[
+    {k:'Morning',   picked:0, opts:[{n:'Borobudur sunrise',h:'04:30 - 09:00'},{n:'Borobudur, later entry',h:'09:00 - 11:00'}]},
+    {k:'Afternoon', picked:0, opts:[{n:'Mendut and Pawon',h:'11:30 - 13:00'},{n:'Rest at the guesthouse',h:'-'}]},
+    {k:'Night',     picked:0, opts:[{n:'Rest',h:'-'},{n:'Angkringan supper',h:'20:00 - 22:00'}]}
+  ]},
+  { d:'Day 3', dt:'Sat 14 Nov', settled:false, slots:[
+    {k:'Morning',   picked:1, opts:[
+      {n:'Merapi jeep tour from Kaliadem',h:'06:30 - 14:30',v:1},
+      {n:'Merapi museum only',h:'09:00 - 11:30',v:2},
+      {n:'Kalibiru viewpoint',h:'07:00 - 11:00',v:1}]},
+    {k:'Afternoon', picked:0, opts:[
+      {n:'Prambanan temple complex',h:'15:00 - 17:30',v:2},
+      {n:'Ratu Boko for the sunset',h:'16:00 - 18:00',v:1},
+      {n:'Taman Sari water castle',h:'15:30 - 17:00',v:1}]},
+    {k:'Night',     picked:0, opts:[
+      {n:'Ramayana ballet at Prambanan',h:'19:30 - 21:30',v:2},
+      {n:'Prawirotaman bar crawl',h:'21:00 - 01:00',v:1},
+      {n:'Tugu night market',h:'20:00 - 23:00',v:1}]}
+  ]},
+  { d:'Day 4', dt:'Sun 15 Nov', settled:true, slots:[
+    {k:'Morning',   picked:0, opts:[{n:'Taman Sari water castle',h:'09:00 - 10:30'},{n:'Beringharjo Market',h:'09:00 - 11:00'}]},
+    {k:'Afternoon', picked:0, opts:[{n:'The Kraton',h:'11:00 - 13:00'},{n:'Sonobudoyo Museum',h:'11:00 - 12:30'}]},
+    {k:'Night',     picked:0, opts:[{n:'Parangtritis Beach at sunset',h:'17:00 - 19:00'},{n:'Depok beach seafood',h:'18:00 - 20:00'}]}
+  ]},
+  { d:'Day 5', dt:'Mon 16 Nov', settled:true, slots:[
+    {k:'Morning',   picked:0, opts:[{n:'Bakpia run, Pathok',h:'09:00 - 10:30'},{n:'Last coffee, Prawirotaman',h:'09:00 - 10:00'}]},
+    {k:'Afternoon', picked:0, opts:[{n:'YIA, fly home',h:'14:20'}]},
+    {k:'Night',     picked:0, opts:[{n:'-',h:'-'}]}
+  ]}
+];
+
+let state = 'draft', page = 0, repaired = false;
+const $ = s => document.querySelector(s);
+
+/* ---------- drafting ---------- */
+function renderDays(){
+  $('#days').innerHTML = DAYS.map((d,di)=>`
+    <section class="day">
+      <header>
+        <h3>${d.d}</h3><small>${d.dt}</small>
+        <span class="${d.settled?'done':'open'}">${d.settled?'Settled':'Still voting'}</span>
+      </header>
+      <div class="slots">
+        ${d.slots.map((s,si)=>{
+          const bench = s.opts.map((o,i)=>({o,i})).filter(x=>x.i!==s.picked);
+          return `<div class="slot">
+            <h4>${s.k}</h4>
+            ${s.opts.map((o,oi)=>`
+              <button class="opt" ${oi===s.picked?'data-lead':''} data-d="${di}" data-s="${si}">
+                <span class="t"><span class="nm">${o.n}</span>${o.v?`<span class="vt">${o.v} of 4</span>`:''}</span>
+                <span class="hr">${o.h}</span>
+              </button>`).join('')}
+            ${bench.length?`<div class="bench"><b>Bench:</b> ${bench.map(x=>x.o.n).join(', ')} &mdash; already approved, used if this slot falls through</div>`:''}
+          </div>`;
+        }).join('')}
+      </div>
+    </section>`).join('');
+  document.querySelectorAll('.opt').forEach(b=>b.onclick=()=>openSheet(+b.dataset.d,+b.dataset.s));
+}
+
+/* ---------- swap sheet, shared by both states ---------- */
+let sheetTarget = null;
+function openSheet(di,si){
+  const s = DAYS[di].slots[si];
+  if(s.opts.length<2) return;
+  sheetTarget = [di,si];
+  $('#sheetTitle').textContent = DAYS[di].d + ' · ' + s.k;
+  $('#sheetWhy').textContent = 'Everything below already passed the group vote. Picking one needs no new vote.';
+  $('#sheetRows').innerHTML = s.opts.map((o,oi)=>oi===s.picked?'':`
+    <div class="row" data-o="${oi}">
+      <div><div class="nm">${o.n}</div><div class="meta">${o.h}</div></div>
+      <span class="rank">bench #${oi<s.picked?oi+1:oi}</span>
+    </div>`).join('');
+  $('#sheetRows').querySelectorAll('.row').forEach(r=>r.onclick=()=>{
+    const [d,si2] = sheetTarget; DAYS[d].slots[si2].picked = +r.dataset.o;
+    closeSheet(); renderDays(); if(state==='final') renderBook();
+  });
+  $('#sheet').setAttribute('data-on','');
+}
+function closeSheet(){ $('#sheet').removeAttribute('data-on'); }
+$('#sheetClose').onclick = closeSheet;
+$('#sheet').onclick = e => { if(e.target.id==='sheet') closeSheet(); };
+
+/* ---------- the book ---------- */
+const PLATE_A = `<svg viewBox="0 0 400 300"><defs><linearGradient id="ga" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="0" stop-color="#2c3757"/><stop offset=".55" stop-color="#b4622f"/><stop offset="1" stop-color="#e8a33d"/></linearGradient></defs>
+  <rect width="400" height="300" fill="url(#ga)"/><circle cx="292" cy="96" r="34" fill="#ffe6ab" opacity=".9"/>
+  <path d="M0 232c54-16 96-40 138-40s70 22 122 22 90-20 140-30v76H0z" fill="#7a3f22" opacity=".55"/>
+  <path d="M126 226h148l-16-26h-116zM150 200h100l-14-22h-72zM172 178h56l-12-20h-32zM192 158h16l-8-16z" fill="#3d2317" opacity=".8"/></svg>`;
+const PLATE_B = `<svg viewBox="0 0 400 300"><defs><linearGradient id="gb" x1="0" y1="0" x2="1" y2="1">
+  <stop offset="0" stop-color="#123b34"/><stop offset="1" stop-color="#57843f"/></linearGradient></defs>
+  <rect width="400" height="300" fill="url(#gb)"/>
+  <path d="M0 300 L120 92 L200 300z" fill="#1d2b22" opacity=".85"/><path d="M150 300 L268 118 L400 300z" fill="#26382b" opacity=".9"/>
+  <circle cx="86" cy="62" r="20" fill="#f3ead0" opacity=".85"/></svg>`;
+
+function itinFor(d){
+  return d.slots.map(s=>({t:s.k, o:s.opts[s.picked]})).filter(x=>x.o && x.o.n!=='-');
+}
+const PAGES = [
+  {kind:'cover'},
+  {kind:'day', i:0},{kind:'day', i:1},{kind:'day', i:2},{kind:'day', i:3},{kind:'day', i:4}
+];
+
+function renderBook(){
+  const p = PAGES[page];
+  let left='', right='';
+  if(p.kind==='cover'){
+    left = `<div class="pg">
+        <p class="eyebrow">TolongLabs &middot; November 2026</p>
+        <h3>Five Days<br>In Yogyakarta</h3>
+        <div class="rule"></div>
+        <p class="drop">Four of us, one volcano, six temples and a beach we only reached because the ballet sold out.
+        This is the trip as it was actually decided &mdash; every stop here beat something else in a vote, and everything
+        it beat is still standing by.</p>
+        <p style="color:#7a736a;font-size:12.5px">12 &ndash; 16 November 2026 &middot; RM 1,450 each</p>
+      </div>`;
+    right = `<div class="pg"><div class="plate">${PLATE_A}</div>
+        <p class="cap">Borobudur before the crowds, 05:10.</p>
+        <h4>What This Book Is</h4>
+        <p>A finished plan that still knows its alternatives. Tap any stop and the options it beat are underneath,
+        ranked, already agreed. Nothing here needs a second argument.</p>
+      </div>`;
+  } else {
+    const d = DAYS[p.i], stops = itinFor(d);
+    left = `<div class="pg">
+        <p class="eyebrow">${d.d} &middot; ${d.dt}</p>
+        <h3>${p.i===2?'The Mountain Day':p.i===0?'Arrival':p.i===4?'Going Home':p.i===3?'The Old City':'Temples At Dawn'}</h3>
+        <ul class="stoplist">
+          ${stops.map((s,si)=>`<li data-d="${p.i}" data-s="${d.slots.indexOf(d.slots.find(x=>x.k===s.t))}">
+              <span class="tm">${s.o.h}</span>
+              <span><span class="nm">${s.o.n}</span><span class="no">${s.t}</span></span></li>`).join('')}
+        </ul>
+        <span class="folio l">${p.i*2+2}</span>
+      </div>`;
+    right = `<div class="pg"><div class="plate">${p.i%2?PLATE_B:PLATE_A}</div>
+        <p class="cap">${p.i===2?'Kaliadem, where the jeeps start.':'Sample plate, invented for the layout.'}</p>
+        <h4>Notes</h4>
+        <p>${p.i===2
+          ? 'The morning slot was the closest vote of the trip. The museum won by one, and the jeep tour stayed on the bench &mdash; which is how it came back when the haze advisory landed.'
+          : 'Nothing on this page was assigned. Each line beat at least one other option, and the losers are still ranked underneath it.'}</p>
+        <span class="folio r">${p.i*2+3}</span>
+      </div>`;
+  }
+  const sp = $('#spread');
+  sp.innerHTML = left + right;
+  sp.querySelectorAll('.stoplist li').forEach(li=>li.onclick=()=>openSheet(+li.dataset.d, +li.dataset.s));
+  $('#pgn').textContent = p.kind==='cover' ? 'Cover' : `${PAGES.length-1} days · page ${page} of ${PAGES.length-1}`;
+  $('#prev').disabled = page===0; $('#next').disabled = page===PAGES.length-1;
+}
+function flip(dir){
+  const leaf = $('#spread').children[dir>0?1:0];
+  if(leaf) leaf.classList.add('turning');
+  setTimeout(()=>{ page = Math.min(PAGES.length-1, Math.max(0, page+dir)); renderBook(); }, dir>0?300:0);
+}
+$('#next').onclick = ()=>flip(1);
+$('#prev').onclick = ()=>flip(-1);
+
+/* ---------- state switch ---------- */
+function setState(s){
+  state = s;
+  const fin = s==='final';
+  $('#draftView').hidden = fin;
+  $('#bookView').toggleAttribute('data-on', fin);
+  $('#pilltext').textContent = fin ? 'Final' : 'Drafting';
+  $('#pill').toggleAttribute('data-final', fin);
+  $('#finalise').hidden = fin;
+  $('#backToDraft').hidden = !fin;
+  $('#banner').innerHTML = fin
+    ? '<b>Draft A &mdash; final state.</b> Same object, same URL. The bench is hidden but live: tap a stop to spend it.'
+    : '<b>Draft A &mdash; one book, two states.</b> The book exists now. Voting happens on its pages; finalising changes how the same object is presented. Throwaway mockup, invented data.';
+  if(fin) renderBook();
+}
+$('#finalise').onclick = ()=>{ page = 0; setState('final'); };
+$('#backToDraft').onclick = ()=>setState('draft');
+
+/* ---------- the repair ---------- */
+$('#breakit').onclick = ()=>{
+  const morning = DAYS[2].slots[0];
+  morning.picked = morning.opts.findIndex(o=>o.n.startsWith('Merapi museum'));
+  if(morning.picked<0) morning.picked = 1;
+  repaired = true;
+  page = 3; renderBook();
+  $('#repairSaid').textContent =
+    'Swapped the Merapi jeep tour for the Merapi museum — jeep operators are suspended for haze until Sunday, the museum was your number two for that slot, and Day 3 stays at RM 40 a head.';
+  $('#repair').setAttribute('data-on','');
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+
+renderDays(); setState('draft');
+</script>
+</body>
+</html>
