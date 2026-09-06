@@ -123,6 +123,10 @@ docs/
   agent-tooling.md       rtk and graphify, both optional and per-machine
   source/                organiser material, append-only
   demo/                  video script, slides, assets
+public/                  the deployed prototype. Everything here is served from Cloud Run
+Dockerfile               nginx, serves public/ on 8080
+nginx.conf               static config for the above
+.github/workflows/       deploy.yml, which ships public/ on every merge
 .agents/skills/          36 skills, the committed source of truth
 .claude/skills/          symlinks into .agents/skills/, plus impeccable as a real dir
 .claude/agents/          pitch-smith
@@ -133,6 +137,29 @@ docs/
 it here when it is.
 
 Skill provenance and what each hook does: [`../.agents/skills/VENDORED.md`](../.agents/skills/VENDORED.md).
+
+## Deployment
+
+**The prototype is served from Cloud Run, and every merge to `main` redeploys it** - whoever pushed. No manual deploy
+step, and no one person holding the keys, which is why this is not on Vercel: Vercel's Hobby tier only builds commits
+authored by the account owner, so teammates could not ship.
+
+|                      |                                                                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| **Live**             | [prototype-yskhynz4la-as.a.run.app](https://prototype-yskhynz4la-as.a.run.app)                                           |
+| **What gets served** | Everything under `public/`, including subdirectories and assets                                                          |
+| **Trigger**          | Any push to `main`. **There is no path filter on purpose** - a filter means a change lands and nothing happens, silently |
+| **Auth**             | Workload Identity Federation. **No service-account key exists**, in the repo or in GitHub Secrets                        |
+| **Project**          | `codenection-2026`, region `asia-southeast1`                                                                             |
+
+**Put the prototype in `public/`.** Anywhere else and it will not ship. `docs/prototype/` on the `research` branch is
+where drafts live; `public/` is what the public sees.
+
+**Biome lints `public/`**, inline JS and all. Expect `useButtonType` on every bare `<button>` and a nudge toward
+template literals. Those are real findings on a project where UX is scored, so they are worth fixing rather than
+silencing.
+
+---
 
 **This README is the submission.** Asked at Kick-Off Day what the submission format is, the organisers answered that the
 Google Form takes a public repo URL and _"everything must live in the README of your repo - project overview, a link to

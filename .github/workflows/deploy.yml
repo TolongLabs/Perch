@@ -1,13 +1,11 @@
 name: Deploy Prototype
 
+# Every merge to the default branch deploys, whoever pushed it. There is no path
+# filter on purpose: a filter means a change lands and nothing happens, silently,
+# which is worse than an occasional no-op build.
 on:
   push:
     branches: [main]
-    paths:
-      - 'public/**'
-      - 'Dockerfile'
-      - 'nginx.conf'
-      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 concurrency:
