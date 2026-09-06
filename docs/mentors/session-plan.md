@@ -4,6 +4,29 @@
 we intend to ask, and why - so that when the write-ups land, a judge can see the questions were chosen and not
 improvised. Each session still gets its own file from `_template.md`.
 
+## What Actually Got Booked, And What That Changes  -  2026-09-07
+
+**This plan was written on 4 September and two things about it are now out of date.** Both are corrected here rather
+than edited away, because the plan being wrong and being fixed is the record.
+
+**One session was booked, not two, and it went to the wrong half of this page.** Zach Khong is listed below under
+Session Two, the feasibility session. The booked slot - **tonight, Monday 7 September, 21:40 MYT** - carries **Session
+One's two questions** instead, because Session One is the one that can still move the concept, and the 6-7 band needs
+the concept to move. His declared domains cover both, so nothing is lost by asking him the judge's-eye questions. See
+issue #23.
+
+**Question 1 below is aimed at a claim we have since demoted.** It asks whether the *round-trip shape* survives being
+filed under "trip planner". [`../decisions/build-verdict.md`](../decisions/build-verdict.md), decided 6 September,
+made the round trip a **secondary** twist and put the headline on the bench. **Asking tonight's mentor to react to the
+round trip would spend the only booked session on the wrong sentence.** The corrected version of Question 1 is the one
+in issue #23: how should the first sentence be worded so we are not filed under "trip planner" before the mechanism is
+heard - where the mechanism is the bench.
+
+**Question 2 is unchanged and is now answerable**, because [`../users/personas.md`](../users/personas.md) finally names
+someone. She is `[assumed]` and the write-up should say so when she is put in front of him.
+
+---
+
 ## The Argument About Timing
 
 The plan on the table was to book only once the team had anchored on an idea. We are not doing that, for three
@@ -85,11 +108,28 @@ quoted into `main` when the stack is chosen there.
 
 ## What We Will Say In The First Sixty Seconds
 
-> We're TolongLabs, doing the Travel Planner statement. We plan a group trip from what people like and the group only
-> vetoes - no one does the planning. The one thing we found no product doing is treating a same-airport round trip as
-> a choice: retrace the way you came, or reach the furthest point halfway and come back a different way. The vote also
-> produces a ranked bench, which is the cut list when we're over budget and the replacement pool when a stop closes.
-> We have a clickable mockup with invented data. We have two questions, and we'd rather you were harsh.
+> **Superseded 2026-09-07.** It leads with the round trip, which the build verdict demoted the day after this was
+> written. Kept because a dropped direction is worth marks and because the difference between the two openings is the
+> clearest evidence on this branch that the positioning moved.
+
+~~We're TolongLabs, doing the Travel Planner statement. We plan a group trip from what people like and the group only
+vetoes - no one does the planning. The one thing we found no product doing is treating a same-airport round trip as a
+choice: retrace the way you came, or reach the furthest point halfway and come back a different way. The vote also
+produces a ranked bench, which is the cut list when we're over budget and the replacement pool when a stop closes. We
+have a clickable mockup with invented data. We have two questions, and we'd rather you were harsh.~~
+
+**The version to say tonight.** It leads with the mechanism, names the user, and gets the mockup on screen before the
+word "planner" has a chance to file us:
+
+> We're TolongLabs, on the Travel Planner statement. Our user is the person in every friend group who ends up doing
+> the planning, on a two-day trip where every hour is already contested. The group votes on what they want, and the
+> vote does two jobs: it builds the trip, and everything that lost becomes a ranked bench. So when a stop closes
+> mid-trip, the itinerary repairs itself from options the group already approved - no new argument, no reopened group
+> chat. We have a clickable mockup with invented data. We have two questions and we'd rather you were harsh.
+
+**Why that order.** "Trip planner" is the phrase that gets us filed, so the sentence that follows it has to be the
+mechanism, not a feature list. The round trip is not in the opening at all any more; it is a good answer if he asks
+what else is different, and a distraction if it goes first.
 
 ## Booking Facts Not In The Brief
 
