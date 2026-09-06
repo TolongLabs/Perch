@@ -22,6 +22,7 @@ is what earns the marks.
 | 2026-09-06 | Kept the idea, but the headline claim moved from the round trip to the self-repairing itinerary | Originality risks ~4 marks; 30 marks sit unclaimed in diagrams, mentors, breadth and the unnamed user | Verdict, `build-verdict.md` |
 | 2026-09-06 | Rejected "all-in-one platform" as the differentiation argument | The incumbents own breadth, and five thin pages cost more under Feasibility than they gain under Creativity | Same verdict |
 | 2026-09-06 | Competitor set rebuilt around heavyweights; the enemy is a five-app stack, not Wanderlog | Both scans searched for products shaped like ours and found niche apps a judge would never name | Jin Siang: "none of them are actual usable products" |
+| 2026-09-06 | Group voting dropped as an originality claim; the bench is now the whole claim | Tripeza, SwipeSights and Plan Harmony all ship vote-then-generate for groups. Nothing found re-plans after a closure | Third scan, `../market/competitors.md` Tier 1b |
 
 ## Longer Entries
 
@@ -176,4 +177,36 @@ verdict reached this morning, and the sentence the problem statement itself asks
 **The correction to the disagreement, kept because it matters.** Dismissing Contour and calimoto for being small is a
 mistake. **Prior art does not care about user counts.** They still end any "nobody does this" claim about the round
 trip. Tier 2 in `../market/competitors.md` now says so explicitly.
+
+### 2026-09-06 - Third pass: the voting half is gone, the bench survives
+
+**Before.** After the heavyweight scan, the working claim was that voting plus warnings, joined together, was ours.
+
+**After.** A third search, this time for the *behaviour* rather than the product category - vote on attractions, then
+generate, then handle it breaking. It found closer competitors than either earlier pass.
+
+- **Tripeza**, "Your Group Trip on Autopilot", names our exact enemy: it replaces "messy WhatsApp arguments and Excel
+  sheets". Group enters budget and vibe, app suggests destinations and attractions, group swipes and votes, votes lock
+  the destination, AI generates the day-by-day itinerary. **This is our pages 1 and 2, shipped**
+- **SwipeSights** does the same swipe-to-vote group planning
+- **Plan Harmony**, read directly: propose activities, group votes, winner added to the itinerary in one tap
+- **Stippl**, read directly, is the broadest all-in-one found and has no voting and nothing on disruption
+- **Trip.com**, read directly this time rather than via press releases: it does generate day-by-day itineraries with
+  recommended attractions and optimised routes, so the earlier dismissal of it as "just hotels" was wrong. But group
+  support is sharing only, and there is no re-planning
+
+**Why.** Jin Siang asked whether anything publicly available already does this, and was right to keep asking. The two
+earlier passes had both searched by product shape.
+
+**What we gave up by doing this. The voting system as an originality claim.** Four products now ship vote-then-generate
+for groups. Saying "our differentiator is the voting system" in front of a judge invites them to name one.
+
+**What survived, and it is the third time it has survived a scan.** Searching directly for apps that replace a closed
+attraction and reschedule around it produced the opposite result: current apps track opening hours and optimise routes,
+but nothing found replaces a closed stop and reschedules without the user doing it. Advice articles tell groups to
+build backups **by hand**. So the claim is not the vote and not the warning. **It is the bench** - that the vote leaves
+a ranked, pre-approved replacement set behind it, and the itinerary spends it automatically when something breaks.
+
+**Outstanding, and now the most valuable check on the branch.** Nobody has opened **Tripeza**. It is closer to our idea
+than Troupe. If it turns out to keep losing swipes as a backup pool, the claim is gone and the idea needs rethinking.
 

@@ -137,6 +137,112 @@ was written, and Tier 1 strengthens it rather than weakening it.
 
 ---
 
+# Tier 1b - The Closest Products Found So Far
+
+**Added 2026-09-06, third pass**, after Jin Siang asked whether anything publicly available already does our idea.
+This pass searched for the *behaviour* - vote on attractions, then generate the trip, then handle it breaking - rather
+than for product categories. **It found closer competitors than either earlier pass.**
+
+## Tripeza  -  the closest thing found to our idea
+
+|                   |                                                    |
+| ----------------- | -------------------------------------------------- |
+| **Link**          | https://tripeza.in/                                |
+| **Checked**       | 2026-09-06, search summaries `[snippet only]`      |
+| **Tagline**       | "Your Group Trip on Autopilot"                     |
+
+**What it does.** Positions itself against exactly our competitor: it replaces "messy WhatsApp arguments and Excel
+sheets with a clean, democratic, and fast way to plan adventures together". Group enters budget and vibe; the app
+suggests destinations **and attractions**; the group **swipes and votes**; "once votes are in, the destination is
+locked". AI then generates a day-by-day itinerary tailored to the group's budget. Plus expense splitting.
+
+**Why this matters to us.** That is our page 2 and our page 1, shipped, with the same enemy named in the same words.
+**The group-vote half of our idea is not novel.** What is not described anywhere in what was found: a ranked bench of
+losing options, or anything happening when a stop closes.
+
+**`[not verified]`** - the product page has not been opened. **This is now the most important unchecked item on the
+branch**, ahead of Troupe.
+
+---
+
+## SwipeSights
+
+| | |
+| --- | --- |
+| **Link** | https://swipesights.com/ |
+| **Checked** | 2026-09-06 `[snippet only]` |
+
+"Plan Group Trips by Swiping. Free Itinerary Maker." Same mechanism as Tripeza. Also publishes its own comparison of
+group trip planners, which is a fast way to find the rest of this category.
+
+---
+
+## Plan Harmony
+
+| | |
+| --- | --- |
+| **Link** | https://www.planharmony.com/group-trip-planning/ |
+| **Checked** | 2026-09-06, **page read directly** |
+
+**What it does.** "Propose activities and let the group vote, whether that's choosing a hotel, picking a day trip, or
+deciding where to eat." Results tally automatically and "the winning choice can be added to the itinerary in one tap."
+Real-time sync, offline access, budgeting, expense tracking.
+
+**What it does not do.** The page says nothing about what happens to the options that lost, and **nothing at all about
+cancellations, disruptions or contingency**. Read directly, so that absence is meaningful rather than an artefact of
+searching.
+
+---
+
+## Stippl
+
+| | |
+| --- | --- |
+| **Link** | https://www.stippl.io/ |
+| **Checked** | 2026-09-06, **page read directly** |
+
+"One Travel App To Replace Them All." Itinerary planner, budget planner, AI planner, packing list, travel tracker,
+reels, photobook, eSIM, collaborative planning, journal. **No voting mechanism described, and nothing about mid-trip
+changes or closed attractions.** The broadest all-in-one found, and it still stops before our claim.
+
+---
+
+## Trip.com, checked properly this time
+
+| | |
+| --- | --- |
+| **Link** | https://www.trip.com/ask/questions/ai-trip-planner.html |
+| **Checked** | 2026-09-06, **page read directly** |
+
+The earlier Tier 1 entry quoted press releases rather than the product, which was a fair thing to be pulled up on.
+Reading the product's own page:
+
+**It does more than book hotels.** It generates "a day-by-day map showing optimized routes, recommended attractions,
+and logical breaks", with an editor to "delete spots, add personalized notes, swap out dining suggestions, or drag
+items into a different daily order".
+
+**It does not do our two halves.** On groups it offers only sharing - "you can easily share your planned itinerary with
+friends". **No voting. Nothing about re-planning when something closes.**
+
+---
+
+## What The Third Pass Establishes
+
+**The voting half is crowded.** Tripeza, SwipeSights, Plan Harmony and Troupe all let a group vote on where to go and
+turn the result into an itinerary. It cannot carry the originality claim on its own, and pitching "we have a voting
+system" invites a judge to name one of these.
+
+**The disruption half still looks empty.** Searching directly for apps that replace a closed attraction and reschedule
+around it returned the opposite finding: current apps "track opening hours and provide route optimization", but nothing
+found "automatically replace[s] closed attractions and reschedule[s] itineraries without user intervention". Advice
+articles tell groups to build backup options **by hand**.
+
+**So the claim narrows again, and lands where the verdict already put it.** Not voting. Not visualisation. **The bench:
+that the vote leaves behind a ranked, pre-approved set of replacements, and that the itinerary uses them by itself when
+something breaks.**
+
+---
+
 # Tier 2 - Products Shaped Like Ours
 
 The original scans. Smaller, and easy to dismiss on quality - **but prior art does not care about user counts.** A
