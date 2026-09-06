@@ -7,8 +7,8 @@
 >
 > "Dead ends are worth points. Document them." — the organisers, presenting the rubric
 
-Four files. The first two are the most valuable things on this branch; the other two are the working notes behind
-them, moved here from `playground` on 2026-09-04.
+Five files. The first two are the most valuable things on this branch; two are the working notes behind them, moved
+here from `playground` on 2026-09-04; the last is the standing answer to "should we build this at all".
 
 | File                     | Holds                                                                                  |
 | ------------------------ | ---------------------------------------------------------------------------------------- |
@@ -16,6 +16,7 @@ them, moved here from `playground` on 2026-09-04.
 | `dropped.md`             | The graveyard. What we killed, and what killed it                                      |
 | `group-preferences.md`   | Splitting the plan versus voting. The options, the reconciliation, and what shipped    |
 | `disruption-recovery.md` | The bench as a pre-approved substitution pool, and the weather sources verified for it |
+| `build-verdict.md`       | 2026-09-06. Why the idea survives the competitor scan, and why "all-in-one" is not the claim |
 
 ## What "Done" Looks Like
 

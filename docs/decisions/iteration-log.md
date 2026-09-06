@@ -19,6 +19,8 @@ is what earns the marks.
 | 2026-09-06 | A second mockup: a slide-deck layout with five sections, and the map handed to Google Maps | The custom map was the biggest cost and the least novel part; a deck with pages reads faster in a demo | Jin Siang, `../inbox/2026-09-06-slides-prototype-dump.md` |
 | 2026-09-06 | The round-trip differentiator stopped being "nobody does this" and became a much thinner claim | Contour ships a loop that goes out one way and back another; calimoto makes the loop a set of controls | International scan, `../market/deck-scan.md` |
 | 2026-09-06 | Photo spots demoted from feature to nice-to-have; never to be pitched as novel | It is a whole product category - Locationscout has 233,000 spots, PhotoHound gives angle, time and gear | Same scan |
+| 2026-09-06 | Kept the idea, but the headline claim moved from the round trip to the self-repairing itinerary | Originality risks ~4 marks; 30 marks sit unclaimed in diagrams, mentors, breadth and the unnamed user | Verdict, `build-verdict.md` |
+| 2026-09-06 | Rejected "all-in-one platform" as the differentiation argument | The incumbents own breadth, and five thin pages cost more under Feasibility than they gain under Creativity | Same verdict |
 
 ## Longer Entries
 
