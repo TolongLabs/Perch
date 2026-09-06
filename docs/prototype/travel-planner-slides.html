@@ -176,6 +176,40 @@
   .ctag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:middle;font-weight:700}
   .ctag.must{background:var(--bad-soft);color:#7f1d1d}
   .ctag.auto{background:var(--accent-soft);color:var(--accent)}
+  /* how a place sits against the plan */
+  .rel{display:inline-block;font-size:10.5px;padding:1px 8px;border-radius:999px;font-weight:700;letter-spacing:.01em}
+  .rel.on{background:var(--good-soft);color:#14532d}
+  .rel.near{background:var(--accent-soft);color:var(--accent)}
+  .rel.far{background:var(--warn-soft);color:#78350f}
+  .rel.none{background:#f3f4f6;color:#4b5563}
+  .relnote{font-size:12.5px;padding:9px 11px;border-radius:8px;margin:13px 0 2px}
+  .relnote.on{background:var(--good-soft);color:#14532d}
+  .relnote.near{background:var(--accent-soft);color:#1e3a8a}
+  .relnote.far{background:var(--warn-soft);color:#78350f}
+  .relnote.none{background:#f3f4f6;color:#374151}
+  .relbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin:0 0 14px}
+  .switch{display:inline-flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+  .relkey{display:flex;gap:6px;flex-wrap:wrap}
+  /* what to bring home, shop tab only */
+  .bringhead{margin:2px 0 10px}
+  .bringhead b{display:block;font-size:14px}
+  .bringhead span{font-size:12px;color:var(--dim)}
+  .bring{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:8px}
+  .bcard{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff;text-align:left;font:inherit;color:inherit;cursor:pointer;padding:0}
+  .bcard:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(37,99,235,.1)}
+  .bcard .pic{height:78px}
+  .bcard .pic svg{width:100%;height:100%;display:block}
+  .bcard .in{padding:10px 12px}
+  .bcard b{display:block;font-size:13.5px}
+  .bcard .pr{margin-top:6px;font-size:13px}
+  .bcard .pr .fair{color:var(--good);font-weight:700}
+  .bcard .pr .tour{color:var(--bad);text-decoration:line-through;opacity:.75;margin-left:7px;font-size:12px}
+  .bcard .at{display:block;font-size:11.5px;color:var(--dim);margin-top:5px}
+  .bcard .at u{text-decoration:none;color:var(--accent);border-bottom:1px dotted var(--accent)}
+  .bringsep{margin:18px 0 10px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
+  .acc.flash{animation:flash 1.1s ease}
+  @keyframes flash{0%{box-shadow:0 0 0 0 rgba(37,99,235,.45)}100%{box-shadow:0 0 0 14px rgba(37,99,235,0)}}
+  @media (max-width:760px){.bring{grid-template-columns:1fr 1fr}}
   /* pictures on the eat/shop/do drawers */
   .acc summary .thumbpic{flex:0 0 84px;width:84px;height:52px;border-radius:8px;overflow:hidden;display:block}
   .acc summary .thumbpic svg{width:100%;height:100%;display:block}
@@ -534,6 +568,11 @@
         or streets</b>, so it is not used. Every number below is invented for the mockup.
       </div>
 
+      <div class="relbar">
+        <label class="switch"><input type="checkbox" id="nearonly"> <span>Only show things near our plan</span></label>
+        <span class="relkey"><span class="rel on">on the plan</span> <span class="rel near">a detour</span> <span class="rel far">a trip of its own</span></span>
+      </div>
+      <div id="bring"></div>
       <div id="acc"></div>
 
       <p class="sample">Scores, post counts and prices are invented. Named businesses only appear where the verdict is positive; the places we would tell you to skip are described by category, not by name.</p>
@@ -806,6 +845,7 @@
     renderDayMap('daymap', d);
     renderExpect(d);
     renderPicked();
+    if (typeof PICKS !== 'undefined') renderPicks();
     renderFinal();
   }
 
@@ -1802,88 +1842,97 @@
   // is described by category rather than named.
   var PICKS = {
     eat: [
-      { n:'Gudeg Yu Djum, Wijilan', t:'traditional Javanese', k:'food', day:'Day 2, lunch',
+      { n:'Gudeg Yu Djum, Wijilan', t:'traditional Javanese', k:'food', c:[-7.804, 110.368],
         srcs:[['TripAdvisor',4.3,2140],['Trip.com',4.4,610],['Google Places',4.4,18900]], red:9800,
         good:['Gudeg the city is actually known for','Open early, good before a temple run','Takeaway tins travel home'],
         watch:['Sweet, much sweeter than visitors expect','Queues at 12:00','Cash preferred'] },
-      { n:'Bu Ageng', t:'modern Javanese', k:'food', day:'Day 4, dinner',
+      { n:'Bu Ageng', t:'modern Javanese', k:'food', c:[-7.817, 110.371],
         srcs:[['TripAdvisor',4.5,890],['Trip.com',4.3,210],['Google Places',4.6,6400]], red:4100,
         good:['Old recipes, done carefully','Small room, good for four','Vegetarian options that are not an afterthought'],
         watch:['Book ahead at weekends','Closed one day a week, check first'] },
-      { n:'Angkringan carts, Jalan Wongsodirjan', t:'street food', k:'street', day:'Day 1, night',
+      { n:'Angkringan carts, Jalan Wongsodirjan', t:'street food', k:'street', c:[-7.789, 110.363],
         srcs:[['TripAdvisor',4.2,1360],['Trip.com',4.1,300],['Google Places',4.5,22400]], red:26500,
         good:['Nasi kucing at a few ringgit a portion','Kopi joss, coffee with hot charcoal dropped in','Open until very late'],
         watch:['Sit down before you order, prices are per item','Busiest after 21:00'] },
-      { n:'Restaurants on the Malioboro strip', t:'tourist strip', k:'street', day:'Day 1, evening',
+      { n:'Restaurants on the Malioboro strip', t:'tourist strip', k:'street', c:[-7.793, 110.366],
         srcs:[['TripAdvisor',3.4,7600],['Trip.com',3.7,1800],['Google Places',4.1,54000]], red:41000,
         good:['Convenient, English menus, air conditioning'],
         watch:['Most reviewed and worst rated of anything here','Pricing is the commonest complaint','The same dishes are half the price one street back'] },
-      { n:'Hotel breakfast buffet', t:'convenience', k:'hotel', day:'every morning',
+      { n:'Hotel breakfast buffet', t:'convenience', k:'hotel', c:'BED',
         srcs:[['TripAdvisor',3.1,220],['Trip.com',3.3,90],['Google Places',3.6,1100]], red:600,
         good:['It is included and it is there'],
         watch:['Fixed and dull','You are in a city that eats well for almost nothing'] }
     ],
     shop: [
-      { n:'Beringharjo Market', t:'traditional market', k:'market', day:'Day 4, afternoon',
+      { n:'Beringharjo Market', t:'traditional market', k:'market', c:[-7.799, 110.365],
         srcs:[['TripAdvisor',4.2,3180],['Trip.com',4.4,890],['Google Places',4.5,41200]], red:15200,
         good:['Batik by the metre and ready-made','Spices, dried goods, palm sugar','Wayang puppets upstairs'],
         watch:['Upper floor is quieter and cheaper','Opening quote is roughly double','Cash only in most stalls'] },
-      { n:'Kotagede silver quarter', t:'craft district', k:'craft', day:'Day 4, morning',
+      { n:'Kotagede silver quarter', t:'craft district', k:'craft', c:[-7.827, 110.399],
         srcs:[['TripAdvisor',4.5,760],['Trip.com',4.3,140],['Google Places',4.6,5900]], red:3300,
         good:['Filigree work, bought at the workshop','Watch the silversmiths before buying','Certificates for higher-value pieces'],
         watch:['Small sample on Trip.com','Some workshops close on Sunday','Weigh-priced items should be weighed in front of you'] },
-      { n:'Pathok bakpia street', t:'food street', k:'food', day:'Day 5, morning',
+      { n:'Pathok bakpia street', t:'food street', k:'food', c:[-7.796, 110.353],
         srcs:[['TripAdvisor',4.1,410],['Trip.com',4.2,220],['Google Places',4.4,12400]], red:7700,
         good:['Bakpia straight from the oven','Boxes sealed for the flight home','Free samples at most bakeries'],
         watch:['Numbered brands, not all equal','Two-day shelf life on the fresh ones','Airport branches cost roughly triple'] },
-      { n:'Malioboro Street stalls', t:'tourist strip', k:'street', day:'Day 1, evening',
+      { n:'Malioboro Street stalls', t:'tourist strip', k:'street', c:[-7.793, 110.366],
         srcs:[['TripAdvisor',3.6,9400],['Trip.com',3.9,2100],['Google Places',4.3,98000]], red:88000,
         good:['Open late, right by the hotel','Fine for magnets and t-shirts','Good for a walk, less for a purchase'],
         watch:['Highest attention, lowest score','Pricing complaints dominate the negative reviews','The same batik is 2 to 3x cheaper in Beringharjo'] },
-      { n:'Souvenir shops on an attraction approach road', t:'attraction gate', k:'market', day:'Day 3, evening',
+      { n:'Souvenir shops on an attraction approach road', t:'attraction gate', k:'market', c:[-7.750, 110.487],
         srcs:[['TripAdvisor',2.4,880],['Trip.com',2.8,190],['Google Places',3.4,4100]], red:900,
         good:['Convenient if you forgot something'],
         watch:['Aggressive pricing is the commonest complaint','No fixed prices displayed','A captive audience leaving the temple'] },
-      { n:'Hotel gift shop and airport retail', t:'convenience', k:'hotel', day:'any',
+      { n:'Hotel gift shop and airport retail', t:'convenience', k:'hotel', c:[-7.905, 110.057],
         srcs:[['TripAdvisor',2.9,140],['Trip.com',3.1,60],['Google Places',3.6,900]], red:400,
         good:['Open when nothing else is'],
         watch:['Fixed prices, no bargaining','Roughly triple the market price','Thin selection'] }
     ],
     do: [
-      { n:'Javanese massage and jamu, Prawirotaman', t:'spa', k:'spa', day:'Day 2, afternoon',
+      { n:'Javanese massage and jamu, Prawirotaman', t:'spa', k:'spa', c:[-7.818, 110.368],
         srcs:[['TripAdvisor',4.6,540],['Trip.com',4.4,130],['Google Places',4.7,3900]], red:5600,
         good:['An hour and a half for roughly RM 45','Good on the afternoon after the 04:30 Borobudur start','Jamu, the local herbal drink, usually thrown in'],
         watch:['Book the same morning, small places fill up','Firmer than most visitors expect'] },
-      { n:'Batik workshop, half day', t:'make something', k:'craft', day:'Day 2, afternoon',
+      { n:'Batik workshop, half day', t:'make something', k:'craft', c:[-7.805, 110.362],
         srcs:[['TripAdvisor',4.7,1120],['Trip.com',4.5,240],['Google Places',4.7,4800]], red:12800,
         good:['You draw with wax and dye it yourself','You leave with the thing you made','Better value than buying batik you did not make'],
         watch:['Three to four hours, not one','Wax does not come out of good clothes'] },
-      { n:'Silver-smithing class, Kotagede', t:'make something', k:'craft', day:'Day 4, morning',
+      { n:'Silver-smithing class, Kotagede', t:'make something', k:'craft', c:[-7.827, 110.399],
         srcs:[['TripAdvisor',4.6,380],['Trip.com',4.2,70],['Google Places',4.6,2100]], red:2400,
         good:['Make a ring or a pendant in about two hours','Pairs with the silver quarter on the same morning'],
         watch:['Small workshops, book ahead','Silver is weighed and charged on top of the class'] },
-      { n:'Merapi jeep tour from Kaliadem', t:'outdoors', k:'volcano', day:'Day 3, morning',
+      { n:'Merapi jeep tour from Kaliadem', t:'outdoors', k:'volcano', c:[-7.598, 110.447],
         srcs:[['TripAdvisor',4.4,5200],['Trip.com',4.3,1400],['Google Places',4.5,29000]], red:34000,
         good:['Lava field, bunker and the summit view','Jeeps take four, which is exactly us'],
         watch:['Runs to 14:30 and eats the afternoon','Cloud usually closes the summit after 10:00','Dusty, take something over your face'] },
-      { n:'Ramayana ballet at Prambanan', t:'performance', k:'stage', day:'Day 3, night',
+      { n:'Ramayana ballet at Prambanan', t:'performance', k:'stage', c:[-7.752, 110.491],
         srcs:[['TripAdvisor',4.5,3100],['Trip.com',4.4,780],['Google Places',4.6,11200]], red:9100,
         good:['Open-air, lit temple behind the stage','Two hours, no language needed'],
         watch:['Open-air season only, indoors in the wet months','Cheapest seats are far back'] },
-      { n:'Tours booked at the hotel desk', t:'convenience', k:'hotel', day:'any',
+      { n:'Pindul cave tubing, Gunungkidul', t:'outdoors', k:'beach', c:[-7.930, 110.649],
+        srcs:[['TripAdvisor',4.3,1900],['Trip.com',4.2,410],['Google Places',4.5,15600]], red:11200,
+        good:['Float a river through a cave on a rubber ring','Two hours out, and cheap once you are there','Good on a hot afternoon'],
+        watch:['About an hour each way, so it takes most of a day','Busy at weekends','You will be wet, bring a change'] },
+      { n:'Dieng Plateau, day trip', t:'outdoors', k:'volcano', c:[-7.205, 109.912],
+        srcs:[['TripAdvisor',4.5,2600],['Trip.com',4.3,540],['Google Places',4.6,18400]], red:19800,
+        good:['Coloured crater lakes and the oldest temples on Java','Cold enough to need a jacket, which is a novelty here','Sunrise from Sikunir is the reason people go'],
+        watch:['Three to four hours each way from Yogyakarta','Realistically an overnight, not a day trip','Roads are slow and winding'] },
+      { n:'Tours booked at the hotel desk', t:'convenience', k:'hotel', c:'BED',
         srcs:[['TripAdvisor',3.2,260],['Trip.com',3.4,110],['Google Places',3.7,1400]], red:500,
         good:['Someone else does the arranging'],
         watch:['The same tour, with a margin on top','Fixed group sizes and fixed timings'] }
     ]
   };
 
+  // what to bring home, and the place that sells it at a fair price
   var GIFTS = [
-    ['Hand-drawn batik (tulis)', 'Beringharjo Market, upper floor', 120, 380],
-    ['Silver filigree', 'Kotagede, at the workshop', 65, 190],
-    ['Bakpia pathok, box of 20', 'Pathok bakery street', 12, 32],
-    ['Wayang kulit puppet', 'Beringharjo Market', 95, 260],
-    ['Local coffee beans, 250g', 'Beringharjo Market', 24, 68],
-    ['Salak (snake fruit), per kg', 'Any neighbourhood pasar', 5, 16]
+    {n:'Hand-drawn batik (tulis)', at:'Beringharjo Market', where:'upper floor', fair:120, tour:380, k:'craft'},
+    {n:'Silver filigree',          at:'Kotagede silver quarter', where:'at the workshop', fair:65, tour:190, k:'craft'},
+    {n:'Bakpia, box of 20',        at:'Pathok bakpia street', where:'straight from the oven', fair:12, tour:32, k:'food'},
+    {n:'Wayang kulit puppet',      at:'Beringharjo Market', where:'upstairs', fair:95, tour:260, k:'craft'},
+    {n:'Local coffee beans, 250g', at:'Beringharjo Market', where:'dry goods aisle', fair:24, tour:68, k:'food'},
+    {n:'Salak, per kg',            at:'Beringharjo Market', where:'or any neighbourhood pasar', fair:5, tour:16, k:'market'}
   ];
 
   function weighted(srcs){
@@ -1909,6 +1958,51 @@
       + ' <a href="https://www.xiaohongshu.com/search_result?keyword=' + encodeURIComponent(m.n) + '" target="_blank" rel="noopener">See the posts \u2197</a></div>';
   }
 
+  // How does this place sit against the trip the group actually voted for?
+  // Before this existed the page carried hand-written labels like "Day 4, afternoon"
+  // that were never checked against a single vote.
+  function planStops(){
+    var out = [];
+    DAYS.forEach(function(_, i){
+      schedule(i).items.forEach(function(it){
+        var c = COORD[it.what];
+        if (c) out.push({ n: it.what, c: c, day: DAYS[i].label, at: fmt(it.s), kind: it.kind });
+      });
+    });
+    return out;
+  }
+
+  function relateToPlan(m){
+    var c = m.c === 'BED' ? (COORD[HOTELS[hotelLeader()].n] || null) : m.c;
+    if (!c) return { cls: 'none', label: 'nowhere fixed', text: 'This one has no single address - it is wherever you happen to be staying.' };
+
+    var stops = planStops();
+    if (!stops.length) return { cls: 'none', label: 'nothing planned', text: 'Nothing is voted in yet, so there is nothing to measure this against.' };
+
+    // is this place itself on the plan?
+    var onIt = null;
+    stops.forEach(function(st){
+      if (!onIt && (st.n === m.n || km(st.c, c) < 0.12)) onIt = st;
+    });
+    if (onIt) return { cls: 'on', label: 'on ' + onIt.day,
+      text: '<b>Already on the plan.</b> ' + onIt.day + ' at ' + onIt.at + ', so this is a place you are going anyway.' };
+
+    var best = null;
+    stops.forEach(function(st){
+      var dkm = km(st.c, c);
+      if (!best || dkm < best.d) best = { d: dkm, st: st };
+    });
+    var dTxt = best.d < 1 ? Math.round(best.d * 1000) + ' m' : best.d.toFixed(1) + ' km';
+    if (best.d <= 1.5) return { cls: 'near', label: dTxt + ' off ' + best.st.day,
+      text: '<b>A short walk from where you already are.</b> ' + dTxt + ' from ' + best.st.n + ' on ' + best.st.day + ' at ' + best.st.at + '.' };
+    if (best.d <= 6) return { cls: 'near', label: dTxt + ' off ' + best.st.day,
+      text: '<b>A short ride from the plan.</b> ' + dTxt + ' from ' + best.st.n + ' on ' + best.st.day + '. Worth folding into that day rather than making a trip of it.' };
+    return { cls: 'far', label: dTxt + ' away',
+      text: '<b>Not near anything you have planned.</b> The closest you get is ' + best.st.n + ' on ' + best.st.day + ', and that is still ' + dTxt + ' away. Going would cost a chunk of a day.' };
+  }
+
+  var nearOnly = false;
+
   var PICKTABS = [['eat', 'Where to eat'], ['shop', 'Where to shop'], ['do', 'What to do']];
   var curPick = 'eat';
   var accHost = document.getElementById('acc');
@@ -1919,17 +2013,22 @@
       var b = document.createElement('button');
       b.setAttribute('aria-pressed', t[0] === curPick);
       b.innerHTML = t[1] + '<small>' + PICKS[t[0]].length + ' places</small>';
-      b.addEventListener('click', function(){ curPick = t[0]; renderPickTabs(); renderPicks(); });
+      b.addEventListener('click', function(){ curPick = t[0]; renderPickTabs(); renderPicks(); renderBring(); });
       el.appendChild(b);
     });
   }
 
   function renderPicks(){
+    accHost = accHost || document.getElementById('acc');
+    if (!accHost || typeof PICKS === 'undefined') return;
     accHost.innerHTML = '';
-    PICKS[curPick].forEach(function(m, idx){
+    var shown = PICKS[curPick].filter(function(m){ return !nearOnly || relateToPlan(m).cls !== 'far'; });
+    if (!shown.length){ accHost.innerHTML = '<div class="pempty">Nothing here is close to the plan. Turn the filter off to see everything.</div>'; return; }
+    shown.forEach(function(m, idx){
       var avg = weighted(m.srcs), v = band(avg);
       var d = document.createElement('details');
       d.className = 'acc';
+      var rel = relateToPlan(m);
       var srcRows = m.srcs.map(function(x){
         return '<li><span>' + x[0] + '</span>'
           + '<span class="bar"><i style="width:' + (x[1] / 5 * 100).toFixed(0) + '%"></i></span>'
@@ -1939,10 +2038,11 @@
         '<summary><span class="chev">&#9656;</span>'
         + '<span class="thumbpic">' + scene(m.k || 'market', idx * 5 + 3) + '</span>'
         + '<span class="lbl"><b>' + (idx + 1) + ' &middot; ' + m.n + '</b>'
-        + '<span>' + m.t + ' &middot; ' + m.day + '</span></span>'
+        + '<span>' + m.t + ' &middot; <span class="rel ' + rel.cls + '">' + rel.label + '</span></span></span>'
         + '<span class="score"><i>' + avg.toFixed(1) + '</i><em>' + verdictWord(v) + '</em></span></summary>'
         + '<div class="accbody">'
         + '<div class="gallery">' + [0, 1, 2].map(function(g){ return '<div>' + scene(m.k || 'market', idx * 13 + g * 7 + 1) + '</div>'; }).join('') + '</div>'
+        + '<div class="relnote ' + rel.cls + '">' + rel.text + '</div>'
         + '<ul class="srcs">' + srcRows + '</ul>'
         + buzzRow(m, avg)
         + '<div class="pair"><div><h4>Good for</h4><ul>' + m.good.map(function(g){ return '<li>' + g + '</li>'; }).join('') + '</ul></div>'
@@ -1951,29 +2051,50 @@
       accHost.appendChild(d);
     });
 
-    if (curPick === 'shop'){
-      var g = document.createElement('details');
-      g.className = 'acc';
-      g.innerHTML = '<summary><span class="chev">&#9656;</span>'
-        + '<span class="lbl"><b>What is worth buying as a gift</b><span>six things, with what a local pays</span></span>'
-        + '<span class="score"><i>' + GIFTS.length + '</i><em>items</em></span></summary>'
-        + '<div class="accbody"><ul class="buys" id="buys"></ul>'
-        + '<p style="font-size:12px;color:var(--dim);margin-top:10px">Green is roughly what a local pays. The struck-through figure is the opening price on the tourist strip.</p></div>';
-      accHost.appendChild(g);
-      var bl = g.querySelector('#buys');
-      GIFTS.forEach(function(b){
-        var li = document.createElement('li');
-        li.innerHTML = '<div><b>' + b[0] + '</b><span class="where">' + b[1] + '</span></div>'
-          + '<div class="prices"><span class="fair">RM ' + b[2] + '</span>'
-          + '<span class="tour">RM ' + b[3] + '</span>'
-          + '<span class="mult">' + (b[3] / b[2]).toFixed(1) + 'x on the strip</span></div>';
-        bl.appendChild(li);
-      });
-    }
   }
 
+  // Shop leads with WHAT, because nobody lands somewhere wondering which ceramic shop to visit -
+  // they wonder what to bring back. Eat and Do lead with WHERE, because a restaurant or a
+  // workshop is itself the thing. Only this tab inverts.
+  function renderBring(){
+    var host = document.getElementById('bring');
+    if (!host) return;
+    if (curPick !== 'shop'){ host.innerHTML = ''; return; }
+    host.innerHTML = '<div class="bringhead"><b>Worth bringing home</b>'
+      + '<span>Start here, then the places below are where to get each one without the tourist mark-up. '
+      + 'Green is roughly what a local pays.</span></div>'
+      + '<div class="bring">' + GIFTS.map(function(g, i){
+          return '<button class="bcard" data-at="' + g.at.replace(/"/g, '&quot;') + '">'
+            + '<span class="pic">' + scene(g.k, i * 11 + 5) + '</span>'
+            + '<span class="in"><b>' + g.n + '</b>'
+            + '<span class="pr"><span class="fair">RM ' + g.fair + '</span>'
+            + '<span class="tour">RM ' + g.tour + '</span></span>'
+            + '<span class="at">Buy it at <u>' + g.at + '</u>, ' + g.where + '</span></span></button>';
+        }).join('') + '</div>'
+      + '<div class="bringsep">And here is where to buy them</div>';
+
+    host.querySelectorAll('.bcard').forEach(function(b){
+      b.addEventListener('click', function(){
+        var want = b.dataset.at;
+        accHost.querySelectorAll('.acc').forEach(function(dt){
+          var name = dt.querySelector('.lbl b').textContent;
+          if (name.indexOf(want) >= 0){
+            dt.open = true;
+            dt.classList.remove('flash');
+            void dt.offsetWidth;
+            dt.classList.add('flash');
+            dt.scrollIntoView({ block: 'center' });
+          }
+        });
+      });
+    });
+  }
+
+  var nearBox = document.getElementById('nearonly');
+  if (nearBox) nearBox.addEventListener('change', function(){ nearOnly = nearBox.checked; renderPicks(); });
   renderPickTabs();
   renderPicks();
+  renderBring();
 
 })();
 </script>

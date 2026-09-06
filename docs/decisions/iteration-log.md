@@ -54,6 +54,8 @@ is what earns the marks.
 | 2026-09-06 | The suggest form covers beds too, and hotels gained ratings | The bed is the biggest line in the budget and was the only thing you could vote on but not propose | Jin Siang |
 | 2026-09-06 | Photo spots replaced by "Notes on where we are going", derived from the winning votes | It was a static reference page beaten by PhotoHound and Xiaohongshu; the same space derived is ours | Jin Siang |
 | 2026-09-06 | Pictures added throughout eat-shop-do: a thumbnail per drawer and three inside | "so a layman can plan a trip as well" - a wall of ratings is a page for people who already know | Jin Siang |
+| 2026-09-06 | Shop leads with what to buy; eat and do keep leading with where | Nobody lands somewhere wondering which shop to visit. They wonder what to bring back | Jin Siang asked which order |
+| 2026-09-06 | Eat-shop-do now measures every place against the voted plan; the fake day labels are gone | They were hardcoded strings that no vote had ever touched, the same bug the route page had | Jin Siang asked whether the page reflects the plan |
 
 ## Longer Entries
 
@@ -682,6 +684,49 @@ lighting) and **hotel** (a lit facade). Existing kinds - temple, volcano, beach,
 they are honest about being impressions. But "a layman can plan a trip" is finally an argument for **real photography**,
 and real photos of real places means a place API with image rights, which is the same deployment cost the idea log
 already flags. Worth naming in the pitch as a known next step rather than letting a judge ask.
+
+**Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - Which comes first, the thing or the shop
+
+**The question.** On eat-shop-do, do we lead with what to buy - Delft ceramics in Holland - or with the shops?
+
+**The answer is that it differs per tab, and the reason is what the traveller is actually asking.**
+
+- **Shop leads with the thing.** Nobody lands in Holland wondering which ceramic shop to visit; they wonder what to
+  bring back. And the item is where our own insight lives, because the local-versus-tourist price gap attaches to an
+  object, not to a building. Six item cards now sit above the drawers, each with a picture, the local price against the
+  strip price, and "buy it at X". Clicking one opens and flashes that market's drawer
+- **Eat and Do keep leading with the place**, because a restaurant or a workshop **is** the thing. You do not shop
+  around for gudeg the way you do for ceramics
+
+The gift list used to be the last drawer on the shop tab, which was exactly backwards under this reasoning.
+
+### 2026-09-06 - The page was lying about the plan, and now it measures it
+
+**The question asked.** Does eat-shop-do reflect our travel plan, or is it just suggesting places in the region?
+
+**The honest answer was the second one, and worse.** Every entry carried a hand-written label like `day:'Day 4,
+afternoon'`. **Those were plain strings that no vote had ever touched.** It is the same bug the route page was deleted
+for: content that looks derived, is not, and would contradict the rest of the deck the moment a judge changed a vote.
+
+**What it does now.** Every place carries real coordinates, and the page works out its relationship to the itinerary
+the group actually voted for:
+
+| Badge | Means |
+| ----- | ----- |
+| **on Day N** | The place is already a stop on that day. You are going anyway |
+| **N m / km off Day N** | Within 6 km of a stop. Fold it into that day rather than making a trip of it |
+| **N km away** | Nothing planned is close. Going costs a chunk of a day |
+
+Two convenience entries - the hotel breakfast and the hotel tour desk - resolve to **whichever hotel is currently
+winning the vote**, because they have no address of their own. A filter hides anything that is a trip of its own.
+
+**It follows the votes.** Vote the Merapi jeep onto Day 3 and it moves from "4.6 km off Day 3" to "on Day 3".
+
+**Two real out-of-town options were added** so the far case is demonstrable rather than theoretical: Pindul cave tubing
+at 26 km and Dieng Plateau at 55 km, both with the honest warning that they cost most of a day, and Dieng realistically
+being an overnight.
 
 **Live** at https://codenection-travel-planner.vercel.app
 
