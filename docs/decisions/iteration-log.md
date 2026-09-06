@@ -26,6 +26,9 @@ is what earns the marks.
 | 2026-09-06 | Added a "worth buying" page: what to buy, where, and the tourist markup | Tourist-facing markets price for people who will not walk further, and nothing in the trip tells you that | Jin Siang, `../inbox/2026-09-06-worth-buying-dump.md` |
 | 2026-09-06 | Mockup deployed to Vercel on a public URL | Submission requires viewable design-prototype links; a local file cannot be submitted | Jin Siang |
 | 2026-09-06 | "What to do today": three slots a day, group voting, and a long morning that eats the afternoon | The deck had no vote and no bench, which is the only surviving originality claim | Jin Siang, `../inbox/2026-09-06-what-to-do-today-dump.md` |
+| 2026-09-06 | Pages 2 and 3 merged into one "plan it together" page; the Option 1-8 grid dropped | Dates, day slots and the bed are one decision, and the slots had made the placeholder grid redundant | Jin Siang |
+| 2026-09-06 | The hotel became a voted choice like everything else | It is the largest single cost in the trip and was the only thing the group could not vote on | Jin Siang |
+| 2026-09-06 | Added a read-only final page that derives the schedule from the votes | A plan nobody can read back is not a plan; and it proves the votes actually drive something | Jin Siang |
 
 ## Longer Entries
 
@@ -268,6 +271,41 @@ itinerary; this one puts a decision inside it.
 **Tested rather than assumed.** Rendered headlessly and driven through the interactions. Two data bugs were found and
 fixed before deploying: seeded votes summed to four of four, leaving no room for the user's own vote, and Day 3 could
 be flipped closed but not open again. All fourteen slots now seed three votes so the user is the fourth.
+
+**Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - Two pages become one, and the plan finally reads back
+
+**Before.** Seven pages, two of which asked the same question. Page 2 voted on what to do each day; page 3 held the
+availability strip and a grid of placeholder "Option 1" to "Option 8" cards. The hotel was a fact printed at the
+bottom of page 2, and nothing anywhere showed the group what their votes had actually produced.
+
+**After.** Six pages, and the deck argues for itself.
+
+- **Pages 2 and 3 are one page, "Plan it together"**, in three numbered steps: when everyone is free, what to do each
+  day, and where we sleep. The Option 1-8 grid is gone - once the slots held real options with real hours, the
+  placeholder grid was asking the same question twice
+- **The hotel is voted on** like everything else. Three options at RM 168, RM 112 and RM 74 a night, and the winner is
+  the bed that appears on every day of the trip. It is the biggest single cost in the trip and was the one thing the
+  group could not vote on
+- **A new last page, "The final plan"**, is read-only. It takes whatever is currently winning and lays the day out
+  hour by hour, dropping lunch and dinner into the gaps, and ending on the bed. Hovering a place pops a drawn
+  placeholder image; clicking opens it in Google Maps
+
+**Why it matters more than it looks.** The final page is **derived**, not written. Change a vote on page 2 and the
+schedule on page 7 changes underneath. That is the first time in either mockup that the group's decisions visibly
+produce an artefact, and it is the thing a judge can be shown in fifteen seconds: vote the Merapi jeep in, watch the
+afternoon disappear from the plan and lunch move onto the road.
+
+**Found by testing, not by looking.** The schedule builder was rendered headlessly and driven through all five days
+and both vote states. Four real bugs came out of it and were fixed before deploying:
+
+| Bug                                                            | Fix                                                         |
+| -------------------------------------------------------------- | ------------------------------------------------------------- |
+| Lunch at 12:30-13:30 overlapped an afternoon starting at 13:00 | Lunch is now fitted into the gap and shortened if it will not fit |
+| Day 5 scheduled dinner at 19:00 after a 14:20 flight home      | A fixed departure now ends the day; nothing is placed after it   |
+| The bed appeared at 23:54 on a night that ran to 01:00         | The bed follows the last item, wrapping past midnight correctly |
+| Arrival and departure printed 10:42 and 14:18                  | Decimal hours corrected to 10:40 and 14:20                     |
 
 **Live** at https://codenection-travel-planner.vercel.app
 
