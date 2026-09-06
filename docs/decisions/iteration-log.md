@@ -16,6 +16,7 @@ is what earns the marks.
 | 2026-09-02 | Group became the default; solo hides the group and discretion panels         | The problem statement names groups first, and solo is the narrower case                   | Jin Siang                                       |
 | 2026-09-02 | Votes became a draft with an explicit Apply step                             | Live re-planning on every toggle made the trip feel unstable while the group was deciding | Jin Siang                                       |
 | 2026-09-04 | Travel-planner notes moved here; the other `playground` ideas stayed put     | Those ideas predate the 30 Aug problem-statement release and cannot be entered as ours    | Workspace audit                                 |
+| 2026-09-06 | A second mockup: a slide-deck layout with five sections, and the map handed to Google Maps | The custom map was the biggest cost and the least novel part; a deck with pages reads faster in a demo | Jin Siang, `../inbox/2026-09-06-slides-prototype-dump.md` |
 
 ## Longer Entries
 
@@ -79,3 +80,26 @@ different event's material.
 **What we gave up by doing this.** Breadth Of Exploration (3%) asks for several distinct ideas compared, and this branch
 has one. That is a real and knowing cost. The fix is cheap and still available: generate genuinely new alternatives
 here, dated now, which are worth more than the ineligible ones would have been anyway.
+
+### 2026-09-06 - The deck layout, and what it quietly drops
+
+**Before.** One mockup: a map on the right, a control panel on the left, and the round-trip strategy, the vote, the
+ranked bench and the simulated disruption all living in that panel.
+
+**After.** A second mockup, `../prototype/travel-planner-slides.html`, laid out like a slide deck. Five sections down
+the left: the trip with a poster and the itinerary; "where should we go", a date strip over a grid of places that are
+still just Option 1 to Option 8; "take care", a page of local cautions plus a news feed for the trip; photo spots with
+the angle and the time of day; and a route page that is one button opening the whole trip in Google Maps.
+
+**Why.** Asked for directly. The reasons that hold up on inspection: a deck is what a judge watches in a 3-5 minute
+video anyway, and handing the map to Google Maps removes the metered map API that was the honest feasibility risk in
+the idea log. A plain directions link needs no key and works today.
+
+**What it drops, and this is the disagreement recorded.** The round-trip choice - the one claim the competitor scan
+left standing - has no home in the deck. Neither do the vote, the bench, or the automatic substitution when a stop
+closes, which together were the answer to the brief's "re-planning when something changes mid-trip". The "take care"
+news page gestures at disruption but a person updates it by hand; nothing re-plans. Two of the new pages, cautions
+and photo angles, are not in the brief's four capabilities and neither has a data source yet. If this layout is the
+one we keep, Originality (7%) needs the round-trip choice put back on the trip page, and the news page needs to do
+something to the itinerary rather than sit beside it. Not resolved today; both mockups stay.
+

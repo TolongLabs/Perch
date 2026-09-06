@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travel planner - slide-deck mockup</title>
+<style>
+  :root{
+    --rail:#1f2430; --rail-ink:#c9cfda; --rail-line:#2c3340; --rail-on:#3b82f6;
+    --bg:#e9ecf1; --slide:#ffffff; --ink:#1b1f27; --dim:#6b7280; --line:#e3e6ec;
+    --accent:#2563eb; --accent-soft:#dbe7ff; --warn:#b45309; --warn-soft:#fff1d6; --good:#15803d; --good-soft:#dcfce7;
+    --bad:#b91c1c; --bad-soft:#fee2e2;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:15px/1.5 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);height:100vh;overflow:hidden}
+  .app{display:flex;height:100vh}
+
+  /* left rail, like a slide sorter */
+  .rail{width:250px;flex:0 0 250px;background:var(--rail);color:var(--rail-ink);display:flex;flex-direction:column;border-right:1px solid var(--rail-line)}
+  .rail h1{font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin:0;padding:16px 16px 6px;color:#8b93a3}
+  .rail .trip{padding:0 16px 14px;font-size:14px;color:#fff;font-weight:600;border-bottom:1px solid var(--rail-line)}
+  .rail ol{list-style:none;margin:0;padding:10px;overflow-y:auto;flex:1}
+  .rail li{display:flex;gap:10px;align-items:stretch;padding:8px;border-radius:8px;cursor:pointer;margin-bottom:6px;border:1px solid transparent}
+  .rail li:hover{background:#262c3a}
+  .rail li[aria-current=true]{background:#262c3a;border-color:var(--rail-on)}
+  .rail .num{font-size:12px;color:#8b93a3;width:16px;padding-top:4px}
+  .rail .thumb{flex:1;background:#fff;border-radius:4px;height:64px;padding:6px 8px;color:#1b1f27;font-size:11px;line-height:1.25;overflow:hidden;position:relative}
+  .rail .thumb b{display:block;font-size:11px;margin-bottom:2px}
+  .rail .thumb .bar{height:4px;background:#e3e6ec;border-radius:2px;margin-top:3px}
+  .rail .thumb .bar.w1{width:80%}.rail .thumb .bar.w2{width:55%}.rail .thumb .bar.w3{width:70%}
+  .rail .thumb .swatch{position:absolute;right:6px;top:6px;width:22px;height:22px;border-radius:3px}
+  .rail .foot{padding:10px 16px;font-size:11px;color:#8b93a3;border-top:1px solid var(--rail-line)}
+  .rail .foot kbd{background:#2c3340;padding:1px 5px;border-radius:3px;font-family:inherit}
+
+  /* the slide */
+  .stage{flex:1;min-width:0;overflow-y:auto;padding:28px}
+  .slide{background:var(--slide);border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.08),0 12px 30px rgba(0,0,0,.06);max-width:1080px;margin:0 auto;padding:36px 44px 44px;display:none;min-height:calc(100vh - 56px)}
+  .slide[data-on]{display:block}
+  .slide h2{margin:0 0 4px;font-size:28px;letter-spacing:-.01em}
+  .slide .lead{color:var(--dim);margin:0 0 24px;font-size:15px}
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-weight:600;vertical-align:middle}
+  .tag.warn{background:var(--warn-soft);color:var(--warn)}
+  .tag.good{background:var(--good-soft);color:var(--good)}
+  .tag.bad{background:var(--bad-soft);color:var(--bad)}
+  .sample{font-size:12px;color:var(--dim);border-left:3px solid var(--line);padding-left:10px;margin-top:28px}
+
+  /* 1 - poster + itinerary */
+  .hero{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:start}
+  .poster{border-radius:14px;overflow:hidden;aspect-ratio:3/4;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.15)}
+  .poster svg{width:100%;height:100%;display:block}
+  .itin{list-style:none;margin:0;padding:0}
+  .itin li{display:grid;grid-template-columns:78px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+  .itin .day{font-weight:700;font-size:13px}
+  .itin .day small{display:block;color:var(--dim);font-weight:400}
+  .itin .stops{font-size:14px}
+  .itin .stops span{color:var(--dim)}
+  .facts{display:flex;gap:18px;margin:0 0 18px;padding:0;list-style:none;font-size:13px;color:var(--dim)}
+  .facts b{display:block;color:var(--ink);font-size:18px}
+
+  /* 2 - calendar + options */
+  .dates{display:grid;grid-template-columns:repeat(14,1fr);gap:6px;margin-bottom:8px}
+  .dates button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 2px;cursor:pointer;font:inherit;font-size:12px;line-height:1.2}
+  .dates button small{display:block;color:var(--dim);font-size:10px}
+  .dates button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .dates button[aria-pressed=true] small{color:#dbe7ff}
+  .datehint{font-size:13px;color:var(--dim);margin-bottom:22px}
+  .options{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .opt{border:1px solid var(--line);border-radius:12px;padding:0;overflow:hidden;cursor:pointer;background:#fff;text-align:left;font:inherit;color:inherit}
+  .opt .pic{height:92px;background:linear-gradient(135deg,#cfd8e3,#eef2f7);display:flex;align-items:center;justify-content:center;color:#8b93a3;font-size:12px}
+  .opt .body{padding:10px 12px}
+  .opt b{display:block;font-size:14px}
+  .opt .meta{font-size:12px;color:var(--dim)}
+  .opt[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+  .opt[aria-pressed=true] .pic{background:linear-gradient(135deg,#bfd3ff,#e3ecff);color:var(--accent)}
+  .picked{margin-top:18px;font-size:13px;color:var(--dim)}
+
+  /* 3 - take care + news */
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+  .care{list-style:none;margin:0;padding:0}
+  .care li{padding:12px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:10px}
+  .care b{display:block;font-size:14px}
+  .care p{margin:4px 0 0;font-size:13px;color:#374151}
+  .news{list-style:none;margin:0;padding:0}
+  .news li{padding:10px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:86px 1fr;gap:12px;font-size:13px}
+  .news time{color:var(--dim);font-size:12px;padding-top:2px}
+  .news b{display:block;font-size:14px}
+  .add{display:flex;gap:8px;margin-top:12px}
+  .add input{flex:1;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px}
+  .btn{font:inherit;font-weight:600;background:var(--accent);color:#fff;border:0;border-radius:8px;padding:8px 14px;cursor:pointer}
+  .btn.big{font-size:18px;padding:16px 26px;border-radius:12px;display:inline-flex;gap:10px;align-items:center}
+  .btn.ghost{background:#fff;color:var(--accent);border:1px solid var(--accent)}
+
+  /* 4 - photo spots */
+  .shots{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .shot{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .shot .frame{height:120px;position:relative;background:linear-gradient(180deg,#dbe7ff 0%,#eef2f7 60%,#cfd8e3 100%)}
+  .shot .frame::after{content:"";position:absolute;inset:14px;border:1px dashed #8b93a3;border-radius:4px}
+  .shot .frame .cam{position:absolute;font-size:11px;background:#1b1f27;color:#fff;padding:2px 7px;border-radius:999px}
+  .shot .body{padding:10px 12px;font-size:13px}
+  .shot b{display:block;font-size:14px}
+  .shot .row{display:flex;justify-content:space-between;color:var(--dim);font-size:12px;margin-top:6px}
+
+  /* 5 - route */
+  .route{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+  .stops{list-style:none;margin:0;padding:0;counter-reset:s}
+  .stops li{counter-increment:s;display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .stops li::before{content:counter(s);width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:0 0 24px}
+  .stops small{display:block;color:var(--dim);font-size:12px}
+  .mapbox{border:1px solid var(--line);border-radius:12px;padding:24px;background:linear-gradient(135deg,#f5f7fa,#e9eef5);text-align:center}
+  .mapbox p{color:var(--dim);font-size:13px;margin:12px 0 0}
+  .mapbox code{font-size:11px;color:var(--dim);word-break:break-all;display:block;margin-top:14px;text-align:left;background:#fff;padding:8px;border-radius:6px;border:1px solid var(--line)}
+  @media (max-width:900px){.hero,.two,.route{grid-template-columns:1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <nav class="rail" aria-label="Sections">
+    <h1>Trip book</h1>
+    <div class="trip">Yogyakarta, 5 days<br><span style="font-weight:400;color:#8b93a3;font-size:12px">TolongLabs · 4 people · sample data</span></div>
+    <ol id="rail">
+      <li data-go="1" aria-current="true"><span class="num">1</span><div class="thumb"><b>The trip</b><span class="swatch" style="background:linear-gradient(#f59e0b,#7c2d12)"></span><div class="bar w1"></div><div class="bar w2"></div><div class="bar w3"></div></div></li>
+      <li data-go="2"><span class="num">2</span><div class="thumb"><b>Where should we go</b><div class="bar w3"></div><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="3"><span class="num">3</span><div class="thumb"><b>Take care</b><span class="swatch" style="background:#fff1d6"></span><div class="bar w2"></div><div class="bar w1"></div></div></li>
+      <li data-go="4"><span class="num">4</span><div class="thumb"><b>Photo spots</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w3"></div></div></li>
+      <li data-go="5"><span class="num">5</span><div class="thumb"><b>The route</b><span class="swatch" style="background:#2563eb"></span><div class="bar w2"></div></div></li>
+    </ol>
+    <div class="foot"><kbd>←</kbd> <kbd>→</kbd> to move between sections. Mockup, invented data.</div>
+  </nav>
+
+  <main class="stage">
+
+    <!-- 1 -->
+    <section class="slide" id="s1" data-on>
+      <h2>Yogyakarta, 12 to 16 November <span class="tag">itinerary</span></h2>
+      <p class="lead">Fly KUL to YIA and back. Temples first, volcano on the middle day, beach and city at the end.</p>
+      <div class="hero">
+        <div class="poster" aria-label="Trip poster">
+          <svg viewBox="0 0 300 400" role="img" aria-label="Poster: Borobudur at sunrise">
+            <defs>
+              <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e1b4b"/><stop offset=".45" stop-color="#c2410c"/><stop offset=".7" stop-color="#fbbf24"/><stop offset="1" stop-color="#fde68a"/></linearGradient>
+              <linearGradient id="haze" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fde68a" stop-opacity="0"/><stop offset="1" stop-color="#fde68a" stop-opacity=".9"/></linearGradient>
+            </defs>
+            <rect width="300" height="400" fill="url(#sky)"/>
+            <circle cx="205" cy="225" r="34" fill="#fff7ed" opacity=".95"/>
+            <path d="M0 300 Q60 250 120 270 T300 250 V400 H0Z" fill="#7c2d12" opacity=".75"/>
+            <path d="M0 330 Q80 290 150 310 T300 300 V400 H0Z" fill="#431407" opacity=".85"/>
+            <!-- stupa silhouette -->
+            <g fill="#1c1917">
+              <rect x="70" y="300" width="160" height="14"/>
+              <rect x="85" y="286" width="130" height="14"/>
+              <rect x="100" y="272" width="100" height="14"/>
+              <rect x="115" y="258" width="70" height="14"/>
+              <path d="M150 222 q-22 6 -22 36 h44 q0 -30 -22 -36z"/>
+              <rect x="146" y="206" width="8" height="18"/>
+              <circle cx="120" cy="254" r="6"/><circle cx="180" cy="254" r="6"/>
+              <circle cx="108" cy="268" r="6"/><circle cx="192" cy="268" r="6"/>
+            </g>
+            <rect width="300" height="400" fill="url(#haze)"/>
+            <text x="20" y="52" fill="#fff" font-family="Georgia, serif" font-size="30" font-weight="700">YOGYA</text>
+            <text x="20" y="78" fill="#fde68a" font-family="ui-sans-serif, system-ui" font-size="12" letter-spacing="3">FIVE DAYS · FOUR OF US</text>
+            <text x="20" y="372" fill="#431407" font-family="ui-sans-serif, system-ui" font-size="11">12 – 16 NOV 2026 · BUDGET RM 1,450 EACH</text>
+          </svg>
+        </div>
+        <div>
+          <ul class="facts">
+            <li><b>5</b> days</li>
+            <li><b>6</b> stops</li>
+            <li><b>RM 1,450</b> per person</li>
+            <li><b>4</b> travellers</li>
+          </ul>
+          <ol class="itin">
+            <li><div class="day">Day 1<small>Thu 12 Nov</small></div><div class="stops">Land at YIA 10:40 · check in Prawirotaman · <span>evening</span> Malioboro Street</div></li>
+            <li><div class="day">Day 2<small>Fri 13 Nov</small></div><div class="stops">04:30 Borobudur sunrise · Mendut · <span>afternoon</span> rest</div></li>
+            <li><div class="day">Day 3<small>Sat 14 Nov</small></div><div class="stops">Merapi jeep from Kaliadem · <span>evening</span> Prambanan Ramayana ballet</div></li>
+            <li><div class="day">Day 4<small>Sun 15 Nov</small></div><div class="stops">Taman Sari water castle · Kraton · <span>sunset</span> Parangtritis Beach</div></li>
+            <li><div class="day">Day 5<small>Mon 16 Nov</small></div><div class="stops">Bakpia run · YIA 14:20 home</div></li>
+          </ol>
+        </div>
+      </div>
+      <p class="sample">Sample trip. Dates, prices and the poster are placeholders so the layout can be judged.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide" id="s2">
+      <h2>Where should we go <span class="tag">dates, then places</span></h2>
+      <p class="lead">Tap the days you are free. The trip length comes from the overlap, not from a slider. Then pick places from the options below.</p>
+      <div class="dates" id="dates"></div>
+      <div class="datehint" id="datehint"></div>
+      <div class="options" id="options"></div>
+      <div class="picked" id="picked"></div>
+      <p class="sample">Places are "Option 1" to "Option 8" on purpose. Names, photos, prices and opening hours get filled in later; this page is about the shape of choosing.</p>
+    </section>
+
+    <!-- 3 -->
+    <section class="slide" id="s3">
+      <h2>Take care <span class="tag warn">before and during</span></h2>
+      <p class="lead">Things about this place that are easy to get wrong, plus a feed of what is happening there right now.</p>
+      <div class="two">
+        <div>
+          <h3 style="margin:0 0 10px;font-size:15px">Before you go</h3>
+          <ul class="care">
+            <li><b>Language <span class="tag bad">avoid</span></b><p>Do not use the word "babi" (pig) casually. In Indonesia it is a strong insult, not just an animal.</p></li>
+            <li><b>Water <span class="tag warn">note</span></b><p>Tap water is not for drinking. Bottled or boiled only, including for brushing teeth.</p></li>
+            <li><b>Temples <span class="tag warn">note</span></b><p>Shoulders and knees covered at Borobudur and Prambanan. Sarongs are lent at the gate.</p></li>
+            <li><b>Cash <span class="tag">tip</span></b><p>Small warungs and jeep drivers take cash only. Carry rupiah in small notes.</p></li>
+          </ul>
+        </div>
+        <div>
+          <h3 style="margin:0 0 10px;font-size:15px">News for this trip</h3>
+          <ul class="news" id="news">
+            <li><time>4 Sep</time><div><b>Haze advisory, Central Java <span class="tag warn">sample</span></b>Air quality worse than usual this week. Masks for the Merapi day, and check again the week before.</div></li>
+            <li><time>1 Sep</time><div><b>Borobudur climbing quota <span class="tag">sample</span></b>Limited climbers per session. Book the sunrise slot ahead, do not turn up and hope.</div></li>
+            <li><time>28 Aug</time><div><b>Parangtritis rip current warning <span class="tag bad">sample</span></b>Swimming is not advised. Sunset from the sand is the plan, not the sea.</div></li>
+          </ul>
+          <div class="add">
+            <input id="newsin" placeholder="Add a note for the group, e.g. road closure near Kaliadem">
+            <button class="btn" id="newsadd">Add</button>
+          </div>
+        </div>
+      </div>
+      <p class="sample">Every entry above is a sample written to show the page. A real build would pull the feed from a source and mark what a person added by hand.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="slide" id="s4">
+      <h2>Photo spots <span class="tag">where to stand</span></h2>
+      <p class="lead">For each stop: the angle, the time of day, and what to avoid. Placeholders until we have been there or found a source.</p>
+      <div class="shots">
+        <div class="shot"><div class="frame"><span class="cam" style="left:14px;bottom:14px">camera here</span></div><div class="body"><b>Borobudur, east stairs</b>Shoot west across the stupas as the sun comes up behind you.<div class="row"><span>05:30 – 06:15</span><span>Option 1</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="right:14px;top:14px">camera here</span></div><div class="body"><b>Merapi, Kaliadem bunker</b>Low angle, jeep in the foreground, summit behind. Skip if hazy.<div class="row"><span>07:00 – 09:00</span><span>Option 2</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="left:14px;top:14px">camera here</span></div><div class="body"><b>Prambanan, south lawn</b>All three main towers in frame from the lawn, not the courtyard.<div class="row"><span>16:30 – 17:30</span><span>Option 3</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="right:14px;bottom:14px">camera here</span></div><div class="body"><b>Taman Sari, bathing pool</b>From the upper walkway, pool centred, before the tour groups.<div class="row"><span>08:00 – 09:00</span><span>Option 4</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="left:14px;bottom:14px">camera here</span></div><div class="body"><b>Parangtritis, dunes</b>Sunset silhouettes on the sand dunes west of the beach.<div class="row"><span>17:30 – 18:15</span><span>Option 5</span></div></div></div>
+        <div class="shot"><div class="frame"><span class="cam" style="right:14px;top:14px">camera here</span></div><div class="body"><b>Malioboro, becak row</b>Night, long exposure, from the Tugu end looking south.<div class="row"><span>20:00 – 22:00</span><span>Option 6</span></div></div></div>
+      </div>
+      <p class="sample">Angles and times are illustrative. None of them has been checked on site.</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="slide" id="s5">
+      <h2>The route <span class="tag good">opens in Google Maps</span></h2>
+      <p class="lead">The whole trip as one set of directions. No map of our own, no API key. One tap, then it is in the app everyone already has.</p>
+      <div class="route">
+        <ol class="stops" id="stops"></ol>
+        <div class="mapbox">
+          <a class="btn big" id="maplink" href="#" target="_blank" rel="noopener">Open the trip route in Google Maps ↗</a>
+          <p>Opens a new tab with every stop as a waypoint, in itinerary order, driving mode.</p>
+          <code id="mapurl"></code>
+        </div>
+      </div>
+      <p class="sample">The link is real and works today; it is a plain Google Maps directions URL built from the stop names.</p>
+    </section>
+
+  </main>
+</div>
+
+<script>
+(function(){
+  // ---- navigation ----
+  var cur = 1, N = 5;
+  function go(n){
+    cur = Math.max(1, Math.min(N, n));
+    document.querySelectorAll('.slide').forEach(function(s){ s.removeAttribute('data-on'); });
+    document.getElementById('s'+cur).setAttribute('data-on','');
+    document.querySelectorAll('#rail li').forEach(function(li){ li.setAttribute('aria-current', li.dataset.go==String(cur)); });
+    document.querySelector('.stage').scrollTop = 0;
+  }
+  document.querySelectorAll('#rail li').forEach(function(li){ li.addEventListener('click', function(){ go(+li.dataset.go); }); });
+  document.addEventListener('keydown', function(e){
+    if (e.target.tagName === 'INPUT') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') go(cur+1);
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')   go(cur-1);
+  });
+
+  // ---- 2: dates ----
+  var start = new Date(2026, 10, 9); // 9 Nov 2026
+  var dayNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var free = {12:1,13:1,14:1,15:1,16:1};
+  var datesEl = document.getElementById('dates');
+  for (var i=0;i<14;i++){
+    var d = new Date(start); d.setDate(start.getDate()+i);
+    var b = document.createElement('button');
+    b.setAttribute('aria-pressed', !!free[d.getDate()]);
+    b.dataset.d = d.getDate();
+    b.innerHTML = d.getDate() + ' Nov<small>'+dayNames[d.getDay()]+'</small>';
+    b.addEventListener('click', function(){
+      var on = this.getAttribute('aria-pressed') === 'true';
+      this.setAttribute('aria-pressed', !on);
+      hint();
+    });
+    datesEl.appendChild(b);
+  }
+  function hint(){
+    var on = [].slice.call(datesEl.querySelectorAll('[aria-pressed=true]')).map(function(b){ return +b.dataset.d; }).sort(function(a,b){return a-b;});
+    var el = document.getElementById('datehint');
+    if (!on.length){ el.textContent = 'No days picked yet.'; return; }
+    // longest consecutive run
+    var best=[on[0]], run=[on[0]];
+    for (var i=1;i<on.length;i++){ if (on[i]===on[i-1]+1) run.push(on[i]); else run=[on[i]]; if (run.length>best.length) best=run; }
+    el.textContent = 'Everyone is free ' + best[0] + ' to ' + best[best.length-1] + ' Nov, so this is a ' + best.length + '-day trip. ' + (best.length<on.length ? 'Days outside that run are ignored.' : '');
+  }
+  hint();
+
+  // ---- 2: options ----
+  var kinds = ['temple','volcano','beach','city','food','museum','village','market'];
+  var optEl = document.getElementById('options');
+  for (var k=1;k<=8;k++){
+    var o = document.createElement('button');
+    o.className = 'opt'; o.setAttribute('aria-pressed', k<=3);
+    o.innerHTML = '<div class="pic">photo later</div><div class="body"><b>Option '+k+'</b><div class="meta">'+kinds[k-1]+' · details to be added</div></div>';
+    o.addEventListener('click', function(){
+      this.setAttribute('aria-pressed', this.getAttribute('aria-pressed')!=='true'); picked();
+    });
+    optEl.appendChild(o);
+  }
+  function picked(){
+    var n = optEl.querySelectorAll('[aria-pressed=true]').length;
+    document.getElementById('picked').textContent = n + ' of 8 shortlisted. The itinerary on page 1 would be rebuilt from these.';
+  }
+  picked();
+
+  // ---- 3: news ----
+  document.getElementById('newsadd').addEventListener('click', function(){
+    var inp = document.getElementById('newsin'); var v = inp.value.trim(); if (!v) return;
+    var li = document.createElement('li');
+    var t = new Date();
+    li.innerHTML = '<time>'+t.getDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][t.getMonth()]+'</time><div><b>Group note <span class="tag good">you</span></b></div>';
+    li.lastChild.appendChild(document.createTextNode(v));
+    document.getElementById('news').prepend(li);
+    inp.value = '';
+  });
+
+  // ---- 5: route ----
+  var stops = [
+    ['Yogyakarta International Airport', 'Day 1, arrive'],
+    ['Malioboro Street, Yogyakarta', 'Day 1, evening'],
+    ['Borobudur Temple', 'Day 2, sunrise'],
+    ['Kaliadem Bunker, Merapi', 'Day 3, morning'],
+    ['Prambanan Temple', 'Day 3, evening'],
+    ['Taman Sari Water Castle', 'Day 4, morning'],
+    ['Parangtritis Beach', 'Day 4, sunset'],
+    ['Yogyakarta International Airport', 'Day 5, depart']
+  ];
+  var ol = document.getElementById('stops');
+  stops.forEach(function(s){ var li=document.createElement('li'); li.innerHTML='<div>'+s[0]+'<small>'+s[1]+'</small></div>'; ol.appendChild(li); });
+  var enc = function(s){ return encodeURIComponent(s); };
+  var url = 'https://www.google.com/maps/dir/?api=1'
+    + '&origin=' + enc(stops[0][0])
+    + '&destination=' + enc(stops[stops.length-1][0])
+    + '&waypoints=' + stops.slice(1,-1).map(function(s){return enc(s[0]);}).join('%7C')
+    + '&travelmode=driving';
+  document.getElementById('maplink').href = url;
+  document.getElementById('mapurl').textContent = url;
+})();
+</script>
+</body>
+</html>
