@@ -7,6 +7,8 @@ to run.
 | ----------------------------------------------------------- | ---------- | ----------------------------------------------------------------------- |
 | [`travel-planner.html`](travel-planner.html)                | 1-2 Sept   | Map on the right, controls on the left. Holds the round-trip choice, the vote, the bench and the simulated disruption |
 | [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck, six sections: the trip, plan-it-together with dates, slot voting and hotels, cautions and news, photo spots, a Google Maps route button, what is worth buying, and a read-only final plan |
+| [`storybook-a-one-book.html`](storybook-a-one-book.html) | 6 Sept | **Fork draft A.** One book in two states. Voting happens on the book's own pages; finalising re-presents the same object as a flipbook; a closure repairs the page you are reading |
+| [`storybook-b-planner-then-book.html`](storybook-b-planner-then-book.html) | 6 Sept | **Fork draft B.** A planner page the group votes on, then a read-only flipbook generated on finalise. Editing means going back; a closure blocks the reprint until Day 3 is re-settled |
 
 The second one drops what the first one argued for; that is deliberate and unresolved, and the reasoning is in
 [`../decisions/iteration-log.md`](../decisions/iteration-log.md) under 6 September. Neither is the design - screens
@@ -66,3 +68,28 @@ The identical file is on the `feat/travel-planner-prototype` branch of the produ
 
 **Two copies means two copies can drift.** If the mockup changes, change it there and copy it here, or the notebook
 starts citing a screen that no longer exists.
+
+## The Two Fork Drafts
+
+`storybook-a-*` and `storybook-b-*` exist to settle one question by eye rather than by argument: **is the storybook one
+surface in two states, or a planner that outputs a read-only book?** The reasoning, the five items it depends on and the
+comparison table are in [`../decisions/storybook-shape.md`](../decisions/storybook-shape.md).
+
+They are deliberately identical apart from that fork. Same Yogyakarta sample data, same vote counts, same bench, same
+visual tokens as the slide-deck mockup, and the same two buttons - finalise, and simulate a closure - so the only thing
+that differs when you flip between them is the shape.
+
+**Both are throwaway.** One gets promoted and the other stays here as a dropped direction, which is worth marks under
+Iteration And Idea Evolution. Neither is the design.
+
+**What to look at when comparing them:**
+
+| Look At | In A | In B |
+| ------- | ---- | ---- |
+| Press **Simulate: Merapi Closes** | The page you are reading rewrites itself, and the agent explains why in one sentence | A red alert says the book cannot reprint, and hands you a four-step path back through the planner |
+| Tap a stop on a finished page | The bench slides up; swapping needs no new vote | Nothing happens. The book is output |
+| A solo traveller | Sees the book, minus vote counts | Still passes through a voting page built for groups |
+
+**Note, 6 Sept:** the deployed slide deck has meanwhile grown a read-only final-plan section of its own, which is a
+partial move toward B. Worth weighing when the fork is decided.
+
