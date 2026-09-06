@@ -152,6 +152,9 @@
   .hotelopt .tally{flex:0 0 auto;text-align:center;font-size:11px;color:var(--dim);min-width:34px}
   .hotelopt .tally i{display:block;font-style:normal;font-size:15px;font-weight:700;color:var(--ink)}
 
+  /* the route handoff, now on the final plan */
+  .routebar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:14px 0 18px}
+  .routebar .note{font-size:12px;color:var(--dim);flex:1;min-width:200px}
   /* what to expect, and the photo matcher */
   .expect{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
   .ecard{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
@@ -264,11 +267,10 @@
     <ol id="rail">
       <li data-go="1" aria-current="true"><span class="num">1</span><div class="thumb"><b>The trip</b><span class="swatch" style="background:linear-gradient(#f59e0b,#7c2d12)"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
       <li data-go="2"><span class="num">2</span><div class="thumb"><b>Plan it together</b><span class="swatch" style="background:#2563eb"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
-      <li data-go="3"><span class="num">3</span><div class="thumb"><b>The route</b><span class="swatch" style="background:#2563eb"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
-      <li data-go="4"><span class="num">4</span><div class="thumb"><b>Photo spots</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
-      <li data-go="5"><span class="num">5</span><div class="thumb"><b>Where to shop</b><span class="swatch" style="background:#15803d"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
-      <li data-go="6"><span class="num">6</span><div class="thumb"><b>Take care</b><span class="swatch" style="background:#fff1d6"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
-      <li data-go="7"><span class="num">7</span><div class="thumb"><b>The final plan</b><span class="swatch" style="background:#111827"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="3"><span class="num">3</span><div class="thumb"><b>Photo spots</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="4"><span class="num">4</span><div class="thumb"><b>Where to shop</b><span class="swatch" style="background:#15803d"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="5"><span class="num">5</span><div class="thumb"><b>Take care</b><span class="swatch" style="background:#fff1d6"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="6"><span class="num">6</span><div class="thumb"><b>The final plan</b><span class="swatch" style="background:#111827"></span><div class="bar w1"></div><div class="bar w2"></div></div></li>
     </ol>
     <div class="foot"><kbd>←</kbd> <kbd>→</kbd> to move between sections. Mockup, invented data.</div>
   </nav>
@@ -368,20 +370,6 @@
     </section>
 
     <section class="slide" id="s3">
-      <h2>The route <span class="tag good">opens in Google Maps</span></h2>
-      <p class="lead">The whole trip as one set of directions. No map of our own, no API key. One tap, then it is in the app everyone already has.</p>
-      <div class="route">
-        <ol class="stops" id="stops"></ol>
-        <div class="mapbox">
-          <a class="btn big" id="maplink" href="#" target="_blank" rel="noopener">Open the trip route in Google Maps ↗</a>
-          <p>Opens a new tab with every stop as a waypoint, in itinerary order, driving mode.</p>
-          <code id="mapurl"></code>
-        </div>
-      </div>
-      <p class="sample">The link is real and works today; it is a plain Google Maps directions URL built from the stop names.</p>
-    </section>
-
-    <section class="slide" id="s4">
       <h2>Photo spots <span class="tag">where to stand</span></h2>
       <p class="lead">For each stop: the angle, the time of day, and what to avoid. Placeholders until we have been there or found a source.</p>
       <div class="shots">
@@ -395,7 +383,7 @@
       <p class="sample">Angles and times are illustrative. None of them has been checked on site.</p>
     </section>
 
-    <section class="slide" id="s5">
+    <section class="slide" id="s4">
       <h2>Where to shop <span class="tag good">rated, then priced</span></h2>
       <p class="lead">Open a street or market to see how it actually scores, and which ones are only there because tourists walk past. The last one is the gift list.</p>
 
@@ -411,7 +399,7 @@
       <p class="sample">Scores, review counts and prices are all invented. The ratios are plausible; the figures are not sourced.</p>
     </section>
 
-    <section class="slide" id="s6">
+    <section class="slide" id="s5">
       <h2>Take care <span class="tag warn">before and during</span></h2>
       <p class="lead">Things about this place that are easy to get wrong, plus a feed of what is happening there right now.</p>
       <div class="two">
@@ -440,15 +428,16 @@
       <p class="sample">Every entry above is a sample written to show the page. A real build would pull the feed from a source and mark what a person added by hand.</p>
     </section>
 
-    <section class="slide" id="s7">
+    <section class="slide" id="s6">
       <h2>The final plan <span class="tag good">what the group voted for</span></h2>
-      <p class="lead">No choices left on this page. This is the itinerary the votes produced, hour by hour, with meals dropped into the gaps. Hover a place to see it, click to open it in Google Maps.</p>
+      <p class="lead">No choices left on this page. This is the itinerary the votes produced, hour by hour, with meals dropped into the gaps. Hover a place to see it, or send the whole thing to Google Maps.</p>
 
       <div class="daytabs" id="fdaytabs"></div>
       <div class="daymap" id="fdaymap"></div>
+      <div class="routebar" id="routebar"></div>
       <div id="finalday"></div>
 
-      <p class="sample">Times are derived from the winning options on page 2, so changing a vote there changes this page. The pictures are drawn placeholders, not photographs of the real places.</p>
+      <p class="sample">Times and both route links are derived from the winning options on page 2, so changing a vote there changes this page. The pictures are drawn placeholders, not photographs of the real places.</p>
     </section>
 
   </main>
@@ -512,25 +501,6 @@
     inp.value = '';
   });
 
-  // ---- 5: route ----
-  var stops = [
-    ['Yogyakarta International Airport', 'Day 1, arrive'],
-    ['Malioboro Street, Yogyakarta', 'Day 1, evening'],
-    ['Borobudur Temple', 'Day 2, sunrise'],
-    ['Kaliadem Bunker, Merapi', 'Day 3, morning'],
-    ['Prambanan Temple', 'Day 3, evening'],
-    ['Taman Sari Water Castle', 'Day 4, morning'],
-    ['Parangtritis Beach', 'Day 4, sunset'],
-    ['Yogyakarta International Airport', 'Day 5, depart']
-  ];
-  var ol = document.getElementById('stops');
-  stops.forEach(function(s){ var li=document.createElement('li'); li.innerHTML='<div>'+s[0]+'<small>'+s[1]+'</small></div>'; ol.appendChild(li); });
-  var enc = function(s){ return encodeURIComponent(s); };
-  var url = 'https://www.google.com/maps/dir/?api=1'
-    + '&origin=' + enc(stops[0][0])
-    + '&destination=' + enc(stops[stops.length-1][0])
-    + '&waypoints=' + stops.slice(1,-1).map(function(s){return enc(s[0]);}).join('%7C')
-    + '&travelmode=driving';
   // ---- 2: what to do today ----
   // hours are 24h decimals. "fixed" options cannot be voted away.
   var DAYS = [
@@ -1149,6 +1119,53 @@
     return { items: out, eaten: eaten };
   }
 
+  // ---- the route handoff, built from whatever is winning ----
+  // Google Maps' directions URL takes an origin, a destination and up to 9 waypoints.
+  var MAX_WAYPOINTS = 9;
+
+  function stopsFor(dayIdx){
+    var out = [];
+    schedule(dayIdx).items.forEach(function(it){
+      if (!COORD[it.what]) return;
+      var name = QUERY[it.what] || it.what;
+      if (!out.length || out[out.length - 1] !== name) out.push(name);
+    });
+    return out;
+  }
+  // the trip-level link is about shape, not turn-by-turn, so each place appears once
+  function tripStops(){
+    var out = [], seen = {};
+    DAYS.forEach(function(_, i){
+      stopsFor(i).forEach(function(n){ if (!seen[n]){ seen[n] = 1; out.push(n); } });
+    });
+    return out;
+  }
+  function dirUrl(names){
+    if (names.length < 2) return null;
+    var enc = function(n){ return encodeURIComponent(n + ', Yogyakarta, Indonesia'); };
+    var mid = names.slice(1, -1).slice(0, MAX_WAYPOINTS);
+    return 'https://www.google.com/maps/dir/?api=1'
+      + '&origin=' + enc(names[0])
+      + '&destination=' + enc(names[names.length - 1])
+      + (mid.length ? '&waypoints=' + mid.map(enc).join('%7C') : '')
+      + '&travelmode=driving';
+  }
+
+  function renderRouteBar(){
+    var host = document.getElementById('routebar');
+    if (!host) return;
+    var day = stopsFor(fDay), trip = tripStops();
+    var dUrl = dirUrl(day), tUrl = dirUrl(trip);
+    var dropped = Math.max(0, trip.length - 2 - MAX_WAYPOINTS);
+    host.innerHTML =
+      (dUrl ? '<a class="btn" href="' + dUrl + '" target="_blank" rel="noopener">Open ' + DAYS[fDay].label + ' in Google Maps \u2197</a>' : '')
+      + (tUrl ? '<a class="btn ghost" href="' + tUrl + '" target="_blank" rel="noopener">Open the whole trip \u2197</a>' : '')
+      + '<span class="note">' + day.length + ' stops today, ' + trip.length + ' distinct places across the trip. '
+      + (dropped ? 'Google Maps takes 9 waypoints, so the whole-trip link stops ' + dropped + ' short - the per-day link is the complete one.'
+                 : 'Real links, no API key, opens in the app everyone already has.')
+      + '</span>';
+  }
+
   var fDay = 2;
   function renderFinalTabs(){
     var el = document.getElementById('fdaytabs'); el.innerHTML = '';
@@ -1184,6 +1201,7 @@
         + '<div class="meta">' + (it.kind === 'bed' ? (it.sub || 'Tonight') : (it.kind === 'meal' ? 'Kept clear' : 'Voted in by the group')) + '</div></div></li>';
     });
     renderDayMap('fdaymap', fDay);
+    renderRouteBar();
     host.innerHTML = html + '</ul>';
 
     host.querySelectorAll('.place').forEach(function(a){

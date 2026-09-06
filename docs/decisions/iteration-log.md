@@ -42,6 +42,7 @@ is what earns the marks.
 | 2026-09-06 | A schematic day map on both the planner and the final plan | Nothing showed how far a day actually spreads, so a day could be voted into three hours of driving | Jin Siang |
 | 2026-09-06 | A "what to expect" strip per day: a drawn view, what you will see, and the light window | The plan said where and when but never what it would look like when you got there | Jin Siang |
 | 2026-09-06 | A photo matcher that reads EXIF in the browser and names the stop, the bearing and the shot | Asked for; and it is the first feature in the mockup that genuinely works rather than being drawn | Jin Siang |
+| 2026-09-06 | "The route" deleted as a page and merged into the final plan | It was one button and a stop list, and the list was hardcoded so it ignored every vote | Jin Siang |
 
 ## Longer Entries
 
@@ -430,6 +431,33 @@ than a spot.** That is a better answer to "how would you really do this" than a 
 
 **What it does to page 4.** Photo spots is now the weaker copy of something this page does properly. It should either
 fold into the expect strip or go. Not resolved today.
+
+**Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - The route page deleted, and the bug it was hiding
+
+**Before.** Seven pages, one of which was "The route": a numbered list of eight stops and a button opening them in
+Google Maps.
+
+**After.** Six pages. The button moved onto the final plan, where the itinerary already lives.
+
+**The reason this was the right call is worse than "it was a thin page".** That stop list was **hardcoded**. It was
+written on 6 September when the deck had no voting in it, and it was never rewired when the slots arrived. So the
+route page confidently showed Borobudur, Kaliadem and Parangtritis regardless of what the group had actually voted
+for. **A judge clicking it after changing a vote would have found the deck contradicting itself.**
+
+**What replaced it.** Two derived links on the final plan:
+
+- **Open Day N in Google Maps**, built from that day's winning stops, in order, complete
+- **Open the whole trip**, built from every distinct place across all five days
+
+Both rebuild when a vote changes. Google Maps' directions URL accepts an origin, a destination and **nine waypoints**,
+and the trip has thirteen distinct places, so the whole-trip link stops two short. The page says so in as many words
+and points at the per-day link as the complete one, rather than quietly truncating.
+
+**What this leaves.** Six pages: the trip, plan it together, photo spots, where to shop, take care, the final plan.
+**Photo spots is now the weakest of them** and does less than the "what to expect" strip on page 2 already does. That
+question is still open from the last change.
 
 **Live** at https://codenection-travel-planner.vercel.app
 
