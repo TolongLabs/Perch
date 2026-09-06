@@ -152,6 +152,37 @@
   .hotelopt .tally{flex:0 0 auto;text-align:center;font-size:11px;color:var(--dim);min-width:34px}
   .hotelopt .tally i{display:block;font-style:normal;font-size:15px;font-weight:700;color:var(--ink)}
 
+  /* 6 - where to shop, accordion */
+  .srcnote{font-size:12px;color:#374151;background:#f6f8fb;border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin-bottom:16px}
+  .srcnote b{color:var(--ink)}
+  .acc{border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden;background:#fff}
+  .acc[open]{border-color:var(--accent);box-shadow:0 2px 10px rgba(37,99,235,.08)}
+  .acc summary{list-style:none;cursor:pointer;padding:13px 15px;display:flex;gap:14px;align-items:center}
+  .acc summary::-webkit-details-marker{display:none}
+  .acc summary:hover{background:#f7f9fc}
+  .acc .chev{flex:0 0 auto;color:var(--dim);font-size:12px;transition:transform .15s;width:12px}
+  .acc[open] .chev{transform:rotate(90deg)}
+  .acc .lbl{flex:1;min-width:0}
+  .acc .lbl b{display:block;font-size:14px}
+  .acc .lbl span{font-size:12px;color:var(--dim)}
+  .acc .score{flex:0 0 auto;text-align:right;white-space:nowrap}
+  .acc .score i{font-style:normal;font-size:19px;font-weight:700}
+  .acc .score em{font-style:normal;display:block;font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em}
+  .accbody{padding:0 15px 15px;border-top:1px solid var(--line);font-size:13px}
+  .srcs{list-style:none;margin:14px 0 0;padding:0}
+  .srcs li{display:grid;grid-template-columns:110px 1fr 118px;gap:12px;align-items:center;padding:5px 0;font-size:12px}
+  .srcs .bar{height:7px;background:var(--line);border-radius:4px;overflow:hidden}
+  .srcs .bar i{display:block;height:100%;border-radius:4px;background:var(--accent)}
+  .srcs .num{text-align:right;color:var(--dim)}
+  .srcs .num b{color:var(--ink)}
+  .verdict{margin-top:14px;padding:10px 12px;border-radius:8px;font-size:13px}
+  .verdict.go{background:var(--good-soft);color:#14532d}
+  .verdict.hm{background:var(--warn-soft);color:#78350f}
+  .verdict.no{background:var(--bad-soft);color:#7f1d1d}
+  .pair{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:12px}
+  .pair h4{margin:0 0 5px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
+  .pair ul{margin:0;padding-left:17px}
+  .pair li{margin-bottom:3px}
   /* 7 - the final plan */
   .tl{list-style:none;margin:0;padding:0;position:relative}
   .tl::before{content:"";position:absolute;left:75px;top:8px;bottom:8px;width:2px;background:var(--line)}
@@ -190,7 +221,7 @@
   .trustlab{font-size:11px;color:var(--dim);margin-top:4px;display:flex;justify-content:space-between}
   .stopnote{margin-top:22px;padding:14px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;font-size:13px}
   .stopnote b{display:block;margin-bottom:4px}
-  @media (max-width:900px){.hero,.two,.route,.buyhead{grid-template-columns:1fr}.slots,.hotels{grid-template-columns:1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
+  @media (max-width:900px){.hero,.two,.route,.buyhead{grid-template-columns:1fr}.slots,.hotels,.pair{grid-template-columns:1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
 </style>
 </head>
 <body>
@@ -347,29 +378,19 @@
 
 
     <section class="slide" id="s6">
-      <h2>Worth buying <span class="tag good">local price, not tourist price</span></h2>
-      <p class="lead">Most of what is sold on the tourist strip is sold again three streets away for a fraction of it. This page is what to buy, where to buy it, and roughly what it should cost before anyone quotes you a number.</p>
+      <h2>Where to shop <span class="tag good">rated, then priced</span></h2>
+      <p class="lead">Open a street or market to see how it actually scores, and which ones are only there because tourists walk past. The last one is the gift list.</p>
 
-      <div class="buyhead">
-        <div>
-          <h3 style="margin:0 0 10px;font-size:15px">What is actually worth carrying home</h3>
-          <ul class="buys" id="buys"></ul>
-          <p style="font-size:12px;color:var(--dim);margin-top:10px">Green is what a local pays. The struck-through figure is the opening price on the tourist strip.</p>
-        </div>
-        <div>
-          <h3 style="margin:0 0 10px;font-size:15px">Which market to trust</h3>
-          <ul class="mkt" id="mkt"></ul>
-        </div>
+      <div class="srcnote">
+        <b>Where the scores would come from.</b>
+        A real build would pull these from the <b>TripAdvisor Content API</b>, <b>Trip.com</b> and <b>Google Places</b>,
+        which review places. <b>Trustpilot reviews companies, not streets</b>, so it is the wrong source for this and
+        is not used. Every number below is invented for the mockup.
       </div>
 
-      <div class="stopnote">
-        <b>This is not a separate page in the real thing.</b>
-        Each market below is already a stop on the itinerary, so the buying advice attaches to the day you are there,
-        not to a page you have to remember to open. Beringharjo sits on Day 1 next to Malioboro; Kotagede is a Day 4
-        detour. Same for the cautions on page 3.
-      </div>
+      <div id="acc"></div>
 
-      <p class="sample">Every price here is invented. They are plausible ratios, not sourced figures, and a real build would need a price source or crowd-submitted reports before showing a number to anyone.</p>
+      <p class="sample">Scores, review counts and prices are all invented. The ratios are plausible; the figures are not sourced.</p>
     </section>
 
 
@@ -803,47 +824,113 @@
   renderFinalTabs();
   renderFinal();
 
-  // ---- 6: worth buying ----
-  var buys = [
+  // ---- 6: where to shop ----
+  // Invented figures. A real build reads these from the TripAdvisor Content API,
+  // Trip.com and Google Places. Trustpilot rates companies, not streets, so it is not used.
+  var SHOPS = [
+    { n:'Beringharjo Market', t:'traditional market', day:'Day 4, afternoon',
+      srcs:[['TripAdvisor',4.2,3180],['Trip.com',4.4,890],['Google Places',4.5,41200]],
+      good:['Batik by the metre and ready-made','Spices, dried goods, palm sugar','Wayang puppets upstairs'],
+      watch:['Upper floor is quieter and cheaper','Opening quote is roughly double','Cash only in most stalls'],
+      v:'go', vt:'Worth a morning. This is where the city shops, and the rating holds up across all three sources on a big sample.' },
+
+    { n:'Kotagede silver quarter', t:'craft district', day:'Day 4, morning',
+      srcs:[['TripAdvisor',4.5,760],['Trip.com',4.3,140],['Google Places',4.6,5900]],
+      good:['Filigree work, bought at the workshop','Watch the silversmiths before buying','Certificates for higher-value pieces'],
+      watch:['Small sample on Trip.com','Some workshops close on Sunday','Weigh-priced items should be weighed in front of you'],
+      v:'go', vt:'Highest rated of the lot. Buying at source means the price is close to fixed, which is why complaints are rare.' },
+
+    { n:'Pathok bakpia street', t:'food street', day:'Day 5, morning',
+      srcs:[['TripAdvisor',4.1,410],['Trip.com',4.2,220],['Google Places',4.4,12400]],
+      good:['Bakpia straight from the oven','Boxes sealed for the flight home','Free samples at most bakeries'],
+      watch:['Numbered brands, not all equal','Two-day shelf life on the fresh ones','Airport branches cost roughly triple'],
+      v:'go', vt:'Solid and consistent. Buy on the last morning, not earlier, because the fresh ones do not keep.' },
+
+    { n:'Malioboro Street stalls', t:'tourist strip', day:'Day 1, evening',
+      srcs:[['TripAdvisor',3.6,9400],['Trip.com',3.9,2100],['Google Places',4.3,98000]],
+      good:['Open late, right by the hotel','Fine for magnets and t-shirts','Good for a walk, less for a purchase'],
+      watch:['Highest review volume, lowest score','Pricing complaints dominate the negative reviews','The same batik is 2 to 3x cheaper in Beringharjo'],
+      v:'hm', vt:'Go for the street, not the shopping. The gap between review volume and score is the classic tourist-strip signature.' },
+
+    { n:'Prambanan approach-road souvenir shops', t:'attraction gate', day:'Day 3, evening',
+      srcs:[['TripAdvisor',2.4,880],['Trip.com',2.8,190],['Google Places',3.4,4100]],
+      good:['Convenient if you forgot something'],
+      watch:['Aggressive pricing is the most common complaint','No fixed prices displayed','Captive audience leaving the temple'],
+      v:'no', vt:'Skip. This is the only entry where all three sources agree it is bad, and the complaints are about price rather than quality.' },
+
+    { n:'Hotel gift shop and airport retail', t:'convenience', day:'any',
+      srcs:[['TripAdvisor',2.9,140],['Trip.com',3.1,60],['Google Places',3.6,900]],
+      good:['Open when nothing else is'],
+      watch:['Fixed prices, no bargaining','Roughly triple the market price','Thin selection'],
+      v:'no', vt:'Last resort only. Everything here exists three streets away for a third of the money.' }
+  ];
+
+  var GIFTS = [
     ['Hand-drawn batik (tulis)', 'Beringharjo Market, upper floor', 120, 380],
-    ['Silver filigree', 'Kotagede silver quarter, at the workshop', 65, 190],
+    ['Silver filigree', 'Kotagede, at the workshop', 65, 190],
     ['Bakpia pathok, box of 20', 'Pathok bakery street', 12, 32],
     ['Wayang kulit puppet', 'Beringharjo Market', 95, 260],
     ['Local coffee beans, 250g', 'Beringharjo Market', 24, 68],
     ['Salak (snake fruit), per kg', 'Any neighbourhood pasar', 5, 16]
   ];
-  var bl = document.getElementById('buys');
-  buys.forEach(function(b){
+
+  function weighted(srcs){
+    var num = 0, den = 0;
+    srcs.forEach(function(x){ var w = Math.log10(x[2] + 10); num += x[1] * w; den += w; });
+    return den ? num / den : 0;
+  }
+  // the chip is derived from the score, so the badge and the number can never disagree
+  function band(avg){ return avg >= 4.2 ? 'go' : (avg >= 3.7 ? 'hm' : 'no'); }
+  function verdictWord(v){ return v === 'go' ? 'worth it' : (v === 'hm' ? 'mixed' : 'skip'); }
+
+  var accHost = document.getElementById('acc');
+
+  SHOPS.forEach(function(m, idx){
+    var avg = weighted(m.srcs);
+    var v = band(avg);
+    var d = document.createElement('details');
+    d.className = 'acc';
+
+    var srcRows = m.srcs.map(function(x){
+      return '<li><span>' + x[0] + '</span>'
+        + '<span class="bar"><i style="width:' + (x[1] / 5 * 100).toFixed(0) + '%"></i></span>'
+        + '<span class="num"><b>' + x[1].toFixed(1) + '</b> / 5 &middot; ' + x[2].toLocaleString() + '</span></li>';
+    }).join('');
+
+    d.innerHTML =
+      '<summary><span class="chev">&#9656;</span>'
+      + '<span class="lbl"><b>Market ' + (idx + 1) + ' &middot; ' + m.n + '</b>'
+      + '<span>' + m.t + ' &middot; ' + m.day + '</span></span>'
+      + '<span class="score"><i>' + avg.toFixed(1) + '</i><em>' + verdictWord(v) + '</em></span></summary>'
+      + '<div class="accbody">'
+      + '<ul class="srcs">' + srcRows + '</ul>'
+      + '<div class="pair"><div><h4>Good for</h4><ul>' + m.good.map(function(g){ return '<li>' + g + '</li>'; }).join('') + '</ul></div>'
+      + '<div><h4>Watch for</h4><ul>' + m.watch.map(function(w){ return '<li>' + w + '</li>'; }).join('') + '</ul></div></div>'
+      + '<div class="verdict ' + v + '">' + m.vt + '</div>'
+      + '</div>';
+    accHost.appendChild(d);
+  });
+
+  // last drawer: the gift list
+  var g = document.createElement('details');
+  g.className = 'acc';
+  g.innerHTML = '<summary><span class="chev">&#9656;</span>'
+    + '<span class="lbl"><b>What is worth buying as a gift</b><span>six things, with what a local pays</span></span>'
+    + '<span class="score"><i>' + GIFTS.length + '</i><em>items</em></span></summary>'
+    + '<div class="accbody"><ul class="buys" id="buys"></ul>'
+    + '<p style="font-size:12px;color:var(--dim);margin-top:10px">Green is roughly what a local pays. The struck-through figure is the opening price on the tourist strip.</p></div>';
+  accHost.appendChild(g);
+
+  var bl = g.querySelector('#buys');
+  GIFTS.forEach(function(b){
     var li = document.createElement('li');
-    var mult = (b[3] / b[2]).toFixed(1);
     li.innerHTML = '<div><b>' + b[0] + '</b><span class="where">' + b[1] + '</span></div>'
       + '<div class="prices"><span class="fair">RM ' + b[2] + '</span>'
       + '<span class="tour">RM ' + b[3] + '</span>'
-      + '<span class="mult">' + mult + 'x on the strip</span></div>';
+      + '<span class="mult">' + (b[3] / b[2]).toFixed(1) + 'x on the strip</span></div>';
     bl.appendChild(li);
   });
 
-  var markets = [
-    ['Beringharjo Market', 'traditional', 90, 'Where the city actually shops. Batik, textiles, spices, puppets. Bargaining is expected and starting at half the quote is normal.'],
-    ['Kotagede silver quarter', 'at source', 85, 'Buy from the workshop that made it. Prices are close to fixed because the maker is standing there.'],
-    ['Pathok bakery street', 'at source', 80, 'Bakpia straight from the ovens. Cheaper and fresher than the boxed version sold at the airport.'],
-    ['Malioboro Street stalls', 'tourist strip', 35, 'Convenient, open late, and priced for people who will not walk further. Fine for a fridge magnet, bad for anything above RM 50.'],
-    ['Hotel gift shop', 'tourist strip', 15, 'Fixed high prices and no bargaining. The most expensive way to buy anything on this list.']
-  ];
-  var ml = document.getElementById('mkt');
-  markets.forEach(function(m){
-    var col = m[2] >= 70 ? 'var(--good)' : (m[2] >= 40 ? 'var(--warn)' : 'var(--bad)');
-    var lab = m[2] >= 70 ? 'Local prices' : (m[2] >= 40 ? 'Mixed' : 'Tourist pricing');
-    var li = document.createElement('li');
-    li.innerHTML = '<div class="top"><b>' + m[0] + '</b><span class="tag' + (m[2] >= 70 ? ' good' : (m[2] >= 40 ? ' warn' : ' bad')) + '">' + m[1] + '</span></div>'
-      + '<p>' + m[3] + '</p>'
-      + '<div class="trust"><i style="width:' + m[2] + '%;background:' + col + '"></i></div>'
-      + '<div class="trustlab"><span>' + lab + '</span><span>' + m[2] + '/100</span></div>';
-    ml.appendChild(li);
-  });
-
-  document.getElementById('maplink').href = url;
-  document.getElementById('mapurl').textContent = url;
 })();
 </script>
 </body>

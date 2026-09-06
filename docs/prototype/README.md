@@ -6,7 +6,7 @@ to run.
 | File                                                        | Made       | Shape                                                                   |
 | ----------------------------------------------------------- | ---------- | ----------------------------------------------------------------------- |
 | [`travel-planner.html`](travel-planner.html)                | 1-2 Sept   | Map on the right, controls on the left. Holds the round-trip choice, the vote, the bench and the simulated disruption |
-| [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck, six sections: the trip, plan-it-together with dates, slot voting and hotels, cautions and news, photo spots, a Google Maps route button, what is worth buying, and a read-only final plan |
+| [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck, six sections: the trip, plan-it-together with dates, slot voting and hotels, cautions and news, photo spots, a Google Maps route button, where to shop, and a read-only final plan |
 | [`storybook-a-one-book.html`](storybook-a-one-book.html) | 6 Sept | **Fork draft A.** One book in two states. Voting happens on the book's own pages; finalising re-presents the same object as a flipbook; a closure repairs the page you are reading |
 | [`storybook-b-planner-then-book.html`](storybook-b-planner-then-book.html) | 6 Sept | **Fork draft B.** A planner page the group votes on, then a read-only flipbook generated on finalise. Editing means going back; a closure blocks the reprint until Day 3 is re-settled |
 
@@ -53,7 +53,7 @@ Six sections. Every place, price, caution and news item in it is a sample.
 | **Take care**           | Local cautions and a dated news feed the group adds to                                  |
 | **Photo spots**         | Per stop: where to stand and the time of day                                            |
 | **The route**           | One button opening every stop as waypoints in Google Maps. **This link is real**        |
-| **Worth buying**        | What to carry home, local price against strip price, and which markets price for locals |
+| **Where to shop**       | A drawer per market or street with a weighted score from three review sources, what it is good for, what to watch for, and a verdict. The gift list is the last drawer |
 | **The final plan**      | Read-only. The schedule the votes produced, hour by hour, meals in the gaps. Hover a place for a picture, click for Google Maps. **Derived from the votes**, so changing one changes this |
 
 **Deployed** at **https://codenection-travel-planner.vercel.app** - public, verified anonymously. Other Vercel URLs

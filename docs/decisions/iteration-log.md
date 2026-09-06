@@ -35,6 +35,8 @@ is what earns the marks.
 | 2026-09-06 | Pages 2 and 3 merged into one "plan it together" page; the Option 1-8 grid dropped | Dates, day slots and the bed are one decision, and the slots had made the placeholder grid redundant | Jin Siang |
 | 2026-09-06 | The hotel became a voted choice like everything else | It is the largest single cost in the trip and was the only thing the group could not vote on | Jin Siang |
 | 2026-09-06 | Added a read-only final page that derives the schedule from the votes | A plan nobody can read back is not a plan; and it proves the votes actually drive something | Jin Siang |
+| 2026-09-06 | "Worth buying" became "Where to shop": a drawer per market, scored, gifts as the last drawer | The question is not what to buy, it is which of these places is worth walking to at all | Jin Siang |
+| 2026-09-06 | Trustpilot dropped from the named sources; TripAdvisor, Trip.com and Google Places kept | Trustpilot rates companies, not streets or markets. Naming it in a pitch would be a wrong answer to an easy question | Checking the ask |
 
 ## Longer Entries
 
@@ -333,3 +335,28 @@ alternative was picking a shape from a table and discovering the problem after t
 
 **Still open.** Whether the book should feel like a keepsake people share after the trip. If it should, B wins on its
 own terms rather than as a concession, because keepsakes are finished things.
+
+### 2026-09-06 - The shopping page asks a better question
+
+**Before.** A flat page listing six things to buy and five markets with an invented "trust" bar. It was the weakest
+page in the deck: a list of prices nobody sourced, next to a score nobody could explain.
+
+**After.** An accordion. Each market or street is a drawer showing a weighted score out of five, and opening it shows
+where that score came from - a rating and a review count from three sources - plus what the place is good for, what to
+watch for, and a one-line verdict. **The gift list is the last drawer**, which is where it belongs: what to buy is a
+detail of where to go, not a page of its own.
+
+**Two things that came out of building it.**
+
+- **Review volume and score disagree, and that disagreement is the product.** Malioboro Street has by far the most
+  reviews and the lowest rating of the good options. That gap is the signature of a tourist strip, and the page now
+  says so in as many words. It is a more interesting claim than a hand-assigned trust number
+- **The verdict chip is derived from the score**, not authored beside it. An earlier draft hardcoded both and they
+  could have drifted apart; a judge who spots a 4.4 labelled "skip" stops trusting the screen
+
+**One correction to the request, made once.** The ask named Trustpilot alongside TripAdvisor and Trip.com. **Trustpilot
+reviews companies, not streets or markets**, so it is the wrong source for this and is not used. The page names
+TripAdvisor's Content API, Trip.com and Google Places instead, and says on the page itself that every figure is
+invented. Naming Trustpilot in the pitch would be a wrong answer to a question a judge could ask easily.
+
+**Live** at https://codenection-travel-planner.vercel.app
