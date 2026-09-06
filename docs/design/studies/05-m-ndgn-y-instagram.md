@@ -156,6 +156,27 @@ and it is always an expression of what the brand is:
 its look: 「シール帳の見た目だけではなく、ページを埋めたくなる感覚まで Webサイトへ変換されていました」 - _not only the
 sticker book's appearance, but the urge to fill the page, was converted into the website._
 
+### 5. Every Site Opens With The Same Sentence Shape
+
+**Three more builds were seen at readable size** - はさむサンド from a sandwich shop's business card, ポッポラジオ from
+a Caprico wrapper, and くるり日和ドーナツ from a paper donut menu - and the hero copy is the same move every time:
+
+| Site                   | Hero line                      | Literally                       |
+| ---------------------- | ------------------------------ | ------------------------------- |
+| **はさむサンド**       | 「今日を、やさしくはさむ。」   | _Gently sandwich the day._      |
+| **くるり日和ドーナツ** | 「今日を、まあるく甘く。」     | _Make today round and sweet._   |
+| **ポッポラジオ**       | 「みみに、あまいおはなしを。」 | _A sweet story, for your ears._ |
+
+**The frame is identical: a short fragment, one comma, a full stop, and the brand's own verb doing the work** -
+_sandwich_, _round_, _sweet_. No feature is named. No benefit is claimed. Two of the three start with the same
+word, 今日を, _the day_.
+
+**And the layout under it is identical too**: a single centred illustration, the line, then **exactly two pill
+buttons** - one primary, one secondary. Never three.
+
+**This is the smallest, most copyable thing in the study.** A hero that says one short sentence in the product's own
+verb, and offers two choices, is a better opening than a headline that explains the product. Ours currently explains.
+
 ## What Transfers To Us
 
 **She is working in exactly our medium.** The recordings show Claude's artifact viewer - the titlebar reads
