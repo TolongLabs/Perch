@@ -6,7 +6,7 @@ to run.
 | File                                                        | Made       | Shape                                                                   |
 | ----------------------------------------------------------- | ---------- | ----------------------------------------------------------------------- |
 | [`travel-planner.html`](travel-planner.html)                | 1-2 Sept   | Map on the right, controls on the left. Holds the round-trip choice, the vote, the bench and the simulated disruption |
-| [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck, six sections: trip poster and itinerary, dates then places, "take care" cautions and news, photo spots, a Google Maps route button, and what is worth buying and where |
+| [`travel-planner-slides.html`](travel-planner-slides.html)  | 6 Sept     | A slide deck, seven sections: trip poster and itinerary, what to do today with slot voting, dates then places, "take care" cautions and news, photo spots, a Google Maps route button, and what is worth buying and where |
 
 The second one drops what the first one argued for; that is deliberate and unresolved, and the reasoning is in
 [`../decisions/iteration-log.md`](../decisions/iteration-log.md) under 6 September. Neither is the design - screens
@@ -51,6 +51,7 @@ sample; the places on the "where should we go" page are literally "Option 1" to 
 | **Where should we go** | A two-week date strip on top; the overlap sets the trip length. Place options below     |
 | **Take care**          | Local cautions (language, water, dress, cash) and a dated news feed the group adds to   |
 | **Photo spots**        | Per stop: where to stand, the time of day, and the number of the option it belongs to   |
+| **What to do today**   | **The important one.** Three slots a day, group voting, the losing options kept as a ranked bench, a long morning that closes the afternoon, and the night's hotel |
 | **The route**          | One button opening every stop as waypoints in Google Maps. **This link is real** and needs no key |
 | **Worth buying**       | What to carry home, what a local pays versus the strip price, and which markets price for locals |
 

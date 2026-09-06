@@ -109,6 +109,35 @@
   .mapbox{border:1px solid var(--line);border-radius:12px;padding:24px;background:linear-gradient(135deg,#f5f7fa,#e9eef5);text-align:center}
   .mapbox p{color:var(--dim);font-size:13px;margin:12px 0 0}
   .mapbox code{font-size:11px;color:var(--dim);word-break:break-all;display:block;margin-top:14px;text-align:left;background:#fff;padding:8px;border-radius:6px;border:1px solid var(--line)}
+  /* 2 - what to do today */
+  .daytabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+  .daytabs button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:8px 14px;cursor:pointer;font:inherit;font-size:13px;line-height:1.25;text-align:left}
+  .daytabs button small{display:block;color:var(--dim);font-size:11px}
+  .daytabs button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+  .daytabs button[aria-pressed=true] small{color:#dbe7ff}
+  .slots{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start}
+  .slot{border:1px solid var(--line);border-radius:12px;padding:14px;background:#fff}
+  .slot h3{margin:0 0 2px;font-size:14px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .slot .win{font-size:11px;color:var(--dim);margin:0 0 10px}
+  .slot[data-off]{opacity:.55;background:#f7f8fa}
+  .blocked{font-size:12px;color:var(--warn);background:var(--warn-soft);border-radius:8px;padding:8px 10px;margin-bottom:10px}
+  .optrow{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:9px;padding:9px 10px;margin-bottom:8px;background:#fff;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+  .optrow:disabled{cursor:not-allowed}
+  .optrow .txt{flex:1;min-width:0}
+  .optrow b{display:block;font-size:13px}
+  .optrow .hrs{font-size:11px;color:var(--dim)}
+  .optrow .tally{flex:0 0 auto;text-align:center;font-size:11px;color:var(--dim);min-width:34px}
+  .optrow .tally i{display:block;font-style:normal;font-size:15px;font-weight:700;color:var(--ink)}
+  .optrow[data-lead]{border-color:var(--good);background:var(--good-soft)}
+  .optrow[data-mine]{box-shadow:inset 3px 0 0 var(--accent)}
+  .optrow .fixed{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em}
+  .bench{font-size:11px;color:var(--dim);border-top:1px dashed var(--line);padding-top:8px;margin-top:2px}
+  .bench b{color:var(--ink);font-weight:600}
+  .hotelcard{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;justify-content:space-between;gap:16px;align-items:center;background:linear-gradient(135deg,#f7f9fc,#eef2f7)}
+  .hotelcard b{display:block;font-size:14px}
+  .hotelcard .sub{font-size:12px;color:var(--dim)}
+  .hotelcard .price{text-align:right;font-size:13px;white-space:nowrap}
+  .hotelcard .price b{font-size:17px}
   /* 6 - worth buying */
   .buyhead{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
   .buys{list-style:none;margin:0;padding:0}
@@ -129,7 +158,7 @@
   .trustlab{font-size:11px;color:var(--dim);margin-top:4px;display:flex;justify-content:space-between}
   .stopnote{margin-top:22px;padding:14px 16px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;font-size:13px}
   .stopnote b{display:block;margin-bottom:4px}
-  @media (max-width:900px){.hero,.two,.route,.buyhead{grid-template-columns:1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
+  @media (max-width:900px){.hero,.two,.route,.buyhead{grid-template-columns:1fr}.slots{grid-template-columns:1fr}.options{grid-template-columns:repeat(2,1fr)}.shots{grid-template-columns:1fr 1fr}.dates{grid-template-columns:repeat(7,1fr)}.rail{width:170px;flex-basis:170px}}
 </style>
 </head>
 <body>
@@ -139,11 +168,12 @@
     <div class="trip">Yogyakarta, 5 days<br><span style="font-weight:400;color:#8b93a3;font-size:12px">TolongLabs · 4 people · sample data</span></div>
     <ol id="rail">
       <li data-go="1" aria-current="true"><span class="num">1</span><div class="thumb"><b>The trip</b><span class="swatch" style="background:linear-gradient(#f59e0b,#7c2d12)"></span><div class="bar w1"></div><div class="bar w2"></div><div class="bar w3"></div></div></li>
-      <li data-go="2"><span class="num">2</span><div class="thumb"><b>Where should we go</b><div class="bar w3"></div><div class="bar w1"></div><div class="bar w2"></div></div></li>
-      <li data-go="3"><span class="num">3</span><div class="thumb"><b>Take care</b><span class="swatch" style="background:#fff1d6"></span><div class="bar w2"></div><div class="bar w1"></div></div></li>
-      <li data-go="4"><span class="num">4</span><div class="thumb"><b>Photo spots</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w3"></div></div></li>
-      <li data-go="5"><span class="num">5</span><div class="thumb"><b>The route</b><span class="swatch" style="background:#2563eb"></span><div class="bar w2"></div></div></li>
-      <li data-go="6"><span class="num">6</span><div class="thumb"><b>Worth buying</b><span class="swatch" style="background:#15803d"></span><div class="bar w1"></div><div class="bar w3"></div></div></li>
+      <li data-go="2"><span class="num">2</span><div class="thumb"><b>What to do today</b><span class="swatch" style="background:#2563eb"></span><div class="bar w2"></div><div class="bar w1"></div><div class="bar w3"></div></div></li>
+      <li data-go="3"><span class="num">3</span><div class="thumb"><b>Where should we go</b><div class="bar w3"></div><div class="bar w1"></div><div class="bar w2"></div></div></li>
+      <li data-go="4"><span class="num">4</span><div class="thumb"><b>Take care</b><span class="swatch" style="background:#fff1d6"></span><div class="bar w2"></div><div class="bar w1"></div></div></li>
+      <li data-go="5"><span class="num">5</span><div class="thumb"><b>Photo spots</b><span class="swatch" style="background:#dbe7ff"></span><div class="bar w1"></div><div class="bar w3"></div></div></li>
+      <li data-go="6"><span class="num">6</span><div class="thumb"><b>The route</b><span class="swatch" style="background:#2563eb"></span><div class="bar w2"></div></div></li>
+      <li data-go="7"><span class="num">7</span><div class="thumb"><b>Worth buying</b><span class="swatch" style="background:#15803d"></span><div class="bar w1"></div><div class="bar w3"></div></div></li>
     </ol>
     <div class="foot"><kbd>←</kbd> <kbd>→</kbd> to move between sections. Mockup, invented data.</div>
   </nav>
@@ -203,6 +233,25 @@
 
     <!-- 2 -->
     <section class="slide" id="s2">
+      <h2>What to do today <span class="tag">the group votes</span></h2>
+      <p class="lead">Each day is three slots. The planner proposes options, everyone votes, and the leader takes the slot. Whatever loses stays ranked underneath as the bench.</p>
+
+      <div class="daytabs" id="daytabs"></div>
+      <div class="slots" id="slots"></div>
+      <div class="hotelcard" id="hotel"></div>
+
+      <div class="stopnote">
+        <b>Why the losing options stay on screen.</b>
+        The bench is not a leftover. It is the group already having approved a second and third choice, so when the
+        volcano tour is cancelled or the trip goes over budget, the slot refills itself without another argument. This
+        is the one thing the competitor scan in <code>../market/</code> could not find anywhere else.
+      </div>
+
+      <p class="sample">Sample days, sample options, sample vote counts for a group of four. Try Day 3: the Merapi jeep runs to 14:30, so voting it in closes the afternoon and un-voting opens it again.</p>
+    </section>
+
+    <!-- 2 -->
+    <section class="slide" id="s3">
       <h2>Where should we go <span class="tag">dates, then places</span></h2>
       <p class="lead">Tap the days you are free. The trip length comes from the overlap, not from a slider. Then pick places from the options below.</p>
       <div class="dates" id="dates"></div>
@@ -213,7 +262,7 @@
     </section>
 
     <!-- 3 -->
-    <section class="slide" id="s3">
+    <section class="slide" id="s4">
       <h2>Take care <span class="tag warn">before and during</span></h2>
       <p class="lead">Things about this place that are easy to get wrong, plus a feed of what is happening there right now.</p>
       <div class="two">
@@ -243,7 +292,7 @@
     </section>
 
     <!-- 4 -->
-    <section class="slide" id="s4">
+    <section class="slide" id="s5">
       <h2>Photo spots <span class="tag">where to stand</span></h2>
       <p class="lead">For each stop: the angle, the time of day, and what to avoid. Placeholders until we have been there or found a source.</p>
       <div class="shots">
@@ -258,7 +307,7 @@
     </section>
 
     <!-- 5 -->
-    <section class="slide" id="s5">
+    <section class="slide" id="s6">
       <h2>The route <span class="tag good">opens in Google Maps</span></h2>
       <p class="lead">The whole trip as one set of directions. No map of our own, no API key. One tap, then it is in the app everyone already has.</p>
       <div class="route">
@@ -274,7 +323,7 @@
 
 
     <!-- 6 -->
-    <section class="slide" id="s6">
+    <section class="slide" id="s7">
       <h2>Worth buying <span class="tag good">local price, not tourist price</span></h2>
       <p class="lead">Most of what is sold on the tourist strip is sold again three streets away for a fraction of it. This page is what to buy, where to buy it, and roughly what it should cost before anyone quotes you a number.</p>
 
@@ -306,7 +355,7 @@
 <script>
 (function(){
   // ---- navigation ----
-  var cur = 1, N = 6;
+  var cur = 1, N = 7;
   function go(n){
     cur = Math.max(1, Math.min(N, n));
     document.querySelectorAll('.slide').forEach(function(s){ s.removeAttribute('data-on'); });
@@ -398,6 +447,161 @@
     + '&destination=' + enc(stops[stops.length-1][0])
     + '&waypoints=' + stops.slice(1,-1).map(function(s){return enc(s[0]);}).join('%7C')
     + '&travelmode=driving';
+  // ---- 2: what to do today ----
+  // hours are 24h decimals. "fixed" options cannot be voted away.
+  var DAYS = [
+    { label: 'Day 1', date: 'Thu 12 Nov',
+      hotel: ['Greenhost Boutique Hotel', 'Prawirotaman · 2 twin rooms', 'RM 168', 'per room, per night'],
+      slots: {
+        morning:   [ {n:'Land at YIA, transfer to Prawirotaman', s:10.7, e:12.5, v:0, fixed:true} ],
+        afternoon: [ {n:'Taman Sari water castle', s:13, e:15.5, v:2},
+                     {n:'Kraton, the Sultan\'s palace', s:13.5, e:16, v:1},
+                     {n:'Nothing. Sleep off the flight', s:13, e:17, v:0} ],
+        night:     [ {n:'Malioboro street food crawl', s:19, e:22, v:2},
+                     {n:'Angkringan and kopi joss', s:20, e:23, v:1} ]
+      } },
+    { label: 'Day 2', date: 'Fri 13 Nov',
+      hotel: ['Greenhost Boutique Hotel', 'Prawirotaman · 2 twin rooms', 'RM 168', 'per room, per night'],
+      slots: {
+        morning:   [ {n:'Borobudur sunrise', s:4.5, e:9, v:3},
+                     {n:'Borobudur at opening, no sunrise', s:8, e:11, v:0} ],
+        afternoon: [ {n:'Mendut and Pawon temples', s:13, e:15, v:2},
+                     {n:'Rest, then Prawirotaman cafes', s:14, e:17, v:1} ],
+        night:     [ {n:'Prawirotaman bar crawl', s:21, e:25, v:2},
+                     {n:'Early night, 04:30 start tomorrow', s:21, e:23, v:1} ]
+      } },
+    { label: 'Day 3', date: 'Sat 14 Nov',
+      hotel: ['Greenhost Boutique Hotel', 'Prawirotaman · 2 twin rooms', 'RM 168', 'per room, per night'],
+      slots: {
+        morning:   [ {n:'Merapi jeep tour from Kaliadem', s:6.5, e:14.5, v:1, long:true},
+                     {n:'Merapi museum only', s:9, e:11.5, v:2} ],
+        afternoon: [ {n:'Prambanan temple complex', s:15, e:17.5, v:2},
+                     {n:'Ratu Boko for the sunset', s:16, e:18, v:1} ],
+        night:     [ {n:'Ramayana ballet at Prambanan', s:19.5, e:21.5, v:2},
+                     {n:'Prawirotaman bar crawl', s:21, e:25, v:1} ]
+      } },
+    { label: 'Day 4', date: 'Sun 15 Nov',
+      hotel: ['Greenhost Boutique Hotel', 'Prawirotaman · 2 twin rooms', 'RM 168', 'per room, per night'],
+      slots: {
+        morning:   [ {n:'Kotagede silver quarter', s:8.5, e:11, v:2},
+                     {n:'Taman Sari, if we skipped it', s:8, e:10, v:1} ],
+        afternoon: [ {n:'Beringharjo Market', s:13, e:16, v:2},
+                     {n:'Kraton and the water palace', s:13.5, e:16, v:1} ],
+        night:     [ {n:'Parangtritis sunset and seafood', s:17, e:21, v:3},
+                     {n:'Bar crawl, second attempt', s:21.5, e:25.5, v:0} ]
+      } },
+    { label: 'Day 5', date: 'Mon 16 Nov',
+      hotel: ['Checked out', 'Bags at the hotel until 13:00', '-', ''],
+      slots: {
+        morning:   [ {n:'Bakpia run in Pathok', s:8, e:10, v:2},
+                     {n:'Last coffee in Prawirotaman', s:9, e:10.5, v:1} ],
+        afternoon: [ {n:'YIA, fly home 14:20', s:12.5, e:14.3, v:0, fixed:true} ],
+        night:     []
+      } }
+  ];
+
+  var AFTERNOON_CUTOFF = 14;   // a morning option ending after this eats the afternoon
+  var SLOTS = [['morning','Morning'], ['afternoon','Afternoon'], ['night','Night']];
+  var curDay = 2;              // open on Day 3, the interesting one
+  var mine = {};               // "dayIdx:slot" -> option index this user voted for
+
+  function fmt(h){
+    var hh = Math.floor(h % 24), mm = Math.round((h - Math.floor(h)) * 60);
+    return (hh < 10 ? '0' : '') + hh + ':' + (mm < 10 ? '0' : '') + mm;
+  }
+  function tally(d, slot, i){
+    var o = DAYS[d].slots[slot][i];
+    return o.v + (mine[d + ':' + slot] === i ? 1 : 0);
+  }
+  function leader(d, slot){
+    var arr = DAYS[d].slots[slot], best = -1, bi = -1;
+    for (var i = 0; i < arr.length; i++){ var t = tally(d, slot, i); if (t > best){ best = t; bi = i; } }
+    return bi;
+  }
+
+  function renderDays(){
+    var el = document.getElementById('daytabs'); el.innerHTML = '';
+    DAYS.forEach(function(d, i){
+      var b = document.createElement('button');
+      b.setAttribute('aria-pressed', i === curDay);
+      b.innerHTML = d.label + '<small>' + d.date + '</small>';
+      b.addEventListener('click', function(){ curDay = i; renderDays(); renderSlots(); });
+      el.appendChild(b);
+    });
+  }
+
+  function renderSlots(){
+    var d = curDay, day = DAYS[d], host = document.getElementById('slots');
+    host.innerHTML = '';
+
+    // does the morning leader run past the cutoff?
+    var mi = leader(d, 'morning');
+    var mLead = mi >= 0 ? day.slots.morning[mi] : null;
+    var eaten = !!(mLead && mLead.e > AFTERNOON_CUTOFF);
+
+    SLOTS.forEach(function(pair){
+      var key = pair[0], title = pair[1];
+      var opts = day.slots[key] || [];
+      var box = document.createElement('div');
+      box.className = 'slot';
+      var off = (key === 'afternoon' && eaten);
+      if (off) box.setAttribute('data-off', '');
+
+      var li = leader(d, key);
+      var head = '<h3>' + title + '<span class="tag' + (off ? ' warn' : '') + '">' + (off ? 'no time' : opts.length + ' option' + (opts.length === 1 ? '' : 's')) + '</span></h3>';
+      var sub = off ? '' : (li >= 0 ? '<p class="win">Leading: ' + opts[li].n + '</p>' : '<p class="win">Nothing proposed.</p>');
+      box.innerHTML = head + sub;
+
+      if (off){
+        var w = document.createElement('div');
+        w.className = 'blocked';
+        w.textContent = mLead.n + ' runs to ' + fmt(mLead.e) + ' and the drive back is about an hour. There is no afternoon left, so this slot is closed.';
+        box.appendChild(w);
+      }
+
+      opts.forEach(function(o, i){
+        var b = document.createElement('button');
+        b.className = 'optrow';
+        if (!off && i === li) b.setAttribute('data-lead', '');
+        if (mine[d + ':' + key] === i) b.setAttribute('data-mine', '');
+        if (off || o.fixed) b.disabled = true;
+        b.innerHTML = '<div class="txt"><b>' + o.n + '</b>'
+          + '<span class="hrs">' + fmt(o.s) + ' - ' + fmt(o.e) + (o.fixed ? ' · <span class="fixed">fixed</span>' : '') + '</span></div>'
+          + (o.fixed ? '' : '<div class="tally"><i>' + tally(d, key, i) + '</i>of 4</div>');
+        if (!o.fixed && !off){
+          b.addEventListener('click', function(){
+            var k = d + ':' + key;
+            mine[k] = (mine[k] === i) ? null : i;
+            renderSlots();
+          });
+        }
+        box.appendChild(b);
+      });
+
+      if (!off && opts.length > 1){
+        var rest = opts.map(function(o, i){ return {o: o, t: tally(d, key, i), i: i}; })
+                       .filter(function(x){ return x.i !== li && !x.o.fixed; })
+                       .sort(function(a, b){ return b.t - a.t; });
+        if (rest.length){
+          var bn = document.createElement('div');
+          bn.className = 'bench';
+          bn.innerHTML = '<b>Bench:</b> ' + rest.map(function(x){ return x.o.n + ' (' + x.t + ')'; }).join(' · ')
+            + ' - already approved, used if this slot falls through';
+          box.appendChild(bn);
+        }
+      }
+      host.appendChild(box);
+    });
+
+    var h = day.hotel;
+    document.getElementById('hotel').innerHTML =
+      '<div><b>' + h[0] + '</b><span class="sub">' + h[1] + '</span></div>'
+      + '<div class="price"><b>' + h[2] + '</b><br><span class="sub">' + h[3] + '</span></div>';
+  }
+
+  renderDays();
+  renderSlots();
+
   // ---- 6: worth buying ----
   var buys = [
     ['Hand-drawn batik (tulis)', 'Beringharjo Market, upper floor', 120, 380],

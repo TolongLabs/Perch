@@ -25,6 +25,7 @@ is what earns the marks.
 | 2026-09-06 | Group voting dropped as an originality claim; the bench is now the whole claim | Tripeza, SwipeSights and Plan Harmony all ship vote-then-generate for groups. Nothing found re-plans after a closure | Third scan, `../market/competitors.md` Tier 1b |
 | 2026-09-06 | Added a "worth buying" page: what to buy, where, and the tourist markup | Tourist-facing markets price for people who will not walk further, and nothing in the trip tells you that | Jin Siang, `../inbox/2026-09-06-worth-buying-dump.md` |
 | 2026-09-06 | Mockup deployed to Vercel on a public URL | Submission requires viewable design-prototype links; a local file cannot be submitted | Jin Siang |
+| 2026-09-06 | "What to do today": three slots a day, group voting, and a long morning that eats the afternoon | The deck had no vote and no bench, which is the only surviving originality claim | Jin Siang, `../inbox/2026-09-06-what-to-do-today-dump.md` |
 
 ## Longer Entries
 
@@ -238,4 +239,35 @@ attach-to-the-stop argument. It is **not** worth pitching as a feature, and the 
 back more urgently than it needs a seventh page.
 
 **Live at** https://codenection-travel-planner.vercel.app - deployed from a copy, so it does not update on push.
+
+### 2026-09-06 - The vote comes back, and time becomes a constraint
+
+**Before.** The slide deck had dropped the vote, the bench and the substitution when the map-first mockup was set
+aside. Three scans that day had reduced the originality claim to exactly those things, so the deck was carrying none
+of its own argument.
+
+**After.** A new page 2, "What to do today", and it is now the most important screen in the deck.
+
+- Each day is **three slots**: morning, afternoon, night. Bar crawls and the Ramayana ballet live in the night slot
+- **Every option is voted on** by the group. Four travellers, one vote each per slot, the leader takes the slot
+- **The losers stay on screen as the bench**, ranked, labelled as already approved and reusable if the slot falls
+  through. This is the claim, finally visible in the deck rather than argued for in a markdown file
+- **A long morning closes the afternoon.** If the leading morning option ends after 14:00 the afternoon slot greys
+  out and says why. On Day 3 the Merapi jeep runs to 14:30, so voting it in closes the afternoon and un-voting
+  reopens it
+- **The night hotel** is on the same page, because where you sleep is part of what the day costs
+
+**Why.** Jin Siang asked for it. The slot structure is his, and so is the rule that a long event should disable rather
+than silently overlap.
+
+**Why it matters more than the request.** Two things fell out of it that were not asked for. **Time became a real
+constraint rather than a label** - the afternoon closing is the first thing in either mockup where one group decision
+visibly costs another. And it gave the bench somewhere to live. Every previous page put local knowledge beside the
+itinerary; this one puts a decision inside it.
+
+**Tested rather than assumed.** Rendered headlessly and driven through the interactions. Two data bugs were found and
+fixed before deploying: seeded votes summed to four of four, leaving no room for the user's own vote, and Day 3 could
+be flipped closed but not open again. All fourteen slots now seed three votes so the user is the fourth.
+
+**Live** at https://codenection-travel-planner.vercel.app
 
