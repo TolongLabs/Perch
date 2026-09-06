@@ -25,6 +25,12 @@ is what earns the marks.
 | 2026-09-06 | Group voting dropped as an originality claim; the bench is now the whole claim | Tripeza, SwipeSights and Plan Harmony all ship vote-then-generate for groups. Nothing found re-plans after a closure | Third scan, `../market/competitors.md` Tier 1b |
 | 2026-09-06 | Added a "worth buying" page: what to buy, where, and the tourist markup | Tourist-facing markets price for people who will not walk further, and nothing in the trip tells you that | Jin Siang, `../inbox/2026-09-06-worth-buying-dump.md` |
 | 2026-09-06 | Mockup deployed to Vercel on a public URL | Submission requires viewable design-prototype links; a local file cannot be submitted | Jin Siang |
+| 2026-09-06 | Every trip becomes a storybook, and creating one starts with an interview rather than a form | Jin Siang, modelled on the MakanLah `/taste` onboarding. Excalidraw session with Hee Zi Jie |
+| 2026-09-06 | The interview's job changed from collecting constraints to producing the bench | The eight questions drawn on the canvas fed a solver, not the ranked pool the differentiator needs. `storybook-shape.md` |
+| 2026-09-06 | "Plan It Together" stopped being a page and became a state of the storybook | It was drawn unconnected to anything, and the deployed mockup already votes inside the deck |
+| 2026-09-06 | "Edit my plan" dropped as a global button; every edit routes through the bench | A generic edit mode is a fight with Wanderlog and Google Docs. It also makes "a stop closed" and "I changed my mind" one interaction |
+| 2026-09-06 | The AI agent moved off the chat panel and onto the bench | Conversational planning is where ChatGPT and TripGenie win. Tool use earns its place on post-to-places, re-derivation and the storybook prose |
+| 2026-09-06 | Social-media reference posts added as a second front door, replacing the empty New Trip state | Xiaohongshu is where the trip actually starts for 18-40s, and nothing found turns a saved post into a plan |
 | 2026-09-06 | "What to do today": three slots a day, group voting, and a long morning that eats the afternoon | The deck had no vote and no bench, which is the only surviving originality claim | Jin Siang, `../inbox/2026-09-06-what-to-do-today-dump.md` |
 | 2026-09-06 | Pages 2 and 3 merged into one "plan it together" page; the Option 1-8 grid dropped | Dates, day slots and the bed are one decision, and the slots had made the placeholder grid redundant | Jin Siang |
 | 2026-09-06 | The hotel became a voted choice like everything else | It is the largest single cost in the trip and was the only thing the group could not vote on | Jin Siang |
@@ -309,3 +315,21 @@ and both vote states. Four real bugs came out of it and were fixed before deploy
 
 **Live** at https://codenection-travel-planner.vercel.app
 
+### 2026-09-06 - The storybook fork, opened and left open
+
+**Before.** The canvas had one path: interview, loading, storybook. "Plan It Together" floated beside it, connected to
+nothing, and "Edit my plan" had no home at all.
+
+**After.** Two candidate shapes, written up in [`storybook-shape.md`](storybook-shape.md), and **deliberately not
+decided**. A is one book in two states, drafting and final, where voting happens on the book's own pages and a closure
+repairs the page you are reading. B keeps a planner page and generates the book as read-only output when the group
+finalises.
+
+**Why.** Hee Zi Jie asked for the difference in plain terms and then asked for both to be built rather than argued
+about. Two draft prototypes exist to be eyeballed side by side.
+
+**What we gave up by doing this.** A day, and possibly one of the two prototypes. That is the intended cost - the
+alternative was picking a shape from a table and discovering the problem after the mockup was finished.
+
+**Still open.** Whether the book should feel like a keepsake people share after the trip. If it should, B wins on its
+own terms rather than as a concession, because keepsakes are finished things.
