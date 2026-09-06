@@ -53,7 +53,7 @@ Six sections. Every place, price, caution and news item in it is a sample.
 | **Take care**           | Local cautions and a dated news feed the group adds to                                  |
 | **Photo spots**         | Per stop: where to stand and the time of day                                            |
 | **Eat, shop, do**       | Three tabs, one accordion. A drawer per place with a weighted score from three review sources, plus a **RedNote post count kept outside the score** - when attention is high and the rating is not, it says so. Gift list is the last drawer under Shop |
-| **The final plan**      | Read-only. The schedule the votes produced, hour by hour, meals in the gaps, with a day map. Two **real** Google Maps links, one for the day and one for the trip, both built from the winning votes. Hover a place for a picture. **Derived from the votes**, so changing one changes this |
+| **The final plan**      | Read-only. The schedule the votes produced, hour by hour, meals in the gaps, with a day map. Two **real** Google Maps links, one for the day and one for the trip, both built from the winning votes. Hover a place for a picture. **Derived from the votes**, so changing one changes this. Ends with a **before-we-go checklist** - documents, flights, beds, money, plus timed tickets generated from what was voted in - with a progress bar and critical items called out separately |
 
 **Deployed** at **https://codenection-travel-planner.vercel.app** - public, verified anonymously. Other Vercel URLs
 for it sit behind SSO and are unusable; **only that address works for a judge**, and a restricted link scores zero. It

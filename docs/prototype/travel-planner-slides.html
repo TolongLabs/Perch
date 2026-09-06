@@ -152,6 +152,30 @@
   .hotelopt .tally{flex:0 0 auto;text-align:center;font-size:11px;color:var(--dim);min-width:34px}
   .hotelopt .tally i{display:block;font-style:normal;font-size:15px;font-weight:700;color:var(--ink)}
 
+  /* the before-we-go checklist */
+  .chkwrap{margin-top:6px}
+  .chkhead{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+  .chkbar{flex:1;height:12px;border-radius:7px;background:var(--line);overflow:hidden}
+  .chkbar i{display:block;height:100%;width:0;border-radius:7px;background:linear-gradient(90deg,#2563eb,#15803d);transition:width .28s ease}
+  .chkpct{font-size:13px;white-space:nowrap;color:var(--dim)}
+  .chkpct b{font-size:19px;color:var(--ink);display:inline-block;min-width:2.6em;text-align:right}
+  .chkwarn{background:var(--bad-soft);color:#7f1d1d;border-radius:9px;padding:9px 12px;font-size:12.5px;margin-bottom:12px}
+  .chkwarn.ok{background:var(--good-soft);color:#14532d}
+  .chkgrp{margin-bottom:14px}
+  .chkgrp h4{margin:0 0 6px;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--dim)}
+  .chkitem{display:flex;gap:11px;align-items:flex-start;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:7px;background:#fff;cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+  .chkitem .box{flex:0 0 18px;width:18px;height:18px;border:2px solid #c9cfda;border-radius:5px;margin-top:1px;position:relative}
+  .chkitem[data-done] .box{background:var(--good);border-color:var(--good)}
+  .chkitem[data-done] .box::after{content:"";position:absolute;left:5px;top:1px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(42deg)}
+  .chkitem .t{flex:1;min-width:0}
+  .chkitem b{display:block;font-size:13.5px}
+  .chkitem[data-done] b{text-decoration:line-through;color:var(--dim)}
+  .chkitem .d{font-size:12px;color:var(--dim);margin-top:2px}
+  .chkitem.crit{border-color:#f0c8c8}
+  .chkitem.crit[data-done]{border-color:var(--line)}
+  .ctag{display:inline-block;font-size:10px;padding:1px 7px;border-radius:999px;margin-left:6px;vertical-align:middle;font-weight:700}
+  .ctag.must{background:var(--bad-soft);color:#7f1d1d}
+  .ctag.auto{background:var(--accent-soft);color:var(--accent)}
   /* the request box */
   .ask{border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:#f9fbfd;margin-bottom:16px}
   .asklog{max-height:168px;overflow-y:auto;margin-bottom:10px;display:none}
@@ -483,6 +507,16 @@
       <div class="daymap" id="fdaymap"></div>
       <div class="routebar" id="routebar"></div>
       <div id="finalday"></div>
+
+      <h3 class="step">Before we go</h3>
+      <div class="chkwrap">
+        <div class="chkhead">
+          <div class="chkbar"><i id="chkfill"></i></div>
+          <div class="chkpct" id="chkpct"></div>
+        </div>
+        <div id="chkwarn"></div>
+        <div id="chklist"></div>
+      </div>
 
       <p class="sample">Times and both route links are derived from the winning options on page 2, so changing a vote there changes this page. The pictures are drawn placeholders, not photographs of the real places.</p>
     </section>
@@ -1031,6 +1065,92 @@
     fr.readAsArrayBuffer(f.slice(0, 262144));   // EXIF lives at the front
   });
 
+  // ---- the before-we-go checklist ----
+  // Fixed items, plus items derived from whatever the group actually voted in.
+  var NEEDBOOKING = {
+    'Borobudur sunrise':                       ['Borobudur sunrise slot', 'Climbing quota per session. Turning up and hoping does not work.', true],
+    'Borobudur at opening, no sunrise':        ['Borobudur entry', 'Quota applies at opening too, though it is easier.', false],
+    'Merapi jeep tour from Kaliadem':          ['Merapi jeep, 4 seats', 'One jeep takes four, which is exactly us.', true],
+    'Ramayana ballet at Prambanan':            ['Ramayana ballet seats', 'Open-air season only. Cheapest seats are far back.', true],
+    'Batik workshop, half day':                ['Batik workshop place', 'Three to four hours, small groups, book ahead.', false],
+    'Javanese massage and jamu, Prawirotaman': ['Massage slot', 'Small places fill up. Book the same morning.', false],
+    'Silver-smithing class, Kotagede':         ['Silver-smithing class', 'Small workshops, book ahead. Silver charged on top.', false],
+    'Prambanan temple complex':                ['Prambanan entry', 'Combined ticket with Borobudur is cheaper if both are in.', false]
+  };
+
+  var CHECKS = [
+    ['Documents', [
+      ['Passports valid 6 months past 16 Nov', 'All four. Renewals in Malaysia take weeks, not days.', true],
+      ['Visa position confirmed for every passport', 'Malaysians get visa-free entry to Indonesia for tourism; check anyone travelling on a different passport.', true],
+      ['Return or onward ticket to hand', 'Immigration can ask for it on arrival.', false]
+    ]],
+    ['Flights', [
+      ['Flights booked, KUL to YIA and back', 'Names must match the passports exactly.', true],
+      ['Cabin bag rules checked', 'Low-cost carriers charge more at the gate than online.', false]
+    ]],
+    ['Beds', [
+      ['Hotel booked for every night of the trip', 'The one that breaks the trip if it is missed.', true],
+      ['Booking in a name someone travelling can show', 'The card holder is often asked for at check-in.', false]
+    ]],
+    ['Money and connection', [
+      ['Rupiah in small notes', 'Warungs, jeep drivers and market stalls are cash only.', false],
+      ['eSIM or roaming sorted', 'Needed the moment you land, not after finding wifi.', false],
+      ['Travel insurance', 'Cheap, and the jeep tour is the reason.', false]
+    ]]
+  ];
+
+  var chkState = {};
+
+  function chkItems(){
+    var groups = CHECKS.map(function(g){ return [g[0], g[1].map(function(x){ return {n:x[0], d:x[1], crit:x[2], auto:false}; })]; });
+    // anything the group voted in that has to be booked ahead
+    var timed = [], seen = {};
+    DAYS.forEach(function(_, i){
+      schedule(i).items.forEach(function(it){
+        var nb = NEEDBOOKING[it.what];
+        if (nb && !seen[nb[0]]){ seen[nb[0]] = 1; timed.push({n:nb[0], d:nb[1], crit:nb[2], auto:true}); }
+      });
+    });
+    if (timed.length) groups.push(['Timed tickets, from what you voted in', timed]);
+    return groups;
+  }
+
+  function renderChecklist(){
+    var host = document.getElementById('chklist');
+    if (!host) return;
+    var groups = chkItems(), total = 0, done = 0, missingCrit = [];
+
+    host.innerHTML = groups.map(function(g){
+      return '<div class="chkgrp"><h4>' + g[0] + '</h4>' + g[1].map(function(it){
+        total++;
+        var on = !!chkState[it.n];
+        if (on) done++; else if (it.crit) missingCrit.push(it.n);
+        return '<button class="chkitem' + (it.crit ? ' crit' : '') + '"' + (on ? ' data-done' : '') + ' data-k="' + it.n.replace(/"/g, '&quot;') + '">'
+          + '<span class="box"></span><span class="t"><b>' + it.n
+          + (it.crit ? '<span class="ctag must">must</span>' : '')
+          + (it.auto ? '<span class="ctag auto">from your votes</span>' : '')
+          + '</b><span class="d">' + it.d + '</span></span></button>';
+      }).join('') + '</div>';
+    }).join('');
+
+    var pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('chkfill').style.width = pct + '%';
+    document.getElementById('chkpct').innerHTML = '<b>' + pct + '%</b> &middot; ' + done + ' of ' + total + ' done';
+
+    var warn = document.getElementById('chkwarn');
+    warn.innerHTML = missingCrit.length
+      ? '<div class="chkwarn"><b>' + missingCrit.length + ' thing' + (missingCrit.length === 1 ? '' : 's') + ' left that would end the trip:</b> ' + missingCrit.join(' \u00b7 ') + '</div>'
+      : '<div class="chkwarn ok"><b>Everything critical is done.</b> What is left will not stop you getting on the plane.</div>';
+
+    host.querySelectorAll('.chkitem').forEach(function(b){
+      b.addEventListener('click', function(){
+        var k = b.dataset.k;
+        chkState[k] = !chkState[k];
+        renderChecklist();
+      });
+    });
+  }
+
   // ---- 2e: the request box ----
   // Deliberately NOT a planning chat. It turns a sentence into one more option on a day,
   // and the group still votes. Conversational planning is where ChatGPT and TripGenie win;
@@ -1397,6 +1517,7 @@
     });
     renderDayMap('fdaymap', fDay);
     renderRouteBar();
+    renderChecklist();
     host.innerHTML = html + '</ul>';
 
     host.querySelectorAll('.place').forEach(function(a){

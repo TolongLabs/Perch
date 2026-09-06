@@ -47,6 +47,8 @@ is what earns the marks.
 | 2026-09-06 | RedNote added as a source, but kept out of the score | It measures attention, not quality. The gap between the two is the tourist-strip signal, and averaging them destroys it | Building the eat tab |
 | 2026-09-06 | A request box on the planner: ask in a sentence, it becomes one more option to vote on | Asked for as a chatbot. Built as a proposer rather than a planner so the vote stays the mechanism | Jin Siang |
 | 2026-09-06 | Two edges on an option: gold for asked-for, chrome for top-rated | The itinerary never showed why something was on it. Provenance is now visible on the row | Jin Siang |
+| 2026-09-06 | A "before we go" checklist on the final plan, with a progress bar and critical items called out | Nothing in the deck covered the part that actually ruins trips: unbooked beds, an unchecked passport | Jin Siang |
+| 2026-09-06 | Timed-ticket items on the checklist derive from the winning votes | A checklist that does not know what you chose is a template, and templates are free everywhere | Building it |
 
 ## Longer Entries
 
@@ -533,6 +535,38 @@ An option now says why it is on the list, which nothing in the deck did before.
 | The whole box crashed on load - it read the ratings data before that data was defined | The top-rated lookup is built lazily on first use |
 | "add a massage" created a custom gold entry instead of matching the top-rated massage | Matching now checks every distinctive word of a place name, with a stop-list so "workshop" does not match three things |
 | "asdfgh" was accepted and added as a stop on Day 2 | A bare single lowercase word with no request verb is now rejected |
+
+**Live** at https://codenection-travel-planner.vercel.app
+
+### 2026-09-06 - The checklist, and the half of it that is derived
+
+**Before.** The deck could plan a trip in detail and had nothing to say about whether anyone had actually booked it.
+
+**After.** A "before we go" block at the foot of the final plan. Thirteen items in five groups, a progress bar, and a
+percentage that moves as things are ticked.
+
+**It is not a static template, and that is the whole point.** Four groups are fixed - documents, flights, beds, money
+and connection. **The fifth group is generated from what the group voted in.** Vote the Merapi jeep onto Day 3 and
+"Merapi jeep, 4 seats" appears in the checklist with a "from your votes" tag; vote it out and it goes. Borobudur's
+sunrise slot is on the list because the sunrise option is winning, and it carries the quota warning that page 5
+already mentions.
+
+A checklist that does not know what you chose is a template, and templates are free everywhere.
+
+**Critical items are separated from the rest.** Passports, visa position, flights and beds carry a **must** tag, and a
+red band at the top names exactly which of them are outstanding: *"6 things left that would end the trip"*. Tick them
+all and the band turns green and says the rest will not stop you getting on the plane. **Hotel bookings were called
+out as the most important item, so "Hotel booked for every night of the trip" is described on the row as the one that
+breaks the trip if it is missed.**
+
+**On the visa line, a correction to the ask.** The request assumed a visa check is needed. Malaysians travelling to
+Indonesia for tourism enter visa-free, so the item is worded as **"visa position confirmed for every passport"** rather
+than "apply for a visa" - the real risk in a four-person student team is the one member on a different passport, not
+the group. `[not verified]` against current immigration rules, which is the sort of thing that changes; the wording is
+deliberately about checking rather than asserting.
+
+**One behaviour worth knowing.** Asking for something in the request box does **not** put it on the checklist. It puts
+it up for a vote, and only what wins gets booked. That is the vote staying load-bearing rather than being decorative.
 
 **Live** at https://codenection-travel-planner.vercel.app
 
