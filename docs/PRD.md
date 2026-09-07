@@ -1,8 +1,20 @@
 # PRD — Perch
 
-**What.** Requirements, user stories, acceptance criteria, and what is deliberately out of scope.
-[`PRODUCT.md`](PRODUCT.md) is the spine; this file turns its Must tier into things a judge can check. It is what
-`hackathon-scope-cutter` cuts against.
+**What.** The problem in the organisers' own words, the aim and objectives the build is measured against, who it is for,
+what the market already does, and then the requirements, user stories and acceptance criteria that follow from all of
+it. It is what `hackathon-scope-cutter` cuts against.
+
+**Why the framing sections are here and not only in `PRODUCT.md`.** They are the same ground read for a different
+purpose, and both readings are needed.
+
+|                 | [`PRODUCT.md`](PRODUCT.md)                                | This File                                                           |
+| --------------- | --------------------------------------------------------- | ------------------------------------------------------------------- |
+| **Reads it as** | An argument. Who, why, and which directions were rejected | A specification input. What the build is measured against           |
+| **Form**        | Narrative and prose                                       | Tables, graded figures, and numbered objectives with a measure each |
+| **Wins on**     | Any question of concept, positioning or scope philosophy  | Any question of what must be true on 13 September                   |
+
+**Nothing here restates `PRODUCT.md`'s reasoning.** Where it argues a case, this file cites it and moves on. Where a
+figure appears, it appears with how well sourced it is.
 
 **What it does not own.** Architecture, data models and API contracts belong to [`TRD.md`](TRD.md). Palette, type,
 radius, spacing and motion belong to [`DESIGN.md`](DESIGN.md). Where a requirement needs a visual rule it cites that
@@ -13,6 +25,216 @@ obvious. Read `research` with `git show research:<path>`. A requirement with no 
 invented.
 
 ---
+
+## The Problem, In The Organisers' Words
+
+**This is the brief, verbatim.** Every requirement below traces to one of the four capabilities it names, and
+[`source/problem-statements.md`](source/problem-statements.md) is the append-only record of it.
+
+> **Background:** Planning a trip means dealing with flights, places to stay, budgets, activities, and whatever everyone
+> in the group actually wants to do, and that's before anything changes at the last minute. It's a lot to hold together,
+> and it usually ends up scattered across five different apps and a group chat.
+>
+> **The Problem:** Most travel apps only handle one piece of this with either bookings, or budgeting, or itineraries. So
+> travellers end up manually piecing it all together themselves. Group trips make it worse, since getting everyone's
+> schedules, budgets, and preferences to line up is genuinely difficult. And when something changes mid-trip, there's
+> rarely any real help from existing platforms in adjusting.
+
+**Four capabilities are named, and we answer all four with one mechanism rather than four features.**
+
+| **Capability Named In The Brief**                | **Where It Lands**                                   | **Requirements**   |
+| ------------------------------------------------ | ---------------------------------------------------- | ------------------ |
+| Budgeting                                        | A total per day and per trip, and every delta priced | R14, R15, R33, R34 |
+| Building an itinerary                            | Perch proposes the whole trip from the interview     | R12-R17            |
+| Syncing preferences across a group               | The interview's ranking, reordered by taps           | R10, R11, R26, R27 |
+| Adjusting plans when things don't go as expected | The bench, filtered by fit, then by rank             | R28-R36            |
+
+**The fourth is the one we are actually competing on**, and the brief's own phrase for it is _"re-planning when
+something changes mid-trip"_. `research:docs/decisions/build-verdict.md` records why: it is the capability the category
+leaves unserved, and it is the one the problem statement asks for by name.
+
+**Six general stipulations bind this build**, from the same source file:
+
+1. **A web-only submission is acceptable.** Stipulation 3. We build web, mobile-first
+2. **Any stack, framework or language.** Stipulation 5
+3. **Solutions must be deployable**, and demonstrable somewhere other than a local dev environment. Stipulation 6. This
+   is why the prototype is on Cloud Run and not on a laptop
+4. **Third-party APIs are allowed** where a free tier or trial exists, and teams carry their own keys. Stipulation 7
+5. **Boilerplate and open-source libraries are allowed**, but the core logic must be built during the hackathon.
+   Stipulation 9
+6. **All submissions must be original work created during the hackathon period.** Stipulation 11. The one carried-in
+   exception, `scripts/demo/`, is declared in [`../scripts/demo/README.md`](../scripts/demo/README.md)
+
+---
+
+## The Problem, As We Understand It
+
+**We are not competing with a travel planner. We are competing with a stack of free apps she already has.**
+[`PRODUCT.md`](PRODUCT.md#the-problem) argues this at length; what follows is the compressed version the requirements
+are written against.
+
+### The Causes, Not The Symptom
+
+**The symptom is "planning is a hassle". The causes are four, and only the fourth is unserved.**
+
+| **Cause**                                     | **Who Serves It Today**                                  | **Ours?**            |
+| --------------------------------------------- | -------------------------------------------------------- | -------------------- |
+| Producing a plausible itinerary is slow       | Solved. Chatbots commoditised it                         | No                   |
+| The plan lives in five places at once         | Partly solved. Wanderlog puts itinerary and map together | No                   |
+| Getting five calendars and budgets to line up | Partly solved. Polls and swipe apps produce a result     | Only as a by-product |
+| **Nothing owns the plan after it is made**    | **Nobody**                                               | **Yes**              |
+
+> Every tool a group already uses can produce a plan. **None of them owns the plan afterwards.**
+
+### The Stakeholders
+
+**The person who pays for the problem is not the person the category sells to**, and that gap is the opening.
+
+| **Stakeholder**                 | **What They Carry Today**                                                                 | **What Changes**                                                           |
+| ------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **The organiser**               | Every re-check, every re-plan, and the social cost of chasing four people                 | The repair happens without her. She is told, not consulted                 |
+| **The other four**              | Nothing, which is the problem: no stake means no reply                                    | One tap, inside a magazine, with no install and no account                 |
+| **The person who fronts money** | The deposit, then a month of asking. `[synthetic]` amounts fronted ran RM 680 to RM 2,500 | **Nothing. Bill splitting is a Won't** - see [Out Of Scope](#out-of-scope) |
+| **Local operators**             | A cancellation is a lost booking with no fallback offered                                 | Out of scope for the prototype, named so it is not claimed                 |
+
+---
+
+## The Figures, And What Each Is Worth
+
+**Every number below is followed by how well sourced it is, because most of them are weaker than they look.** The
+research branch grades its own reading, and this table carries that grade forward rather than laundering it.
+
+| **Grade**        | **Means**                                                                              |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| **Read**         | The page was fetched and its text read. Quotes are exact                               |
+| `[snippet only]` | The figure came from a search summary or press coverage. **The page was never opened** |
+| `[synthetic]`    | Produced by three language models given a persona brief. **Not evidence about people** |
+| `[assumed]`      | Written by us with no source behind it, and marked as such at the source               |
+
+### The Category Is Large, Crowded And Commoditised
+
+| **Figure**                                                                                              | **Grade**            | **Source**                            |
+| ------------------------------------------------------------------------------------------------------- | -------------------- | ------------------------------------- |
+| "Around 40% of travellers worldwide have now used AI to plan a trip", Trip.com's published data         | `[snippet only]`     | `research:docs/market/landscape.md`   |
+| "Of those, who use it for most or every trip \| 63%"                                                    | `[snippet only]`     | `research:docs/market/competitors.md` |
+| "Who used generative AI to build an itinerary \| 42%"                                                   | `[snippet only]`     | `research:docs/market/competitors.md` |
+| "Travellers under 45 who would use AI for recommendations \| ~two-thirds"                               | `[snippet only]`     | `research:docs/market/competitors.md` |
+| Tripadvisor, "over a billion reviews across more than eight million businesses"                         | `[snippet only]`     | `research:docs/market/competitors.md` |
+| Xiaohongshu, "Over 300 million monthly active users ... around 70% women"                               | `[snippet only]`     | `research:docs/market/competitors.md` |
+| Roadtrippers, "based on what we've learned from over 42 million trips", five million points of interest | **Read**, 2026-09-01 | `research:docs/market/competitors.md` |
+| Roadtrippers pricing, "Free, then US$35.99 / 49.99 / 59.99 per year"                                    | **Read**, 2026-09-01 | `research:docs/market/competitors.md` |
+
+**What the badly-sourced half is used for, and what it is not.** Every `[snippet only]` figure here supports exactly one
+argument: **generating an itinerary is not hard and not ours to claim.** None of them is used to size a market, justify
+a feature or describe our user. **No funding, valuation or revenue figure for any competitor exists anywhere on the
+research branch**, so none appears here.
+
+**The 40% is about travellers worldwide, not about Aisyah.** `research:docs/market/landscape.md` says so in as many
+words, and the same file records that a Malaysian-specific version of the figure was never found.
+
+---
+
+## Aim And Objectives
+
+**The aim, in one sentence**, and it is [`PRODUCT.md`](PRODUCT.md#the-one-sentence)'s:
+
+> **The itinerary knows what can break it, and repairs itself from options the group already approved.**
+
+**Five objectives, each with the thing that would show it was met.** They are ordered by how much of the claim rests on
+them, not by build order.
+
+| **#**  | **Objective**                                                          | **Met When**                                                                                    | **Requirements** |
+| ------ | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ---------------- |
+| **O1** | Turn one act of choosing into both a trip and a ranked bench           | Three taps produce a complete four-day trip **and** seven ranked alternates, in one interaction | R10, R11, R12    |
+| **O2** | Repair a broken slot without asking anyone                             | A cancelled stop is replaced, priced and explained with **zero further input**                  | R28-R36          |
+| **O3** | Price every change in the two units that decide whether a day survives | No delta is ever shown in ringgit alone or in minutes alone                                     | R33, R34         |
+| **O4** | Make contributing cost one tap and no install                          | A group member opens a link, taps once, and has changed the ranking. No account, no download    | R1, R2, R26      |
+| **O5** | Leave something worth keeping after the trip                           | The finished Book reads as a document, with every decision control gone                         | R25              |
+
+**O1 and O2 are the product. O3, O4 and O5 are what stop it being a demo.** If O1 fails, the bench is a canned list and
+the claim is theatre. If O2 fails, we have built another planner.
+
+**Two non-objectives, stated so nobody optimises for them.** Better suggestions than Tripadvisor is not an objective,
+and neither is a faster path to a first itinerary; `PRODUCT.md`'s
+[What We Claim, And What We Do Not](PRODUCT.md#what-we-claim-and-what-we-do-not) gives the reasoning for six such
+non-claims.
+
+---
+
+## Target Users
+
+**Every claim about the user on this page is `[assumed]` or `[synthetic]`, and `research:docs/users/interviews/` is
+empty.** No real person has said any of it. That is recorded here and not hidden, because a judge who asks will find out
+in one question.
+
+### The Primary User
+
+| **Attribute**             | **Aisyah, 24**                                                                                                                        | **Grade**                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **Situation**             | Graduated two years ago, junior office job in KL, renting a room, no car                                                              | `[assumed]`                                |
+| **Group**                 | "The same four or five friends from university, now on different jobs and shifts"                                                     | `[assumed]`                                |
+| **Trip shape**            | "Three nights, four days, because that's the longest you can do on one day of annual leave by tagging a weekend and a public holiday" | `[synthetic]`, all three models unprompted |
+| **When she plans**        | Alone, at night. One panel answer put it at "a Thursday night around 11 PM"                                                           | `[synthetic]`                              |
+| **Hard constraint**       | "Four of the five friends will not install a second app", so the entry is a shared link                                               | `[assumed]`                                |
+| **What she does instead** | WhatsApp first, then a booking app, then Google Maps, then a money tool                                                               | `[synthetic]`, corrected 2026-09-07        |
+
+**The trip length in the fixture is three nights and four days because of that row**, not because four days looked tidy.
+`research:docs/users/synthetic-panel-2026-09-07.md` records all three models giving the same length **and the same
+cause**, unprompted.
+
+**One contradiction is load-bearing and is not smoothed over.** Asked how disagreements actually get settled, not one
+answer described a vote. The finding that survives is narrower and better: **a vote that runs over days is a fiction; a
+vote that runs in one sitting and leaves a ranked residue behind it is not.**
+
+### Secondary Users, And Who We Are Not Building For
+
+| **Segment**                                   | **Standing**                                                                               |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **The other four in the group**               | **Served, not pitched.** They get a magazine with gaps and one tap                         |
+| **Solo travellers**                           | **Supported, never pitched.** Phase 1 is skipped and phase 2 is pre-resolved               |
+| **Long-haul backpackers with weeks of slack** | **Not them.** A closed stop costs an afternoon they had spare                              |
+| **Families, or agent-booked trips**           | **Not them.** The decision is not democratic and the constraints are not preference-shaped |
+| **"Students" as a category**                  | **Not them.** Too broad, and the wrong shape. Target Group Alignment rewards narrow        |
+
+---
+
+## Market Fit
+
+**Four competitor passes ran on `research`, and two products were read directly rather than from a summary.** The
+strongest finding is a competitor's, which is a better originality argument than "nobody does this".
+
+### What The Category Already Does Well, And Owns
+
+| **Product**      | **What It Owns**                                            | **Grade**              |
+| ---------------- | ----------------------------------------------------------- | ---------------------- |
+| **Wanderlog**    | "Your itinerary and your map in one view" - its own tagline | **Read**, 2026-09-01   |
+| **Roadtrippers** | Suggestion quality, backed by 42 million trips              | **Read**, 2026-09-01   |
+| **Tripeza**      | **Swiping on where to go**, not on the stops                | **Read**, 2026-09-07   |
+| **Xiaohongshu**  | Inspiration, at a scale no prototype competes with          | `[snippet only]`       |
+| **WhatsApp**     | Polls, and the group itself. It is free and already open    | **The real incumbent** |
+
+### The Finding The Claim Rests On
+
+**SwipeSights already computes a ranked group preference order** - super-likes carry double weight, and premium sells
+vote analytics - **and spends it on how long you stay at the places that won.** The losing swipes are discarded. Its own
+FAQ tells the group to _"double-check opening hours closer to your trip date."_ Read directly on 2026-09-07, site and
+store listing; **the app was not installed.**
+
+**A direct competitor had the ranking in its hands and used it for a different problem.** That is the gap, stated
+precisely, and it is checkable.
+
+### What Would Kill It
+
+| **Risk**                                     | **Standing**                                                                                                                                  |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Troupe already benches its losing votes**  | **Unchecked, and it is the single biggest hole.** `research:docs/market/sources.md` has no URL for it. If true, the originality claim is gone |
+| **Real place data**                          | Unsolved. Named and costed in [`TRD.md`](TRD.md)                                                                                              |
+| **Nobody taps**                              | Designed around. The trip is valid with zero group input, so a tap is an upgrade and never a gate                                             |
+| **The group installs nothing**               | Designed for. No account, no install, the link opens inside WhatsApp                                                                          |
+| **"Nobody does this" turns out to be false** | Already partly false and struck through on `research`. The claim was narrowed rather than defended                                            |
+
+**Checking Troupe is half an hour of work and it is still not done.** It is the most valuable half hour available before
+the video is recorded, and it is tracked rather than assumed away.
 
 ## What This Prototype Is
 
