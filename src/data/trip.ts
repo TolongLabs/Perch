@@ -1,3 +1,4 @@
+import { rankingWithTaps } from '../lib/ranking'
 import { byId, places } from './places'
 import type { Day, Slot, Trip } from './types'
 
@@ -10,6 +11,7 @@ const slot = (id: string, period: Slot['period'], chosenId: string, bench: strin
   period,
   chosenId,
   benchIds: bench,
+  blockedIds: [],
   state,
   cause: null
 })
@@ -62,7 +64,7 @@ const days: Day[] = [
         'd3-morning',
         'morning',
         'merapi-jeep',
-        ['prambanan', 'jomblang', 'timang', 'bukit-panguk', 'kalibiru'],
+        ['prambanan', 'ullen-sentalu', 'jomblang', 'timang', 'bukit-panguk', 'kalibiru'],
         'decided'
       ),
       slot('d3-afternoon', 'afternoon', 'tebing-breksi', ['ratu-boko', 'parangtritis', 'kalibiru'], 'decided'),
@@ -111,7 +113,7 @@ const ranking = [
   ...places.map((p) => p.id).filter((id) => !interviewPool.includes(id))
 ]
 
-export const trip: Trip = {
+const seed: Trip = {
   id: 'yogya-nov-2026',
   destination: 'Yogyakarta',
   country: 'Indonesia',
@@ -135,3 +137,6 @@ export const trip: Trip = {
   ranking,
   changes: []
 }
+
+/** The taps the fixture ships with are real taps, so the order they produce is the order the trip starts in. */
+export const trip: Trip = { ...seed, ranking: rankingWithTaps(seed) }

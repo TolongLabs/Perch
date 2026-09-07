@@ -7,18 +7,20 @@
   font-display: swap;
 }
 
+/* Newsreader ships here as two static faces, not a variable one. Declaring a weight range it does not have makes the
+   browser synthesise the difference, which is why this is 400 rather than a range. */
 @font-face {
   font-family: "Newsreader";
-  src: url("/fonts/newsreader-regular.woff2") format("woff2-variations");
-  font-weight: 200 800;
+  src: url("/fonts/newsreader-regular.woff2") format("woff2");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
   font-family: "Newsreader";
-  src: url("/fonts/newsreader-italic.woff2") format("woff2-variations");
-  font-weight: 200 800;
+  src: url("/fonts/newsreader-italic.woff2") format("woff2");
+  font-weight: 400;
   font-style: italic;
   font-display: swap;
 }

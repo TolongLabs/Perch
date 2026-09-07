@@ -1,6 +1,6 @@
 import type { Day, Slot } from '../data/types'
 import { duration, money, travel } from '../lib/format'
-import { describeDelta, whyNot } from '../lib/repair'
+import { benchInRankOrder, describeDelta, whyNot } from '../lib/repair'
 import { useTrip } from '../state'
 import './Perch.css'
 
@@ -13,6 +13,7 @@ type Props = { day: Day; slot: Slot; onClose: () => void }
 export const Perch = ({ day, slot, onClose }: Props) => {
   const { trip, swap } = useTrip()
   const outgoing = slot.chosenId ? trip.options[slot.chosenId] : undefined
+  const bench = benchInRankOrder(trip, slot)
 
   return (
     <div className="perch-scrim" role="dialog" aria-label="The perch">
@@ -36,9 +37,8 @@ export const Perch = ({ day, slot, onClose }: Props) => {
         </p>
 
         <ul className="perch-rows">
-          {slot.benchIds.map((id, i) => {
-            const option = trip.options[id]
-            if (!option) return null
+          {bench.map((option, i) => {
+            const id = option.id
             const blocked = whyNot(option, slot, day, outgoing)
             const delta = describeDelta(
               option.travelMin - (outgoing?.travelMin ?? 0),

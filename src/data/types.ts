@@ -4,7 +4,6 @@ export type SlotState = 'open' | 'decided' | 'at-risk'
 
 export type OptionKind =
   | 'temple'
-  | 'nature'
   | 'volcano'
   | 'market'
   | 'food'
@@ -40,6 +39,8 @@ export type Slot = {
   chosenId: string | null
   /** Everything that lost, in rank order. The replacement pool, the cut list and the change list at once. */
   benchIds: string[]
+  /** Options the world has taken off the table for this slot. A cancelled jeep tour is still cancelled. */
+  blockedIds: string[]
   state: SlotState
   /** Why the slot is at risk. Present only when state is 'at-risk'. */
   cause: string | null

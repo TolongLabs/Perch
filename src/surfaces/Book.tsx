@@ -93,7 +93,20 @@ export const Book = () => {
 
             {day.slots.map((slot) => {
               const option = slot.chosenId ? trip.options[slot.chosenId] : undefined
-              if (!option) return null
+
+              // An empty slot is the one thing the group must not have hidden from them.
+              if (!option) {
+                return (
+                  <section key={slot.id} className="gap">
+                    <p className="t-label entry-when">{PERIOD[slot.period]}</p>
+                    <h3 className="t-name gap-title">Nothing On The Perch Fits</h3>
+                    <p className="t-prose entry-prose">
+                      {slot.cause ?? 'Something changed'}, and everything ranked behind it is shut or too far for this
+                      slot. This one needs a person.
+                    </p>
+                  </section>
+                )
+              }
 
               if (slot.state !== 'open') {
                 return (

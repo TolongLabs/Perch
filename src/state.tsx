@@ -102,8 +102,11 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
                 s.id === last.slotId
                   ? {
                       ...s,
-                      chosenId: last.fromId,
-                      benchIds: [last.toId, ...s.benchIds.filter((id) => id !== last.toId)]
+                      chosenId: last.fromId === '' ? s.chosenId : last.fromId,
+                      benchIds: [last.toId, ...s.benchIds.filter((id) => id !== last.toId && id !== last.fromId)],
+                      blockedIds: s.blockedIds.filter((id) => id !== last.fromId),
+                      state: 'decided' as const,
+                      cause: null
                     }
                   : s
               )

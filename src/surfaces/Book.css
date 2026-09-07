@@ -211,6 +211,21 @@
   padding: var(--s3) var(--s5);
 }
 
+/* An unfillable slot. It borrows the blank's construction and the at-risk colour, because it is not a question the
+   group can answer by tapping. */
+
+.gap {
+  margin-bottom: var(--s6);
+  padding: var(--s5);
+  border: 2px dashed var(--at-risk);
+  background: color-mix(in oklab, var(--at-risk) 6%, var(--plate));
+}
+
+.gap-title {
+  color: var(--at-risk);
+  margin: var(--s2) 0;
+}
+
 /* Colophon */
 
 .colophon > .t-label {

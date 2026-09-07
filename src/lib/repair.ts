@@ -29,6 +29,7 @@ export const tripCostRM = (trip: Trip): number => trip.days.reduce((sum, day) =>
  * filter here is a hard one and the ranking only breaks ties between survivors.
  */
 export const fits = (option: Option, slot: Slot, day: Day, outgoing: Option | undefined): boolean => {
+  if (slot.blockedIds.includes(option.id)) return false
   if (!option.bestPeriod.includes(slot.period)) return false
   if (option.closedOn.includes(day.weekday.toLowerCase())) return false
 
@@ -45,6 +46,7 @@ export const fits = (option: Option, slot: Slot, day: Day, outgoing: Option | un
  * fit filter is the argument, so it has to be visible.
  */
 export const whyNot = (option: Option, slot: Slot, day: Day, outgoing: Option | undefined): string | null => {
+  if (slot.blockedIds.includes(option.id)) return slot.cause ?? 'Off the table'
   if (!option.bestPeriod.includes(slot.period)) return `Not a ${slot.period} thing`
   if (option.closedOn.includes(day.weekday.toLowerCase())) return `Shut on ${day.weekday}s`
 
@@ -67,6 +69,21 @@ export const describeDelta = (deltaMin: number, deltaRM: number): string => {
 const WORDS = ['', '', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
 const ordinal = (n: number): string => WORDS[n] ?? String(n)
 
+/**
+ * The one bench order. The drawer numbers its rows from this and `repair` picks from it, so the rank the sentence
+ * states is always the rank a judge can count on screen.
+ */
+export const benchInRankOrder = (trip: Trip, slot: Slot): Option[] => {
+  const at = (id: string): number => {
+    const i = trip.ranking.indexOf(id)
+    return i === -1 ? Number.MAX_SAFE_INTEGER : i
+  }
+  return slot.benchIds
+    .map((id) => trip.options[id])
+    .filter((o): o is Option => o !== undefined)
+    .sort((a, b) => at(a.id) - at(b.id))
+}
+
 export type RepairResult =
   | { kind: 'swapped'; slot: Slot; change: ChangeEvent }
   | { kind: 'exhausted'; slot: Slot; reason: string }
@@ -83,40 +100,39 @@ export const repair = (trip: Trip, dayIndex: number, slotId: string, cause: stri
   if (!slot) throw new Error(`no slot ${slotId}`)
 
   const outgoing = slot.chosenId ? trip.options[slot.chosenId] : undefined
-  const survivors = slot.benchIds
-    .map((id) => trip.options[id])
-    .filter((o): o is Option => o !== undefined)
-    .filter((o) => fits(o, slot, day, outgoing))
 
-  if (survivors.length === 0) {
+  // What the world took off the table stays off it, so firing the same disruption twice cannot swap the trip back.
+  const withCause: Slot = {
+    ...slot,
+    blockedIds: outgoing ? [...slot.blockedIds, outgoing.id] : slot.blockedIds,
+    cause
+  }
+  const bench = benchInRankOrder(trip, withCause)
+  const survivors = bench.filter((o) => fits(o, withCause, day, outgoing))
+
+  const winner = survivors[0]
+  if (!winner) {
     return {
       kind: 'exhausted',
-      slot: { ...slot, chosenId: null, state: 'at-risk', cause },
+      slot: { ...withCause, chosenId: null, state: 'at-risk' },
       reason: `Nothing on the bench for this slot is open and close enough. ${day.title} needs a decision.`
     }
   }
-
-  const rankOf = (id: string): number => {
-    const at = trip.ranking.indexOf(id)
-    return at === -1 ? Number.MAX_SAFE_INTEGER : at
-  }
-  const winner = survivors.reduce((best, o) => (rankOf(o.id) < rankOf(best.id) ? o : best))
 
   const deltaMin = winner.travelMin - (outgoing?.travelMin ?? 0)
   const deltaRM = winner.costRM - (outgoing?.costRM ?? 0)
 
   const repaired: Slot = {
-    ...slot,
+    ...withCause,
     chosenId: winner.id,
-    benchIds: [...slot.benchIds.filter((id) => id !== winner.id), ...(outgoing ? [outgoing.id] : [])],
-    state: 'decided',
-    cause: null
+    benchIds: [...bench.filter((o) => o.id !== winner.id).map((o) => o.id), ...(outgoing ? [outgoing.id] : [])],
+    state: 'decided'
   }
 
   const after = { ...day, slots: day.slots.map((s) => (s.id === slot.id ? repaired : s)) }
   const total = dayCostRM(after, trip.options)
   const before = dayCostRM(day, trip.options)
-  const rank = slot.benchIds.indexOf(winner.id) + 2
+  const rank = bench.findIndex((o) => o.id === winner.id) + 2
 
   const money = total === before ? `the day stays at RM ${total}` : `the day is RM ${total}`
   const sentence = outgoing
