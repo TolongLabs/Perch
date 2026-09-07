@@ -96,6 +96,9 @@ export const Interview = () => {
               if (!option) return null
               const on = picked.includes(id)
               const benched = settling && !on
+              const perchRank = benched
+                ? picked.length + interviewPool.filter((x) => !picked.includes(x)).indexOf(id) + 1
+                : 0
 
               return (
                 <li key={id} className="card-item" data-benched={benched} style={{ animationDelay: `${i * 40}ms` }}>
@@ -106,7 +109,7 @@ export const Interview = () => {
                     disabled={settling && !on}
                     onClick={() => setPicked((p) => (on ? p.filter((x) => x !== id) : p.length < 3 ? [...p, id] : p))}
                   >
-                    <span className="card-rank t-label">{on ? picked.indexOf(id) + 1 : ''}</span>
+                    <span className="card-rank t-label">{on ? picked.indexOf(id) + 1 : perchRank || ''}</span>
                     <span className="t-name">{option.name}</span>
                     <span className="t-specimen">
                       {duration(option.dwellMin)} &middot; {money(option.costRM)}

@@ -50,6 +50,25 @@ here.
 judged without visual direction leaking into it. The visual mockups are built separately, against `DESIGN.md`, so that a
 structural problem and a styling problem never get argued about at the same time.
 
+### The Prototype, Screen By Screen
+
+**Seven screens from the running build, not a mockup.** Each was captured from the deployed prototype at the width it is
+designed for: 390px for the phone, 1440px for the desk.
+
+| Screen                                                               | What It Proves                                                                                                                                                                          |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Question three of the interview](assets/screens/01-interview.png)  | **The bench is made here.** Three picks rank 1 to 3; the seven that lose do not disappear, they take ranks 4 to 10 and settle. Everything the product does later is spent on that order |
+| ![The Desk with Day 3 open](assets/screens/02-desk.png)              | **Perch has already chosen.** The whole trip exists before anyone is consulted, and each day carries its own bird tint so colour says which day you are on                              |
+| ![The perch drawer](assets/screens/03-perch.png)                     | **Fit comes before rank, and the rows that fail say why.** Jomblang Cave is 25 minutes too far for this slot. Hiding that would hide the argument                                       |
+| ![The What Changed strip](assets/screens/04-what-changed.png)        | **The repair has already happened.** Nobody was asked. The delta is in two units, travel then money, because a swap that quietly adds forty minutes breaks the day it was meant to save |
+| ![The Book in its setting state](assets/screens/05-book-setting.png) | **What the group opens is a magazine with gaps, not a planner.** A tap moves an option up; it never edits a slot. Open a planner and four people who install nothing do not tap         |
+| ![The Book, printed](assets/screens/06-book-printed.png)             | **The same object, finished.** Every slot resolved, every control gone, and a plate for each day. This is the half of the product worth keeping after the trip                          |
+| ![The Desk at 1440](assets/screens/07-desk-desktop.png)              | **Two columns, not a dashboard.** The instrument gets wider above 1024px; it does not sprout a sidebar or a chart                                                                       |
+
+**The Prototype Controls block in the bottom left is deliberate and is labelled as not part of the product.** A fixture
+has nothing to observe, so the disruption has to be fired by hand. **A hidden timer would demo better and be less
+honest**, and a judge who can fire it twice can check that the repair is computed rather than replayed.
+
 **Both links must be viewable at submission**, along with everything else this file points at - the organisers' rule is
 that every link in the README opens. The mockups file is not shared yet and flipping it is a deliberate action, tracked
 alongside making the repo public in [issue #13](https://github.com/TolongLabs/codenection-dev/issues/13).
