@@ -20,6 +20,23 @@ and the auth screen exists to be walked past.
 
 ---
 
+## The Figma Files
+
+**Two files, and they are drawn at different stages on purpose.** The wireframe settles structure before any visual
+direction exists, so a structural problem and a styling problem never get argued about in the same conversation.
+
+| File                                                                                                           | What Is In It                                                                                                        | Access                                     |
+| -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| [Perch - Prototype Wireframe](https://www.figma.com/design/54WzxphGf6z5qeCzOXZscK/Perch---Prototype-Wireframe) | Eight screens in greyscale, captioned per screen. Structure and behaviour, no visual direction                       | Link + password                            |
+| [Perch - Visual Mockups](https://www.figma.com/design/lei5YdT1r8Dky1QjfwZGfY/Perch---Visual-Mockups)           | One page, read left to right: the Design System sheet, the Brand sheet, the desktop plate, then three mobile screens | **Private. Must be shared before 13 Sept** |
+
+**The two sheets in the mockups file do not repeat each other.** The Design System sheet is the spec — what the palette,
+the type, the controls and the two surfaces **are**. The Brand sheet is the derivation — the five marks, the size test
+that eliminated four of them, and the typeface routes compared before one was picked. Spec belongs on the first; the
+reasoning that produced it belongs on the second.
+
+---
+
 ## The Direction, In One Line
 
 > **A field guide, not a travel brochure.** The Book is a printed plate; The Desk is the instrument you hold while you
@@ -144,13 +161,15 @@ paper, never as grey-on-tint.
 The mark is the bar and the ranked bench reversed out of a solid rounded square: one form ahead and largest, two
 receding behind it. Same sentence as the product, pressed rather than drawn.
 
-| Property        | Value                                                                                                |
-| --------------- | ---------------------------------------------------------------------------------------------------- |
-| **Geometry**    | 168 unit square, corner radius 28. Bar at y 92, 104×5, r 2.5. Discs r 16, 12, 9 on a descending line |
-| **Light theme** | `v2/public/assets/mark.svg` — ink plate `#2E261F`, the drawing reversed out in paper `#FBF8F2`       |
-| **Dark theme**  | `v2/public/assets/mark-dark.svg` — the plate inverts, the drawing does not. One geometry, two files  |
-| **Colour**      | Two values, never three. The lead disc takes no tint: its size already ranks it                      |
-| **Floor**       | 16px. Below that the third disc is dropped rather than the whole mark scaled down                    |
+| Property        | Value                                                                                                                                                                                                                                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Geometry**    | 168 unit square, corner radius 28. Bar at y 92, 104×5, r 2.5. Discs r 16, 12, 9 on a descending line                                                                                                                                                                                |
+| **Light theme** | `v2/public/assets/mark.svg` — ink plate `#2E261F`, the drawing reversed out in paper `#FBF8F2`                                                                                                                                                                                      |
+| **Dark theme**  | `v2/public/assets/mark-dark.svg` — the plate inverts, the drawing does not. One geometry, two files                                                                                                                                                                                 |
+| **Colour**      | Two values, never three. The lead disc takes no tint: its size already ranks it                                                                                                                                                                                                     |
+| **Floor**       | 16px. Below that the third disc is dropped rather than the whole mark scaled down                                                                                                                                                                                                   |
+| **Favicon**     | `v2/public/favicon.svg`, which swaps plate and drawing on `prefers-color-scheme` so the tab reads on either browser chrome. `favicon-32.png` / `favicon-16.png` are the raster fallback, `apple-touch-icon.png` sets the mark on paper with margin because iOS applies its own mask |
+| **Social card** | `v2/public/assets/og-banner.png`, 1200×630. Lockup top left, and the motif — the bar with three discs — repeated at decreasing size and opacity out of the bottom right corner, climbing diagonally                                                                                 |
 
 **Why This One, Out Of Five.** Five marks were drawn against the same sentence, each taking one principle: 家紋 _kamon_
 the crest, 間 _ma_ the empty seat, 円相 _ensō_ the open ring, 判子 _hanko_ the seal, and メリハリ _merihari_ the

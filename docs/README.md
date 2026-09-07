@@ -157,11 +157,12 @@ slashing thing"_; it was dropped on the call.
 
 ## 3. Design & Prototype
 
-| Link                                                                                                           | What Is In It                                                                                                                                                                          | Access                                     |
-| -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| **[The running prototype](https://prototype-yskhynz4la-as.a.run.app)**                                         | The built app. Redeployed on every merge to `main`                                                                                                                                     | **Public, opens in incognito**             |
-| [Perch - Prototype Wireframe](https://www.figma.com/design/54WzxphGf6z5qeCzOXZscK/Perch---Prototype-Wireframe) | Eight screens in greyscale, captioned per screen. Structure and behaviour, no visual direction                                                                                         | Link + password                            |
-| [Perch - Visual Mockups](https://www.figma.com/design/lei5YdT1r8Dky1QjfwZGfY/Perch---Visual-Mockups)           | One page, left to right. The design system layer, the brand sheet that settles the mark and the typeface, the desktop plate, and three mobile screens against [`DESIGN.md`](DESIGN.md) | **Private. Must be shared before 13 Sept** |
+| Link                                                                   | What Is In It                                      | Access                         |
+| ---------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------ |
+| **[The running prototype](https://prototype-yskhynz4la-as.a.run.app)** | The built app. Redeployed on every merge to `main` | **Public, opens in incognito** |
+
+**The two Figma files** — the greyscale wireframe and the visual mockups — are listed with their contents and access
+notes in [`DESIGN.md`](DESIGN.md#the-figma-files), which is where the design spec they realise also lives.
 
 **Greys are deliberate.** The wireframe was drawn before [`DESIGN.md`](DESIGN.md) existed so that structure could be
 judged without visual direction leaking into it, and so a structural problem and a styling problem never get argued

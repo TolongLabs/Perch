@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168" width="168" height="168" role="img" aria-label="Perch">
+  <style>
+    .plate { fill: #2E261F }
+    .mark  { fill: #FBF8F2 }
+    @media (prefers-color-scheme: dark) {
+      .plate { fill: #FBF8F2 }
+      .mark  { fill: #2E261F }
+    }
+  </style>
+  <rect class="plate" width="168" height="168" rx="28"/>
+  <rect class="mark" x="32" y="92" width="104" height="5" rx="2.5"/>
+  <circle class="mark" cx="54" cy="76" r="16"/>
+  <circle class="mark" cx="90" cy="81" r="12"/>
+  <circle class="mark" cx="118" cy="85" r="9"/>
+</svg>
