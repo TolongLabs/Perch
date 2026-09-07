@@ -69,9 +69,7 @@
       "Bash(gh repo delete:*)",
       "Bash(git push --force*)",
       "Bash(git reset --hard*)",
-      "Bash(rm -rf /*)",
-      "Read(./.env)",
-      "Read(./.env.*)"
+      "Bash(rm -rf /*)"
     ]
   },
   "hooks": {

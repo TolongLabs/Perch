@@ -102,23 +102,29 @@ export const App = () => (
 ### The Layout
 
 ```
-index.html                Vite entry, at the repo root. Preloads the Archivo face
-src/
-  main.tsx                mounts <App /> into #root; imports tokens.css then base.css
-  App.tsx                 TripProvider wrapping BrowserRouter and the six routes above
-  state.tsx               the one context: trip, disrupt, swap, tap, settle, undo, restart
-  surfaces/               Dashboard, NewPlan, Interview, Desk, Book. Each beside its own .css
-  components/             Perch.tsx, Plate.tsx, StateChip.tsx, WhatChanged.tsx
-  lib/                    repair.ts, ranking.ts, store.ts, format.ts
-  data/                   types.ts, places.ts, trip.ts
-  styles/                 tokens.css, base.css
-public/
-  fonts/                  archivo-variable.woff2, newsreader-regular.woff2, newsreader-italic.woff2
-  assets/                 mark.svg
-Dockerfile                two stage: bun builds, nginx serves dist/
-nginx.conf                SPA fallback plus immutable asset headers
-vite.config.ts            the react plugin, outDir dist, assetsDir assets
+v1/                       the slide-deck mockup v2 replaced. Static HTML, shipped at /v1/
+v2/
+  index.html              Vite entry. Preloads the Archivo face
+  src/
+    main.tsx              mounts <App /> into #root; imports tokens.css then base.css
+    App.tsx               TripProvider wrapping BrowserRouter and the six routes above
+    state.tsx             the one context: trip, disrupt, swap, tap, settle, undo, restart
+    surfaces/             Dashboard, NewPlan, Interview, Desk, Book. Each beside its own .css
+    components/           Perch.tsx, Plate.tsx, StateChip.tsx, WhatChanged.tsx
+    lib/                  repair.ts, ranking.ts, store.ts, format.ts
+    data/                 types.ts, places.ts, trip.ts
+    styles/               tokens.css, base.css
+  public/
+    fonts/                archivo-variable.woff2, newsreader-regular.woff2, newsreader-italic.woff2
+    assets/               mark.svg
+Dockerfile                two stage: bun builds v2, nginx serves dist/ and v1/
+nginx.conf                /v1/ resolves first, then the SPA fallback, plus immutable asset headers
+vite.config.ts            root v2, the react plugin, outDir ../dist, assetsDir assets
 ```
+
+**The app moved under `v2/` on 8 September**, so that `v1/` - the slide-deck mockup it replaced - could sit beside it at
+the repo root and still be opened. Both ship in one image and one deploy; `vite.config.ts` carries the `root: 'v2'` that
+makes it work, and the toolchain files stay at the root because there is one toolchain, not two.
 
 **`Plate.tsx` is the one component with no CSS file of its own** — its three classes live in `Book.css`, because the
 plate only ever appears inside a spread and a second file would be a file for three rules.
