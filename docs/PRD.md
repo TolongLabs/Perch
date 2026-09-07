@@ -447,14 +447,15 @@ step 9. The fixture is a Yogyakarta trip, three nights and four days, which is t
 `research:docs/users/synthetic-panel-2026-09-07.md` produced unprompted from all three models and attributed to one day
 of annual leave against a weekend.
 
-**The video opens on `/interview`, not on `/`.** A judge who follows the bare link lands on The Desk and sees a working
-trip immediately, which is the right first screen for someone with thirty seconds. The interview is the right first
-screen for the video, because question 3 is where the bench is made and that is the beat the whole claim rests on.
+**The video opens on `/`, the dashboard, and so does everything else.** The prototype used to open on a finished trip,
+which showed the payoff and hid the mechanism that earns it. **Question 3 is still the beat the whole claim rests on**,
+and it is now reached the way a real user would reach it rather than by typing a path.
 
 | **Step** | **The Click**                                         | **What It Proves**                                                                                        |
 | -------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| **1**    | Open `/interview` in a private window                 | No install, no account, no landing page. The screen after the URL is the product (R1, R2)                 |
-| **2**    | Question 1: tap A Few Of Us                           | One tap decides solo against group, and nothing is asked twice (R8)                                       |
+| **1**    | Open `/` in a private window                          | No install, no account, no sign-up wall. One trip, and one button (R1, R2)                                |
+| **1b**   | Tap Start A New Plan                                  | Prefilled chips, one already chosen in each row. **Perch does not ask what it can infer** (R6)            |
+| **2**    | Tap Ask Me The Three Questions, then Q1: A Few Of Us  | One tap decides solo against group, and nothing is asked twice (R8)                                       |
 | **3**    | Question 2: tap what the trip is for                  | The interview has a voice, not a dropdown (R9)                                                            |
 | **4**    | Question 3: tap three of ten, Merapi last             | On the third tap the other seven step onto the perch, ranked. **This is the bench being made** (R10, R11) |
 | **5**    | Tap Perch Proposes The Trip, then do nothing          | The whole trip renders unprompted: four days, every slot, a total per day (R12-R15)                       |
