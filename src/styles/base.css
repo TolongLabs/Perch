@@ -1,0 +1,138 @@
+/* biome-ignore-all lint/complexity/noImportantStyles: a reduced-motion override must beat every author animation */
+@font-face {
+  font-family: "Archivo";
+  src: url("/fonts/archivo-variable.woff2") format("woff2-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Newsreader ships here as two static faces, not a variable one. Declaring a weight range it does not have makes the
+   browser synthesise the difference, which is why this is 400 rather than a range. */
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/newsreader-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Newsreader";
+  src: url("/fonts/newsreader-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--face-sans);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+ul,
+ol {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  font-variant-numeric: inherit;
+  margin: 0;
+  cursor: pointer;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: var(--outline) solid var(--open);
+  outline-offset: 2px;
+}
+
+/* Type roles. Nothing is set at 500 or 600: the jump from 100 to 700 is the field guide's own hierarchy. */
+
+.t-display {
+  font-size: clamp(34px, 9vw, 56px);
+  font-weight: 100;
+  letter-spacing: 0.01em;
+  line-height: 1.04;
+}
+
+.t-plate-title {
+  font-size: clamp(28px, 7.5vw, 44px);
+  font-weight: 100;
+  letter-spacing: 0.01em;
+  line-height: 1.08;
+}
+
+.t-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.t-specimen {
+  font-size: 12px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink-muted);
+}
+
+.t-prose {
+  font-family: var(--face-serif);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.t-name {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 1.25;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,264 @@
+/* The Book is a plate, so it has no rounded corners anywhere. That is the mechanic, not a preference. */
+
+.book {
+  background: var(--plate);
+  min-height: 100vh;
+  scroll-snap-type: y mandatory;
+}
+
+.spread {
+  scroll-snap-align: start;
+  padding: var(--s7) var(--s5);
+  max-width: 620px;
+  margin: 0 auto;
+  border-radius: var(--r-plate);
+  animation: spread-in var(--motion-fade) var(--ease);
+}
+
+@media (min-width: 1024px) {
+  .book {
+    scroll-snap-type: none;
+  }
+
+  .spread {
+    max-width: 1280px;
+    padding: var(--s7) 80px var(--s8);
+  }
+
+  .day-spread {
+    display: grid;
+    grid-template-columns: 600px 576px;
+    gap: var(--s8);
+    align-items: start;
+  }
+
+  /* The plate stays beside the entries it belongs to rather than scrolling out from under them. */
+  .spread-plate {
+    position: sticky;
+    top: var(--s7);
+    margin-bottom: 0;
+  }
+}
+
+/* Cover */
+
+.cover-eyebrow {
+  color: var(--open);
+}
+
+.cover-title {
+  margin: var(--s3) 0 var(--s5);
+}
+
+.cover-prose {
+  max-width: 44ch;
+}
+
+.cover-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s6);
+  margin: var(--s7) 0;
+}
+
+.cover-facts dt {
+  color: var(--ink-muted);
+  margin-bottom: var(--s2);
+}
+
+.cover-facts dd {
+  margin: 0;
+  font-size: 17px;
+}
+
+.cover-reader {
+  margin-bottom: var(--s6);
+}
+
+.cover-reader > .t-label {
+  display: block;
+  color: var(--ink-muted);
+  margin-bottom: var(--s3);
+}
+
+.cover-reader-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.reader-pill {
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  padding: var(--s2) var(--s4);
+}
+
+.reader-pill[data-active="true"] {
+  background: var(--ink);
+  color: var(--plate);
+}
+
+/* Day spreads */
+
+.plate-figure {
+  margin: 0;
+}
+
+.plate-svg {
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-plate);
+}
+
+.plate-caption {
+  margin-top: var(--s3);
+}
+
+.spread-band {
+  color: var(--tint);
+  padding-bottom: var(--s3);
+}
+
+.spread-text > .t-plate-title {
+  margin-bottom: var(--s6);
+}
+
+.spread-plate {
+  margin-bottom: var(--s6);
+}
+
+.entry {
+  margin-bottom: var(--s6);
+}
+
+.entry-when {
+  color: var(--ink-muted);
+  margin-bottom: var(--s2);
+}
+
+.entry-prose {
+  margin: var(--s2) 0;
+  max-width: 46ch;
+}
+
+/* The blank: the only dashed line in the product. */
+
+.blank {
+  margin-bottom: var(--s6);
+  padding: var(--s5);
+  border: 2px dashed var(--open);
+  background: color-mix(in oklab, var(--open) 6%, var(--plate));
+}
+
+.blank-ask {
+  margin: var(--s2) 0 var(--s4);
+  max-width: 46ch;
+}
+
+.blank-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  margin-bottom: var(--s4);
+}
+
+.blank-option {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "name votes"
+    "meta votes";
+  align-items: center;
+  gap: 0 var(--s4);
+  text-align: left;
+  border: var(--outline) solid transparent;
+  background: var(--plate);
+  padding: var(--s3) var(--s4);
+}
+
+.blank-option .t-name {
+  grid-area: name;
+}
+.blank-option .t-specimen {
+  grid-area: meta;
+}
+
+.blank-votes {
+  grid-area: votes;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  color: var(--ink-muted);
+}
+
+.blank-option[data-mine="true"] {
+  border-color: var(--open);
+}
+
+.blank-option[data-mine="true"] .blank-votes {
+  background: var(--open);
+  color: var(--paper);
+}
+
+.blank-settle {
+  border: var(--outline) solid var(--ink);
+  background: transparent;
+  padding: var(--s3) var(--s5);
+}
+
+/* An unfillable slot. It borrows the blank's construction and the at-risk colour, because it is not a question the
+   group can answer by tapping. */
+
+.gap {
+  margin-bottom: var(--s6);
+  padding: var(--s5);
+  border: 2px dashed var(--at-risk);
+  background: color-mix(in oklab, var(--at-risk) 6%, var(--plate));
+}
+
+.gap-title {
+  color: var(--at-risk);
+  margin: var(--s2) 0;
+}
+
+/* Colophon */
+
+.colophon > .t-label {
+  color: var(--ink-muted);
+}
+
+.colophon .t-plate-title {
+  margin: var(--s3) 0 var(--s5);
+}
+
+.colophon-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  max-width: 52ch;
+}
+
+.colophon-list li {
+  padding: var(--s4) var(--s5);
+  background: var(--ground-day-3);
+}
+
+.colophon-back {
+  display: inline-block;
+  margin-top: var(--s7);
+  padding: var(--s3) var(--s5);
+  background: var(--ink);
+  color: var(--plate);
+  text-decoration: none;
+}
+
+@keyframes spread-in {
+  from {
+    opacity: 0;
+  }
+}

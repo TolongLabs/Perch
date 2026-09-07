@@ -3,13 +3,13 @@
 Our entry to **CodeNection 2026**, organised by the Faculty of Computing and Informatics and co-organised by IT Society
 MMU Cyberjaya. Team **TolongLabs**.
 
-|                          |                                                                                  |
-| ------------------------ | -------------------------------------------------------------------------------- |
-| **Prototype submission** | 13 September 2026, 23:59 MYT, via the organisers' Google Form                    |
-| **Grand Finals**         | 15 November 2026, physical, venue to be announced                                |
-| **Track**                | Track 1: Lifestyle & Personal Productivity                                       |
-| **Problem statement**    | Not chosen. Stress & Workload Manager, or Travel Planner                         |
-| **Status**               | Prototype phase. Concept not locked, stack not chosen, no implementation started |
+|                          |                                                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+| **Prototype submission** | 13 September 2026, 23:59 MYT, via the organisers' Google Form                                 |
+| **Grand Finals**         | 15 November 2026, physical, venue to be announced                                             |
+| **Track**                | Track 1: Lifestyle & Personal Productivity                                                    |
+| **Problem statement**    | Not chosen. Stress & Workload Manager, or Travel Planner                                      |
+| **Status**               | Prototype phase. Concept locked as **Perch**; the prototype is built and deploys to Cloud Run |
 
 ---
 
@@ -38,16 +38,36 @@ here.
 
 ### Design And Prototype
 
-**Two Figma files, one job each.** They are separate on purpose, and the reason is in the note under the table.
+**Two Figma files and one running build.** The files are separate on purpose, and the reason is in the note below.
 
 | File                                                                                                           | What Is In It                                                                                                   | Access                                     |
 | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
 | [Perch - Prototype Wireframe](https://www.figma.com/design/54WzxphGf6z5qeCzOXZscK/Perch---Prototype-Wireframe) | Eight screens in greyscale, captioned per screen. Structure and behaviour, no visual direction                  | Link + password                            |
 | [Perch - Visual Mockups](https://www.figma.com/design/lei5YdT1r8Dky1QjfwZGfY/Perch---Visual-Mockups)           | One page. The design system layer, the desktop plate, and three mobile screens against [`DESIGN.md`](DESIGN.md) | **Private. Must be shared before 13 Sept** |
+| [The running prototype](https://prototype-yskhynz4la-as.a.run.app)                                             | The built app. Redeployed on every merge to `main`, see [Deployment](#deployment)                               | Public                                     |
 
 **Greys are deliberate.** The wireframe was drawn before [`DESIGN.md`](DESIGN.md) existed so that structure could be
 judged without visual direction leaking into it. The visual mockups are built separately, against `DESIGN.md`, so that a
 structural problem and a styling problem never get argued about at the same time.
+
+### The Prototype, Screen By Screen
+
+**Seven screens from the running build, not a mockup.** Each was captured from the deployed prototype at the width it is
+designed for: 390px for the phone, 1440px for the desk.
+
+| Screen                                                               | What It Proves                                                                                                                                                                          |
+| -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![Question three of the interview](assets/screens/01-interview.png)  | **The bench is made here.** Three picks rank 1 to 3; the seven that lose do not disappear, they take ranks 4 to 10 and settle. Everything the product does later is spent on that order |
+| ![The Desk with Day 3 open](assets/screens/02-desk.png)              | **Perch has already chosen.** The whole trip exists before anyone is consulted, and each day carries its own bird tint so colour says which day you are on                              |
+| ![The perch drawer](assets/screens/03-perch.png)                     | **Fit comes before rank, and the rows that fail say why.** Jomblang Cave is 25 minutes too far for this slot. Hiding that would hide the argument                                       |
+| ![The What Changed strip](assets/screens/04-what-changed.png)        | **The repair has already happened.** Nobody was asked. The delta is in two units, travel then money, because a swap that quietly adds forty minutes breaks the day it was meant to save |
+| ![The Book in its setting state](assets/screens/05-book-setting.png) | **What the group opens is a magazine with gaps, not a planner.** A tap moves an option up; it never edits a slot. Open a planner and four people who install nothing do not tap         |
+| ![The Book, printed](assets/screens/06-book-printed.png)             | **The same object, finished.** Every slot resolved, every control gone, and a plate for each day. This is the half of the product worth keeping after the trip                          |
+| ![The Desk at 1440](assets/screens/07-desk-desktop.png)              | **Two columns, not a dashboard.** The instrument gets wider above 1024px; it does not sprout a sidebar or a chart                                                                       |
+
+**The Prototype Controls block in the bottom left is deliberate and is labelled as not part of the product.** A fixture
+has nothing to observe, so the disruption has to be fired by hand. **A hidden timer would demo better and be less
+honest**, and a judge who can fire it twice can check that the repair is computed rather than replayed.
 
 **Both links must be viewable at submission**, along with everything else this file points at - the organisers' rule is
 that every link in the README opens. The mockups file is not shared yet and flipping it is a deliberate action, tracked
@@ -89,16 +109,20 @@ git worktree add ../codenection-research research # or check it out alongside ma
 ## Getting Started
 
 ```bash
-bun install                  # dev tooling and the husky git hooks
-cp .env.example .env         # empty of keys today; nothing external is wired yet
+bun install                  # dependencies and the husky git hooks
+cp .env.example .env         # empty of keys today; the prototype calls nothing external
+bun run dev                  # the prototype, on http://localhost:5173
 ```
 
-| Command             | Does                               |
-| ------------------- | ---------------------------------- |
-| `bun run lint`      | Biome check, then Prettier check   |
-| `bun run format`    | Both formatters, writing in place  |
-| `bun run typecheck` | `tsc --noEmit`, once `src/` exists |
-| `gh issue list`     | The TODO board                     |
+| Command             | Does                                        |
+| ------------------- | ------------------------------------------- |
+| `bun run dev`       | Vite dev server                             |
+| `bun run build`     | Production build into `dist/`               |
+| `bun run preview`   | Serve that build on 8080, as Cloud Run does |
+| `bun run lint`      | Biome check, then Prettier check            |
+| `bun run format`    | Both formatters, writing in place           |
+| `bun run typecheck` | `tsc --noEmit`                              |
+| `gh issue list`     | The TODO board                              |
 
 Biome covers JS, TS, JSON, CSS and HTML; Prettier covers the Markdown and YAML it cannot, wrapping prose at 120 to match
 `biome.json`'s `lineWidth`. There is no `.prettierignore`, so every Markdown file is formatted, `docs/source/` and the
@@ -137,23 +161,30 @@ docs/
   PRODUCT.md             who, why, the demo moment
   PRD.md                 what: requirements, acceptance criteria, out of scope
   TRD.md                 how: architecture, contracts, schemas. Canonical
-  DESIGN.md              the design system, once frontend work starts
+  DESIGN.md              the design system
+  design/                the studies DESIGN.md is drawn from
   coding-guidelines.md   behavioural coding rules, referenced by AGENTS.md
   agent-tooling.md       rtk and graphify, both optional and per-machine
   source/                organiser material, append-only
   demo/                  video script, slides, assets
-public/                  the deployed prototype. Everything here is served from Cloud Run
-Dockerfile               nginx, serves public/ on 8080
-nginx.conf               static config for the above
-.github/workflows/       deploy.yml, which ships public/ on every merge
+src/
+  data/                  types, the place fixture, the seeded trip
+  lib/                   repair, ranking, persistence, formatting
+  surfaces/              Interview, Desk, Book
+  components/            the perch drawer, state chip, What Changed, the plate
+  styles/                tokens.css and base.css, the DESIGN.md system in CSS
+index.html               the Vite entry
+public/                  static assets copied verbatim: the mark and the self-hosted fonts
+Dockerfile               two stages. Bun builds, nginx serves dist/ on 8080
+nginx.conf               static config, with the SPA fallback the shared link needs
+.github/workflows/       deploy.yml, which builds and ships on every merge
 .agents/skills/          36 skills, the committed source of truth
 .claude/skills/          symlinks into .agents/skills/, plus impeccable as a real dir
 .claude/agents/          pitch-smith
 .claude/hooks/           session brief, env drift, git guard, formatter
 ```
 
-`PRODUCT.md`, `PRD.md`, `TRD.md` and `DESIGN.md` are listed but **not written yet**. Source layout is not decided; add
-it here when it is.
+All four of `PRODUCT.md`, `PRD.md`, `TRD.md` and `DESIGN.md` exist. `TRD.md` is canonical on anything under `src/`.
 
 Skill provenance and what each hook does: [`../.agents/skills/VENDORED.md`](../.agents/skills/VENDORED.md).
 
@@ -171,12 +202,15 @@ authored by the account owner, so teammates could not ship.
 | **Auth**             | Workload Identity Federation. **No service-account key exists**, in the repo or in GitHub Secrets                        |
 | **Project**          | `codenection-2026`, region `asia-southeast1`                                                                             |
 
-**Put the prototype in `public/`.** Anywhere else and it will not ship. `docs/prototype/` on the `research` branch is
-where drafts live; `public/` is what the public sees.
+**The prototype is built, not copied.** The first stage of `Dockerfile` runs `bun run build` and nginx serves the
+resulting `dist/`, so the workflow never needed changing - it still just runs `docker build .`. **`public/` is now
+Vite's static asset folder**, holding the mark and the self-hosted fonts, and everything else comes from `src/`.
 
-**Biome lints `public/`**, inline JS and all. Expect `useButtonType` on every bare `<button>` and a nudge toward
-template literals. Those are real findings on a project where UX is scored, so they are worth fixing rather than
-silencing.
+**The shared link needs the SPA fallback.** `/t/<trip>` is a real path with no file behind it, so `nginx.conf` falls
+every unknown path back to `index.html`. Delete that line and the link at the centre of the product returns a 404.
+
+**Biome lints `src/`**, CSS included. `bun run lint` and `bun run typecheck` both pass on `main`, and a PR that breaks
+either is a PR that breaks the deploy.
 
 ---
 

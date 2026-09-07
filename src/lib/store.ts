@@ -1,0 +1,51 @@
+import { trip as seed } from '../data/trip'
+import type { Trip } from '../data/types'
+
+const KEY = 'perch.trip.v1'
+
+/**
+ * Storage is a boundary, so what comes back over it is validated rather than cast. A stored trip from an older shape
+ * fails this and the seed is used, which is the same path as a first visit.
+ */
+const isTrip = (value: unknown): value is Trip => {
+  if (typeof value !== 'object' || value === null) return false
+  const t = value as Partial<Trip>
+  return (
+    typeof t.id === 'string' &&
+    Array.isArray(t.days) &&
+    Array.isArray(t.party) &&
+    Array.isArray(t.ranking) &&
+    Array.isArray(t.changes) &&
+    typeof t.options === 'object' &&
+    t.options !== null &&
+    t.days.every((d) => Array.isArray(d?.slots) && d.slots.every((s) => Array.isArray(s?.blockedIds)))
+  )
+}
+
+/** A cold load with nothing stored is the normal case, not an error: the trip is valid with zero group input. */
+export const load = (): Trip => {
+  try {
+    const raw = localStorage.getItem(KEY)
+    if (!raw) return seed
+    const parsed: unknown = JSON.parse(raw)
+    return isTrip(parsed) && parsed.id === seed.id ? parsed : seed
+  } catch {
+    return seed
+  }
+}
+
+export const save = (trip: Trip): void => {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(trip))
+  } catch {
+    /* A demo machine with storage disabled still runs; it just forgets between reloads. */
+  }
+}
+
+export const reset = (): void => {
+  try {
+    localStorage.removeItem(KEY)
+  } catch {
+    /* nothing to do */
+  }
+}
