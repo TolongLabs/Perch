@@ -178,7 +178,7 @@ export const Book = () => {
           <li>A jacket for Day 3. The Merapi track starts before the sun does.</li>
           <li>Monday closes Sonobudoyo, Vredeburg and Ullen Sentalu, which is why none of them sit on Day 3.</li>
         </ul>
-        <Link className="colophon-back t-label" to="/">
+        <Link className="colophon-back t-label" to="/desk">
           Back To The Desk
         </Link>
       </article>
