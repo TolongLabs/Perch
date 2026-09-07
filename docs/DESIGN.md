@@ -170,6 +170,7 @@ receding behind it. Same sentence as the product, pressed rather than drawn.
 | **Floor**       | 16px. Below that the third disc is dropped rather than the whole mark scaled down                                                                                                                                                                                                   |
 | **Favicon**     | `v2/public/favicon.svg`, which swaps plate and drawing on `prefers-color-scheme` so the tab reads on either browser chrome. `favicon-32.png` / `favicon-16.png` are the raster fallback, `apple-touch-icon.png` sets the mark on paper with margin because iOS applies its own mask |
 | **Social card** | `v2/public/assets/og-banner.png`, 1200×630. Lockup top left on empty paper; the rest is a topographic contour set around one summit off the bottom right corner, masked by a diagonal fade so it thins to nothing before it reaches the lockup                                      |
+| **Repo hero**   | `docs/assets/hero.jpg`, 1600×668. The plate is generated, the lockup and the type are not: the same rule as the social card, because a generated wordmark is an approximation of a wordmark                                                                                         |
 
 **Why This One, Out Of Five.** Five marks were drawn against the same sentence, each taking one principle: 家紋 _kamon_
 the crest, 間 _ma_ the empty seat, 円相 _ensō_ the open ring, 判子 _hanko_ the seal, and メリハリ _merihari_ the
