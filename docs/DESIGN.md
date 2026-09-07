@@ -64,50 +64,59 @@ position, and it is unoccupied.
 
 **Radius is not a style value here. It is what tells you which surface you are on.**
 
-|            | **The Desk**                                | **The Book**                                 |
-| ---------- | ------------------------------------------- | -------------------------------------------- |
-| **It is**  | An instrument. A tool she operates          | A plate. A document she and four others read |
-| **Radius** | A scale — **3 / 5 / 8 / 12 px**, concentric | **0. Everywhere. No exceptions**             |
-| **Type**   | Archivo alone                               | Archivo for labels, Newsreader for prose     |
-| **Ground** | White `#FFFFFF`                             | Plate `#F5F3E9`                              |
-| **Rules**  | Hairlines at 35% ink                        | Hairlines at **full ink**                    |
+|            | **The Desk**                                        | **The Book**                                    |
+| ---------- | --------------------------------------------------- | ----------------------------------------------- |
+| **It is**  | An instrument. A tool she operates                  | A plate. A document she and four others read    |
+| **Radius** | **Soft — 8 / 14 / 24 px, pills at 999**, concentric | **Plate geometry.** Square images, square rules |
+| **Type**   | Archivo alone                                       | Archivo for labels, Newsreader for prose        |
+| **Ground** | Paper `#FBF8F2`                                     | Plate `#F2EDE0`                                 |
+| **Colour** | The day's tint on chips and numerals                | The day's tint on the band, eyebrow and plate   |
+
+**Revised 2026-09-07 after review.** The first pass ran The Desk at 3/5/8px and read as rigid. The contrast is stronger,
+not weaker, when The Desk is genuinely soft — so it moved to the squircle register and the difference between the two
+surfaces became more legible, not less.
 
 **This resolves a conflict in our own research rather than ignoring it.** [`design/README.md`](design/README.md) records
 that all three prior studies converged on _a radius scale, not a radius_ — ThreeUI at 3/4/5/7px, libraries.dev at eight
 values from 2 to 50px. That finding stands, **for product UI**. The Book is not product UI. So the scale governs The
-Desk, zero governs The Book, and the boundary between them carries information instead of being a taste call.
+Desk, plate geometry governs The Book, and the boundary between them carries information instead of being a taste call.
 
 **Concentric rule**, from [`design/studies/03-jakub-krehel-skills.md`](design/studies/03-jakub-krehel-skills.md): an
-outer radius equals its inner radius plus the padding between them. A 5px control inside 3px of padding sits in an 8px
+outer radius equals its inner radius plus the padding between them. A 14px control inside 10px of padding sits in a 24px
 container.
-
----
 
 ## Colour
 
-**Extracted from one specimen: the Blue-throated Bee-eater, _Merops viridis_.** It breeds in Peninsular Malaysia and
-moves seasonally — a bird that travels, which is the only reason it is this bird and not a prettier one. Every colour
-below is on the animal.
+**The palette is a specimen set, not a mood board.** Every colour is on a bird that lives in or migrates through
+Peninsular Malaysia, and each is named with its binomial so the source is checkable rather than asserted.
 
-| Token       | Value                | From              | Used For                                              |
-| ----------- | -------------------- | ----------------- | ----------------------------------------------------- |
-| `--ink`     | `#2E261F`            | The eye-stripe    | All text, all rules. **Never `#000`**                 |
-| `--ink-60`  | `#6D6762`            | —                 | Secondary text, metadata, captions                    |
-| `--ink-35`  | `rgba(46,38,31,.35)` | —                 | Hairlines on The Desk                                 |
-| `--paper`   | `#FFFFFF`            | —                 | The Desk ground                                       |
-| `--plate`   | `#F5F3E9`            | Guide-plate stock | The Book ground                                       |
-| `--decided` | `#2A5F3A`            | Wing green        | State: settled, booked, done                          |
-| `--open`    | `#14676B`            | Throat turquoise  | State: awaiting a decision. Also the rank numeral     |
-| `--at-risk` | `#8A4B2A`            | Crown chestnut    | State: something changed, or a critical item is unmet |
+> **Revised 2026-09-07 after review.** The first pass took the field guide's _paper_ — ink, hairlines, plate stock — and
+> left the specimens grey. That is why it read as bland: a plate with no plate on it. **In a real field guide the birds
+> are the saturated part**, so the palette expanded from three states to eight species and colour moved from 1px chip
+> outlines to tints, bands and illustration.
 
-**The three states are plumage, and each carries information.** `--decided`, `--open` and `--at-risk` are the only
-colours in the product that are not ink. **A colour that is not carrying a state does not appear.** There is no brand
-colour splashed on a hero, because there is no hero.
+| Token       | Value     | Specimen                                    | Used For                             |
+| ----------- | --------- | ------------------------------------------- | ------------------------------------ |
+| `--ink`     | `#2E261F` | Magpie-Robin, _Copsychus saularis_          | All text and rules. **Never `#000`** |
+| `--paper`   | `#FBF8F2` | —                                           | The Desk ground                      |
+| `--plate`   | `#F2EDE0` | Zebra Dove, _Geopelia striata_              | The Book ground, card fills          |
+| `--open`    | `#1B7F86` | Bee-eater, _Merops viridis_                 | Awaiting a decision. Rank numerals   |
+| `--decided` | `#3E7A3A` | Green Broadbill, _Calyptomena viridis_      | Settled, booked, done                |
+| `--at-risk` | `#C0342F` | Crimson Sunbird, _Aethopyga siparaja_       | Something changed, or a critical gap |
+| `--day-1`   | `#C2622F` | Kingfisher, _Actenoides concretus_          | Day tint                             |
+| `--day-2`   | `#2A4C9B` | Fairy-bluebird, _Irena puella_              | Day tint                             |
+| `--day-3`   | `#E0A32C` | Yellow-vented Bulbul, _Pycnonotus goiavier_ | Day tint                             |
 
-**Contrast.** All three states are used as text or 1px rules on `--paper`/`--plate` and pass AA at 14px. State chips are
-outlined, never filled — a filled chip needs a background colour that carries no extra information.
+**Each day of a trip is assigned a bird, and that bird tints the day.** The band at the top of the plate, the eyebrow,
+the rank numerals and the day's chips all carry it. **So colour tells you which day you are on** — it is a wayfinding
+device, not decoration, which is what `AGENTS.md` requires of any device on screen.
 
----
+**Every colour has a five-step ramp toward the plate stock**, used for tinted fills. State chips are a 10% tint, a 1px
+rule in the full colour, and a plumage dot — not a solid fill, which would carry no extra information.
+
+**Contrast.** Body text hits ≥4.5:1 against its ground and large text ≥3:1, per the `impeccable` rule that muted grey on
+tinted near-white is the single most common failure. Where a state colour carries text it is used at full strength on
+paper, never as grey-on-tint.
 
 ## Type
 
@@ -170,32 +179,32 @@ first at demo scale.
 
 **Only the ones where the rules above are not obvious.**
 
-| Component        | Spec                                                                                                                        |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| **State chip**   | 1px outlined in its state colour, label type, 4px radius on Desk / 0 on Book. Never filled                                  |
-| **Rank numeral** | `--open`, 12/700, tabular. **Only ever on the perch**, where the number is a real rank                                      |
-| **Perch drawer** | Rises from the bottom, plate ground, full-ink hairlines. Each row: rank, name, specimen line, action                        |
-| **The blank**    | The Book's unfinished slot. A 1px **dashed** ink rule — the only dashed line in the product, and it means _not yet decided_ |
-| **Cost delta**   | Always two units, travel then money: `20 min closer · −RM 15`. Never one without the other                                  |
-| **Buttons**      | Text plus a 1px ink rule. One solid ink button per screen, maximum                                                          |
+| Component        | Spec                                                                                                                 |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **State chip**   | A 10% tint, a 1px rule in the state colour, a plumage dot, pill radius. Never a solid fill                           |
+| **Rank numeral** | `--open`, 12/700, tabular. **Only ever on the perch**, where the number is a real rank                               |
+| **Perch drawer** | Rises from the bottom, plate ground, full-ink hairlines. Each row: rank, name, specimen line, action                 |
+| **The blank**    | The Book's unfinished slot. A 1.5px **dashed rule in `--open`** over a 6% tint — the only dashed line in the product |
+| **Cost delta**   | Always two units, travel then money: `20 min closer · −RM 15`. Never one without the other                           |
+| **Buttons**      | Pill by default, generous padding. One solid button per screen, maximum                                              |
 
 ---
 
 ## Checked Against The Tells
 
-| `AGENTS.md` Tell                         | Us                                                                                                              |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Warm cream, serif display, terracotta    | Plate stock is warm, but the display face is a **thin grotesque** and chestnut appears only as an at-risk state |
-| Near-black with one acid pop             | Warm printing ink, three muted plumage states, no acid                                                          |
-| Purple-to-blue gradient hero             | No gradients. No hero                                                                                           |
-| Inter or Space Grotesk                   | Archivo and Newsreader                                                                                          |
-| Everything centre-aligned                | Left, always                                                                                                    |
-| One large radius on every surface        | **A scale on one surface and zero on the other, and the difference is the mechanic**                            |
-| A coloured rail down a rounded card      | No cards, no rails, no shadows                                                                                  |
-| Numbered markers on non-sequences        | Numerals appear only on the perch, where they are a real rank                                                   |
-| Three items because three feels balanced | Three states because the product has three states                                                               |
-| Unmotivated glassmorphism                | None                                                                                                            |
-| Dark dashboard, neon lines, no data      | Light, printed, and every number on screen is derived from a vote                                               |
+| `AGENTS.md` Tell                         | Us                                                                                                            |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Warm cream, serif display, terracotta    | Plate stock is warm, but the display face is a **thin grotesque** and every hue is sourced to a named species |
+| Near-black with one acid pop             | Warm printing ink and eight plumage hues, none of them acid                                                   |
+| Purple-to-blue gradient hero             | No gradients. No hero                                                                                         |
+| Inter or Space Grotesk                   | Archivo and Newsreader                                                                                        |
+| Everything centre-aligned                | Left, always                                                                                                  |
+| One large radius on every surface        | **A soft scale on one surface and plate geometry on the other, and the difference is the mechanic**           |
+| A coloured rail down a rounded card      | Cards are used only where they are the best affordance, never nested, and never railed or shadowed            |
+| Numbered markers on non-sequences        | Numerals appear only on the perch, where they are a real rank                                                 |
+| Three items because three feels balanced | Three states because the product has three; eight palette entries because there are eight                     |
+| Unmotivated glassmorphism                | None                                                                                                          |
+| Dark dashboard, neon lines, no data      | Light, printed, and every number on screen is derived from a vote                                             |
 
 ---
 
@@ -203,6 +212,8 @@ first at demo scale.
 
 - **The logo** is not drawn. Direction is settled — one solid form with lighter ones queued behind, which is the perch
   and the ranked bench in one mark. Generated with Codex, per `AGENTS.md`
-- **Photography** is unresolved. The field-guide reading argues for texture and specimen detail over destination hero
-  shots, which is also what the strongest Dribbble result did. Decide before the mockups are finished
+- **The specimen illustration is unresolved and is the next thing to make.** The plates are flat-vector landscapes built
+  in Figma, which works. The bird itself does not survive being assembled from primitives and goes to Codex, per
+  `AGENTS.md`. Photography stays out — the field-guide reading argues for drawn specimens over destination hero shots,
+  which is also what the strongest Dribbble result did
 - **Dark mode** is out of scope for the prototype. A field guide is printed on paper
