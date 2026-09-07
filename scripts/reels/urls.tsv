@@ -1,9 +1,9 @@
-# place-slug	url
+# place-slug	url	[seconds to skip]
 # One line per card. The slug must match the place id in v2/src/data/places.ts.
 # Both Instagram reel URLs and Xiaohongshu note URLs work; yt-dlp picks the extractor from the domain.
 # All 24 are Instagram: Xiaohongshu search is behind a login wall on this browser (no web_session cookie).
 # Rows marked "swap to xhs" below are the weak picks to re-source once xiaohongshu.com is logged in.
-sensoji	https://www.instagram.com/reel/DTsZoVCE8mW/
+sensoji	https://www.instagram.com/reel/DTsZoVCE8mW/	2
 nakamise	https://www.instagram.com/reel/CvKJwzKN-GK/
 kappabashi	https://www.instagram.com/reel/CuhOVIoLaSK/
 ueno-park	https://www.instagram.com/reel/DHVwQM-PySr/
@@ -14,7 +14,7 @@ takeshita-street	https://www.instagram.com/reel/C6qwCTFvVZZ/
 shibuya-crossing	https://www.instagram.com/reel/DRENNIvjmCf/
 shinjuku-gyoen	https://www.instagram.com/reel/CozdQwaDZan/
 omoide-yokocho	https://www.instagram.com/reel/C5tJI1lvVtU/
-tokyo-metropolitan-building	https://www.instagram.com/reel/DBc57kWJGpt/
+tokyo-metropolitan-building	https://www.instagram.com/reel/DBc57kWJGpt/	3
 tsukiji-outer-market	https://www.instagram.com/reel/DFKR5Onx1C-/
 hama-rikyu-gardens	https://www.instagram.com/reel/C0oNA8lvoJm/
 ginza-chuo-dori	https://www.instagram.com/reel/DMUsdKRyahY/
