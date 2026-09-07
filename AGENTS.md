@@ -8,7 +8,7 @@ Canonical, tool-agnostic project instructions. Every agentic tool works from thi
 ## Project
 
 **CodeNection 2026**, track **Lifestyle & Personal Productivity**. Team **TolongLabs**, four members. Repo:
-`github.com/TolongLabs/codenection-dev`.
+`github.com/TolongLabs/Perch`.
 
 **Prototype submission: 13 September 2026, 23:59 MYT**, via the organisers' Google Form, submitted by the team leader
 only. Late submissions are rejected with no appeal. Every other event fact lives in [`docs/brief.md`](docs/brief.md),

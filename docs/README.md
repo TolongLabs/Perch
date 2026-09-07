@@ -1,12 +1,12 @@
 # Perch, By TolongLabs
 
-|                         |                                                                                                   |
-| ----------------------- | ------------------------------------------------------------------------------------------------- |
-| **Team**                | TolongLabs, four members. **Names to be filled by the team leader before submission**             |
-| **Problem Statement**   | Travel Planner, Track 1: Lifestyle & Personal Productivity                                        |
-| **Live Prototype**      | **https://prototype-yskhynz4la-as.a.run.app** - opens in incognito, no account                    |
-| **Video Presentation**  | Not recorded yet. Tracked in [issue #10](https://github.com/TolongLabs/codenection-dev/issues/10) |
-| **Presentation Slides** | Not built yet. Tracked in [issue #11](https://github.com/TolongLabs/codenection-dev/issues/11)    |
+|                         |                                                                                         |
+| ----------------------- | --------------------------------------------------------------------------------------- |
+| **Team**                | TolongLabs, four members. **Names to be filled by the team leader before submission**   |
+| **Problem Statement**   | Travel Planner, Track 1: Lifestyle & Personal Productivity                              |
+| **Live Prototype**      | **https://prototype-yskhynz4la-as.a.run.app** - opens in incognito, no account          |
+| **Video Presentation**  | Not recorded yet. Tracked in [issue #10](https://github.com/TolongLabs/Perch/issues/10) |
+| **Presentation Slides** | Not built yet. Tracked in [issue #11](https://github.com/TolongLabs/Perch/issues/11)    |
 
 > **The itinerary knows what can break it, and repairs itself from options the group already approved.**
 
@@ -40,8 +40,8 @@ disruption is not that the trip degrades - it is who pays for the repair.
 ### Similar Apps, And Where They Fall Short
 
 **We are not competing with a travel planner. We are competing with a stack of free apps she already has.** Four
-competitor passes ran on the [`research` branch](#the-research-branch); the two most relevant products were read
-directly rather than from a summary.
+competitor passes are in [`research/market/`](research/market/); the two most relevant products were read directly
+rather than from a summary.
 
 | Product                                      | What It Does Well                                                         | Where It Falls Short                                                                                                                                                     |
 | -------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -79,9 +79,9 @@ adds forty minutes breaks the day it was meant to save.
 
 ## 2. Ideation & Process
 
-**Ideation happens on a separate long-lived branch called [`research`](#the-research-branch), and it is never merged.**
-It is a plain-language notebook with its own README and no build tooling, so a teammate who does not write code can work
-in it. Everything in this section is quoted from files that are on that branch and dated.
+**The ideation notebook is [`research/`](research/), kept whole.** It is plain-language, dated, and was written as the
+thinking happened rather than reconstructed afterwards. Everything in this section is quoted from files in it, and each
+file is linked so a reviewer can read the original rather than our summary of it.
 
 ### 2.1 Ideas We Considered
 
@@ -104,7 +104,8 @@ afterwards.
 | **A mascot copilot**                                                 | **Dropped**     | It makes the plan feel authored, when its whole value is that it is derived                                                                                 |
 
 **Two of those were dropped after being built and working**, and both write-ups say what it cost us to drop them.
-`research:docs/decisions/dropped.md` carries them in full, including the cost paragraph for each.
+[`research/decisions/dropped.md`](research/decisions/dropped.md) carries them in full, including the cost paragraph for
+each.
 
 ### 2.2 Ideation Boards
 
@@ -119,18 +120,18 @@ decisions log.
 **What a group actually does, stage 0 to stage 8**, and the loop back from "it broke" to "the plan re-derives". The
 mindmap shows how the thinking moved; this shows the product it produced.
 
-**Both are exports.** The Obsidian Canvas sources live at `research:docs/diagrams/`, alongside the Python that renders
-them, so either can be regenerated rather than redrawn.
+**Both are exports.** The Obsidian Canvas sources live in [`research/diagrams/`](research/diagrams/), alongside the
+Python that renders them, so either can be regenerated rather than redrawn.
 
 **The written trail underneath them is the substance**, and it is longer than two pictures.
 
-| Record                                     | What Is In It                                                                             |
-| ------------------------------------------ | ----------------------------------------------------------------------------------------- |
-| `research:docs/decisions/iteration-log.md` | **Over fifty dated turns**, each with what changed, why, and what triggered it            |
-| `research:docs/decisions/dropped.md`       | Full write-ups of directions abandoned, including what dropping each one cost             |
-| `research:docs/market/`                    | Four competitor passes, with every source graded by whether the page was actually read    |
-| `research:docs/users/`                     | The persona, every claim marked `[assumed]`, and a synthetic panel marked as not evidence |
-| `research:docs/inbox/`                     | The raw dumps the ideas came out of, unedited                                             |
+| Record                                                                       | What Is In It                                                                             |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [`research/decisions/iteration-log.md`](research/decisions/iteration-log.md) | **Over fifty dated turns**, each with what changed, why, and what triggered it            |
+| [`research/decisions/dropped.md`](research/decisions/dropped.md)             | Full write-ups of directions abandoned, including what dropping each one cost             |
+| [`research/market/`](research/market/)                                       | Four competitor passes, with every source graded by whether the page was actually read    |
+| [`research/users/`](research/users/)                                         | The persona, every claim marked `[assumed]`, and a synthetic panel marked as not evidence |
+| [`research/inbox/`](research/inbox/)                                         | The raw dumps the ideas came out of, unedited                                             |
 
 ### 2.3 Mentor Consultation
 
@@ -145,7 +146,7 @@ them, so either can be regenerated rather than redrawn.
 **The full session is transcribed verbatim** at
 [`source/mentor-session-1-transcript.md`](source/mentor-session-1-transcript.md): 38 minutes, Whisper-transcribed with
 timestamps preserved, with a table of the quotes most likely to be cited. It was booked through
-[issue #23](https://github.com/TolongLabs/codenection-dev/issues/23).
+[issue #23](https://github.com/TolongLabs/Perch/issues/23).
 
 **What the session did not endorse is recorded too.** He proposed a group chat with an AI reading it, and drawing on a
 map; both are in the transcript and neither was adopted, because a chat panel invites the "why not ChatGPT" comparison
@@ -269,18 +270,12 @@ the freeze at the end of week three is a hard date and not a preference.
 
 ---
 
-## The `research` Branch
+## The Research Notebook
 
-**Ideation lives on a long-lived branch that is never merged into `main`.** It has its own README, its own agent setup
-and no build tooling, so someone who does not write code can open it and be productive. `main` **reads** from it and
-**cites** it; [`PRODUCT.md`](PRODUCT.md), [`PRD.md`](PRD.md) and [`TRD.md`](TRD.md) are written here from what it
-established.
-
-```bash
-git fetch origin research
-git show research:docs/decisions/iteration-log.md   # read a single file
-git worktree add ../codenection-research research   # or check it out alongside main
-```
+**Ideation lived on a separate branch until 8 September, and now lives in [`research/`](research/).** It was moved onto
+`main` whole so that every file section 2 quotes is one click from this page, and so the repo that gets submitted holds
+the trail rather than pointing at a branch a reviewer would have to fetch. Nothing in it was edited in the move.
+[`PRODUCT.md`](PRODUCT.md), [`PRD.md`](PRD.md) and [`TRD.md`](TRD.md) are written from what it established and cite it.
 
 ---
 
@@ -297,8 +292,7 @@ git worktree add ../codenection-research research   # or check it out alongside 
 | [`DESIGN.md`](DESIGN.md)       | The design system: the field-guide direction, palette, type, radius, motion            |
 | [`../AGENTS.md`](../AGENTS.md) | Project instructions for agentic tools, and humans                                     |
 
-Work in progress lives in the [Issues board](https://github.com/TolongLabs/codenection-dev/issues), not in a checklist
-here.
+Work in progress lives in the [Issues board](https://github.com/TolongLabs/Perch/issues), not in a checklist here.
 
 ### Source Material From The Organisers
 
@@ -337,13 +331,13 @@ Biome covers JS, TS, JSON, CSS and HTML; Prettier covers the Markdown and YAML i
 
 **`main` is PR-gated.** Branch as `<type>/<slug>`, open a PR with `gh pr create`, merge with
 `gh pr merge --squash --delete-branch`. Anyone may merge, agents included - **the PR is there to make a change
-reviewable and revertable, not to make it wait.** `research` is the exception and commits directly, because gating a
-notebook defeats it.
+reviewable and revertable, not to make it wait.** The notebook under `research/` follows the same rule now that it is on
+`main`.
 
 **The gate is enforced client-side, for now.** GitHub only offers branch protection on a private repo under a paid plan,
 so today the rule is held up by `.claude/hooks/guard-git.sh`, which blocks a direct or force push to `main`. **That
 stops an agent, not a determined human.** Protection becomes free the moment the repo goes public, which it must before
-submission anyway - tracked in [issue #13](https://github.com/TolongLabs/codenection-dev/issues/13).
+submission anyway - tracked in [issue #13](https://github.com/TolongLabs/Perch/issues/13).
 
 ### Layout
 
@@ -357,7 +351,8 @@ docs/
   DESIGN.md              the design system
   design/                the eight studies DESIGN.md is drawn from
   assets/screens/        the seven screens in section 3, from the running build
-  assets/ideation/       the two diagram exports in section 2.2, copied from research
+  assets/ideation/       the two diagram exports in section 2.2, copied from research/diagrams/exports/
+  research/              the ideation notebook: decisions, market scans, personas, diagrams, dropped ideas
   source/                organiser material, append-only
   demo/                  video script, slides, assets
 v1/                      the slide-deck mockup this replaced. Static HTML, served at /v1/
