@@ -26,13 +26,24 @@ None of that can be reconstructed on 13 September from a finished idea. It is bu
 
 ## Start Here
 
-| File                           | What's In It                                                                 |
-| ------------------------------ | ---------------------------------------------------------------------------- |
-| [`brief.md`](brief.md)         | The whole competition: phases, rules, deliverables, judging, mentors, judges |
-| [`../AGENTS.md`](../AGENTS.md) | Project instructions for agentic tools, and humans                           |
+| File                           | What's In It                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------ |
+| [`brief.md`](brief.md)         | The whole competition: phases, rules, deliverables, judging, mentors, judges         |
+| [`PRODUCT.md`](PRODUCT.md)     | **The spine.** Who Perch is for, the one sentence, the demo moment, the scope ladder |
+| [`DESIGN.md`](DESIGN.md)       | The design system: the field-guide direction, palette, type, radius, motion          |
+| [`../AGENTS.md`](../AGENTS.md) | Project instructions for agentic tools, and humans                                   |
 
 Work in progress lives in the [Issues board](https://github.com/TolongLabs/codenection-dev/issues), not in a checklist
 here.
+
+### Design And Prototype
+
+| Link                                                                                                    | What                                                                       |
+| ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| [Wireframe, 8 screens](https://www.figma.com/design/54WzxphGf6z5qeCzOXZscK/Perch---Prototype-Wireframe) | Structure and behaviour in greys, captioned per screen. Password-protected |
+
+**Greys are deliberate.** The wireframe was drawn before [`DESIGN.md`](DESIGN.md) existed so that structure could be
+judged without visual direction leaking into it. The visual mockups are built separately, against `DESIGN.md`.
 
 ### Source Material From The Organisers
 
