@@ -1,0 +1,242 @@
+{
+  "nodes": [
+    {
+      "id": "legend",
+      "type": "text",
+      "text": "## How To Read This\n\nRed = the question. Cyan = a live branch.\nPurple = a branch we dropped, kept on\npurpose because dead ends are scored.\n\nDrag anything. Delete nothing.",
+      "x": -560,
+      "y": -60,
+      "width": 320,
+      "height": 200,
+      "color": "3"
+    },
+    {
+      "id": "root",
+      "type": "text",
+      "text": "# Which problem are we solving?\n\nPick one. We cannot submit both.",
+      "x": -140,
+      "y": -20,
+      "width": 320,
+      "height": 110,
+      "color": "1"
+    },
+    {
+      "id": "ps1",
+      "type": "text",
+      "text": "## Stress & Workload Manager\n\nShow a student everything they carry,\nthen help them carry less",
+      "x": 320,
+      "y": -220,
+      "width": 300,
+      "height": 120,
+      "color": "5"
+    },
+    {
+      "id": "ps2",
+      "type": "text",
+      "text": "## Travel Planner\n\nPlan a trip end to end, and re-plan it\nwhen something goes wrong",
+      "x": 320,
+      "y": 60,
+      "width": 300,
+      "height": 120,
+      "color": "5"
+    },
+    {
+      "id": "q1",
+      "type": "text",
+      "text": "Who exactly?\nNot \"students\"",
+      "x": 740,
+      "y": -320,
+      "width": 240,
+      "height": 70
+    },
+    {
+      "id": "q2",
+      "type": "text",
+      "text": "Why would they\nopen it twice?",
+      "x": 740,
+      "y": -220,
+      "width": 240,
+      "height": 70
+    },
+    {
+      "id": "q3",
+      "type": "text",
+      "text": "What do they\nuse today?",
+      "x": 740,
+      "y": -120,
+      "width": 240,
+      "height": 70
+    },
+    {
+      "id": "q4",
+      "type": "text",
+      "text": "Solo or group?\nThey are different products",
+      "x": 740,
+      "y": 20,
+      "width": 240,
+      "height": 70
+    },
+    {
+      "id": "q5",
+      "type": "text",
+      "text": "What breaks\nmid-trip?",
+      "x": 740,
+      "y": 120,
+      "width": 240,
+      "height": 70
+    },
+    {
+      "id": "q6",
+      "type": "text",
+      "text": "Who already\ndoes this well?",
+      "x": 740,
+      "y": 220,
+      "width": 240,
+      "height": 70
+    },
+    {
+      "id": "dropped",
+      "type": "text",
+      "text": "## Dropped branches live here\n\nMove a branch here instead of deleting it,\nand say what killed it. This is worth marks\ntwice: the ideation picture, and the\niteration record.",
+      "x": -140,
+      "y": 300,
+      "width": 320,
+      "height": 150,
+      "color": "6"
+    },
+    {
+      "id": "ideas",
+      "type": "file",
+      "file": "docs/ideas/README.md",
+      "x": 1080,
+      "y": -320,
+      "width": 300,
+      "height": 140
+    },
+    {
+      "id": "users",
+      "type": "file",
+      "file": "docs/users/personas.md",
+      "x": 1080,
+      "y": -150,
+      "width": 300,
+      "height": 140
+    },
+    {
+      "id": "market",
+      "type": "file",
+      "file": "docs/market/competitors.md",
+      "x": 1080,
+      "y": 20,
+      "width": 300,
+      "height": 140
+    },
+    {
+      "id": "log",
+      "type": "file",
+      "file": "docs/decisions/iteration-log.md",
+      "x": 1080,
+      "y": 190,
+      "width": 300,
+      "height": 140
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "ps1",
+      "toSide": "left"
+    },
+    {
+      "id": "e2",
+      "fromNode": "root",
+      "fromSide": "right",
+      "toNode": "ps2",
+      "toSide": "left"
+    },
+    {
+      "id": "e3",
+      "fromNode": "ps1",
+      "fromSide": "right",
+      "toNode": "q1",
+      "toSide": "left"
+    },
+    {
+      "id": "e4",
+      "fromNode": "ps1",
+      "fromSide": "right",
+      "toNode": "q2",
+      "toSide": "left"
+    },
+    {
+      "id": "e5",
+      "fromNode": "ps1",
+      "fromSide": "right",
+      "toNode": "q3",
+      "toSide": "left"
+    },
+    {
+      "id": "e6",
+      "fromNode": "ps2",
+      "fromSide": "right",
+      "toNode": "q4",
+      "toSide": "left"
+    },
+    {
+      "id": "e7",
+      "fromNode": "ps2",
+      "fromSide": "right",
+      "toNode": "q5",
+      "toSide": "left"
+    },
+    {
+      "id": "e8",
+      "fromNode": "ps2",
+      "fromSide": "right",
+      "toNode": "q6",
+      "toSide": "left"
+    },
+    {
+      "id": "e9",
+      "fromNode": "root",
+      "fromSide": "bottom",
+      "toNode": "dropped",
+      "toSide": "top",
+      "label": "when we drop one"
+    },
+    {
+      "id": "e10",
+      "fromNode": "q1",
+      "fromSide": "right",
+      "toNode": "users",
+      "toSide": "left",
+      "label": "answers go here"
+    },
+    {
+      "id": "e11",
+      "fromNode": "q3",
+      "fromSide": "right",
+      "toNode": "market",
+      "toSide": "left",
+      "label": "answers go here"
+    },
+    {
+      "id": "e12",
+      "fromNode": "q2",
+      "fromSide": "right",
+      "toNode": "ideas",
+      "toSide": "left",
+      "label": "answers go here"
+    },
+    {
+      "id": "e13",
+      "fromNode": "dropped",
+      "fromSide": "right",
+      "toNode": "log",
+      "toSide": "left",
+      "label": "and a row here"
+    }
+  ]
+}

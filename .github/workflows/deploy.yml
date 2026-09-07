@@ -12,9 +12,11 @@ concurrency:
   group: deploy-prototype
   cancel-in-progress: false
 
+# deployments: write lets the job record itself under the repo's Deployments panel.
 permissions:
   contents: read
   id-token: write
+  deployments: write
 
 env:
   PROJECT_ID: codenection-2026
@@ -25,6 +27,10 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # Declaring an environment is what makes GitHub list the run under Deployments, with the URL beside it.
+    environment:
+      name: production
+      url: ${{ steps.url.outputs.url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -57,6 +63,8 @@ jobs:
             --quiet
 
       - name: Report URL
+        id: url
         run: |
           URL=$(gcloud run services describe "$SERVICE" --region "$REGION" --project "$PROJECT_ID" --format='value(status.url)')
+          echo "url=$URL" >> "$GITHUB_OUTPUT"
           echo "Deployed to $URL" >> "$GITHUB_STEP_SUMMARY"

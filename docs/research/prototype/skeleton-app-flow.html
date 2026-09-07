@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skeleton - the whole app, shape B</title>
+<style>
+  :root{
+    --ink:#20242b; --dim:#767c88; --faint:#a4aab5; --line:#d3d7de; --line2:#e6e9ee;
+    --page:#f4f5f7; --box:#fff; --fill:#eceef2; --note:#fffaed; --noteline:#e8dcb8;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font:14px/1.5 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--page)}
+  .app{display:flex;min-height:100vh}
+
+  /* rail */
+  .rail{width:250px;flex:0 0 250px;background:#fff;border-right:1px solid var(--line);position:sticky;top:0;height:100vh;overflow-y:auto}
+  .rail h1{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0;padding:18px 18px 4px}
+  .rail .sub{padding:0 18px 14px;font-size:12px;color:var(--dim);border-bottom:1px solid var(--line2)}
+  .rail .grp{font-size:10.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);padding:16px 18px 5px}
+  .rail a{display:block;padding:6px 18px;font-size:13px;color:var(--ink);text-decoration:none;border-left:2px solid transparent;cursor:pointer}
+  .rail a:hover{background:var(--fill)}
+  .rail a[aria-current=true]{border-left-color:var(--ink);background:var(--fill);font-weight:600}
+  .rail .foot{padding:16px 18px;font-size:11px;color:var(--faint);border-top:1px solid var(--line2);margin-top:14px}
+
+  /* stage */
+  .stage{flex:1;min-width:0;padding:26px 30px 80px}
+  .screen{display:none;max-width:1000px}
+  .screen[data-on]{display:block}
+  .screen > h2{font-size:19px;margin:0 0 2px}
+  .screen > .role{color:var(--dim);font-size:13px;margin:0 0 18px}
+  .screen > .role code{font-family:var(--mono);font-size:12px;background:var(--fill);padding:1px 5px;border-radius:3px}
+
+  /* wireframe primitives */
+  .wf{background:var(--box);border:1px solid var(--line);border-radius:3px;padding:18px}
+  .bar{height:34px;border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;padding:0 12px;gap:10px;font-size:12px;color:var(--dim);background:var(--fill)}
+  .bar .b{font-weight:650;color:var(--ink)}
+  .bar .spacer{flex:1}
+  .btnw{border:1px solid var(--ink);border-radius:3px;padding:5px 12px;font-size:12px;background:#fff}
+  .btnw.solid{background:var(--ink);color:#fff}
+  .btnw.ghost{border-color:var(--line);color:var(--dim)}
+  .ph{background:repeating-linear-gradient(135deg,var(--fill),var(--fill) 7px,#e3e6eb 7px,#e3e6eb 14px);
+      border:1px solid var(--line);border-radius:3px;display:flex;align-items:center;justify-content:center;
+      color:var(--faint);font-size:11px;letter-spacing:.05em;text-transform:uppercase}
+  .ln{height:9px;background:var(--fill);border-radius:2px;margin:7px 0}
+  .ln.s{width:45%}.ln.m{width:70%}.ln.l{width:92%}
+  .lbl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);margin:0 0 7px}
+  .card{border:1px solid var(--line);border-radius:3px;padding:12px;background:#fff}
+  .grid{display:grid;gap:12px}
+  .g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+  .row{display:flex;gap:12px;align-items:flex-start}
+  .stack{display:flex;flex-direction:column;gap:10px}
+
+  /* annotations */
+  .notes{margin-top:18px;background:var(--note);border:1px solid var(--noteline);border-radius:3px;padding:14px 16px}
+  .notes h3{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#8a7530}
+  .notes ul{margin:0;padding-left:18px}
+  .notes li{font-size:13px;margin-bottom:6px;color:#5c5330}
+  .notes b{color:#3d3620}
+  .open{margin-top:12px;background:#fff;border:1px dashed var(--line);border-radius:3px;padding:12px 14px;font-size:13px;color:var(--dim)}
+  .open b{color:var(--ink)}
+
+  .banner{background:#20242b;color:#fff;padding:9px 30px;font-size:12.5px}
+  .banner b{font-weight:650}
+  .banner span{color:#9aa1ad}
+</style>
+</head>
+<body>
+<div class="banner"><b>Skeleton, not design.</b> <span>Structure and behaviour only — greys are deliberate. Shape B: the group decides on the planner, the storybook is read-only output.</span></div>
+<div class="app">
+  <nav class="rail">
+    <h1>Travel Planner</h1>
+    <div class="sub">Whole-app skeleton &middot; shape B</div>
+    <div class="grp">Public</div>
+    <a data-go="landing" aria-current="true">1 &nbsp;Landing</a>
+    <a data-go="auth">2 &nbsp;Sign In / Sign Up</a>
+    <div class="grp">Signed In</div>
+    <a data-go="dash">3 &nbsp;Dashboard</a>
+    <a data-go="import">4 &nbsp;Start From A Post</a>
+    <div class="grp">Creating A Trip</div>
+    <a data-go="iv">5 &nbsp;The Interview</a>
+    <a data-go="form">6 &nbsp;The Boring Form</a>
+    <a data-go="gen">7 &nbsp;Generating</a>
+    <div class="grp">The Trip</div>
+    <a data-go="plan">8 &nbsp;Plan It Together</a>
+    <a data-go="book">9 &nbsp;The Storybook</a>
+    <a data-go="broke">10 Something Broke</a>
+    <div class="grp">Account</div>
+    <a data-go="settings">11 Settings</a>
+    <div class="foot">Every box is a placeholder. Annotations under each screen carry the UX intent.</div>
+  </nav>
+
+  <main class="stage">
+
+  <!-- 1 LANDING -->
+  <section class="screen" data-id="landing" data-on>
+    <h2>1 &middot; Landing</h2>
+    <p class="role">Public. The only job is to make someone understand the mechanism in one sentence and press one button.</p>
+    <div class="wf">
+      <div class="bar"><span class="b">[logo]</span><span class="spacer"></span><span>How It Works</span><span>Pricing</span><span class="btnw">Sign In</span></div>
+      <div style="height:22px"></div>
+      <div class="row">
+        <div style="flex:1.05">
+          <div class="lbl">Headline — the claim, not the category</div>
+          <div class="ln l"></div><div class="ln m"></div>
+          <div style="height:10px"></div>
+          <div class="lbl">Subhead — one sentence on the bench</div>
+          <div class="ln l"></div><div class="ln s"></div>
+          <div style="height:16px"></div>
+          <span class="btnw solid">Start A Storybook</span> &nbsp;
+          <span class="btnw">Paste A Post You Saw</span>
+        </div>
+        <div class="ph" style="flex:1;height:230px">Hero — a spread, mid-flip</div>
+      </div>
+      <div style="height:26px"></div>
+      <div class="grid g3">
+        <div class="card"><div class="lbl">It plans</div><div class="ln l"></div><div class="ln m"></div></div>
+        <div class="card"><div class="lbl">You veto</div><div class="ln l"></div><div class="ln m"></div></div>
+        <div class="card"><div class="lbl">It repairs</div><div class="ln l"></div><div class="ln m"></div></div>
+      </div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>Two entry points, side by side.</b> "Start A Storybook" and "Paste A Post" are peers. The post route is the second front door, not a feature buried inside onboarding.</li>
+      <li><b>The hero shows the book mid-flip.</b> A still of a finished spread reads as a template; a flip reads as a product.</li>
+      <li>The three cards are the mechanism in order — propose, veto, repair. Not feature bullets.</li>
+    </ul></div>
+    <div class="open"><b>Open:</b> does a landing page belong in the prototype at all? It is not part of the core flow, and Mockup Completeness scores the flow end to end. Cheap to keep, cheap to cut.</div>
+  </section>
+
+  <!-- 2 AUTH -->
+  <section class="screen" data-id="auth">
+    <h2>2 &middot; Sign In / Sign Up</h2>
+    <p class="role">A screen you click past. <code>No real auth in the prototype</code> — the prototype phase has no code, and a login form is not a scored screen.</p>
+    <div class="wf" style="max-width:420px;margin:0 auto">
+      <div class="lbl">Sign in</div>
+      <div class="ln l"></div>
+      <div style="height:14px"></div>
+      <div class="bar" style="background:#fff">Email</div>
+      <div style="height:8px"></div>
+      <div class="bar" style="background:#fff">Password</div>
+      <div style="height:14px"></div>
+      <span class="btnw solid" style="width:100%;display:block;text-align:center">Continue</span>
+      <div style="height:10px"></div>
+      <span class="btnw ghost" style="width:100%;display:block;text-align:center">Continue with Google</span>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>One screen, not two.</b> Sign-in and sign-up are the same form; the system works out which. Two tabs here is friction for no gain.</li>
+      <li>In the video this screen is skipped entirely. It exists so the flow is complete, not because anyone will watch it.</li>
+    </ul></div>
+  </section>
+
+  <!-- 3 DASHBOARD -->
+  <section class="screen" data-id="dash">
+    <h2>3 &middot; Dashboard</h2>
+    <p class="role">The shelf. Every trip is a book, and the shelf shows what state each one is in.</p>
+    <div class="wf">
+      <div class="bar"><span class="b">[logo]</span><span class="spacer"></span><span>Settings</span><span class="ph" style="width:26px;height:22px;border-radius:99px">&nbsp;</span></div>
+      <div style="height:20px"></div>
+      <div class="row" style="align-items:center">
+        <div style="flex:1"><div class="lbl">Your trips</div></div>
+        <span class="btnw solid">New Storybook</span> &nbsp; <span class="btnw">Paste A Post</span>
+      </div>
+      <div style="height:14px"></div>
+      <div class="grid g3">
+        <div class="card"><div class="ph" style="height:110px;margin-bottom:9px">Cover</div>
+          <div class="ln m"></div><div style="font-size:11px;color:var(--dim)">Planning &middot; 3 of 5 days settled</div></div>
+        <div class="card"><div class="ph" style="height:110px;margin-bottom:9px">Cover</div>
+          <div class="ln m"></div><div style="font-size:11px;color:var(--dim)">Finalised &middot; 12&ndash;16 Nov</div></div>
+        <div class="card" style="border-style:dashed;display:flex;align-items:center;justify-content:center;min-height:170px;color:var(--faint)">+ New</div>
+      </div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>State is on the card.</b> "Planning &middot; 3 of 5 days settled" versus "Finalised". In shape B a book only exists once finalised, so a planning trip shows a placeholder cover, not a book.</li>
+      <li><b>This is "View Records" from the canvas</b>, renamed. A shelf of trips is what that box meant.</li>
+      <li>Both entry CTAs repeat here. Someone who lands signed-in never sees the landing page.</li>
+    </ul></div>
+    <div class="open"><b>Open:</b> what does a planning trip's cover look like before the book exists? A blank spine, a progress ring, or the poster generated up front. Affects whether the shelf reads as a bookshelf or a project list.</div>
+  </section>
+
+  <!-- 4 IMPORT -->
+  <section class="screen" data-id="import">
+    <h2>4 &middot; Start From A Post</h2>
+    <p class="role">The second front door. Someone saw a Xiaohongshu or Instagram post and wants that trip.</p>
+    <div class="wf">
+      <div class="lbl">Paste a link, or drop a screenshot</div>
+      <div class="row">
+        <div class="bar" style="flex:1;background:#fff">https://…</div>
+        <span class="btnw solid">Read It</span>
+      </div>
+      <div style="height:10px"></div>
+      <div class="ph" style="height:88px">Drop a screenshot here</div>
+      <div style="height:22px"></div>
+      <div class="lbl">Found in that post — untick anything that isn't right</div>
+      <div class="grid g4">
+        <div class="card"><div class="ph" style="height:62px;margin-bottom:7px">img</div><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">&#9745; kept</div></div>
+        <div class="card"><div class="ph" style="height:62px;margin-bottom:7px">img</div><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">&#9745; kept</div></div>
+        <div class="card"><div class="ph" style="height:62px;margin-bottom:7px">img</div><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">&#9744; dropped</div></div>
+        <div class="card"><div class="ph" style="height:62px;margin-bottom:7px">img</div><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">&#9745; kept</div></div>
+      </div>
+      <div style="height:14px"></div>
+      <div class="row"><span class="spacer" style="flex:1"></span><span class="btnw solid">Use These &rarr;</span></div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>This does not skip the interview.</b> It pre-loads it. The places found here become the cards in interview question 3, so the bench still gets built.</li>
+      <li><b>The user edits the extraction before it counts.</b> Vision gets things wrong; showing the guess and letting someone untick it is the difference between a demo and a liability.</li>
+      <li><b>Agent tool call #1</b> lives here: vision over the screenshot, then place resolution. It is the most demoable tool use in the product.</li>
+    </ul></div>
+    <div class="open"><b>Constraint:</b> Xiaohongshu has no public API and is hostile to scraping; Instagram oEmbed needs app review. <b>The screenshot path is the one that works without anyone's permission</b> — the paste-a-link field may have to be decoration in the prototype and honest about it.</div>
+  </section>
+
+  <!-- 5 INTERVIEW -->
+  <section class="screen" data-id="iv">
+    <h2>5 &middot; The Interview</h2>
+    <p class="role">Five questions. Every one produces ranking signal — this is where the bench comes from.</p>
+    <div class="wf">
+      <div class="row">
+        <div style="flex:1.6">
+          <div class="lbl">Step 3 of 5</div>
+          <div style="font-size:24px;font-weight:600;margin-bottom:4px">Pick the three you'd hate to miss</div>
+          <div style="color:var(--dim);font-size:13px;margin-bottom:16px">Everything you don't pick stays on the bench.</div>
+          <div class="grid g3">
+            <div class="card" style="border-color:var(--ink);border-width:2px"><div class="ph" style="height:64px;margin-bottom:7px">img</div><div class="ln m"></div></div>
+            <div class="card" style="border-color:var(--ink);border-width:2px"><div class="ph" style="height:64px;margin-bottom:7px">img</div><div class="ln m"></div></div>
+            <div class="card" style="border-color:var(--ink);border-width:2px"><div class="ph" style="height:64px;margin-bottom:7px">img</div><div class="ln m"></div></div>
+            <div class="card"><div class="ph" style="height:64px;margin-bottom:7px">img</div><div class="ln m"></div></div>
+            <div class="card"><div class="ph" style="height:64px;margin-bottom:7px">img</div><div class="ln m"></div></div>
+            <div class="card"><div class="ph" style="height:64px;margin-bottom:7px">img</div><div class="ln m"></div></div>
+          </div>
+          <div style="height:14px"></div>
+          <div class="card" style="border-style:dashed;color:var(--dim);font-size:13px">Say it in my own words &rarr;</div>
+        </div>
+        <div style="flex:.85">
+          <div class="card" style="background:var(--fill);border:0;margin-bottom:12px">
+            <div style="font-size:13px">"Which three would actually ruin the trip if you missed them?"</div>
+          </div>
+          <div class="lbl">Your answers</div>
+          <div class="stack">
+            <div class="card" style="padding:8px 11px"><div style="font-size:12px;color:var(--dim)">Who's coming</div><div class="ln s" style="margin:4px 0 0"></div></div>
+            <div class="card" style="padding:8px 11px"><div style="font-size:12px;color:var(--dim)">What it's for</div><div class="ln s" style="margin:4px 0 0"></div></div>
+            <div class="card" style="padding:8px 11px;border-color:var(--ink)"><div style="font-size:12px">Must-see</div></div>
+            <div class="card" style="padding:8px 11px;opacity:.5"><div style="font-size:12px;color:var(--dim)">How you travel</div></div>
+            <div class="card" style="padding:8px 11px;opacity:.5"><div style="font-size:12px;color:var(--dim)">Non-negotiables</div></div>
+          </div>
+        </div>
+      </div>
+      <div style="height:18px"></div>
+      <div class="bar"><span class="btnw ghost">Back</span><span class="spacer"></span><span style="font-size:12px">Step 3 of 5</span><span class="spacer"></span><span class="btnw solid">Continue</span></div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>Question 3 is the whole reason the interview exists.</b> Three chosen out of nine is a ranking, and that ranking is the bench. Every other question shapes what the nine are.</li>
+      <li><b>The rail is progress, summary and edit affordance in one.</b> Tapping a completed answer jumps back to it. Answers accumulate visibly so the profile is seen forming.</li>
+      <li><b>An escape hatch on every step.</b> "Say it in my own words" feeds the same slot as the taps — free text is a first-class answer, not a fallback.</li>
+      <li>The five steps are <b>Who's coming &middot; What it's for &middot; Must-see &middot; How you travel &middot; Non-negotiables</b>. Question 1 also decides whether the planner shows vote counts or just picks.</li>
+    </ul></div>
+    <div class="open"><b>Open:</b> the conversational bubble and a voice toggle are in the reference but unjustified here. A voice mode nobody demos is a screen that costs design time and earns nothing.</div>
+  </section>
+
+  <!-- 6 FORM -->
+  <section class="screen" data-id="form">
+    <h2>6 &middot; The Boring Form</h2>
+    <p class="role">One screen, deliberately plain. Nobody wants to be interviewed about their departure airport.</p>
+    <div class="wf" style="max-width:560px">
+      <div class="lbl">The practical bits</div>
+      <div class="grid g2">
+        <div><div style="font-size:12px;color:var(--dim);margin-bottom:4px">Leaving from</div><div class="bar" style="background:#fff">KUL</div></div>
+        <div><div style="font-size:12px;color:var(--dim);margin-bottom:4px">Coming back to</div><div class="bar" style="background:#fff">KUL</div></div>
+      </div>
+      <div style="height:12px"></div>
+      <div><div style="font-size:12px;color:var(--dim);margin-bottom:4px">When you're all free</div><div class="ph" style="height:70px">Date strip — overlap sets the trip length</div></div>
+      <div style="height:12px"></div>
+      <div class="grid g2">
+        <div><div style="font-size:12px;color:var(--dim);margin-bottom:4px">Budget per person</div><div class="bar" style="background:#fff">RM 1,450</div></div>
+        <div><div style="font-size:12px;color:var(--dim);margin-bottom:4px">Getting around</div><div class="bar" style="background:#fff">Self-drive</div></div>
+      </div>
+      <div style="height:16px"></div>
+      <div class="row"><span class="spacer" style="flex:1"></span><span class="btnw solid">Build It &rarr;</span></div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>Length is an output, not a slider.</b> The date strip takes everyone's availability and the overlap decides how many days the trip is. Already built in the deployed deck.</li>
+      <li><b>Transport is pre-filled from the interview</b>, not asked cold. "Friends, dawn to midnight" implies self-drive; the user only corrects it.</li>
+      <li>Looking like a form is the point. Making this feel like part of the interview is what produced the eight-question booking form we rejected.</li>
+    </ul></div>
+  </section>
+
+  <!-- 7 GENERATING -->
+  <section class="screen" data-id="gen">
+    <h2>7 &middot; Generating</h2>
+    <p class="role">The only place a wait is acceptable, so it should earn it.</p>
+    <div class="wf" style="text-align:center;padding:52px 18px">
+      <div class="ph" style="height:120px;max-width:200px;margin:0 auto 18px">Book assembling</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:6px">Building your trip</div>
+      <div style="color:var(--dim);font-size:13px">Reading 9 places &middot; checking opening hours &middot; ordering the days</div>
+      <div style="height:16px"></div>
+      <div class="ph" style="height:6px;max-width:280px;margin:0 auto">&nbsp;</div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>Name the work, not a spinner.</b> Listing the actual steps is what makes the agent legible — and it is the only moment the user sees the tools running.</li>
+      <li><b>It resolves into the planner, not the book.</b> In shape B nothing is finished yet, so landing on a book here would be a lie.</li>
+    </ul></div>
+  </section>
+
+  <!-- 8 PLANNER -->
+  <section class="screen" data-id="plan">
+    <h2>8 &middot; Plan It Together</h2>
+    <p class="role">The durable shared surface. <code>Shape B only earns its separation if the group lives here across days</code> — not a screen passed through.</p>
+    <div class="wf">
+      <div class="bar"><span class="b">Yogyakarta</span><span style="color:var(--dim)">Plan It Together</span><span class="spacer"></span>
+        <span class="ph" style="width:22px;height:22px;border-radius:99px">&nbsp;</span><span class="ph" style="width:22px;height:22px;border-radius:99px">&nbsp;</span>
+        <span class="ph" style="width:22px;height:22px;border-radius:99px">&nbsp;</span><span style="font-size:11px;color:var(--dim)">4 people</span></div>
+      <div style="height:14px"></div>
+      <div class="bar" style="background:#fff"><span style="font-size:12px">3 of 5 days settled</span><span class="spacer"></span><span class="ph" style="flex:2;height:7px">&nbsp;</span></div>
+      <div style="height:14px"></div>
+      <div class="card">
+        <div class="row" style="align-items:baseline;margin-bottom:10px"><b style="font-size:14px">Day 3</b>
+          <span style="color:var(--dim);font-size:12px">Sat 14 Nov</span><span class="spacer" style="flex:1"></span>
+          <span style="font-size:12px;color:var(--dim)">Still voting &middot; waiting on 1</span></div>
+        <div class="grid g3">
+          <div><div class="lbl">Morning</div>
+            <div class="card" style="border-color:var(--ink);margin-bottom:7px"><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">2 of 4</div></div>
+            <div class="card" style="margin-bottom:7px"><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">1 of 4</div></div>
+            <div style="font-size:11px;color:var(--dim)"><b>Bench:</b> 2 more, ranked</div></div>
+          <div><div class="lbl">Afternoon</div>
+            <div class="card" style="border-color:var(--ink);margin-bottom:7px"><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">3 of 4</div></div>
+            <div class="card" style="margin-bottom:7px"><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">1 of 4</div></div>
+            <div style="font-size:11px;color:var(--dim)"><b>Bench:</b> 1 more</div></div>
+          <div><div class="lbl">Night</div>
+            <div class="card" style="border-color:var(--ink);margin-bottom:7px"><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">2 of 4</div></div>
+            <div class="card" style="margin-bottom:7px"><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">2 of 4</div></div>
+            <div style="font-size:11px;color:var(--dim)"><b>Tied</b> &mdash; needs a tiebreak</div></div>
+        </div>
+      </div>
+      <div style="height:10px"></div>
+      <div class="card" style="opacity:.55"><div class="row"><b style="font-size:14px">Day 4</b><span style="color:var(--dim);font-size:12px">Sun 15 Nov</span><span class="spacer" style="flex:1"></span><span style="font-size:12px">Settled</span></div></div>
+      <div style="height:14px"></div>
+      <div class="bar" style="background:#fff"><span style="font-size:12px;color:var(--dim)">Day 3 is still open</span><span class="spacer"></span><span class="btnw ghost">Nudge the group</span><span class="btnw solid">Finalise Trip</span></div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>Asynchronous by default.</b> "Waiting on 1", "Nudge the group", avatars in the header. Votes land over days, not in one sitting — that is the whole justification for this being a separate surface from the interview.</li>
+      <li><b>Ties are a real state and need a real answer.</b> Two of four each. Who breaks it — the trip creator, the earliest vote, or the agent on cost? Currently unanswered.</li>
+      <li><b>Settled days collapse.</b> The surface should shrink as the trip converges, so the open decision is always the biggest thing on screen.</li>
+      <li><b>Finalise stays locked until every day is settled.</b> That lock is what makes the book a finished object.</li>
+    </ul></div>
+    <div class="open"><b>This screen carries shape B.</b> If it ends up being something people pass through in one sitting, it is interview-part-two with a progress bar and the fork deserves reopening. Notifications, presence and the nudge are what make it a room instead of a step.</div>
+  </section>
+
+  <!-- 9 BOOK -->
+  <section class="screen" data-id="book">
+    <h2>9 &middot; The Storybook</h2>
+    <p class="role">Read-only output. A keepsake, which is why it had to be a finished thing.</p>
+    <div class="wf">
+      <div class="bar"><span class="b">Yogyakarta</span><span style="color:var(--dim)">Storybook</span><span class="spacer"></span><span class="btnw ghost">Edit Plan</span><span class="btnw">Share</span><span class="btnw">Download PDF</span></div>
+      <div style="height:16px"></div>
+      <div class="row" style="gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden;background:#fff">
+        <div style="flex:1;padding:26px 28px;border-right:1px solid var(--line2)">
+          <div class="lbl">Day 3 &middot; Sat 14 Nov</div>
+          <div style="font:400 26px/1.15 Georgia,serif;margin-bottom:14px">The Mountain Day</div>
+          <div class="ln l"></div><div class="ln l"></div><div class="ln m"></div>
+          <div style="height:14px"></div>
+          <div class="ln l"></div><div class="ln s"></div>
+        </div>
+        <div style="flex:1;padding:26px 28px">
+          <div class="ph" style="height:150px;margin-bottom:12px">Plate</div>
+          <div class="ln m"></div><div class="ln l"></div>
+        </div>
+      </div>
+      <div style="height:14px"></div>
+      <div class="row" style="justify-content:center"><span class="btnw ghost">&larr;</span><span style="font-size:12px;color:var(--dim);padding:5px 14px">Page 6 of 12</span><span class="btnw ghost">&rarr;</span></div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>Stops are not tappable.</b> This is output. "Edit Plan" is the only way back, and it goes to the planner — that is the cost of shape B, accepted knowingly.</li>
+      <li><b>Share and Download are what make it a keepsake</b>, and they are the argument that won B. A public share link and a PDF are the reasons a finished book beats an editable one.</li>
+      <li><b>Agent tool call #3</b> writes the page prose and captions. Commoditised generation, but it is presentation rather than planning, so competing on it costs nothing.</li>
+    </ul></div>
+    <div class="open"><b>Open:</b> real page-flip or a spread that cross-fades? A true flip is a canvas effect and has to run on the deployed link, in the video, at demo scale. If it will not, a clean spread beats a janky flip.</div>
+  </section>
+
+  <!-- 10 BROKE -->
+  <section class="screen" data-id="broke">
+    <h2>10 &middot; Something Broke</h2>
+    <p class="role">The headline claim. In shape B the book cannot repair itself, so this path has to be fast enough that the claim survives.</p>
+    <div class="wf">
+      <div class="card" style="border-left:3px solid var(--ink);margin-bottom:16px">
+        <b style="font-size:14px">Day 3 no longer works</b>
+        <div style="font-size:13px;color:var(--dim);margin:5px 0 10px">Merapi jeep operators suspended for haze until Sunday. Merapi museum was your number two for that slot, and it keeps Day 3 at RM 40.</div>
+        <div class="row"><span class="btnw solid">Use The Bench</span><span class="btnw ghost">Open The Planner</span></div>
+      </div>
+      <div class="lbl">Then, on the planner</div>
+      <div class="card">
+        <div class="row"><b style="font-size:13px">Day 3 &middot; Morning</b><span class="spacer" style="flex:1"></span><span style="font-size:12px;color:var(--dim)">reopened</span></div>
+        <div style="height:9px"></div>
+        <div class="card" style="opacity:.45;margin-bottom:7px"><div class="ln m"></div><div style="font-size:11px">closed &mdash; haze advisory</div></div>
+        <div class="card" style="border-color:var(--ink)"><div class="ln m"></div><div style="font-size:11px;color:var(--dim)">bench #1 &middot; already approved</div></div>
+      </div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>"Use The Bench" is a one-tap accept</b> that skips the planner entirely. Without it, B's repair is four steps and the claim dies in the demo. With it, B gets most of A's immediacy back.</li>
+      <li><b>The one-sentence explanation is the product.</b> What broke, what replaced it, why that one, and what it costs — in a sentence a judge can repeat.</li>
+      <li><b>Agent tool call #2</b> lives here: opening hours, weather, then a ranked pick off the bench.</li>
+      <li>Reaching the group: notification, or email, or both. Whoever taps first resolves it for everyone.</li>
+    </ul></div>
+    <div class="open"><b>Biggest open question in the app.</b> If a closure needs group consent, "Use The Bench" needs a rule — creator decides, first responder decides, or it auto-applies and the group can undo. Auto-apply-with-undo is the only version that demos in one shot.</div>
+  </section>
+
+  <!-- 11 SETTINGS -->
+  <section class="screen" data-id="settings">
+    <h2>11 &middot; Settings</h2>
+    <p class="role">Exists so the flow is complete. Not in the video.</p>
+    <div class="wf" style="max-width:560px">
+      <div class="lbl">Account</div>
+      <div class="card" style="margin-bottom:8px"><div class="ln m"></div></div>
+      <div class="card" style="margin-bottom:16px"><div class="ln s"></div></div>
+      <div class="lbl">Notifications</div>
+      <div class="card" style="margin-bottom:8px"><div class="row"><div style="flex:1"><div class="ln s"></div></div><span class="ph" style="width:34px;height:19px;border-radius:99px">&nbsp;</span></div></div>
+      <div class="card"><div class="row"><div style="flex:1"><div class="ln s"></div></div><span class="ph" style="width:34px;height:19px;border-radius:99px">&nbsp;</span></div></div>
+    </div>
+    <div class="notes"><h3>Behaviour</h3><ul>
+      <li><b>Notification settings matter more here than usual</b>, because shape B depends on people coming back to the planner. If nudges are off, the trip stalls.</li>
+    </ul></div>
+  </section>
+
+  </main>
+</div>
+<script>
+  const links = document.querySelectorAll('.rail a[data-go]');
+  const screens = document.querySelectorAll('.screen');
+  function go(id){
+    screens.forEach(s=>s.toggleAttribute('data-on', s.dataset.id===id));
+    links.forEach(a=>a.setAttribute('aria-current', String(a.dataset.go===id)));
+    window.scrollTo({top:0});
+  }
+  links.forEach(a=>a.onclick=()=>go(a.dataset.go));
+  addEventListener('keydown',e=>{
+    const ids=[...links].map(a=>a.dataset.go);
+    const cur=ids.indexOf([...links].find(a=>a.getAttribute('aria-current')==='true').dataset.go);
+    if(e.key==='ArrowRight'&&cur<ids.length-1) go(ids[cur+1]);
+    if(e.key==='ArrowLeft'&&cur>0) go(ids[cur-1]);
+  });
+</script>
+</body>
+</html>

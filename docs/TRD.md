@@ -1,229 +1,240 @@
-# TRD — Perch
+# TRD - Perch
 
-**How.** Architecture, contracts, data models and the rationale behind them. [`PRODUCT.md`](PRODUCT.md) owns who and
-why, [`PRD.md`](PRD.md) owns scope, [`DESIGN.md`](DESIGN.md) owns the look. This file is canonical over `AGENTS.md` on
-technical matters, and it goes deeper than [`README.md`](README.md) rather than repeating it — deployment, the layout
-tree and the reason we are not on Vercel are stated there once.
+**How.** Architecture, contracts, data models and the rationale behind them. [PRODUCT.md](PRODUCT.md) owns who and why,
+[PRD.md](PRD.md) owns scope, [DESIGN.md](DESIGN.md) owns the look. This file is canonical over AGENTS.md on technical
+matters, and it goes deeper than [README.md](README.md) rather than repeating it.
 
-**This file describes the prototype that is built.** Every fenced block below is copied from the source rather than
-written against it. Two sections are deliberately not descriptions of the build:
-[Specified, Not Yet Built](#specified-not-yet-built) holds rules that are designed and unimplemented, and
-[Known Limitations](#known-limitations-of-what-is-built) holds things the build does that are wrong on purpose or wrong
-by accident. Nothing outside those two sections is aspirational.
+**This file describes the prototype specification as decided on 8 September 2026.** It is not yet built; the build phase
+opens 21 September. Every fenced block below is the design as the team committed to it. Two sections are deliberately
+not specifications: [Specified, Not Yet Built](#specified-not-yet-built) holds rules that are designed and deferred, and
+[Known Limitations](#known-limitations) holds things the design accepts or has not solved. Nothing outside those two
+sections is aspirational.
+
+**What is built today, what is being rebuilt and what is new on 8 September.** The submission runs one path: sign in,
+new plan, swipe, votes, drag the calendar, apply, checklist, book. Two old surfaces are deleted, not kept behind a flag.
+
+| Surface           | Status      | Note                                                                      |
+| ----------------- | ----------- | ------------------------------------------------------------------------- |
+| Landing           | Built, keep | Unchanged. Draws The Perch story                                          |
+| Sign In           | Built, keep | Unchanged. Guest only, email/password disabled                            |
+| Dashboard         | Built, keep | Re-fixtured for Tokyo. Adds invite code and who-has-voted indicators      |
+| Onboarding        | **New**     | Replaces NewPlan and Interview. Drawn date-range picker, chips, free text |
+| The Deck (swipe)  | **New**     | Reel cards. Joiners land here from the invite link, skip onboarding       |
+| The Tally (votes) | **New**     | Percentage per place, unanimous gold, zero greyed and eliminated          |
+| The Desk          | **Rebuilt** | Calendar surface with 4 days x 3 slots. Sidebar, Apply, pins              |
+| Before We Go      | **New**     | Checklist derived from the trip. All ticked enables Print The Book        |
+| The Book          | Built, keep | Re-fixtured for Tokyo. One plate per day, Maps deep link per day          |
+
+**Old surfaces Interview and the current Desk body are deleted.** Not kept behind a flag or behind a route that renders
+nothing. Removed.
 
 ---
 
 ## The Stack
 
-Chosen 7 September 2026 and now built. Every row exists because the prototype is judged from a video and a set of
-mockups, and because **an unnecessary service is an unnecessary way to fail on stage**.
+Decided 8 September 2026 and frozen for the prototype. Every row exists because the prototype is judged from a video, a
+set of mockups and a single path through the app, and because **an unnecessary service is an unnecessary way to fail on
+stage**.
 
-| Layer               | Decision                                                                                             |
-| ------------------- | ---------------------------------------------------------------------------------------------------- |
-| **Build**           | Vite 8 + React 19 + TypeScript 7, `strict` and `noUncheckedIndexedAccess`, per `tsconfig.json`       |
-| **Package Manager** | Bun, per `AGENTS.md`                                                                                 |
-| **Styling**         | Plain CSS with custom properties. One `tokens.css`, one `base.css`, one CSS file per surface         |
-| **Routing**         | `react-router-dom` 7 under `BrowserRouter`. Six `Route` entries over five surfaces                   |
-| **Fonts**           | One Archivo variable face and two static Newsreader faces, self-hosted under `public/fonts/`         |
-| **Motion**          | CSS keyframes and transitions, seven keyframe rules total. No animation library                      |
-| **Icons**           | **None.** No icon library is installed and no icon set is chosen. See the open decisions below       |
-| **State**           | One React context over one `useState`, mirrored to `localStorage`. No backend, database, auth or key |
-| **Data**            | Two committed TypeScript fixtures: 27 places, and one four-day trip in Yogyakarta                    |
-| **Container**       | Two stage. `oven/bun:1.3-alpine` builds, `nginx:1.27-alpine` serves `dist/` on 8080                  |
-| **Deploy**          | Unchanged. See [`README.md`](README.md#deployment)                                                   |
+| Layer               | Decision                                                                                      |
+| ------------------- | --------------------------------------------------------------------------------------------- |
+| **Build**           | Vite 8 + React 19 + TypeScript 7, `strict` and `noUncheckedIndexedAccess`, per `tsconfig`     |
+| **Package Manager** | Bun                                                                                           |
+| **Styling**         | Plain CSS with custom properties. One `tokens.css`, one CSS file per surface                  |
+| **Routing**         | `react-router-dom` 7 under `BrowserRouter`                                                    |
+| **Drag And Drop**   | `@dnd-kit/core`, the one new dependency                                                       |
+| **Fonts**           | Quicksand and Newsreader, self-hosted under `public/fonts/`                                   |
+| **Motion**          | CSS keyframes and transitions. One branded mechanic: perch step-forward; 120ms cross-fade     |
+| **Icons**           | **None.** No icon library is installed. Every affordance is a labelled control or drawn shape |
+| **State**           | One React context mirrored to `localStorage`. No backend, database, auth or API key           |
+| **Data**            | Committed TypeScript fixtures. No network call other than reel MP4s from a public GCS bucket  |
+| **Container**       | Two stage. Bun builds, nginx serves `dist/` on 8080                                           |
+| **Deploy**          | Cloud Run in asia-southeast1, deployed by GitHub Actions on every merge to main               |
+| **Storage**         | Google Cloud Storage for reel MP4s                                                            |
 
-**The exact dependency set.** `react` and `react-dom` at `^19.2.8`, `react-router-dom` at `^7.18.3`, and four new dev
-dependencies: `vite` `^8.2.2`, `@vitejs/plugin-react` `^6.1.1`, `@types/react` `^19.2.18`, `@types/react-dom` `^19.2.7`.
-Nothing else was added, and **`.env.example` is unchanged** because there is still no key to name.
+**The exact dependency set.** `react` and `react-dom` at `^19.2.8`, `react-router-dom` at `^7.18.3`, `@dnd-kit/core` at
+the version `AGENTS.md` records, and the usual dev dependencies: `vite` `^8.2.2`, `@vitejs/plugin-react` `^6.1.1`,
+`@types/react` `^19.2.18`, `@types/react-dom` `^19.2.7`. Nothing else was added, and **.env.example is unchanged**
+because there is still no key to name.
 
 ### Rejected Alternatives
 
-| Rejected             | Why Not                                                                                                     |
-| -------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **Next.js**          | An SSR framework with no server to justify it, and it complicates the single-container Cloud Run deploy     |
-| **Tailwind**         | Its default type scale fights a palette that uses only weights 100 and 700. **The tokens are the system**   |
-| **A Real Backend**   | Nothing in the Must tier writes to a server. An unnecessary service is an unnecessary way to fail on stage  |
-| **Vercel**           | Already rejected, for a reason unrelated to this file: [`README.md`](README.md#deployment)                  |
-| **An Animation Lib** | Seven keyframe rules across the whole build. A library for seven effects is a dependency for nothing        |
-| **A State Library**  | One trip, one context, one storage key. Redux or Zustand is scaffolding around a single object              |
-| **An Icon Library**  | Every affordance in the five surfaces is a labelled control or a drawn shape. A glyph set earns nothing yet |
-| **A Schema Library** | One boundary, `localStorage`. The guard that ships is a hand-written `isTrip`, and it is fourteen lines     |
-| **ID Type Aliases**  | Even `type SlotId = string` was dropped. Every id is `string` in `types.ts`, and the discipline is manual   |
+| Rejected              | Why Not                                                                                                    |
+| --------------------- | ---------------------------------------------------------------------------------------------------------- |
+| **Next.js**           | An SSR framework with no server to justify it, and it complicates the single-container Cloud Run deploy    |
+| **Tailwind**          | Its default type scale fights a palette that uses only weights 100 and 700. **The tokens are the system**  |
+| **A Real Backend**    | Nothing in the Must tier writes to a server. An unnecessary service is an unnecessary way to fail on stage |
+| **Vercel**            | Already rejected per [README.md](README.md#deployment)                                                     |
+| **An Animation Lib**  | Seven keyframe rules across the whole build. A library for seven effects is a dependency for nothing       |
+| **A State Library**   | One trip, one context, one storage key. Redux or Zustand is scaffolding around a single object             |
+| **An Icon Library**   | Every affordance in the surfaces is a labelled control or a drawn shape. No glyph set earns anything yet   |
+| **A Schema Library**  | One boundary, `localStorage`. The guard is a hand-written `isTrip` type predicate                          |
+| **ID Type Aliases**   | Even `type SlotId = string` was dropped. Every id is `string` in `types.ts`                                |
+| **Google Places API** | Terms cap caching at 30 days and forbid storing photos. Forces a server because a browser key is public    |
 
 **Two TypeScript settings bite, and are meant to.** `verbatimModuleSyntax` means every type-only import is written
 `import type`; `noUncheckedIndexedAccess` makes every `Record` and array lookup `T | undefined`, which is why
 `trip.options[id]` is guarded at every call site rather than indexed inline.
 
----
+## Build Phase
+
+The prototype has no backend, no auth, no API key and no network call other than reel MP4s from a public GCS bucket. The
+build phase (21 September to 11 October) adds infrastructure behind these decisions.
+
+| Service              | Role                                                                                         | Constraint the team expects to face                                                                                                                             |
+| -------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Supabase**         | Auth, votes table, realtime sync across devices                                              | Schema migrations must be authored and reviewed. Realtime must handle a joiner's tab arriving mid-session. The free tier pauses a project after a week idle     |
+| **Google (limited)** | Maps deep links per day in The Book. A Routes call for transit times                         | Deep links need no key. Routes is metered and keyed, so replacing the hand-authored matrix with routed minutes forces a server-side call even for the demo city |
+| **LLM**              | Parsing free text intent from Onboarding. Writing the one-line rationale per day on The Desk | One call per new plan and one per Apply. Latency is acceptable at low concurrency. The model choice, key and cost ceiling are undecided                         |
+| **Cloud Run**        | Hosting every surface under the same image, same deploy pipeline                             | No change from the prototype. The Dockerfile and nginx.conf serve identically. The deploy workflow must add a Supabase migration step                           |
+
+The Supabase schema for votes is a single table: `(trip_id, place_id, person_id, weight)`. Realtime subscriptions listen
+on the trip's rows and update the tally in place without a reload. Auth is email-password plus magic-link; Google SSO is
+deferred to post-build.
+
+**The LLM boundary is precise:** it never decides what goes in a slot, never re-ranks and never writes to a calendar
+cell. It parses a free-text answer like "we want good food and one night out" into tag-style preferences, and it writes
+the one-line rationale each day carries on The Desk. Both calls are stateless; the result is stored, not streamed.
+
+**Google Places API remains rejected even in the build phase.** Its Accepted Use Policy caps `placePhoto` and
+`placeDetails` caching at 30 days and explicitly forbids storing photos for longer than a transient display. The build
+phase seeds places from OpenStreetMap, Wikidata and Wikimedia Commons instead. Google Maps JavaScript API is used only
+for deep links (the "Open In Maps" button per day in The Book) and a single Routes API call per trip to get transit
+minutes between consecutive stops. See [The Real Place Data Gap](#the-real-place-data-gap).
 
 ## The Shape Of The Build
 
-Five surfaces, six route entries, and no more. A seventh would be a page for something that is a state.
+Nine route entries over eight surfaces, and no more. A tenth would be a page for something that is a state.
 
-| Path         | Surface       | Who Lands There                                                                                     |
-| ------------ | ------------- | --------------------------------------------------------------------------------------------------- |
-| `/`          | The Landing   | Anyone opening the bare URL. One screen, no scroll, the footer in flow                              |
-| `/sign-in`   | Sign In       | Two panes. **The only surface with no footer**, and the only control that works is Sign In As Guest |
-| `/trips`     | The Dashboard | Post-auth. Lists the trips and carries the New Plan call to action                                  |
-| `/new`       | New Plan      | Where a trip starts. Prefilled chips for destination, length and party                              |
-| `/interview` | The Interview | The three questions, reached from New Plan                                                          |
-| `/desk`      | The Desk      | Aisyah's private workspace                                                                          |
-| `/t/:tripId` | The Book      | The group, from the link pasted in WhatsApp. **The shared link, shaped like one**                   |
-| `*`          | The Landing   | Anything else. No 404 screen, no bounce to an onboarding wall                                       |
+| Path                 | Surface      | Who Lands There                                                                         |
+| -------------------- | ------------ | --------------------------------------------------------------------------------------- |
+| `/`                  | Landing      | Anyone opening the bare URL. One screen, no scroll                                      |
+| `/sign-in`           | Sign In      | Guest only. The only surface with no footer                                             |
+| `/trips`             | Dashboard    | Post-auth. Lists trips, carries New Plan call to action, shows invite code status       |
+| `/new`               | Onboarding   | Prefilled chips and a drawn date-range picker, free text field. Replaces two old routes |
+| `/t/:tripId/swipe`   | The Deck     | Reel cards. Joiners land here from the invite link and skip onboarding                  |
+| `/t/:tripId/votes`   | The Tally    | Percentage per place, unanimous gold, zero greyed. The only votes screen                |
+| `/desk`              | The Desk     | Aisyah's workspace. Calendar grid, sidebar of voted-in cards, Apply, pins, feasibility  |
+| `/desk/before-we-go` | Before We Go | Checklist derived from the trip. All ticked enables Print The Book                      |
+| `/t/:tripId`         | The Book     | The group, from the link pasted in the chat. One plate per day                          |
+| `*`                  | Landing      | Anything else. No 404 screen, no bounce to an onboarding wall                           |
 
 **There is no authentication behind `/sign-in`, and the screen says so** rather than letting a reviewer discover it by
 typing into a dead field. The email and password fields are disabled and drawn; Sign In As Guest navigates. This is the
 honest version of a screen the submission needs and the product does not.
 
-**The front two exist because the prototype opened on a finished trip and had nowhere to begin.** It showed the payoff
-and hid the mechanism that earns it, which is the wrong half to lead a walkthrough with.
+**`/t/:tripId/swipe` is the point of arrival for joiners.** Aisyah pastes the invite link into WhatsApp; Farah, Hana and
+Iman open it and land on the reel deck without going through New Plan or Sign In. The trip id is in the path, not a
+query string.
 
-**`/t/:tripId` is the point.** `PRODUCT.md`'s rule is that the link is the trip, and a link is a path with the trip in
-it — not a query string on a workspace route.
+**Onboarding is not a form and must not become one.** A drawn date-range picker, chips for activities and destination,
+plus a free text field. A destination with no fixture behind it says so and disables the continue button, which is also
+the honest way to show that place data covers one city.
 
-**New Plan is not a form and must not become one.** Three rows of chips with one already chosen in each, because
-`PRODUCT.md`'s rule is that no question is asked which Perch can infer. A destination with no fixture behind it says so
-and disables the continue button, which is also the honest way to show that place data covers one city.
+**The Desk is rebuilt from scratch.** The old Desk body is deleted. The new Desk has a 4-day by 3-slot calendar grid, a
+sidebar of voted-in cards, drag-to-drop with `@dnd-kit/core`, an Apply button, owner pinning, and feasibility colours
+per day.
 
-**The footer is a drawer the page folds over.** It is fixed at `z-index: 0`; the page column above it is opaque and
-reserves its height as bottom margin, so nothing of it shows until the reader reaches the end. **The landing mounts the
-same footer in flow instead**, because a page that does not scroll can never uncover a fixed one.
-
-**The Perch and What Changed have no route on purpose.** The Perch is a drawer over any slot, and What Changed is a
-strip that renders on both surfaces from the same component.
-
-```tsx
-export const App = () => (
-  <TripProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<FlatShell><Landing /></FlatShell>} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/trips" element={<Shell><Dashboard /></Shell>} />
-        <Route path="/new" element={<Shell><NewPlan /></Shell>} />
-        <Route path="/interview" element={<Shell><Interview /></Shell>} />
-        <Route path="/desk" element={<Shell><Desk /></Shell>} />
-        <Route path="/t/:tripId" element={<Shell><Book /></Shell>} />
-        <Route path="*" element={<FlatShell><Landing /></FlatShell>} />
-      </Routes>
-    </BrowserRouter>
-  </TripProvider>
-)
-```
+**Old routes deleted.** `/interview` and the old `/desk` body are removed, not kept behind a flag.
 
 ### The Layout
 
 ```
-v1/                       the slide-deck mockup v2 replaced. Static HTML, shipped at /v1/
 v2/
-  index.html              Vite entry. Preloads the Archivo face
+  index.html              Vite entry. Preloads the Quicksand face
   src/
     main.tsx              mounts <App /> into #root; imports tokens.css then base.css
-    App.tsx               TripProvider wrapping BrowserRouter and the six routes above
-    state.tsx             the one context: trip, disrupt, swap, tap, settle, undo, restart
+    App.tsx               TripProvider wrapping BrowserRouter and the route tree
+    state.tsx             the one context: trip, operations, localStorage sync
     chrome/               Shell.tsx and Footer.tsx, the two mountings of one footer
-    surfaces/             Landing, SignIn, Dashboard, NewPlan, Interview, Desk, Book. Each with its .css
-    components/           Perch.tsx, Plate.tsx, StateChip.tsx, WhatChanged.tsx, Ui.tsx
-    lib/                  repair.ts, ranking.ts, store.ts, format.ts
-    data/                 types.ts, places.ts, trip.ts
+    surfaces/             Landing, SignIn, Dashboard, Onboarding, Deck, Tally, Desk,
+                          BeforeWeGo, Book. Each with its own .css
+    components/           Perch.tsx, Plate.tsx, StateChip.tsx, Ui.tsx, ReelCard.tsx,
+                          PlacedCard.tsx, CopyLink.tsx, DateRangePicker.tsx
+    lib/                  schedule.ts, votes.ts, mapsLink.ts, store.ts, format.ts
+    data/                 types.ts, places.ts, trip.ts, votes.ts, travel.ts,
+                          reels.json, checklist.ts
     styles/               tokens.css, base.css
   public/
-    fonts/                archivo-variable.woff2, newsreader-regular.woff2, newsreader-italic.woff2
+    fonts/                quicksand-variable.woff2, newsreader-regular.woff2,
+                          newsreader-italic.woff2
     assets/               mark.svg
-Dockerfile                two stage: bun builds v2, nginx serves dist/ and v1/
-nginx.conf                /v1/ resolves first, then the SPA fallback, plus immutable asset headers
-vite.config.ts            root v2, the react plugin, outDir ../dist, assetsDir assets
+Dockerfile                two stage: bun builds, nginx serves dist/
+nginx.conf                SPA fallback plus immutable asset headers
+vite.config.ts            root v2, react plugin, outDir ../dist
 ```
 
-**The app moved under `v2/` on 8 September**, so that `v1/` - the slide-deck mockup it replaced - could sit beside it at
-the repo root and still be opened. Both ship in one image and one deploy; `vite.config.ts` carries the `root: 'v2'` that
-makes it work, and the toolchain files stay at the root because there is one toolchain, not two.
-
-**`Plate.tsx` is the one component with no CSS file of its own** — its three classes live in `Book.css`, because the
-plate only ever appears inside a spread and a second file would be a file for three rules.
-
-**The migration off the static prototype is done.** `public/index.html`, `public/app/planner.html` and
-`public/assets/site.css` were deleted in the same commit that added `src/`, because Vite copies `public/` verbatim into
-`dist/` and an `index.html` there collides with the built entry. `public/assets/mark.svg` survives as the favicon.
-
----
+**The app lives under `v2/`** and the toolchain files sit at the repo root because there is one toolchain.
 
 ## The Data Model
 
 `src/data/types.ts` is the whole model. House style throughout: single quotes, no semicolons, no trailing commas, 120
 columns, no `any`.
 
-### Money And Time, As Built
+### Money And Time
 
 **Money is whole ringgit, as a plain `number`.** `costRM` and `budgetRM` are integers in the fixture, and RM is attached
 in `format.ts` rather than in the model. There is no sen unit and no cent-integer discipline; every price in the fixture
 is a whole number, so no addition in the build ever produces a fraction.
 
-**Times are `'HH:MM'` strings and durations are minutes.** `Option.opens` and `Option.closes` are clock strings parsed
-by a four-line `minutes()` in `repair.ts`; `travelMin` and `dwellMin` are plain minute counts. One destination, one
-timezone, so a timezone library would be ceremony.
+**Times are `'HH:MM'` strings and durations are minutes.** `Place.opens` and `Place.closes` are clock strings parsed by
+a four-line `minutes()` in `schedule.ts`; dwell minutes are plain minute counts. One destination, one timezone, so a
+timezone library would be ceremony.
 
-**Two `Date` objects are constructed in the whole build**, and neither is load-bearing: `format.dayLabel` builds one to
-render `21 Nov`, and `repair` builds one for a `ChangeEvent`'s `at` timestamp.
+**One `Date` object is constructed in the whole build**, and it is not load-bearing: `format.dayLabel` builds it to
+render a date. Everything else is string and minute arithmetic.
 
 ### Period, State And Kind
 
 ```ts
-export type Period = 'morning' | 'midday' | 'afternoon' | 'evening'
-
-export type SlotState = 'open' | 'decided' | 'at-risk'
+export type Period = 'morning' | 'afternoon' | 'evening'
 
 export type OptionKind =
   | 'temple'
-  | 'volcano'
+  | 'shrine'
   | 'market'
   | 'food'
   | 'museum'
-  | 'beach'
-  | 'cave'
-  | 'craft'
+  | 'park'
   | 'viewpoint'
+  | 'mall'
+  | 'entertainment'
   | 'street'
 ```
 
-Slot state maps one-to-one onto `DESIGN.md`'s three state tokens. There is no fourth state because there is no fourth
-token.
+Three slots per day: morning, afternoon, evening. No midday period, no free-time dragging. Cards drop into named slots.
 
-| State     | Token       | Means                                                                                    |
-| --------- | ----------- | ---------------------------------------------------------------------------------------- |
-| `open`    | `--open`    | Deliberately unfinished. **`chosenId` is still set** — Perch has proposed, it is movable |
-| `decided` | `--decided` | Settled. The Book prints it and a group tap cannot displace it                           |
-| `at-risk` | `--at-risk` | A repair ran and the bench had no survivor. `cause` carries why                          |
+There is no slot state. Feasibility is a property of the day: green renders as `--decided`, gold as `--gold`, red as
+`--at-risk`. After Apply every slot holds a card, because the trip has to be valid with zero group input.
 
-**`open` does not mean empty**, and that is the single most load-bearing decision in the model. A slot always holds a
-`chosenId`, because the trip has to be valid with zero group input. `open` means still movable, and that is what The
-Book draws as a blank.
-
-### Option
+### Place
 
 ```ts
-export type Option = {
+export type Place = {
   id: string
   name: string
   kind: OptionKind
-  area: string
-  /** Driving minutes from the city centre. The unit that makes a swap honest. */
-  travelMin: number
-  /** How long a visitor actually spends there, not the minimum possible. */
-  dwellMin: number
+  cluster: ClusterId
+  lat: number
+  lng: number
+  yen: number
   costRM: number
+  dwellMin: number
   opens: string
   closes: string
   closedOn: string[]
   bestPeriod: Period[]
   tags: string[]
   blurb: string
+  reel: Reel
 }
 ```
 
+`cluster` groups places by geographic area for the scheduler -- Asakusa and Ueno cluster together, Shibuya and Harajuku
+together, and so on. The scheduler clusters by this value per day, then nearest-neighbour within the cluster.
+
 `closedOn` holds lowercase weekday names and is compared against `Day.weekday.toLowerCase()`. `bestPeriod` is the field
-the fit filter reads first, and it is what replaced the design's tag-matching rule: an option declares the periods it
-belongs in rather than a slot declaring what it wants.
+the fit filter reads first: a place declares the periods it belongs in rather than a slot declaring what it wants.
 
 ### Slot And Day
 
@@ -231,65 +242,36 @@ belongs in rather than a slot declaring what it wants.
 export type Slot = {
   id: string
   period: Period
-  /** The option currently in the slot. Null only while The Book is in its setting state. */
-  chosenId: string | null
-  /** Everything that lost, in rank order. The replacement pool, the cut list and the change list at once. */
-  benchIds: string[]
-  /** Options the world has taken off the table for this slot. A cancelled jeep tour is still cancelled. */
-  blockedIds: string[]
-  state: SlotState
-  /** Why the slot is at risk. Present only when state is 'at-risk'. */
-  cause: string | null
+  placeId: string | null
+  pinned: boolean
 }
 
 export type Day = {
   index: number
   date: string
   weekday: string
-  /** The bird that tints this day. Matches --day-N in tokens.css. */
   tint: 1 | 2 | 3 | 4 | 5
   title: string
   slots: Slot[]
+  feasibility: DayFeasibility | null
 }
 ```
 
-**`benchIds` is the membership; `trip.ranking` is the order.** The array is written by every repair and every manual
-swap, and `benchInRankOrder` sorts it by rank at read time. Both the drawer and `repair` call that one function, so the
-number a person counts on screen is the number the sentence states, by construction rather than by coincidence.
+**Three slots per day, no exceptions.** The calendar enforces this at the type level: `Day.slots` always has length 3.
 
-**`blockedIds` is what the world has taken off the table.** A cancelled jeep tour stays cancelled: `repair` adds the
-option it displaces, `fits` rejects anything in the array, and `undo` removes what it puts back. It is why firing the
-same disruption three times walks down the bench and stops instead of swapping back and forth.
+**`placeId` holds the place id when a card occupies the slot, null when empty.** The Perch drawer fills empty slots from
+the voted-in pool, maintaining each day's two-stop floor.
 
-**There is no `travelBudgetMinutes` on a day.** Reach is bounded per swap instead, against the option leaving the slot.
-See [Transport](#transport-and-why-every-delta-carries-two-units).
-
-### Person, ChangeEvent And Trip
+### Person, Votes And Trip
 
 ```ts
 export type Person = {
   id: string
   name: string
   initials: string
-  /** Days this person tapped as available in phase 1. Empty means they have not opened the link. */
-  availableDays: number[]
-  /** Option ids this person tapped as unmissable in phase 2. */
-  wants: string[]
 }
 
-export type ChangeEvent = {
-  id: string
-  at: string
-  dayIndex: number
-  slotId: string
-  cause: string
-  fromId: string
-  toId: string
-  /** Negative is closer. Always reported with deltaRM, never alone. */
-  deltaMin: number
-  deltaRM: number
-  sentence: string
-}
+export type Votes = Record<string, Record<string, 'yes' | 'no' | null>>
 
 export type Trip = {
   id: string
@@ -298,439 +280,363 @@ export type Trip = {
   startDate: string
   nights: number
   budgetRM: number
+  ownerId: string
   party: Person[]
   days: Day[]
-  options: Record<string, Option>
-  /** The order the interview produced, most wanted first. Group taps reorder it; they never edit a slot. */
-  ranking: string[]
-  changes: ChangeEvent[]
+  options: Record<string, Place>
+  legs: Leg[]
+  votes: Votes
+  pins: Pin[]
+  checklist: ChecklistItem[]
 }
 ```
 
-**`ranking` is a flat id array, not a weighted map.** Position is the whole signal. `cause` is a free string rather than
-a union, because the only producer is the prototype control on The Desk and a union would be a union of one.
+**`Votes` is a record of member id to a record of place id to yes, no or null.** A null value means the member has not
+yet swiped on that place. The owner's member id is stored in `ownerId`.
 
-**The sentence is stored, not re-rendered.** What Changed is a log of what a person was told, and a log that rewrites
-itself when the fixture changes is not a log.
+### Legs
 
-**There is no `Disruption` type and no disruption fixture.** A disruption enters the system as an argument to
-`disrupt(dayIndex, slotId, cause)`, and the only caller is the labelled prototype control described below.
-
----
-
-## Transport, And Why Every Delta Carries Two Units
-
-`PRODUCT.md`: _"a swap that silently adds forty minutes breaks the day it was meant to save"_. Transport is the
-mechanism's missing unit of cost, so it is modelled once and bounded once.
-
-**`Option.travelMin` is driving minutes from the city centre**, authored per place. It is not a from-to matrix.
-
-**Reach is bounded against the option leaving the slot, not against a day budget.** A replacement may sit up to
-`TRAVEL_SLACK_MIN` further out than the stop it displaces, and no further.
+The data model carries legs so the product can claim multi-city support through a type, not a screen.
 
 ```ts
-/** How much further than the outgoing stop a replacement may sit before it breaks the day it was meant to save. */
-const TRAVEL_SLACK_MIN = 25
-```
-
-**Every delta is reported in two units, travel then money**, per `DESIGN.md`'s cost-delta component. Never one without
-the other — not in the Perch drawer, not in What Changed, not in a sentence.
-
-```ts
-/** Two units, travel then money. Never one without the other. */
-export const describeDelta = (deltaMin: number, deltaRM: number): string => {
-  const travel = deltaMin === 0 ? 'same distance' : `${Math.abs(deltaMin)} min ${deltaMin < 0 ? 'closer' : 'further'}`
-  const money = deltaRM === 0 ? 'same price' : `${deltaRM < 0 ? '−' : '+'}RM ${Math.abs(deltaRM)}`
-  return `${travel} · ${money}`
+export type Leg = {
+  city: string
+  startDay: number
+  endDay: number
+  transferMin: number
 }
 ```
 
-The minus sign is U+2212, not a hyphen, so a saving lines up under a plus in a tabular-numeral column.
+A leg is one city and a run of consecutive days, with a fixed transfer block between legs. The Tokyo demo uses one leg.
+**No screen renders a leg switcher or a multi-leg calendar.** The type exists to anchor the README claim and is
+exercised only in tests.
 
----
+### Pin
+
+```ts
+export type Pin = {
+  placeId: string
+  dayIndex: number
+  slotIndex: number
+}
+```
+
+### ChecklistItem
+
+```ts
+export type ChecklistItem = {
+  id: string
+  label: string
+  ticked: boolean
+  derivedFrom: string
+}
+```
+
+### Reel
+
+```ts
+export type Reel = {
+  src: string
+  poster: string
+  platform: 'instagram' | 'xhs'
+  creditHandle: string
+  sourceUrl: string
+}
+```
+
+### ClusterId
+
+```ts
+export type ClusterId =
+  | 'asakusa-ueno'
+  | 'shibuya-harajuku-shinjuku'
+  | 'tsukiji-ginza-station'
+  | 'odaiba-toyosu-teamlab'
+```
+
+### Travel Matrix
+
+24 by 24 transit minutes, hand-authored from Google Maps transit estimates, committed as a fixture.
+
+```ts
+export type TravelMatrix = Record<string, Record<string, number>>
+
+// travelMatrix[fromId][toId] = transit minutes
+// Symmetric, zero diagonal, no null cells: every pair has an authored estimate.
+export const travelMatrix: TravelMatrix = { ... }
+```
+
+The matrix is consumed by the scheduler's nearest-neighbour pass within a day. During the build phase, the matrix would
+be replaced by a Google Routes API call per trip.
+
+### Reels Manifest
+
+One reel per place, the `Reel` type above, keyed by place id.
+
+```ts
+export type ReelsManifest = Record<string, Reel>
+```
+
+Reels are served from `gs://perch-reels` as small MP4s, 8 seconds, muted, 540x960. The manifest maps place id to reel
+metadata. 24 reels are needed, 4 spares are authored.
+
+### Checklist
+
+Checklist derived from the trip fixture. All items must be ticked to enable Print The Book.
+
+```ts
+export const checklist: ChecklistItem[] = [
+  { id: 'passport', label: 'Passport validity check', ticked: false, derivedFrom: 'destination:japan' },
+  { id: 'suica', label: 'Suica or Welcome Suica card', ticked: false, derivedFrom: 'destination:japan' },
+  { id: 'teamLab', label: 'teamLab ticket booked in advance', ticked: false, derivedFrom: 'cluster:odaiba-toyosu-teamlab' },
+  { id: 'yen', label: 'Yen cash (enough for smaller shops)', ticked: false, derivedFrom: 'destination:japan' },
+  { id: 'insurance', label: 'Travel insurance', ticked: false, derivedFrom: 'duration:4days' },
+  { id: 'jrpass', label: 'JR Pass (not needed for Tokyo-only)', ticked: true, derivedFrom: 'destination:tokyo' },
+]
+```
 
 ## The Algorithm
 
-This is the product. Everything else on this page is scaffolding for it.
+This is the product. Everything else on this page is scaffolding for it. The scheduler is a heuristic, never called AI
+in the UI copy: cluster by area per day, order by best period and opening hours, nearest neighbour within the day.
 
-### Fit Comes Before Rank
+**Five rules govern every schedule produced.**
 
-`research:docs/decisions/disruption-recovery.md`: _"score = vote rank, filtered by fit"_. Next-highest-voted is not
-enough, because losing the one natural stop and replacing it with a well-polled museum is not a repair.
+1. The trip is valid with zero group input: the owner's swipes alone produce a plan.
+2. Owner priority: the owner's swipe carries 1.5 weight in the tally. The owner can pin a card to a day and slot; the
+   scheduler never moves a pinned card.
+3. Deleting a card from the calendar opens the Perch drawer offering the next-ranked voted-in card for that slot, so the
+   trip cannot empty. Each day keeps at least two stops.
+4. Feasibility per day: green when every stop fits its hours and the day's travel plus dwell fits 09:00 to 21:00; gold
+   when it fits but the order is more than 25 percent slower than the scheduler's order; red when a stop is outside its
+   hours or the day overruns.
+5. A date change regenerates the calendar; votes survive because they are on places. A destination change is a new plan.
+
+### The Scheduler
 
 ```ts
-/** The window a slot occupies, so an option's opening hours can be checked against it rather than against the day. */
-const WINDOW: Record<Period, [string, string]> = {
-  morning: ['08:00', '12:00'],
-  midday: ['12:00', '14:30'],
-  afternoon: ['14:30', '18:00'],
-  evening: ['18:00', '22:00']
-}
-
-const minutes = (hhmm: string): number => {
-  const [h, m] = hhmm.split(':')
-  return Number(h ?? 0) * 60 + Number(m ?? 0)
+export type ScheduleResult = {
+  orderedStops: string[]
+  feasibility: 'green' | 'gold' | 'red'
+  rationale: string | null
 }
 
 /**
- * Fit, then rank. An option that ranks first and is shut at the time it is needed is not a replacement, so every
- * filter here is a hard one and the ranking only breaks ties between survivors.
+ * Heuristic scheduler. Clusters cards by geographic area per day, orders by best period and
+ * opening hours, then nearest-neighbour within each cluster.
+ *
+ * Algorithm:
+ * 1. Group the day's voted-in cards by cluster (geographic area)
+ * 2. For each cluster, sort by bestPeriod (morning/afternoon/evening) then opening time
+ * 3. Within each cluster, nearest-neighbour ordering by transit minutes
+ * 4. Assign to morning/afternoon/evening slots
+ * 5. Return ordered slots with feasibility state
  */
-export const fits = (option: Option, slot: Slot, day: Day, outgoing: Option | undefined): boolean => {
-  if (slot.blockedIds.includes(option.id)) return false
-  if (!option.bestPeriod.includes(slot.period)) return false
-  if (option.closedOn.includes(day.weekday.toLowerCase())) return false
+export const scheduleDay = (
+  day: Day,
+  votedCards: Place[],
+  travelMatrix: TravelMatrix,
+  pinned: string[]
+): ScheduleResult => { ... }
 
-  const [start] = WINDOW[slot.period]
-  const usable = minutes(option.closes) - minutes(start)
-  if (minutes(option.opens) > minutes(start) || usable < 60) return false
-
-  const ceiling = (outgoing?.travelMin ?? 0) + TRAVEL_SLACK_MIN
-  return option.travelMin <= ceiling
-}
+/**
+ * Schedule all days in a trip. Pure, never mutates its input. Skips pinned cards: they stay
+ * where the owner put them.
+ */
+export const scheduleTrip = (trip: Trip): ScheduleResult[] => { ... }
 ```
 
-Five hard tests, cheapest first, and the whole filter is these five lines:
+In prose, four steps:
 
-1. **Whether the world has already taken it off the table**, which is the `blockedIds` check and is why a repeated
-   repair walks forward
-2. **The period it belongs in**, read off `bestPeriod` rather than matched from tags
-3. **The weekday it is shut on**, compared lowercase against `Day.weekday`
-4. **The window it can actually fill.** A `usable` of less than sixty minutes fails, so an option that closes twenty
-   minutes into the slot is not a survivor even though it is technically open
-5. **How much further out it sits than the stop it replaces**, bounded by `TRAVEL_SLACK_MIN`
+1. **Voted-in cards are the pool.** Only cards that the tally has returned as viable (non-zero votes, or owner-endorsed)
+   enter the scheduler. Zero-vote cards are eliminated and do not appear in any day
+2. **Cluster by area per day.** The scheduler groups cards by their `cluster` field -- Asakusa and Ueno together,
+   Shibuya and Harajuku together, and so on. Each day gets one or two clusters, never fragments from four clusters
+3. **Order by best period and opening hours.** Within a cluster, cards are sorted: morning slots get the
+   earliest-opening cards that declare `bestPeriod: ['morning']`, then afternoon, then evening. If a card is closed on
+   that weekday, it is moved to the next day's pool
+4. **Nearest neighbour within the day.** Transit minutes between consecutive stops are read from the travel matrix. The
+   order that minimises total travel time per day wins. This is not a full TSP solve -- it is a greedy walk from the
+   first stop
 
-### The Filter Is The Argument, So It Is Visible
+**Pinned cards override the scheduler.** The owner can pin any card to a specific day and slot. The scheduler detects
+`pinned` by id and never moves that card. The day is scheduled around pinned cards, filling remaining slots from the
+remaining pool.
 
-`fits` returns a boolean and `whyNot` returns the reason. They are two functions rather than one returning a union
-because the drawer needs the sentence and the repair needs the predicate, and neither should carry the other's shape.
+### Feasibility
 
 ```ts
 /**
- * Why an option cannot take this slot, or null when it can. The drawer shows this rather than hiding the row: the
- * fit filter is the argument, so it has to be visible.
+ * Feasibility per day. Three status values:
+ * - 'green': every stop fits its hours and the day's travel + dwell fits 09:00 to 21:00
+ * - 'gold': fits but the order is more than 25% slower than the scheduler's optimal order
+ * - 'red': a stop is outside its hours or the day overruns 21:00
  */
-export const whyNot = (option: Option, slot: Slot, day: Day, outgoing: Option | undefined): string | null => {
-  if (slot.blockedIds.includes(option.id)) return slot.cause ?? 'Off the table'
-  if (!option.bestPeriod.includes(slot.period)) return `Not a ${slot.period} thing`
-  if (option.closedOn.includes(day.weekday.toLowerCase())) return `Shut on ${day.weekday}s`
-
-  const [start] = WINDOW[slot.period]
-  if (minutes(option.opens) > minutes(start)) return `Opens ${option.opens}`
-  if (minutes(option.closes) - minutes(start) < 60) return `Closes ${option.closes}`
-
-  const ceiling = (outgoing?.travelMin ?? 0) + TRAVEL_SLACK_MIN
-  if (option.travelMin > ceiling) return `${option.travelMin - ceiling} min too far`
-  return null
+export type DayFeasibility = {
+  status: 'green' | 'gold' | 'red'
+  transitMin: number
+  dwellMin: number
+  daySpanMin: number
+  stopsOutsideHours: string[]
+  rationale: string
 }
+
+export const evaluateDay = (
+  day: Day,
+  travelMatrix: TravelMatrix
+): DayFeasibility => { ... }
 ```
 
-**A blocked row stays on screen, greyed, with its reason where the delta would be.** Hiding it would hide the mechanism,
-and the mechanism is the pitch. **The first branch prints the slot's own `cause` back at the reader**, so the row a
-disruption took off the table says the thing that took it, rather than a generic refusal.
+| State | Means                                                                       | Rendered As                  |
+| ----- | --------------------------------------------------------------------------- | ---------------------------- |
+| Green | Every stop fits its hours. Travel plus dwell fits 09:00 to 21:00            | Green tint on the day header |
+| Gold  | Fits, but the order is more than 25 percent slower than the scheduler's own | Gold tint, slower badge      |
+| Red   | A stop is outside its hours, or the day overruns 21:00                      | Red tint, what-went-wrong    |
 
-**Every branch is reachable from the fixture, and the Monday one is reachable in the demo.** Ullen Sentalu sits on Day
-3's morning bench and carries `closedOn: ['monday']`, and Day 3 is a Monday, so opening the drawer on the slot the demo
-disrupts prints `Shut on Mondays` against it with no setup at all.
+**`gold` is new for this rebuild**, matching the Black-naped Oriole token `--gold`. It means the owner has re-ordered
+the day by dragging and the day is viable but noticeably suboptimal. The gold tint communicates this without requiring a
+"this could be better" block of text.
 
-### Ranking The Survivors
+**`red` always carries a rationale.** "Stops outside hours" names which one. "Day overruns" names by how many minutes.
 
-There is one sort, and it is by tap count with the interview's own order as the tie-break. No weights, no purpose table,
-no score.
+### The Tally
+
+```ts
+export type TallyEntry = {
+  placeId: string
+  name: string
+  percentage: number
+  /** True when every voter picked this place */
+  unanimous: boolean
+  /** True when no voter picked this place, weighted yes is zero */
+  eliminated: boolean
+}
+
+/**
+ * Compute the tally from votes. The owner's vote carries 1.5 weight.
+ * Returns entries sorted by weighted score descending, ties broken by fixture order.
+ * Places at or above 50 percent are the ranked voted-in list.
+ */
+export const computeTally = (
+  votes: Votes,
+  options: Record<string, Place>,
+  party: Person[],
+  ownerId: string
+): TallyEntry[] => { ... }
+```
+
+**Percentage per place** is weighted yes over total possible weight. Each member's yes is 1, the owner's yes is 1.5.
+With four people (one owner), the total possible weight is 5.5 and the owner alone is 27 percent. Unanimous means every
+member said yes. Eliminated means weighted yes is zero. The ranked voted-in list is places at or above 50 percent,
+weighted score descending, ties broken by fixture order.
+
+| Condition         | Effect                                                                   |
+| ----------------- | ------------------------------------------------------------------------ |
+| Unanimous (all)   | Marked gold. Always appears in the scheduler pool                        |
+| Eliminated (zero) | Greyed, eliminated. The scheduler never considers them                   |
+| Owner 1.5 weight  | The owner's vote counts 1.5, giving the owner 27 percent of total weight |
+| Owner pinned      | Not in the tally. Pins are a Desk operation, not a voting mechanic       |
+
+**The tally is the only input to the scheduler.** Cards with zero votes across the group and the owner never reach the
+calendar. Cards with low percentages stay in the sidebar for the Perch drawer.
+
+### Owner Priority And Pins
+
+Two mechanisms give the owner control without making the group's input decorative.
+
+1. **Owner vote weight 1.5.** The owner's swipe counts 50 percent more than a regular vote. This means the owner can
+   carry a place into the scheduling pool against group indifference, but cannot override a clear group preference (3
+   regular votes = 3.0 vs 1 owner vote = 1.5)
+2. **Owner pins a card to a day and slot.** Once pinned, the scheduler never moves it. Pin is a Desk operation: the
+   owner drags a card onto the calendar and pins it. Pinned cards carry a pin indicator in the calendar grid
+
+```ts
+export const pinCard = (
+  trip: Trip,
+  placeId: string,
+  dayIndex: number,
+  slotIndex: number
+): Trip => { ... }
+
+export const isPinned = (trip: Trip, placeId: string): boolean => { ... }
+```
+
+**Deleting a pinned card removes the pin.** The card returns to the sidebar pool and the slot opens for the Perch
+drawer.
+
+### The Perch Drawer
+
+When the owner removes a card from a slot, the Perch drawer opens from that slot offering the next-ranked voted-in card
+not already placed that day.
 
 ```ts
 /**
- * Question 3 produces the whole ranking, not just the winners: three chosen sit on top in the order they were
- * chosen, and the seven that were not settle onto the perch beneath them. Nothing is discarded.
+ * Find the next best replacement for a slot. Draws from voted-in cards that are not already
+ * placed on this day, ranked by tally percentage.
  */
-export const rankingFromInterview = (picked: string[], pool: string[]): string[] => [
-  ...picked,
-  ...pool.filter((id) => !picked.includes(id))
-]
-
-/**
- * A tap is not an edit. The group never writes to a slot; they add weight to an option, and the order the interview
- * produced is re-sorted underneath them. With no taps at all the trip is exactly what Perch already chose.
- */
-export const rankingWithTaps = (trip: Trip): string[] => {
-  const weight = new Map<string, number>()
-  for (const person of trip.party) {
-    for (const id of person.wants) weight.set(id, (weight.get(id) ?? 0) + 1)
-  }
-
-  return [...trip.ranking].sort((a, b) => {
-    const diff = (weight.get(b) ?? 0) - (weight.get(a) ?? 0)
-    return diff !== 0 ? diff : trip.ranking.indexOf(a) - trip.ranking.indexOf(b)
-  })
-}
-
-export const tapCount = (trip: Trip, optionId: string): number =>
-  trip.party.filter((p) => p.wants.includes(optionId)).length
+export const nextReplacement = (
+  slot: Slot,
+  day: Day,
+  trip: Trip,
+  tally: TallyEntry[]
+): Place | null => { ... }
 ```
 
-**The tie-break on the previous order is what makes the video repeatable.** The same taps produce the same book on every
-take, because the comparator never falls through to unspecified ordering.
+| Situation                        | Behaviour                                                        |
+| -------------------------------- | ---------------------------------------------------------------- |
+| Replacement exists               | Drawer shows the top ranked option                               |
+| No replacement fit               | Drawer says the slot can stay empty. Day must keep 2 other stops |
+| Owner rejects the replacement    | Next ranked option slides into view                              |
+| Day has fewer than 2 stops after | Drawer refuses to close: the day needs at least two stops        |
 
-**One person, one vote, and a vote is not weighted by who cast it.** `tapCount` is a count of people whose `wants`
-contain the id, so a majority of the group outranks what Perch inferred and a single voice does not.
+**The Perch drawer is the same mechanism for all slots.** It is not a separate "pick a replacement" screen -- it is the
+same `PerchDrawer.tsx` component mounted over the calendar slot. The drawer shows the replacement card and its tally
+percentage. The owner can accept or cycle to the next option.
 
-**The fixture's own taps are applied once, at module load.** `trip.ts` exports
-`export const trip: Trip = { ...seed, ranking: rankingWithTaps(seed) }`, so Farah's two picks and Hana's one have
-already moved the order before anything renders. A tap made in the browser re-runs the same function over the same seed
-order, which is why the first tap does not appear to jump.
-
-### One Bench Order, Read Twice
-
-The drawer's row numbers and the sentence's rank word are the same number because they come from the same call, not
-because two orderings happen to agree.
-
-```ts
-/**
- * The one bench order. The drawer numbers its rows from this and `repair` picks from it, so the rank the sentence
- * states is always the rank a judge can count on screen.
- */
-export const benchInRankOrder = (trip: Trip, slot: Slot): Option[] => {
-  const at = (id: string): number => {
-    const i = trip.ranking.indexOf(id)
-    return i === -1 ? Number.MAX_SAFE_INTEGER : i
-  }
-  return slot.benchIds
-    .map((id) => trip.options[id])
-    .filter((o): o is Option => o !== undefined)
-    .sort((a, b) => at(a.id) - at(b.id))
-}
-```
-
-`Perch.tsx` renders `benchInRankOrder(trip, slot).map(...)` and prints `i + 2` into `.perch-rank`; `repair` takes
-`survivors[0]` from the same array and reports `bench.findIndex(...) + 2`. **An id missing from `trip.ranking` sorts
-last rather than throwing**, which is what `Number.MAX_SAFE_INTEGER` is doing there.
-
-### The Repair Function
-
-```ts
-export type RepairResult =
-  | { kind: 'swapped'; slot: Slot; change: ChangeEvent }
-  | { kind: 'exhausted'; slot: Slot; reason: string }
-
-/**
- * The mechanism. A slot repairs itself from the bench the same choosing already produced, so nobody is consulted:
- * survivors of the fit filter, in the group's own rank order, top one wins.
- */
-export const repair = (trip: Trip, dayIndex: number, slotId: string, cause: string): RepairResult => {
-  const day = trip.days.find((d) => d.index === dayIndex)
-  if (!day) throw new Error(`no day ${dayIndex}`)
-
-  const slot = day.slots.find((s) => s.id === slotId)
-  if (!slot) throw new Error(`no slot ${slotId}`)
-
-  const outgoing = slot.chosenId ? trip.options[slot.chosenId] : undefined
-
-  // What the world took off the table stays off it, so firing the same disruption twice cannot swap the trip back.
-  const withCause: Slot = {
-    ...slot,
-    blockedIds: outgoing ? [...slot.blockedIds, outgoing.id] : slot.blockedIds,
-    cause
-  }
-  const bench = benchInRankOrder(trip, withCause)
-  const survivors = bench.filter((o) => fits(o, withCause, day, outgoing))
-
-  const winner = survivors[0]
-  if (!winner) {
-    return {
-      kind: 'exhausted',
-      slot: { ...withCause, chosenId: null, state: 'at-risk' },
-      reason: `Nothing on the bench for this slot is open and close enough. ${day.title} needs a decision.`
-    }
-  }
-
-  const deltaMin = winner.travelMin - (outgoing?.travelMin ?? 0)
-  const deltaRM = winner.costRM - (outgoing?.costRM ?? 0)
-
-  const repaired: Slot = {
-    ...withCause,
-    chosenId: winner.id,
-    benchIds: [...bench.filter((o) => o.id !== winner.id).map((o) => o.id), ...(outgoing ? [outgoing.id] : [])],
-    state: 'decided'
-  }
-
-  const after = { ...day, slots: day.slots.map((s) => (s.id === slot.id ? repaired : s)) }
-  const total = dayCostRM(after, trip.options)
-  const before = dayCostRM(day, trip.options)
-  const rank = bench.findIndex((o) => o.id === winner.id) + 2
-
-  const money = total === before ? `the day stays at RM ${total}` : `the day is RM ${total}`
-  const sentence = outgoing
-    ? `Swapped ${outgoing.name} for ${winner.name}. ${cause}, ${winner.name} was your number ${ordinal(rank)} for that slot, and ${money}.`
-    : `Filled the gap with ${winner.name}. ${cause}, and ${money}.`
-
-  return {
-    kind: 'swapped',
-    slot: repaired,
-    change: {
-      id: `${slot.id}-${trip.changes.length + 1}`,
-      at: new Date().toISOString(),
-      dayIndex,
-      slotId: slot.id,
-      cause,
-      fromId: outgoing?.id ?? '',
-      toId: winner.id,
-      deltaMin,
-      deltaRM,
-      sentence
-    }
-  }
-}
-```
-
-In prose, five steps:
-
-1. **Block the option that is leaving and stamp the cause onto a working copy of the slot.** `withCause` is what every
-   line below reads, so the option the world just cancelled cannot win the slot back on the next call
-2. **Sort the bench by rank, then filter it by fit** — `benchInRankOrder`, then `fits`. Fit first, always
-3. **Take `survivors[0]`.** The array is already in rank order, so the top survivor is the highest-ranked one and no
-   second comparison is needed
-4. **Swap, and put the displaced option on the end of the bench.** It is not deleted: a haze cancellation is a forecast,
-   not a demolition, and the row has to still be there for `undo` to put it back. It stays blocked, though, which is
-   what stops the swap-back
-5. **Emit a `ChangeEvent` carrying both deltas and the rendered sentence.** The event is prepended to `trip.changes`, so
-   `changes[0]` is what What Changed shows
-
-### The Sentence, Verbatim
-
-The demo's one shot, as the code actually emits it:
-
-> **Swapped Merapi Lava Tour for Prambanan. Jeep tours cancelled for haze, Prambanan was your number two for that slot,
-> and the day stays at RM 119.**
-
-**Every part of that is assembled, not authored.**
-
-| Fragment                        | Where It Comes From                                                                    |
-| ------------------------------- | -------------------------------------------------------------------------------------- |
-| `Merapi Lava Tour`, `Prambanan` | `Option.name`                                                                          |
-| `Jeep tours cancelled for haze` | The `cause` string the prototype control passes in                                     |
-| `two`                           | `bench.findIndex((o) => o.id === winner.id) + 2`, spelled through an eight-word lookup |
-| `the day stays at RM 119`       | The branch taken when the recomputed day total equals the old one                      |
-
-**Day 3 costs RM 119** because Merapi and Prambanan are both priced at the real foreign gate rate of RM 107, and the
-day's other two stops are Tebing Breksi at RM 3 and Oseng Mercon at RM 9.
-
-```ts
-const WORDS = ['', '', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine']
-const ordinal = (n: number): string => WORDS[n] ?? String(n)
-```
-
-**The rank is spelled as a word in prose while the drawer's chip beside it stays a tabular numeral.** The word reads as
-speech and the numeral reads as data, and they are the same number because both come from `benchInRankOrder`.
-
-**The demo's `two` is exact, and it stays exact under a reset.** Fire `Cancel The Merapi Jeeps` on a fresh seed and the
-bench for `d3-morning` sorts to Prambanan, Jomblang Cave, Timang Beach, Kalibiru, Bukit Panguk, Ullen Sentalu, so
-Prambanan is position 0 and the sentence says number two. What a second and third firing report is
-[a known limitation](#known-limitations-of-what-is-built), not a second mechanism.
-
-### When The Bench Is Exhausted
-
-**The slot empties and goes `at-risk`, carrying the cause.** `chosenId` becomes `null`, `state` becomes `'at-risk'`, and
-the result's `reason` names the day that now needs a decision. No `ChangeEvent` is written, because nothing changed —
-the plan lost a stop and gained a question.
-
-**Both surfaces draw the hole rather than skipping it.** The Desk prints `Nothing that fits` in the slot with an
-`at-risk` chip beside it; The Book renders a `.gap` section instead of an entry, headed **Nothing On The Perch Fits**,
-in the blank's dashed construction at `2px dashed var(--at-risk)` over a 6% `--at-risk` ground, carrying the slot's own
-`cause` in the prose beneath. An empty slot is the one thing the group must not have hidden from them, so the surface
-they read is the surface that has to show it.
-
-**That is the honest end of the claim, not a failure of it.** `PRODUCT.md` states the narrow version: the claim is not
-that the trip survives, it is that Aisyah does not spend her holiday morning re-planning while four people wait. An
-empty slot with a named cause still meets that; a silently wrong substitution does not.
-
-**Pooling the day's other benches was considered and dropped.** It would give a third tier between "a survivor" and
-"empty", but it takes a stop from a slot that still needs one and so moves the hole rather than closing it. Recorded
-because `research:docs/decisions/disruption-recovery.md` left this exact question open — _"what happens when the reserve
-list runs out"_ — and this file is where it gets closed.
-
-### A Tap Is Not An Edit
-
-`PRODUCT.md`: _"the only writes that ever happen on the book are the group's taps, and a tap is not an edit."_ That is
-mechanically true here rather than a slogan. **A tap toggles one id in one person's `wants` array**, and then
-`trip.ranking` is re-sorted underneath it. It never writes `slot.chosenId`, and there is no code path from a tap to a
-decision.
-
-| Slot State When Tapped | What Happens                                                                   |
-| ---------------------- | ------------------------------------------------------------------------------ |
-| `open`                 | The blank's three candidates reorder, and the vote count beside each row moves |
-| `decided`              | The ranking reorders underneath. The decision does not move                    |
-| `at-risk`              | The ranking reorders. The next repair on that slot sees the new order          |
-
-**Settling is the separate, deliberate act.** `Settle This One` flips a slot from `open` to `decided` and nothing else,
-so a group turns a blank into a decision on purpose rather than by accumulating taps.
-
-### The Interview, And What It Produces
-
-`research:docs/decisions/storybook-shape.md` §1 proposed five questions. **Three ship**, at `/interview`.
-
-| #   | Question                          | Answers                                                             |
-| --- | --------------------------------- | ------------------------------------------------------------------- |
-| 1   | **Who Is Coming?**                | `A Few Of Us` or `Just Me`. The only question that changes the rest |
-| 2   | **What Is This Trip For?**        | `See The Big Things`, `Eat Our Way Through`, `Not Rush`             |
-| 3   | **Pick Three You'd Hate To Miss** | Ten cards, three kept. **This one is the product**                  |
-
-**Question 3 does not pick three winners, it produces the whole order.** The three chosen sit on top in the order they
-were chosen, and the seven that lost settle onto the perch beneath them, which is what repairs the trip later. That is
-`rankingFromInterview`, and it is also where `DESIGN.md`'s step-forward motion first appears: the cards stagger in at
-`animationDelay: ${i * 40}ms`, and the seven that were not picked take a `data-benched` treatment the moment the third
-pick lands.
-
-**The interview is a demonstration of the mechanism, not an input to it, and the screen says so.** Its final button
-navigates to `/desk` and writes nothing; questions 1 and 2 are answered into local component state and discarded. The
-honest line under the cards is in the shipped copy:
-
-> This prototype always proposes the same trip, seeded from 3 picks. The ranking your taps produce is real and the
-> repair uses it.
-
-**Two questions were cut and both cuts are forced.** Question 5, "anything non-negotiable", is free text, and free text
-needs a model call — there is no key and no server. Question 4, "how do you travel", was a day travel budget, and the
-build bounds reach per swap instead, so it has nothing left to set.
-
----
+**The two-stop floor is enforced at the Perch drawer level.** Removing a card that would bring a day below two stops is
+rejected; the drawer offers the next-ranked voted-in card from the tally.
 
 ## State And Persistence
 
-**One context, one `useState`, seven operations.** `state.tsx` is the only place a `Trip` is written, and every write is
+**One context, one `useState`, nine operations.** `state.tsx` is the only place a `Trip` is written, and every write is
 a whole-object replacement.
 
 ```ts
 type Ctx = {
   trip: Trip
-  /** Something in the world changed. The bench is the repair pool, so nobody is consulted. */
-  disrupt: (dayIndex: number, slotId: string, cause: string) => void
-  /** She vetoes. Choosing a bench row by hand is the same interaction as a repair. */
-  swap: (dayIndex: number, slotId: string, optionId: string) => void
-  /** A tap is not an edit: it adds weight, and the order Perch already produced re-sorts underneath it. */
-  tap: (personId: string, optionId: string) => void
-  settle: (dayIndex: number, slotId: string) => void
-  undo: () => void
+  swipe: (memberId: string, placeId: string, answer: boolean) => void
+  place: (placeId: string, dayIndex: number, slotIndex: number) => void
+  remove: (dayIndex: number, slotIndex: number) => void
+  apply: () => void
+  pin: (placeId: string, dayIndex: number, slotIndex: number) => void
+  unpin: (placeId: string) => void
+  tick: (itemId: string) => void
+  setDates: (startDate: string, nights: number) => void
   restart: () => void
 }
 ```
 
-| Operation | Writes                                                                                                  |
-| --------- | ------------------------------------------------------------------------------------------------------- |
-| `disrupt` | Runs `repair` and replaces the slot; prepends the `ChangeEvent` when the result is `swapped`            |
-| `swap`    | Replaces `chosenId` directly and moves the outgoing option to the end of the bench. **Writes no event** |
-| `tap`     | Toggles one id in one person's `wants`, then rewrites `trip.ranking` through `rankingWithTaps`          |
-| `settle`  | Flips one slot from `open` to `decided`                                                                 |
-| `undo`    | Pops `changes[0]`, restores `chosenId` to `fromId` and puts `toId` back at the head of the bench        |
-| `restart` | Clears the storage key and reloads the seed. The demo's reset                                           |
+| Operation  | Writes                                                                  |
+| ---------- | ----------------------------------------------------------------------- |
+| `swipe`    | Records a member's yes or no for a place in the votes record            |
+| `place`    | Puts a place into a specific day and slot on the calendar               |
+| `remove`   | Removes a place from a day and slot                                     |
+| `apply`    | Runs the heuristic scheduler to order each day, returns ordered days    |
+| `pin`      | Marks a card as pinned at a specific day and slot index                 |
+| `unpin`    | Removes the pin from a card. The card stays in its slot until scheduled |
+| `tick`     | Toggles a checklist item's completed state                              |
+| `setDates` | Changes the trip's start date and nights, regenerates the calendar      |
+| `restart`  | Clears the storage key and reloads the seed                             |
 
 **One `useEffect` mirrors the trip to `localStorage` on every change**, including the first render, so a cold visit
-writes the seed immediately and the two surfaces share one object from the first paint.
+writes the seed immediately and the surfaces share one object from the first paint.
 
 ### The Storage Contract
 
 ```ts
 const KEY = 'perch.trip.v1'
 
-/** A cold load with nothing stored is the normal case, not an error: the trip is valid with zero group input. */
+/** A cold load with nothing stored is the normal case, not an error. */
 export const load = (): Trip => {
   try {
     const raw = localStorage.getItem(KEY)
@@ -746,7 +652,7 @@ export const save = (trip: Trip): void => {
   try {
     localStorage.setItem(KEY, JSON.stringify(trip))
   } catch {
-    /* A demo machine with storage disabled still runs; it just forgets between reloads. */
+    /* A demo machine with storage disabled still runs. */
   }
 }
 
@@ -764,114 +670,92 @@ Four properties, and each is a decision rather than an accident.
 - **One key, and the whole `Trip` is the value.** Not a delta against the fixture. One key means one thing to clear, and
   a demo that has to be repeatable needs exactly that
 - **A stored trip whose `id` does not match the seed's is discarded.** That is the version check: change the fixture's
-  id and every stored copy in the room is stale, deliberately, with no migration path to write
+  id and every stored copy in the room is stale
 - **Every read and write is wrapped.** `localStorage` throws in some privacy modes, so a storage failure degrades to
   forgetting between reloads rather than blanking a screen
-- **A cold load renders the fixture as authored.** Perch has already proposed, The Book opens in its setting state, What
-  Changed is empty, and there is no onboarding wall on any route
+- **A cold load renders the fixture as authored.** The friends' swipes are already in, the calendar is empty until
+  Apply, and there is no onboarding wall on any route
 
----
+## The Shared Link With No Backend
 
-## The Shared Link, With No Backend
+**What is built.** Aisyah sends `/t/tokyo-nov-2026`. The route exists, resolves, and renders The Book cold -- no stored
+state required, no bounce to the sign in, no 404 on a hard refresh. That last one is why `nginx.conf` carries an SPA
+fallback: `/t/<trip>` has no file behind it.
 
-**What is built.** She sends `/t/yogya-nov-2026`. The route exists, resolves, and renders The Book cold — no stored
-state required, no bounce to the interview, no 404 on a hard refresh. That last one is why `nginx.conf` carries an SPA
-fallback: `/t/<trip>` has no file behind it, and the one thing the group does with the link is open it cold.
+**The swipe link is separate.** Joiners land at `/t/:tripId/swipe`, which renders the reel deck. They never see
+onboarding or The Book. The invite link is the swipe link.
 
-**One device, one browser, one storage key.** The Desk and The Book are two routes over the same context, so a tap made
-on `/t/yogya-nov-2026` is visible on `/desk` because it is the same object in the same tab, not because anything synced.
+**One device, one browser, one storage key.** The Desk and The Book are two routes over the same context, so a pin made
+on `/desk` is visible on `/t/tokyo-nov-2026` because it is the same object in the same tab, not because anything synced.
 Four limits follow, and the video must not imply otherwise.
 
 - **Nothing crosses a device.** There is no fragment payload, no encoding, no server. A second phone opening the link
   gets the seed fixture, not Aisyah's trip
 - **The `:tripId` segment is not read.** The Book renders whatever is in the store; `/t/anything` shows the same trip
-- **It is not a secret.** Anyone holding the link holds the trip. Deliberate — no account, no install — but a property
-  rather than an accident
-- **The party's taps are fixture data.** Farah's two picks and Hana's one are authored, which is what gives the vote
-  counts something to show before anybody taps
+- **It is not a secret.** Anyone holding the link holds the trip. Deliberate -- no account, no install
+- **The party's votes are fixture data.** Farah, Hana and Iman have already swiped, which is what gives the tally
+  percentages something to show before anybody opens the app
 
 **Closing the round trip is the first thing a backend would buy**, and it is the honest first line of the build phase's
 backlog rather than a gap to paper over on stage.
 
----
-
 ## Styling, Motion And Fonts
 
-**`tokens.css` carries `DESIGN.md`'s palette under `DESIGN.md`'s own names**, so a token in the CSS and a row in the
-design spec are searchably the same string. There is no Tailwind, no CSS-in-JS and no preprocessor — plain CSS custom
-properties, one file per surface, one file per component that needs one.
+**Two registers.** The Desk is an instrument (paper `#FBF8F2`, Quicksand only, radius 24 or 999 and nothing between,
+pill buttons, one solid button per screen). The Book is a plate (plate `#F2EDE0`, zero radius, Newsreader prose).
+
+**`tokens.css` carries the palette under the design's own names**, so a token in the CSS and a row in the design spec
+are searchably the same string. There is no Tailwind, no CSS-in-JS and no preprocessor.
 
 ```css
 :root {
-  /* Specimen palette. Every hue is on a bird that lives in or migrates through Peninsular Malaysia. */
-  --ink: #2e261f; /* Magpie-Robin, Copsychus saularis */
-  --paper: #fbf8f2; /* The Desk ground */
-  --plate: #f2ede0; /* Zebra Dove, Geopelia striata */
-  --open: #1b7f86; /* Bee-eater, Merops viridis */
-  --decided: #3e7a3a; /* Green Broadbill, Calyptomena viridis */
-  --at-risk: #c0342f; /* Crimson Sunbird, Aethopyga siparaja */
+  --ink: #2e261f;
+  --paper: #fbf8f2;
+  --plate: #f2ede0;
+  --open: #1b7f86;
+  --decided: #3e7a3a;
+  --at-risk: #c0342f;
+  --gold: #e8a317;   /* Black-naped Oriole, unanimous tally and slow days */
 
-  --day-1: #c2622f; /* Rufous-collared Kingfisher, Actenoides concretus */
-  --day-2: #2a4c9b; /* Asian Fairy-bluebird, Irena puella */
-  --day-3: #e0a32c; /* Yellow-vented Bulbul, Pycnonotus goiavier */
-  --day-4: #6e4a8e; /* Violet Cuckoo, Chrysococcyx xanthorhynchus */
-  --day-5: #b0567e; /* Pink-necked Green Pigeon, Treron vernans */
+  --day-1: #c2622f;  /* Rufous-collared Kingfisher */
+  --day-2: #2a4c9b;  /* Asian Fairy-bluebird */
+  --day-3: #e0a32c;  /* Yellow-vented Bulbul */
+  --day-4: #6e4a8e;  /* Violet Cuckoo */
+  --day-5: #b0567e;  /* Pink-necked Green Pigeon */
 }
 ```
 
-**Five day tints ship, not three.** `--day-4` and `--day-5` were added for hue regions no other token in the palette
-occupies — a violet and a rose — and both birds are Peninsular Malaysian, which is the rule the palette was built on.
-Five is enough for the trip lengths the fixture and the pitch describe, and the tint is a per-day assignment in the
-fixture rather than an index that cycles, so no two days can share a bird by accident.
+**`--gold` is new for this rebuild.** It colours unanimous tally entries and days that fit but run slow (the gold
+feasibility state). The token matches the Black-naped Oriole naming convention of the existing palette.
 
-| Token Group | Values                                                                                    |
-| ----------- | ----------------------------------------------------------------------------------------- |
-| **Space**   | `--s1` 4px through `--s8` 64px, on the 4px base. A grouping gap is twice the internal gap |
-| **Radius**  | `--r-desk` 24px, `--r-pill` 999px, `--r-plate` 0                                          |
-| **Outline** | `--outline` 3px, from study 07's measured borders                                         |
-| **Motion**  | `--motion-fade` 120ms, `--motion-step` 320ms, `--ease` `cubic-bezier(0.2, 0.7, 0.3, 1)`   |
-| **Grounds** | Eight, each `color-mix(in oklab, <token> 8-10%, var(--paper))`                            |
+**Radius is the mechanic, not a style value.** `--r-desk` 24px, `--r-pill` 999px, `--r-plate` 0. The plate has zero
+radius by name, not by omission, so a stray 24px cannot leak from The Desk onto a plate.
 
-**Radius is the mechanic, not a style value.** `--r-plate` is `0` and it is a real token rather than an omission,
-because The Book has to be able to name its own corner treatment and get a square one. A stray 24px cannot leak from The
-Desk onto a plate when the plate asks for `--r-plate` by name.
-
-**Two attribute hooks carry everything else.** `[data-day="N"]` sets `--tint` and `--ground` once, and
-`[data-state="open" | "decided" | "at-risk"]` sets `--state` and `--state-ground`. Every component inside reads those
-four variables and names no colour of its own. That is the wayfinding device, and it is four selectors.
-
-**Motion is five keyframe rules and a handful of transitions**: `perch-fade`, `perch-rise` and `perch-step` for the
-drawer, `day-open` on The Desk, `spread-in` on The Book, `changed-in` on the What Changed strip, and `card-in` on the
-interview. The 40ms stagger is `animationDelay` set inline from the row index. `base.css` closes with a
-`prefers-reduced-motion: reduce` block that collapses every animation and transition to 0.01ms, with a
-`biome-ignore-all` on the file for the `!important` that override needs.
+**Motion.** One branded mechanic: the perch step-forward. Everything else is a 120ms cross-fade.
+`prefers-reduced-motion` is respected. The calendar drag uses the `@dnd-kit/core` drag gesture -- a card flies into its
+slot on Apply with a 40ms stagger and the same easing as the perch step-forward. Only the top two reel cards mount their
+video element to keep the DOM tree small.
 
 ### Type And Fonts
 
-**Five type roles, and nothing is set at 500 or 600**: `.t-display` and `.t-plate-title` at weight 100, `.t-label` at
-700 uppercase with `0.06em` tracking, `.t-name` at 700, `.t-specimen` at 400 italic in `--ink-muted`, and `.t-prose` in
-Newsreader at 18px. The jump from 100 to 700 is the field guide's own hierarchy. `body` sets
-`font-variant-numeric: tabular-nums` globally, and buttons inherit it, so every price and minute count aligns.
-
-**Fonts are self-hosted so the demo cannot fail on someone else's network.** Three latin-subset `woff2` files under
-`public/fonts/`, no Google Fonts request, and therefore no third-party request from a page a judge opens.
+Quicksand for instrument surfaces, Newsreader for prose in The Book. Self-hosted so the demo cannot fail on someone
+else's network.
 
 | File                       | Face                                                             |
 | -------------------------- | ---------------------------------------------------------------- |
-| `archivo-variable.woff2`   | Archivo, a real variable face with a `wght` axis from 100 to 900 |
-| `newsreader-regular.woff2` | Newsreader 16pt, a static face                                   |
-| `newsreader-italic.woff2`  | Newsreader 16pt, a static face                                   |
+| `quicksand-variable.woff2` | Quicksand, variable face with a `wght` axis, The Desk's typeface |
+| `newsreader-regular.woff2` | Newsreader 16pt, The Book's prose face                           |
+| `newsreader-italic.woff2`  | Newsreader 16pt italic, specimen lines in The Book               |
 
-`index.html` preloads only the Archivo file, because it paints first and everywhere. Every `@font-face` sets
-`font-display: swap`, and every stack ends in a real system fallback.
-
----
+**Five type roles.** `.t-display` and `.t-plate-title` at weight 300. `.t-label` at 700 uppercase with `0.06em`
+tracking. `.t-name` at 700. `.t-specimen` at 400 italic. `.t-prose` in Newsreader at 18px. Tabular numerals set globally
+so every price and minute count aligns. `index.html` preloads Quicksand, which paints first and appears everywhere; The
+Book loads Newsreader on navigation.
 
 ## Container, Deploy, Build And Run
 
-**[`README.md`](README.md#deployment) is unchanged and stays the reference.** So is `.github/workflows/deploy.yml` — it
-runs `docker build .` then `gcloud run deploy` on every push to `main`, and it does not know or care what is inside the
-image. Two files changed, and no workflow did.
+[README.md](README.md#deployment) is the reference. `.github/workflows/deploy.yml` runs `docker build .` then
+`gcloud run deploy` on every push to `main`.
 
 ```dockerfile
 FROM oven/bun:1.3-alpine AS build
@@ -897,7 +781,6 @@ server {
   root /usr/share/nginx/html;
   index index.html;
 
-  # The shared link is a real path, so every unknown path falls back to the app rather than to a 404.
   location / {
     try_files $uri $uri/ /index.html;
   }
@@ -914,226 +797,180 @@ server {
 }
 ```
 
-**The fallback is load-bearing, not hygiene.** `/t/yogya-nov-2026` is a client route with no file behind it, and the old
-`try_files $uri $uri/ =404` returned 404 for exactly the URL the pitch asks a judge to open. The immutable headers are
-safe because Vite content-hashes everything it emits into `/assets/`, and the three font files never change name.
+**The fallback is load-bearing, not hygiene.** `/t/tokyo-nov-2026` and `/t/:tripId/swipe` are client routes with no file
+behind them. The immutable headers are safe because Vite content-hashes everything it emits into `/assets/`.
 
 ```bash
-bun install          # dev tooling, app dependencies, and the husky hooks
+bun install          # dev tooling, app dependencies
 bun run dev          # vite, on the port it prints
 bun run build        # vite build, into dist/
-bun run preview      # vite preview --port 8080, the way the container will serve it
+bun run preview      # vite preview --port 8080
 bun run lint         # biome check . && prettier --check on md/yaml
 bun run typecheck    # tsc --noEmit
 ```
 
-**`build` does not typecheck.** `vite build` transpiles without checking types, so `bun run typecheck` is a separate
-gate and CI has to run it separately. That is a deliberate split — a failing typecheck should not be discovered as a
-Docker build failure four minutes into a deploy.
-
----
+**`build` does not typecheck.** `vite build` transpiles without checking types. That split is deliberate: a failing
+typecheck should not be discovered as a Docker build failure four minutes into a deploy.
 
 ## The Fixture
 
-Two files. `src/data/places.ts` holds 27 real places in and around Yogyakarta; `src/data/trip.ts` assembles them into
-one trip, the interview's ten cards, and a party of four.
+Committed TypeScript fixtures. 24 Tokyo places, one trip, one votes fixture, one travel matrix, one reels manifest, one
+checklist. No network call from these pages.
 
-| Field       | Value                                                                                   |
-| ----------- | --------------------------------------------------------------------------------------- |
-| **Trip id** | `yogya-nov-2026`, which is also the storage version check and the `/t/` segment         |
-| **Dates**   | 21 - 24 November 2026, four days and three nights                                       |
-| **Budget**  | RM 400 each, against RM 322 planned                                                     |
-| **Party**   | Aisyah, Farah, Hana, Iman. Iman has not opened the link, which is what the nudge is for |
-| **Places**  | 27, across 10 of the 11 `OptionKind` values                                             |
-| **Slots**   | 12, three per day. Two are `open`, ten are `decided`, none start `at-risk`              |
+### Tokyo Places
 
-**Prices are the foreign gate rate, in ringgit, not the domestic rate.** Borobudur is RM 130 and Prambanan RM 107
-because that is what a Malaysian visitor actually pays, and a demo that quotes the local price is quoting a number
-nobody in the audience would be charged.
+24 places across four clusters, one cluster per demo day.
 
-```ts
-export const dayCostRM = (day: Day, options: Record<string, Option>): number =>
-  day.slots.reduce((sum, slot) => {
-    const chosen = slot.chosenId ? options[slot.chosenId] : undefined
-    return sum + (chosen?.costRM ?? 0)
-  }, 0)
+| Cluster                       | Places                                                                                                                        |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| Asakusa and Ueno              | Sensoji, Nakamise, Kappabashi, Ueno Park, Tokyo National Museum, Ameyoko                                                      |
+| Shibuya, Harajuku, Shinjuku   | Meiji Jingu, Takeshita Street, Shibuya Crossing, Shinjuku Gyoen, Omoide Yokocho, Tokyo Metropolitan Building                  |
+| Tsukiji, Ginza, Tokyo Station | Tsukiji Outer Market, Hama-rikyu Gardens, Ginza Chuo-dori, Imperial Palace East Gardens, Tokyo Station Marunouchi, Nihonbashi |
+| Odaiba, Toyosu, teamLab       | teamLab Planets, Toyosu Market, Odaiba Beach, DiverCity Gundam, Daiba Park, Hachitama Observatory                             |
 
-export const tripCostRM = (trip: Trip): number => trip.days.reduce((sum, day) => sum + dayCostRM(day, trip.options), 0)
-```
+Each place carries: `id`, `name`, `kind`, `cluster`, `lat`, `lng`, `dwellMin`, `costRM`, `opens`, `closes`, `closedOn`,
+`bestPeriod`, `tags`, `blurb`, `reel`. Prices are the foreign gate rate in ringgit.
 
-**Day 3 is a Monday, and that is the point of the calendar.** Sonobudoyo, Benteng Vredeburg and Ullen Sentalu all carry
-`closedOn: ['monday']`, which is why none of them sit on Day 3, and The Book's colophon says so in as many words. It is
-also the demo day: Merapi Lava Tour in the morning, Tebing Breksi in the afternoon, Oseng Mercon in the evening, RM 119
-in total.
+### Votes Fixture
+
+Farah, Hana and Iman have already swiped so the tally has percentages the moment Aisyah finishes.
+
+| Property             | Value                                                  |
+| -------------------- | ------------------------------------------------------ |
+| At least 2 unanimous | Sensoji (all four), Meiji Jingu (all four)             |
+| At least 2 zero      | Hama-rikyu Gardens (0), Daiba Park (0)                 |
+| Owner (Aisyah)       | 1.5 weight on Sensoji, Shinjuku Gyoen, teamLab Planets |
+
+### Travel Matrix
+
+24 by 24 transit minutes, hand-authored from Google Maps transit estimates. `travelMatrix[fromId][toId]` is minutes by
+transit between any two places. The matrix is symmetric with a zero diagonal and no null cells.
+
+### Reels Manifest
+
+24 reels and 4 spares were sourced on 8 September; 27 of the 28 fetched, cut to 8 seconds, muted, 540x960, and uploaded
+to `gs://perch-reels`. The manifest at `v2/src/data/reels.json` maps place id to
+`{ src, poster, platform, credit, source }` under a bucket base URL.
+
+| Platform    | Fetched | Note                                                                                        |
+| ----------- | ------- | ------------------------------------------------------------------------------------------- |
+| Instagram   | 27      | Public reels resolve anonymously. Omoide Yokocho is audience-restricted and needs a login   |
+| Xiaohongshu | 0       | Search sits behind a login wall; the mix is a follow-up once the spare account is signed in |
+
+### Checklist Fixture
+
+Six items derived from a Tokyo trip in November. All must be ticked to enable Print The Book.
+
+| Item              | Ticked | Derived From                  |
+| ----------------- | ------ | ----------------------------- |
+| Passport validity | No     | destination:japan             |
+| Suica card        | No     | destination:japan             |
+| teamLab ticket    | No     | cluster:odaiba-toyosu-teamlab |
+| Yen cash          | No     | destination:japan             |
+| Travel insurance  | No     | duration:4days                |
+| JR Pass           | Yes    | destination:tokyo             |
 
 ### The Prototype Controls
 
 **The Desk carries a labelled block called `Prototype Controls`, inside the product surface, saying it is not part of
-the product.** Two buttons: `Cancel The Merapi Jeeps` calls `disrupt(3, 'd3-morning', 'Jeep tours cancelled for haze')`,
-and `Start Over` clears the storage key and reloads the seed.
+the product.** One button: `Start Over` clears the storage key and reloads the seed.
 
-**A visible fixture control is more honest than a hidden one, and it is also better demo craft.** The alternative is a
-keyboard shortcut or a timer that fires on its own, and both invite the judge's real question — _did that just happen,
-or did you make it happen?_ — with no answer on screen. The block's own copy answers it: _"Not part of the product.
-These stand in for the feeds a live build would listen to."_ A judge who reads it knows exactly where the seam is, which
-is worth more than the two seconds of theatre a hidden trigger buys.
+## Known Limitations
 
----
+Each of these is true of the prototype specification. None of them blocks the 13 September submission; all of them are
+the build phase's opening backlog.
 
-## Known Limitations Of What Is Built
-
-Each of these is true of the code today. None of them blocks the 13 September submission; all of them are the build
-phase's opening backlog.
-
-| Limitation                             | What Is Actually Wrong                                                                                                                                                                                                                                                        |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Travel is from the city centre**     | `travelMin` is distance from town, not from the previous stop. Once a swap changes the predecessor the figure is wrong                                                                                                                                                        |
-| **A repeated repair renumbers**        | The rank the sentence states is the position in the bench **as it stands at that moment**, not the order the interview produced. The first repair, which is the demo, is exact; a second and a third both report "number six" because the bench has shortened underneath them |
-| **`/t/:tripId` is never read**         | `useParams` is not called, so `/t/anything` renders the stored trip. There is one trip, so nothing is wrong on screen                                                                                                                                                         |
-| **The nudge is inert**                 | `Nudge Iman` is a real, disabled-when-complete button that sends nothing. There is no channel for it to send on                                                                                                                                                               |
-| **The blank has no ranked candidates** | The Book offers the chosen option plus the first two on the bench. It does not re-filter them by fit for that slot                                                                                                                                                            |
-
-**Six defects found reading this document back against the code were fixed rather than recorded**, on 7 September: the
-bench cycled on repeated repair, the sentence numbered from a different ordering than the winner was picked from, a
-manual swap emitted no `ChangeEvent`, an exhausted slot vanished from The Book, `undo` restored only the choice, and
-`load` cast rather than validated. **The two Newsreader files were also the wrong way round**, so every line of prose in
-The Book rendered italic. The sections above describe the fixed state.
-
-**`--day-5` is defined and unexercised, and that is not a defect.** The palette is a system and a fifth day is a
-plausible trip; the four-day fixture reaches `--day-4`. Cycling three tints across four days is what would be wrong, and
-[`DESIGN.md`](DESIGN.md) records why.
-
-**The travel limitation is the one that matters to the pitch**, because it sits directly under the sentence the demo
-turns on. The fix is named below and it is small; what is not acceptable is leaving it unstated while the sentence
-claims a minute figure.
-
----
+| Limitation                                    | What Is Actually Wrong                                                                                                                 |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **Transit minutes are estimates**             | The travel matrix is hand-authored from Google Maps transit estimates, not a routed result, and can be wrong by ten minutes either way |
+| **`/t/:tripId` is never read**                | `useParams` is not called, so `/t/anything` renders the stored trip. There is one trip, so nothing is wrong on screen                  |
+| **Votes are fixture data**                    | Farah, Hana and Iman have already swiped. No live voting crosses devices. The tally shows percentages nobody voted for                 |
+| **Reels are static files**                    | The manifest is committed. No CMS, no upload UI, no creator workflow                                                                   |
+| **No backend, no persistence across devices** | The storage key is per browser. A second phone opening the link gets the seed, not Aisyah's trip                                       |
+| **Checklist is fixture-derived**              | Items are hardcoded from the trip fixture, not inferred from the trip's actual content                                                 |
 
 ## Specified, Not Yet Built
 
-**Everything in this section is designed and unimplemented.** It is written down because each rule was reasoned through
-and each one is cheap to build once the build phase opens. Nothing here describes the current build.
+**Everything in this section is designed and deferred.** It is written down because each rule was reasoned through and
+each one is cheap to build once the build phase opens.
 
-### A From-To Travel Override Matrix
+### Strength Of Swipe
 
-The fix for the travel limitation above. Transport gets modelled twice — the per-option baseline that ships today, plus
-a sparse override consulted first.
+A zero to one hundred value per swipe, raised in mentor session 1, replacing the binary answer in the build phase.
 
-```ts
-export const travelMinutes = (trip: Trip, from: string | 'home', to: string): number =>
-  trip.travelOverrides[`${from}>${to}`] ?? optionOf(trip, to).travelMin
-```
+### Tag Weights From Free Text
 
-`travelOverrides` is keyed `` `${fromId}>${toId}` `` and the fixture authors an entry for every pair the demo exercises.
-A full matrix was rejected as n squared hand-authored entries for a demo that walks one path. **The type cannot enforce
-the key format**, so a malformed key silently falls back to the baseline, which is the cost of the sparse form and is
-accepted.
-
-### Tag Weights From Question 2
-
-Question 2 is asked today and feeds nothing. The design gives it a committed table with one row per purpose: that
-purpose's own tags at `TAG_PRIMARY`, its neighbours at `TAG_ADJACENT`, everything else absent and therefore zero.
+New Plan's free text answer feeds an LLM that produces tag-style preferences. Each tag gets a weight. The scheduler uses
+these weights as a tie-break when two options have equal tally percentages.
 
 ```ts
-const TAG_PRIMARY = 5
-const TAG_ADJACENT = 2
-const TAP_WEIGHT = 2
-
-export const scoreOf = (option: Option, ranking: Ranking): number =>
-  option.tags.reduce((total, tag) => total + (ranking.tagWeights[tag] ?? 0), 0) +
-  TAP_WEIGHT * (ranking.taps[option.id] ?? 0)
+export const tagWeightOf = (place: Place, tagWeights: Record<string, number>): number =>
+  place.tags.reduce((total, tag) => total + (tagWeights[tag] ?? 0), 0)
 ```
 
-**The three constants encode one product rule** and are tuned to the fixture rather than measured: with a party of five,
-three taps outrank the trip's stated purpose and two do not. A majority of the group beats what Perch inferred; a
-minority does not. `Option.tags` already exists in the model and is currently decoration, so this is additive.
+The LLM call is one per new plan. The model choice, key and cost ceiling are undecided.
 
-### Must-Go, And A Repair That Refuses
+### Real Data Sources
 
-The interview's three picks become non-negotiable, and `repair` refuses to displace one.
-
-```ts
-if (slot.chosenId !== null && trip.mustGo.includes(slot.chosenId)) {
-  return { kind: 'refused', slot: { ...slot, state: 'at-risk', cause }, reason: refusalOf(trip, slot, cause) }
-}
-```
-
-**This is the rule that gives `at-risk` a second job.** Today the state means only "the bench ran out"; with must-go it
-also means "the group called this non-negotiable and we are not swapping it behind their backs". The group said it was
-the reason for the trip, and a silent substitution would be a lie. `interviewPicks` is the three-pick array that exists
-today and it carries no refusal.
-
-### Two Smaller Rules
-
-- **`trimToBudget(trip)`** returns `{ trip, events, shortfallRM }`. While the total exceeds `budgetRM` it takes the slot
-  whose cheapest fitting survivor saves the most and repairs it with cause `over-budget`, stopping when the budget is
-  met or when no slot can save anything — reporting the shortfall rather than emptying slots to hit a number
-- **A `'reordered'` change cause.** An `open` slot that resolves to a different option than it would have without the
-  group's taps is logged like any other change, so the group can see their taps did something
-
-### The Disruption Boundary Stays Where It Is
-
-`research:docs/decisions/disruption-recovery.md` verified two live sources — MET Malaysia for official warnings and
-Open-Meteo for numbers, the latter recorded there as free, keyless, at 10,000 calls per day non-commercial.
-
-**Neither is called, and neither should be before the build phase.** A network call on stage is a way to fail on stage,
-and the prototype rubric scores no code. That same document scopes the prototype to **pre-trip only**, and the boundary
-holds here.
-
----
+The places, hours and prices that are hand-authored today would come from OpenStreetMap, Wikidata and Wikimedia Commons.
+See [The Real Place Data Gap](#the-real-place-data-gap).
 
 ## The Real Place Data Gap
 
-`PRODUCT.md` lists this under What Would Kill This as **"Unsolved. Everything else is derived, free, or droppable. Named
-in `TRD.md`."** Naming it properly is this file's job.
+PRODUCT.md lists this under What Would Kill This as **"Solved for the stage we are in"**, and points here. Naming what
+that means is this file's job.
 
-**What the fixture stands in for.** `src/data/places.ts` hand-authors, for 27 options: name, kind, area, driving minutes
-from the centre, dwell minutes, cost in ringgit at the foreign gate rate, opening and closing times, the weekdays it is
-shut, the periods it belongs in, tags, and a one-line blurb.
+**What the fixture stands in for.** `src/data/places.ts` hand-authors, for 24 options: name, kind, cluster, lat, lng,
+dwell minutes, cost in ringgit at the foreign gate rate, opening and closing times, the weekdays it is shut, the periods
+it belongs in, tags, a one-line blurb, and a reel reference.
 
 **Four of those fields are load-bearing and the rest are decoration.** `fits` reads `bestPeriod`, `closedOn`, `opens`
-and `closes`, plus `travelMin` for the reach ceiling. Names, prices, areas, tags and blurbs can stay authored for a
-single demo destination indefinitely without weakening the claim. **Hours cannot**, because the claim _is_ that the
-itinerary knows what can break it.
+and `closes`, plus transit from the matrix for the reach ceiling. Names, prices, areas, tags and blurbs can stay
+authored for a single demo destination indefinitely without weakening the claim. **Hours cannot**, because the claim is
+that the itinerary knows what can break it.
 
-**And hours are the field the free sources are worst at.** That is the sharp version of the gap, and it is more useful
-to the build phase than "we need a places API".
+**And hours are the field the free sources are worst at.** That is the sharp version of the gap.
 
-| Source Considered            | Gives                                             | Costs                                                                                                                                                         |
-| ---------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Google Places API**        | Names, hours, prices, photos, at coverage         | A billing account and a key, and a browser key is a public key, so it forces a server. Its caching and redistribution terms need reading before we rely on it |
-| **OpenStreetMap / Overpass** | Names, locations, some hours. Free, ODbL          | Coverage is uneven place to place, hours use the `opening_hours` syntax and need a parser, and there is no price data at all                                  |
-| **Wikidata / Wikipedia**     | Names and a usable blurb. Free                    | Nothing for hours, nothing for price                                                                                                                          |
-| **MET Malaysia**             | Official warnings, the authority a forecast lacks | Verified on `research`. Answers disruption, not places                                                                                                        |
-| **Open-Meteo**               | Forecasts and a flood endpoint, no key            | Verified on `research`. Answers disruption, not places                                                                                                        |
-| **A Hand-Authored Fixture**  | Exactly what the demo needs, free, offline        | A lie about scale, and it does not survive a second destination                                                                                               |
+| Source Considered            | Gives                                       | Costs                                                                                                             |
+| ---------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| **Google Places API**        | Names, hours, prices, photos, at coverage   | Rejected. Terms cap caching at 30 days and forbid storing photos. Forces a server because a browser key is public |
+| **OpenStreetMap / Overpass** | Names, locations, some hours. Free, ODbL    | Coverage is uneven place to place. Hours use `opening_hours` syntax and need a parser. No price data at all       |
+| **Wikidata / Wikipedia**     | Names and a usable blurb. Free              | Nothing for hours, nothing for price                                                                              |
+| **Wikimedia Commons**        | Place photos and imagery. Free, CC-licensed | No hours, no prices, no structured data beyond what Wikidata links provide                                        |
+| **A Hand-Authored Fixture**  | Exactly what the demo needs, free, offline  | A lie about scale, and it does not survive a second destination                                                   |
 
-**Three things must be decided before the build phase opens on 21 September**, and it cannot start on this without them.
+**The team decision, 8 September 2026.** Places are seeded from OpenStreetMap, Wikidata and Wikimedia Commons. Google
+Places API is not used, governed by two term limits that make it unusable for this product:
 
-1. **Whether there is a server at all.** A keyed place API forces one, because a key in a browser bundle is public. That
-   reopens the rejection recorded above, so it is the first decision and the rest follow from it
+1. **30-day caching cap.** The Accepted Use Policy limits `placePhoto` and `placeDetails` responses to 30 days of
+   caching. A trip planner whose data goes stale in 30 days cannot hold a meaningful pre-trip itinerary
+2. **Photo storage prohibition.** Storing Google Places photos for longer than a transient display is explicitly
+   forbidden. The Book's plates require persistent imagery
+
+Google is used only for a transit directions deep link per day in The Book, which needs no API and no key, and in the
+build phase a single Routes API call per trip to get transit minutes between consecutive stops.
+
+**Three things must be decided before the build phase opens on 21 September.**
+
+1. **Whether there is a server at all.** A keyed place API forces one. The OSM-and-commons path means the places
+   database is a committed JSON file that the build pipeline refreshes, not a live API call
 2. **Whether we ship one destination properly or many badly.** One destination with authored hours is honest and
-   demoable; many destinations with patchy hours breaks the mechanism in front of a judge who picks their own city
+   demoable; many destinations with patchy hours breaks the mechanism
 3. **What happens to hours we cannot get.** `opens` and `closes` are non-nullable strings today, so an option with
-   unknown hours cannot be expressed at all — it has to be given a time, which makes it a guess wearing a fact's
-   clothes. Real data means an explicit unknown case, and `fits` has to decide whether unknown counts as a survivor
+   unknown hours cannot be expressed. Real data means an explicit unknown case, and the scheduler has to decide whether
+   unknown counts as a survivor
 
 **None of this blocks the 13 September submission.** The prototype rubric scores no code, and shipping a fixture with
-its provenance declared is the correct prototype-phase answer. It blocks the build phase, which is why it is written
-down here rather than discovered on 21 September.
+its provenance declared is the correct prototype-phase answer.
 
----
+## Open Decisions
 
-## Open Decisions For The Team
+Four things that need a person, not a commit. Each is one decision and none of them is technical.
 
-Three things that need a person, not a commit. Each is one decision and none of them is technical.
-
-| Decision                       | The Situation                                                                                                                                                                                                                 |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **The demo sentence's figure** | `PRODUCT.md`'s demo moment ends **"the day stays at RM 40"**; the code emits **"the day stays at RM 119"**. _Stays at_ is true either way, only the figure differs. Either `PRODUCT.md` updates, or the demo day is re-priced |
-| **`DESIGN.md`'s tint table**   | `tokens.css` ships five day tints; `DESIGN.md`'s palette table still lists `--day-1` to `--day-3`. Two rows need adding to the spec, or the two new birds need rejecting                                                      |
-| **An icon set**                | None is chosen and none is installed. Nothing in the five surfaces needs one today. If the pitch deck or a later surface does, it is a dependency decision that has not been made                                             |
-
-**The figure is the one with a deadline.** It appears in `PRODUCT.md`, and it will appear in the video script and the
-slides, so it wants settling before `pitch-smith` writes against either. `PRODUCT.md` also abbreviates the option as
-_Merapi_ where the code prints its full `Option.name`, _Merapi Lava Tour_ — the same decision covers both.
+| Decision                | The Situation                                                                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **An icon set**         | None is chosen and none is installed. Nothing in the eight surfaces needs one today. If a later surface does, it is a dependency decision not yet made |
+| **LLM model and key**   | The build phase needs an LLM for free text parsing and rationale writing. The model, key provisioning and cost ceiling are undecided                   |
+| **Auth provider scope** | Supabase auth is scoped to email-password and magic link. Google SSO, Apple SSO and other providers are deferred                                       |
+| **Reel licensing**      | The clips are other people's videos, credited on the card and never committed; the team accepts that for a prototype and must decide before the build  |
+|                         | phase whether the product ships with creator-uploaded or licensed footage                                                                              |

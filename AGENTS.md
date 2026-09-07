@@ -20,22 +20,24 @@ different rubric from the ones that follow. Building the product is not the curr
 
 ---
 
-## The Two Branches
+## The Branching Model
 
-| Branch     | Holds                                                                                               | Who Works There          |
-| ---------- | --------------------------------------------------------------------------------------------------- | ------------------------ |
-| `main`     | The product, the docs, the tooling. Everything that gets submitted                                  | Everyone. PR-gated       |
-| `research` | Ideation: idea logs, competitor scans, interview notes, mentor feedback, mindmaps, dropped branches | Anyone thinking out loud |
+| Branch                | Holds                                                                                                             | Who Works There    |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `main`                | The product, the docs, the tooling, and the ideation notebook in `docs/research/`. Everything that gets submitted | Everyone. PR-gated |
+| `<type>/<short-slug>` | One change at a time, opened as a PR and merged back into `main`                                                  | Anyone making one  |
 
-**`research` is deliberately not merged into `main`.** It is a working notebook with its own README, its own agent setup
-and no build tooling, so that a teammate who does not write code can open it and be productive without learning this
-file. It is a long-lived branch, not a feature branch.
+**The research branch was retired on 8 September 2026.** The ideation notebook it used to hold now lives in
+`docs/research/` on `main` and is committed directly, through the same PR gate as everything else. It is still a working
+notebook with its own README and no build tooling, so that a teammate who does not write code can open it and be
+productive without learning this file.
 
-**Its output is an input to `main`.** `docs/PRODUCT.md`, `docs/PRD.md` and `docs/TRD.md` are written on `main`
-**citing** what `research` established. Read it with `git show research:<path>` or
-`git worktree add ../research research`; do not merge it.
+**Its output is an input to everything on `main`.** `docs/PRODUCT.md`, `docs/PRD.md` and `docs/TRD.md` are written on
+`main` **citing** what the notebook established. Read it in place at `docs/research/`; there is nothing to merge, fetch
+or check out.
 
-**The ideation trail on `research` is itself a graded deliverable.** See [The Ideation Trail](#the-ideation-trail).
+**The ideation notebook in `docs/research/` is itself a graded deliverable.** See
+[The Ideation Trail](#the-ideation-trail).
 
 ---
 
@@ -138,9 +140,9 @@ built.
 `docs/DESIGN.md` joins them when frontend work starts, and owns the design system: palette, type pairing, radius and
 border treatment, spacing scale.
 
-**All three are written from the `research` branch's findings, and they cite it.** A claim about the user, the market or
-a rejected alternative that has no basis on `research` is a claim you made up. **The gate is binary.** If the three are
-not all present, the answer to "can I start building" is no. Say so, and write the missing one.
+**All three are written from the findings in `docs/research/`, and they cite it.** A claim about the user, the market or
+a rejected alternative that has no basis in `docs/research/` is a claim you made up. **The gate is binary.** If the
+three are not all present, the answer to "can I start building" is no. Say so, and write the missing one.
 
 ---
 
@@ -325,8 +327,8 @@ is reviewable and revertable, not so it waits for a human.
 Small fixes still go through a branch. The overhead is one command; the alternative is a `main` nobody can review or
 revert cleanly.
 
-**`research` is the exception and commits directly.** It is a notebook, it is never merged, and gating it would stop the
-person it exists for. Its own README says so.
+**`docs/research/` follows the same PR gate as everything else.** It is a notebook, but it lives on `main`, so a change
+to it branches, opens a PR and merges like any other file. Its own README says how to work inside it.
 
 **TODOs live in GitHub Issues**, not a markdown checklist, a `docs/plan.md`, or a code comment. A checklist in a file
 goes stale, conflicts on merge, and is invisible to anyone not in that file. Reference the issue in the PR so merging
@@ -352,7 +354,7 @@ gh issue close <n>                     # done
 - **Do not** commit `.env` or any `sk-…` key. `.env.example` carries key names, never values
 - **Do not** commit directly to `main`, force-push, rewrite published history, or delete a branch other than a merged
   feature branch
-- **Do not** merge `research` into `main`. Cite it, quote it, do not merge it
+- **Do not** keep ideation anywhere but `docs/research/` on `main`. Cite it, quote it, do not duplicate it elsewhere
 - **Do not** track TODOs in a markdown file
 - **Do not** create `docs/architecture.md`, a root `README.md`, or any second README. `docs/README.md` is the only one
 - **Do not** start implementation before `PRODUCT.md`, `PRD.md` and `TRD.md` all exist
@@ -361,7 +363,7 @@ gh issue close <n>                     # done
   `\\wsl.localhost\...` and scratch dirs under `/tmp` are invisible to everyone else. Name the tool, not your copy of
   it. Machine-independent locations like `~/.claude/` are fine
 - **Do not** edit `docs/demo/` outside the `pitch-smith` subagent. It owns those files
-- **Do not** delete an abandoned idea from `research`. Dead ends are worth marks
+- **Do not** delete an abandoned idea from `docs/research/`. Dead ends are worth marks
 - **Do not** miss the 13 Sept submission, and **do not** leave the repo private when it goes in
 
 ---

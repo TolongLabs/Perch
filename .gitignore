@@ -60,3 +60,9 @@ scripts/demo/**/*.png
 
 # Playwright MCP scratch output
 .playwright-mcp/
+!docs/research/diagrams/build/
+
+# Reel assets and the cookies that fetch them. Never commit either.
+scripts/reels/raw/
+scripts/reels/out/
+scripts/reels/cookies.txt

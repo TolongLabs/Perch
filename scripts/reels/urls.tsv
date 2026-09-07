@@ -1,0 +1,33 @@
+# place-slug	url
+# One line per card. The slug must match the place id in v2/src/data/places.ts.
+# Both Instagram reel URLs and Xiaohongshu note URLs work; yt-dlp picks the extractor from the domain.
+# All 24 are Instagram: Xiaohongshu search is behind a login wall on this browser (no web_session cookie).
+# Rows marked "swap to xhs" below are the weak picks to re-source once xiaohongshu.com is logged in.
+sensoji	https://www.instagram.com/reel/DTsZoVCE8mW/
+nakamise	https://www.instagram.com/reel/CvKJwzKN-GK/
+kappabashi	https://www.instagram.com/reel/CuhOVIoLaSK/
+ueno-park	https://www.instagram.com/reel/DHVwQM-PySr/
+tokyo-national-museum	https://www.instagram.com/reel/DBYsPSFPBmx/
+ameyoko	https://www.instagram.com/reel/CfqcohJjnxM/
+meiji-jingu	https://www.instagram.com/reel/DX6bAkLpi8x/
+takeshita-street	https://www.instagram.com/reel/C6qwCTFvVZZ/
+shibuya-crossing	https://www.instagram.com/reel/DRENNIvjmCf/
+shinjuku-gyoen	https://www.instagram.com/reel/CozdQwaDZan/
+omoide-yokocho	https://www.instagram.com/reel/C5tJI1lvVtU/
+tokyo-metropolitan-building	https://www.instagram.com/reel/DBc57kWJGpt/
+tsukiji-outer-market	https://www.instagram.com/reel/DFKR5Onx1C-/
+hama-rikyu-gardens	https://www.instagram.com/reel/C0oNA8lvoJm/
+ginza-chuo-dori	https://www.instagram.com/reel/DMUsdKRyahY/
+imperial-palace-east-gardens	https://www.instagram.com/reel/CsD6AxSNmRK/
+tokyo-station-marunouchi	https://www.instagram.com/reel/Dcc9qfQgCmZ/
+nihonbashi	https://www.instagram.com/reel/DM-QD26PyvG/
+teamlab-planets	https://www.instagram.com/reel/DFC7NgCSaOB/
+toyosu-market	https://www.instagram.com/reel/DLKYhuTzINO/
+odaiba-beach	https://www.instagram.com/reel/C2cAD0CS8cX/
+divercity-gundam	https://www.instagram.com/reel/C1_EJ9CP6fP/
+daiba-park	https://www.instagram.com/reel/Dcqa0yKS0aa/
+hachitama-observatory	https://www.instagram.com/reel/CikXv6vspIN/
+spare-1	https://www.instagram.com/reel/C7JPhESPLbN/
+spare-2	https://www.instagram.com/reel/Cg9QFeFpzuJ/
+spare-3	https://www.instagram.com/reel/Dc8RSQYzrfI/
+spare-4	https://www.instagram.com/reel/Dc2lKHoxqpx/
