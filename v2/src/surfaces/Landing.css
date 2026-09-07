@@ -1,0 +1,133 @@
+.land {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: var(--s4);
+  max-width: 1040px;
+  width: 100%;
+  margin: 0 auto;
+  padding: var(--s5) var(--s5);
+}
+
+@media (min-width: 1024px) {
+  .land {
+    padding: var(--s6) var(--s7);
+  }
+}
+
+.land-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.land-mark {
+  color: var(--open);
+}
+
+.land-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--s4);
+}
+
+@media (min-width: 720px) {
+  .land-body {
+    gap: var(--s5);
+  }
+}
+
+.land-eyebrow {
+  color: var(--ink-muted);
+}
+
+/* The hero. No caption under it, per DESIGN.md - the line is the argument. */
+.land-title {
+  max-width: 20ch;
+  font-size: clamp(30px, 5.2vw, 58px);
+}
+
+@media (min-width: 1024px) {
+  .land-title {
+    max-width: 26ch;
+  }
+}
+
+.land-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+}
+
+.land-go,
+.land-alt {
+  border-radius: var(--r-pill);
+  padding: var(--s4) var(--s6);
+  text-decoration: none;
+}
+
+.land-go {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.land-alt {
+  border: var(--outline) solid var(--ink);
+  color: var(--ink);
+}
+
+/* The requirement on this page is that it does not scroll, and on a phone the three supporting facts are what does
+   not fit. They are supporting rather than load-bearing: the hero line is the argument and the two buttons are the
+   way in. Below 720px they come off rather than the page growing a scrollbar. */
+.land-facts {
+  display: none;
+  margin: 0;
+}
+
+@media (min-width: 720px) {
+  .land-facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--s6);
+  }
+}
+
+.land-facts dt {
+  color: var(--ink-muted);
+  margin-bottom: var(--s2);
+}
+
+.land-facts dd {
+  margin: 0;
+  max-width: 34ch;
+}
+
+/* The five day tints, doing on the first screen exactly what they do on every screen after it. */
+.land-strip {
+  display: flex;
+  gap: var(--s2);
+  height: 10px;
+}
+
+.land-strip span {
+  flex: 1;
+  border-radius: var(--r-pill);
+}
+
+.land-strip span[data-day="1"] {
+  background: var(--day-1);
+}
+.land-strip span[data-day="2"] {
+  background: var(--day-2);
+}
+.land-strip span[data-day="3"] {
+  background: var(--day-3);
+}
+.land-strip span[data-day="4"] {
+  background: var(--day-4);
+}
+.land-strip span[data-day="5"] {
+  background: var(--day-5);
+}

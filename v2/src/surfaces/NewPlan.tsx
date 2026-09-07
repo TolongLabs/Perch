@@ -84,7 +84,7 @@ export const NewPlan = () => {
         {stub ? 'Pick Yogyakarta To Continue' : 'Ask Me The Three Questions'}
       </button>
 
-      <button type="button" className="np-back t-label" onClick={() => navigate('/')}>
+      <button type="button" className="np-back t-label" onClick={() => navigate('/trips')}>
         Back To Your Trips
       </button>
     </main>

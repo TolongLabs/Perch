@@ -19,11 +19,6 @@
   margin-bottom: var(--s3);
 }
 
-.dash-sub {
-  margin-top: var(--s4);
-  max-width: 40ch;
-}
-
 /* The one solid button on the screen, per DESIGN.md. Starting a plan is the only thing you can do from nothing. */
 .dash-new {
   display: grid;
@@ -61,6 +56,9 @@
 }
 
 .dash-kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
   color: var(--ink-muted);
   margin-bottom: var(--s3);
 }
@@ -132,17 +130,6 @@
   align-items: flex-end;
   gap: 2px;
   white-space: nowrap;
-}
-
-.dash-empty {
-  margin-top: var(--s4);
-  max-width: 44ch;
-}
-
-.dash-shared-copy {
-  color: var(--ink-muted);
-  margin-bottom: var(--s4);
-  max-width: 44ch;
 }
 
 .dash-shared-cta {

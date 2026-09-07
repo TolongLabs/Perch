@@ -35,8 +35,8 @@ export const Desk = () => {
   return (
     <main className="desk">
       <header className="desk-head">
-        <Link className="t-label desk-eyebrow" to="/">
-          &larr; Perch &middot; The Desk
+        <Link className="t-label desk-eyebrow" to="/trips">
+          &larr; Your Trips &middot; The Desk
         </Link>
         <h1 className="t-display">{trip.destination}</h1>
         <p className="t-specimen desk-dates">

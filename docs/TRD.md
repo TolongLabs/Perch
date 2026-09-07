@@ -60,14 +60,20 @@ Nothing else was added, and **`.env.example` is unchanged** because there is sti
 
 Five surfaces, six route entries, and no more. A seventh would be a page for something that is a state.
 
-| Path         | Surface       | Who Lands There                                                                   |
-| ------------ | ------------- | --------------------------------------------------------------------------------- |
-| `/`          | The Dashboard | Anyone opening cold. Lists the trips and carries the New Plan call to action      |
-| `/new`       | New Plan      | Where a trip starts. Prefilled chips for destination, length and party            |
-| `/interview` | The Interview | The three questions, reached from New Plan                                        |
-| `/desk`      | The Desk      | Aisyah's private workspace. **This was the root until 7 September**               |
-| `/t/:tripId` | The Book      | The group, from the link pasted in WhatsApp. **The shared link, shaped like one** |
-| `*`          | The Dashboard | Anything else. No 404 screen, no bounce to an onboarding wall                     |
+| Path         | Surface       | Who Lands There                                                                                     |
+| ------------ | ------------- | --------------------------------------------------------------------------------------------------- |
+| `/`          | The Landing   | Anyone opening the bare URL. One screen, no scroll, the footer in flow                              |
+| `/sign-in`   | Sign In       | Two panes. **The only surface with no footer**, and the only control that works is Sign In As Guest |
+| `/trips`     | The Dashboard | Post-auth. Lists the trips and carries the New Plan call to action                                  |
+| `/new`       | New Plan      | Where a trip starts. Prefilled chips for destination, length and party                              |
+| `/interview` | The Interview | The three questions, reached from New Plan                                                          |
+| `/desk`      | The Desk      | Aisyah's private workspace                                                                          |
+| `/t/:tripId` | The Book      | The group, from the link pasted in WhatsApp. **The shared link, shaped like one**                   |
+| `*`          | The Landing   | Anything else. No 404 screen, no bounce to an onboarding wall                                       |
+
+**There is no authentication behind `/sign-in`, and the screen says so** rather than letting a reviewer discover it by
+typing into a dead field. The email and password fields are disabled and drawn; Sign In As Guest navigates. This is the
+honest version of a screen the submission needs and the product does not.
 
 **The front two exist because the prototype opened on a finished trip and had nowhere to begin.** It showed the payoff
 and hid the mechanism that earns it, which is the wrong half to lead a walkthrough with.
@@ -79,6 +85,10 @@ it — not a query string on a workspace route.
 `PRODUCT.md`'s rule is that no question is asked which Perch can infer. A destination with no fixture behind it says so
 and disables the continue button, which is also the honest way to show that place data covers one city.
 
+**The footer is a drawer the page folds over.** It is fixed at `z-index: 0`; the page column above it is opaque and
+reserves its height as bottom margin, so nothing of it shows until the reader reaches the end. **The landing mounts the
+same footer in flow instead**, because a page that does not scroll can never uncover a fixed one.
+
 **The Perch and What Changed have no route on purpose.** The Perch is a drawer over any slot, and What Changed is a
 strip that renders on both surfaces from the same component.
 
@@ -87,12 +97,14 @@ export const App = () => (
   <TripProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/new" element={<NewPlan />} />
-        <Route path="/interview" element={<Interview />} />
-        <Route path="/desk" element={<Desk />} />
-        <Route path="/t/:tripId" element={<Book />} />
-        <Route path="*" element={<Dashboard />} />
+        <Route path="/" element={<FlatShell><Landing /></FlatShell>} />
+        <Route path="/sign-in" element={<SignIn />} />
+        <Route path="/trips" element={<Shell><Dashboard /></Shell>} />
+        <Route path="/new" element={<Shell><NewPlan /></Shell>} />
+        <Route path="/interview" element={<Shell><Interview /></Shell>} />
+        <Route path="/desk" element={<Shell><Desk /></Shell>} />
+        <Route path="/t/:tripId" element={<Shell><Book /></Shell>} />
+        <Route path="*" element={<FlatShell><Landing /></FlatShell>} />
       </Routes>
     </BrowserRouter>
   </TripProvider>
@@ -109,8 +121,9 @@ v2/
     main.tsx              mounts <App /> into #root; imports tokens.css then base.css
     App.tsx               TripProvider wrapping BrowserRouter and the six routes above
     state.tsx             the one context: trip, disrupt, swap, tap, settle, undo, restart
-    surfaces/             Dashboard, NewPlan, Interview, Desk, Book. Each beside its own .css
-    components/           Perch.tsx, Plate.tsx, StateChip.tsx, WhatChanged.tsx
+    chrome/               Shell.tsx and Footer.tsx, the two mountings of one footer
+    surfaces/             Landing, SignIn, Dashboard, NewPlan, Interview, Desk, Book. Each with its .css
+    components/           Perch.tsx, Plate.tsx, StateChip.tsx, WhatChanged.tsx, Ui.tsx
     lib/                  repair.ts, ranking.ts, store.ts, format.ts
     data/                 types.ts, places.ts, trip.ts
     styles/               tokens.css, base.css
