@@ -8,7 +8,12 @@ post. The media itself is never committed: it lives in a bucket, and `raw/`, `ou
 
 ## Tools
 
-System `yt-dlp` and `ffmpeg`, and `gcloud` for the upload. Nothing is added to `package.json`.
+System `yt-dlp` and `ffmpeg`, `gallery-dl` through `uvx` for image posts, and `gcloud` for the upload. Nothing is added
+to `package.json`.
+
+**What makes a good card.** Vertical, the place itself in the first second, no caption banner, no person filling the
+frame. Judge the cover before the caption: a swipe is decided on instinct in under two seconds, and a still that shows
+the place beats a reel that shows a presenter.
 
 ## Steps
 
@@ -16,7 +21,10 @@ System `yt-dlp` and `ffmpeg`, and `gcloud` for the upload. Nothing is added to `
    In the browser you are logged into, install a cookies.txt exporter (for example "Get cookies.txt LOCALLY"), open
    instagram.com and export to `cookies.txt` in this folder, then do the same on xiaohongshu.com and append. Under WSL
    the Windows browser's cookie store is encrypted, so `--cookies-from-browser` does not work; the export does
-2. **List the reels** in `urls.tsv`, one per card, slug first. The slug is the place id in `v2/src/data/places.ts`
+2. **List the posts** in `urls.tsv`, one per card, slug first. The slug is the place id in `v2/src/data/places.ts`. A
+   reel or an image post both work: an image becomes an eight second slow zoom at the same size, so the card never
+   branches. An optional third column skips that many seconds at the start of a reel, for one that opens on a title card
+   or a black frame
 3. **Run it:** `./fetch.sh`. Set `SECONDS_KEEP=10` to change the clip length. Output lands in `out/`, about 1 MB a clip
 4. **Upload:**
 
