@@ -1,0 +1,93 @@
+/* The design system from docs/DESIGN.md. Where this file and that one disagree, that one wins. */
+
+:root {
+  /* Specimen palette. Every hue is on a bird that lives in or migrates through Peninsular Malaysia. */
+  --ink: #2e261f; /* Magpie-Robin, Copsychus saularis */
+  --paper: #fbf8f2; /* The Desk ground */
+  --plate: #f2ede0; /* Zebra Dove, Geopelia striata */
+  --open: #1b7f86; /* Bee-eater, Merops viridis */
+  --decided: #3e7a3a; /* Green Broadbill, Calyptomena viridis */
+  --at-risk: #c0342f; /* Crimson Sunbird, Aethopyga siparaja */
+
+  --day-1: #c2622f; /* Rufous-collared Kingfisher, Actenoides concretus */
+  --day-2: #2a4c9b; /* Asian Fairy-bluebird, Irena puella */
+  --day-3: #e0a32c; /* Yellow-vented Bulbul, Pycnonotus goiavier */
+  --day-4: #6e4a8e; /* Violet Cuckoo, Chrysococcyx xanthorhynchus */
+  --day-5: #b0567e; /* Pink-necked Green Pigeon, Treron vernans */
+
+  /* Muted ink, for specimen lines and secondary labels. Held above 4.5:1 on paper and plate. */
+  --ink-muted: #6a5f53;
+
+  /* Type */
+  --face-sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --face-serif: "Newsreader", Georgia, "Times New Roman", serif;
+
+  /* Space. 4px base, and a grouping gap is twice the internal gap. */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+
+  /* Radius is the mechanic, not a style value. The Desk is 24 or 999; The Book is a plate and has none. */
+  --r-desk: 24px;
+  --r-pill: 999px;
+  --r-plate: 0;
+
+  /* Outlines are 3px. Study 07 measured 3px borders and 139 pills on Japan Past & Present. */
+  --outline: 3px;
+
+  --motion-fade: 120ms;
+  --motion-step: 320ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+
+/* Section grounds. A specimen hue mixed most of the way to the paper, so the shift is felt rather than seen. */
+:root {
+  --ground-open: color-mix(in oklab, var(--open) 8%, var(--paper));
+  --ground-decided: color-mix(in oklab, var(--decided) 8%, var(--paper));
+  --ground-at-risk: color-mix(in oklab, var(--at-risk) 8%, var(--paper));
+  --ground-day-1: color-mix(in oklab, var(--day-1) 9%, var(--paper));
+  --ground-day-2: color-mix(in oklab, var(--day-2) 9%, var(--paper));
+  --ground-day-3: color-mix(in oklab, var(--day-3) 10%, var(--paper));
+  --ground-day-4: color-mix(in oklab, var(--day-4) 9%, var(--paper));
+  --ground-day-5: color-mix(in oklab, var(--day-5) 9%, var(--paper));
+}
+
+/* A day sets --tint and --ground once, and everything inside it reads those two. This is the wayfinding device. */
+[data-day="1"] {
+  --tint: var(--day-1);
+  --ground: var(--ground-day-1);
+}
+[data-day="2"] {
+  --tint: var(--day-2);
+  --ground: var(--ground-day-2);
+}
+[data-day="3"] {
+  --tint: var(--day-3);
+  --ground: var(--ground-day-3);
+}
+[data-day="4"] {
+  --tint: var(--day-4);
+  --ground: var(--ground-day-4);
+}
+[data-day="5"] {
+  --tint: var(--day-5);
+  --ground: var(--ground-day-5);
+}
+
+[data-state="open"] {
+  --state: var(--open);
+  --state-ground: var(--ground-open);
+}
+[data-state="decided"] {
+  --state: var(--decided);
+  --state-ground: var(--ground-decided);
+}
+[data-state="at-risk"] {
+  --state: var(--at-risk);
+  --state-ground: var(--ground-at-risk);
+}

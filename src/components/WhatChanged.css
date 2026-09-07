@@ -1,0 +1,49 @@
+.changed {
+  background: var(--ground-at-risk);
+  border: var(--outline) solid var(--at-risk);
+  border-radius: var(--r-desk);
+  padding: var(--s4) var(--s5);
+  animation: changed-in var(--motion-step) var(--ease);
+}
+
+.changed-kicker {
+  color: var(--at-risk);
+  margin-bottom: var(--s2);
+}
+
+.changed-sentence {
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+.changed-delta {
+  margin-top: var(--s3);
+  color: var(--at-risk);
+}
+
+.changed-undo {
+  margin-top: var(--s4);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  padding: var(--s2) var(--s4);
+}
+
+.changed[data-compact="true"] {
+  background: transparent;
+  border: 0;
+  border-radius: var(--r-plate);
+  padding: 0;
+}
+
+.changed[data-compact="true"] .changed-sentence {
+  font-family: var(--face-serif);
+  font-size: 16px;
+}
+
+@keyframes changed-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+}

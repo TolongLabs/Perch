@@ -1,0 +1,147 @@
+.interview {
+  max-width: 430px;
+  margin: 0 auto;
+  padding: var(--s7) var(--s5) var(--s8);
+}
+
+@media (min-width: 1024px) {
+  .interview {
+    max-width: 720px;
+    padding-top: 96px;
+  }
+}
+
+.interview-head {
+  margin-bottom: var(--s7);
+}
+
+.interview-count {
+  color: var(--ink-muted);
+  margin-bottom: var(--s3);
+}
+
+.interview-rule {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s2);
+}
+
+.interview-rule span {
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--plate);
+}
+
+.interview-rule span[data-done="true"] {
+  background: var(--open);
+}
+
+.ask-note {
+  margin: var(--s4) 0 var(--s6);
+  max-width: 42ch;
+}
+
+.ask-options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  margin-bottom: var(--s7);
+}
+
+.ask-option {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  text-align: left;
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 12%, transparent);
+  border-radius: var(--r-desk);
+  background: transparent;
+  padding: var(--s4) var(--s5);
+  transition:
+    border-color var(--motion-fade) var(--ease),
+    background var(--motion-fade) var(--ease);
+}
+
+.ask-option[data-on="true"] {
+  border-color: var(--open);
+  background: var(--ground-open);
+}
+
+.ask-next {
+  width: 100%;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+  padding: var(--s4) var(--s5);
+}
+
+.ask-next:disabled {
+  background: var(--plate);
+  color: var(--ink-muted);
+  cursor: default;
+}
+
+/* Question three. The seven that lose step down onto the perch rather than disappearing. */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--s3);
+  margin-bottom: var(--s6);
+}
+
+.card-item {
+  animation: card-in var(--motion-step) var(--ease) both;
+  transition:
+    transform var(--motion-step) var(--ease),
+    opacity var(--motion-step) var(--ease);
+}
+
+.card-item[data-benched="true"] {
+  transform: translateY(8px) scale(0.96);
+  opacity: 0.45;
+}
+
+.card {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  text-align: left;
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 12%, transparent);
+  border-radius: var(--r-desk);
+  background: transparent;
+  padding: var(--s4);
+}
+
+.card[data-on="true"] {
+  border-color: var(--open);
+  background: var(--ground-open);
+}
+
+.card:disabled {
+  cursor: default;
+}
+
+.card-rank {
+  display: block;
+  min-height: 18px;
+  color: var(--open);
+}
+
+.interview-honest {
+  margin-top: var(--s5);
+  padding: var(--s4);
+  background: var(--plate);
+  border-radius: var(--r-desk);
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

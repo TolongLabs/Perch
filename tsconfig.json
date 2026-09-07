@@ -5,7 +5,8 @@
     "module": "Preserve",
     "moduleDetection": "force",
     "moduleResolution": "bundler",
-    "types": ["bun"],
+    "types": ["bun", "vite/client"],
+    "jsx": "react-jsx",
     "verbatimModuleSyntax": true,
     "noEmit": true,
     "strict": true,
@@ -14,5 +15,5 @@
     "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src", "vite.config.ts"]
 }

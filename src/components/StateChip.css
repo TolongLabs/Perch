@@ -1,0 +1,19 @@
+/* Never a solid fill: the tint, the rule and the plumage dot each carry a piece of the same signal. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: 5px var(--s3) 5px var(--s2);
+  border: var(--outline) solid var(--state);
+  border-radius: var(--r-pill);
+  background: var(--state-ground);
+  color: var(--state);
+  white-space: nowrap;
+}
+
+.chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: var(--state);
+}
