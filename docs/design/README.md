@@ -51,20 +51,27 @@ what information that device carries.
 | [04](studies/04-icon-sites.md)                | Nine icon sites, from @neropursue | 2026-09-07 | **Standardise on Lucide.** Animated icons buy nothing on a static mockup                                                 |
 | [05](studies/05-m-ndgn-y-instagram.md)        | @m.ndgn_y, Japanese web designer  | 2026-09-07 | **The method the whole directory was looking for**: analyse a real artefact's rules, translate them to a different brand |
 | [06](studies/06-x-posts-antalik-and-icons.md) | @tranmautritam, and libraries.dev | 2026-09-07 | Link lists. Confirms the radius finding a second time                                                                    |
+| [07](studies/07-japanese-web.md)              | Four Japanese sites, read live    | 2026-09-07 | **Sections separated by tinted grounds, not dividers.** Pills as the default shape, heavy borders, positive tracking     |
 
-## What The Six Studies Agree On
+## What The Seven Studies Agree On
 
 **Three findings appeared independently in more than one study**, which is the only reason to trust them over taste.
 
 1. **A radius scale, not a radius.** ThreeUI runs 3/4/5/7 px; libraries.dev runs eight values from 2 to 50 px; the
    skills repo states the rule as concentric - outer radius equals inner radius plus padding. **Three sources, and not
-   one of them keeps a single radius token**
+   one of them keeps a single radius token.** Study 07 is the dissent and it is a considered one: Japan Past & Present
+   runs 139 pills and nothing else, and Kempa runs zero. **A committed extreme reads as designed; a middling 3px corner
+   reads as a default**
 2. **Type hierarchy from weight and size inside one family**, rather than a display-plus-body font pairing. Kage pairs
    Onest 400 at 46 px against Onest 300 at 17 px; the skills repo specifies roles as Body 16/1.5 and Caption 13/1.4
 3. **The tell is the missing motivation, not the device.** Kage is near-black with a vermilion pop - AGENTS.md's second
    tell - and survives because the red is torii red on a temple page. @m.ndgn_y arrives at the same place from the other
    side: her palettes cannot look generated because they were extracted from a physical object
 
-**And one study supplies what the other five cannot.** Studies 01, 02, 03 and 06 are execution - radii, tracking,
-licences, fallbacks. **Study 05 is the only one that answers where a direction comes from in the first place**, and it
-is the one to read before the rebuild starts.
+**And one study supplies what the others cannot.** Studies 01, 02, 03 and 06 are execution - radii, tracking, licences,
+fallbacks. **Study 05 is the only one that answers where a direction comes from in the first place**, and it is the one
+to read before the rebuild starts.
+
+**Study 07 is the one to read after a direction exists and is not landing.** It is also the only study in this directory
+that had to correct an earlier version of itself, and it records what the thumbnails got wrong rather than quietly
+fixing it.
