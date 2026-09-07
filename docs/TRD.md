@@ -852,10 +852,17 @@ transit between any two places. The matrix is symmetric with a zero diagonal and
 to `gs://perch-reels`. The manifest at `v2/src/data/reels.json` maps place id to
 `{ src, poster, platform, credit, source }` under a bucket base URL.
 
-| Platform    | Fetched | Note                                                                                        |
-| ----------- | ------- | ------------------------------------------------------------------------------------------- |
-| Instagram   | 27      | Public reels resolve anonymously. Omoide Yokocho is audience-restricted and needs a login   |
-| Xiaohongshu | 0       | Search sits behind a login wall; the mix is a follow-up once the spare account is signed in |
+| Platform    | Fetched | Note                                                                                      |
+| ----------- | ------- | ----------------------------------------------------------------------------------------- |
+| Instagram   | 27      | Public reels resolve anonymously. Omoide Yokocho is audience-restricted and needs a login |
+| Xiaohongshu | 0       | Tried and dropped, 8 September: see the note below                                        |
+
+**Why the mix is Instagram only, recorded so nobody repeats the attempt.** The pipeline works against Xiaohongshu: a
+`discovery/item` link with its `xsec_token` downloads against exported cookies. The source material does not. Its video
+notes are often landscape, 1280x720 on the one clean Nihonbashi candidate, which the 540x960 crop would reduce to a
+narrow slice; and burned-in caption banners are the house style, so the text-free covers were the landscape ones. The
+constraint that matters for a swipe card is vertical and text-free, and Instagram Reels are natively 1080x1920. If a
+Xiaohongshu clip ever goes in, yt-dlp reports its uploader as `NA`, so the credit handle has to be filled by hand.
 
 ### Checklist Fixture
 
