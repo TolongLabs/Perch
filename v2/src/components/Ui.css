@@ -1,0 +1,262 @@
+/* The info tooltip. A real affordance, so it wears the same pill, 3px outline and body type as everything else. */
+
+.head-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.head-kicker {
+  color: var(--ink-muted);
+}
+
+.head-title {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 1.25;
+}
+
+.info {
+  position: relative;
+  display: inline-flex;
+  flex: none;
+}
+
+.info-dot {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 2px solid color-mix(in oklab, var(--ink) 34%, transparent);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 700;
+  font-style: italic;
+  line-height: 1;
+  transition:
+    border-color var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease);
+}
+
+.info-dot:hover,
+.info-dot:focus-visible {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.info-bubble {
+  position: fixed;
+  z-index: 60;
+  width: min(280px, calc(100vw - 32px));
+  padding: var(--s3) var(--s4);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-desk);
+  background: var(--paper);
+  color: var(--ink);
+  /* The trigger usually sits inside an uppercase, tracked label. None of that belongs in a sentence. */
+  font-family: var(--face-sans);
+  font-size: 15px;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0;
+  line-height: 1.45;
+  text-align: left;
+  text-transform: none;
+  transform: translateY(calc(-100% - var(--s2)));
+  animation: info-in var(--motion-fade) var(--ease);
+}
+
+@keyframes info-in {
+  from {
+    opacity: 0;
+    transform: translateY(calc(-100% - var(--s2) + 4px));
+  }
+}
+
+/* Fields */
+
+.field,
+.select {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.field-label {
+  color: var(--ink-muted);
+}
+
+.field-input {
+  width: 100%;
+  padding: var(--s3) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 14%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-variant-numeric: inherit;
+  transition: border-color var(--motion-fade) var(--ease);
+}
+
+.field-input::placeholder {
+  color: color-mix(in oklab, var(--ink) 38%, transparent);
+}
+
+.field-input:focus {
+  outline: none;
+  border-color: var(--open);
+}
+
+.field-input:disabled {
+  background: var(--plate);
+  cursor: not-allowed;
+}
+
+/* Checkbox */
+
+.check {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.check-box {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 30%, transparent);
+  border-radius: 6px;
+  transition:
+    background var(--motion-fade) var(--ease),
+    border-color var(--motion-fade) var(--ease);
+}
+
+.check-box[data-on="true"] {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.check-box[data-on="true"]::after {
+  content: "";
+  position: absolute;
+  inset: 3px 4px 5px;
+  border-right: 2px solid var(--paper);
+  border-bottom: 2px solid var(--paper);
+  transform: rotate(42deg);
+}
+
+/* Select */
+
+.select {
+  position: relative;
+}
+
+.select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  width: 100%;
+  padding: var(--s3) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 14%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  text-align: left;
+  transition: border-color var(--motion-fade) var(--ease);
+}
+
+.select-trigger[aria-expanded="true"] {
+  border-color: var(--open);
+}
+
+.select-caret {
+  width: 9px;
+  height: 9px;
+  flex: none;
+  border-right: 2px solid var(--ink-muted);
+  border-bottom: 2px solid var(--ink-muted);
+  transform: translateY(-3px) rotate(45deg);
+  transition: transform var(--motion-fade) var(--ease);
+}
+
+.select-trigger[aria-expanded="true"] .select-caret {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+.select-list {
+  position: absolute;
+  top: calc(100% + var(--s2));
+  left: 0;
+  right: 0;
+  z-index: 20;
+  max-height: 260px;
+  overflow-y: auto;
+  padding: var(--s2);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-desk);
+  background: var(--paper);
+  animation: select-in var(--motion-fade) var(--ease);
+}
+
+.select-option {
+  width: 100%;
+  padding: var(--s3) var(--s4);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: none;
+  text-align: left;
+}
+
+.select-option:hover {
+  background: var(--plate);
+}
+
+.select-option[aria-selected="true"] {
+  background: var(--ground-open);
+  color: var(--open);
+  font-weight: 700;
+}
+
+@keyframes select-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* The input is present for its keyboard and form behaviour and invisible because the box beside it is ours. */
+.check-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.check-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s3);
+  cursor: pointer;
+}
+
+.check-input:focus-visible + .check-label .check-box {
+  outline: var(--outline) solid var(--open);
+  outline-offset: 2px;
+}

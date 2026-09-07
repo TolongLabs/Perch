@@ -1,0 +1,128 @@
+:root {
+  --foot-h: 196px;
+}
+
+@media (min-width: 720px) {
+  :root {
+    --foot-h: 184px;
+  }
+}
+
+/* The page. Opaque, above the footer, and reserving its height so the footer stays covered until the end. */
+.shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100dvh;
+  background: var(--paper);
+}
+
+.shell[data-footer="true"] {
+  margin-bottom: var(--foot-h);
+}
+
+/* The Book paints its own plate ground and must not be given the paper one underneath it. */
+.shell:has(.book) {
+  background: var(--plate);
+}
+
+.app-foot {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 0;
+  height: var(--foot-h);
+  background: var(--plate);
+}
+
+/* The landing has no scroll, so the same footer stands in flow instead of being uncovered by one. */
+/* The landing does not scroll. The shell takes the viewport exactly and the body absorbs what is left after the
+   footer, so the page itself never grows past it. The inner overflow is a floor for very short windows, not a
+   scrollbar anyone is meant to meet. */
+.flat-shell {
+  display: flex;
+  height: 100dvh;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.flat-shell-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: auto;
+}
+
+.flat-foot {
+  flex: none;
+}
+
+.flat-foot {
+  height: var(--foot-h);
+  background: var(--plate);
+}
+
+.foot-inner {
+  display: grid;
+  gap: var(--s3);
+  align-content: center;
+  height: 100%;
+  max-width: 1040px;
+  margin-inline: auto;
+  padding: 0 var(--s5);
+}
+
+@media (min-width: 720px) {
+  .foot-inner {
+    justify-items: end;
+    text-align: right;
+    padding-inline: var(--s7);
+  }
+}
+
+.foot-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.foot-name {
+  font-size: 20px;
+  font-weight: 100;
+  letter-spacing: 0.01em;
+}
+
+.foot-line {
+  max-width: 40ch;
+}
+
+.foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s5);
+}
+
+@media (min-width: 720px) {
+  .foot-links {
+    justify-content: flex-end;
+  }
+}
+
+.foot-link {
+  color: var(--ink-muted);
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid color-mix(in oklab, var(--ink) 18%, transparent);
+  transition:
+    color var(--motion-fade) var(--ease),
+    border-color var(--motion-fade) var(--ease);
+}
+
+.foot-link:hover,
+.foot-link:focus-visible {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}

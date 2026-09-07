@@ -127,6 +127,58 @@ svg {
   line-height: 1.25;
 }
 
+/* Nothing native is left styled by the browser. DESIGN.md names the three exceptions: the text caret, autofill, and
+   prefers-reduced-motion. Everything below is the rest of it. */
+
+html {
+  scrollbar-color: color-mix(in oklab, var(--ink) 28%, transparent) transparent;
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  border: 4px solid transparent;
+  border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--ink) 28%, transparent);
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--ink) 52%, transparent);
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--open) 24%, transparent);
+  color: var(--ink);
+}
+
+/* A search field's clear button and a number field's steppers are chrome we did not draw. */
+input::-webkit-search-cancel-button,
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  appearance: none;
+}
+
+input,
+select,
+textarea {
+  appearance: none;
+  border-radius: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

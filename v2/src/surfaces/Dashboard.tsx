@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Info } from '../components/Ui'
 import { dayLabel, money } from '../lib/format'
 import { tripCostRM } from '../lib/repair'
 import { useTrip } from '../state'
@@ -18,9 +19,6 @@ export const Dashboard = () => {
       <header className="dash-head">
         <p className="t-label dash-mark">Perch</p>
         <h1 className="t-display">Your Trips</h1>
-        <p className="t-specimen dash-sub">
-          A trip and its bench are made together. Everything Perch does later is spent on that order.
-        </p>
       </header>
 
       <Link className="dash-new" to="/new">
@@ -34,7 +32,13 @@ export const Dashboard = () => {
       </Link>
 
       <section className="dash-list" aria-label="Trips">
-        <p className="t-label dash-kicker">In Progress</p>
+        <p className="t-label dash-kicker">
+          In Progress
+          <Info>
+            One trip, because this is a prototype. A real account would list the ones you have taken underneath, and the
+            finished book is what you would keep.
+          </Info>
+        </p>
 
         <Link className="dash-trip" to="/desk">
           <span className="dash-strip" aria-hidden="true">
@@ -56,18 +60,14 @@ export const Dashboard = () => {
             <span className="t-specimen">{open === 0 ? 'Settled' : `${open} still open`}</span>
           </span>
         </Link>
-
-        <p className="dash-empty t-specimen">
-          One trip, because this is a prototype. A real account would list the ones you have taken underneath, and the
-          finished book is what you would keep.
-        </p>
       </section>
 
       <section className="dash-shared" aria-label="Opened From A Link">
-        <p className="t-label dash-kicker">Someone Sent You A Link</p>
-        <p className="dash-shared-copy">
-          A shared trip opens as a magazine with the undecided parts marked. No account, no install &mdash; the group
-          taps inside the page they are already reading.
+        <p className="t-label dash-kicker">
+          Someone Sent You A Link
+          <Info>
+            The link is the trip. It opens as a magazine with the undecided parts marked, and needs no account.
+          </Info>
         </p>
         <Link className="dash-shared-cta t-label" to={`/t/${trip.id}`}>
           Open The Book As A Guest
