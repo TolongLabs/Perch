@@ -38,12 +38,20 @@ here.
 
 ### Design And Prototype
 
-| Link                                                                                                    | What                                                                       |
-| ------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| [Wireframe, 8 screens](https://www.figma.com/design/54WzxphGf6z5qeCzOXZscK/Perch---Prototype-Wireframe) | Structure and behaviour in greys, captioned per screen. Password-protected |
+**Two Figma files, one job each.** They are separate on purpose, and the reason is in the note under the table.
+
+| File                                                                                                           | What Is In It                                                                                                   | Access                                     |
+| -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| [Perch - Prototype Wireframe](https://www.figma.com/design/54WzxphGf6z5qeCzOXZscK/Perch---Prototype-Wireframe) | Eight screens in greyscale, captioned per screen. Structure and behaviour, no visual direction                  | Link + password                            |
+| [Perch - Visual Mockups](https://www.figma.com/design/lei5YdT1r8Dky1QjfwZGfY/Perch---Visual-Mockups)           | One page. The design system layer, the desktop plate, and three mobile screens against [`DESIGN.md`](DESIGN.md) | **Private. Must be shared before 13 Sept** |
 
 **Greys are deliberate.** The wireframe was drawn before [`DESIGN.md`](DESIGN.md) existed so that structure could be
-judged without visual direction leaking into it. The visual mockups are built separately, against `DESIGN.md`.
+judged without visual direction leaking into it. The visual mockups are built separately, against `DESIGN.md`, so that a
+structural problem and a styling problem never get argued about at the same time.
+
+**Both links must be viewable at submission**, along with everything else this file points at - the organisers' rule is
+that every link in the README opens. The mockups file is not shared yet and flipping it is a deliberate action, tracked
+alongside making the repo public in [issue #13](https://github.com/TolongLabs/codenection-dev/issues/13).
 
 ### Source Material From The Organisers
 
