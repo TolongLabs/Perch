@@ -58,6 +58,7 @@ is what earns the marks.
 | 2026-09-06 | Eat-shop-do now measures every place against the voted plan; the fake day labels are gone | They were hardcoded strings that no vote had ever touched, the same bug the route page had | Jin Siang asked whether the page reflects the plan |
 | 2026-09-07 | Tripeza downgraded as a threat; SwipeSights named as the closest competitor instead | Both were read directly. Tripeza votes on the destination then generates the stops unvoted; SwipeSights ranks real places and spends the ranking on dwell time | Fourth scan, `../market/competitors.md` |
 | 2026-09-07 | Three models were asked to play Aisyah, and two of the product's premises failed | Nobody described a vote, and nobody substituted a broken stop. Synthetic, so it aims the mentor session rather than settling anything | `../users/synthetic-panel-2026-09-07.md` |
+| 2026-09-07 | ChatGPT and Xiaohongshu dropped from the front of the five-app stack; a money tool added to it | Asked directly and by name, none of the three used either. All three named a money tool unprompted, and all three said collection is the pain, not splitting | Panel round two, `../market/landscape.md` |
 
 ## Longer Entries
 
@@ -809,3 +810,37 @@ here - but a reason to have an answer ready when a judge asks.
 **What changed.** Nothing in the product yet, on purpose. Five questions were carried into tonight's mentor session,
 and the third one - whether the headline claim is "the trip survives" or "she does not repair it alone" - is the one
 that changes the sentence the whole submission is built on.
+
+### 2026-09-07 - The two apps we assumed she used, and the one we never asked about
+
+**Before.** [`../market/landscape.md`](../market/landscape.md) opened its whole argument with a five-app stack in a
+stated order, ChatGPT first and Xiaohongshu second. Round one of the synthetic panel produced neither, but nobody had
+been asked directly, so silence was weak evidence.
+
+**What was done.** The same three models were fed their own round-one transcripts and asked again, in character. **The
+two apps were named directly**, with each brief stating in full that being asked about an app does not mean you use it
+and that "no, never" was expected. **Money was asked open-ended with no tool named**, so anything they named was theirs.
+
+**Neither app survived being asked directly.** None of the three used ChatGPT for a trip; two had tried it and stopped.
+The reason was identical each time - it cannot know the group's budget, leave balance and tolerances, and those are the
+actual problem. None used Xiaohongshu; one has it installed for skincare.
+
+**Instagram and TikTok are used, in a different place in the flow than we drew.** A described saves as a standing
+backlog consulted *after* the destination is fixed, filtered by whether a place is near where the group is staying -
+which is the badge model already built into the deck. C described social media as what she opens **when something is
+closed**, searching TikTok and checking the result against Grab. **So the disruption case is not served by nothing. It
+is served by TikTok plus Grab, by hand.** That has to be said honestly when the claim is pitched.
+
+**Money was missing from the stack entirely, and all three raised it unprompted.** Three different tools - a phone note,
+a splitting app, a spreadsheet - and one identical complaint: the arithmetic works and the collection does not. Nobody
+disputes a number; the money simply arrives weeks late while one person carries it. **That is a second and better reason
+to keep bill-splitting out of scope**, beyond the breadth argument in [`build-verdict.md`](build-verdict.md): splitting
+is not where the pain is.
+
+**What changed.** `landscape.md` gained a correction section and kept the original list struck through in place, per the
+file's own convention. **The build consequence is skeleton screen 4.** "Start From A Post" was drawn as a front door
+that starts a trip; the persona starts trips with a flight price and a leave balance. Pointed the other way - once the
+trip exists, filter the saves by distance from where the group is staying - it becomes a filter rather than an importer,
+reuses code that already exists, and matches the one moment all three said a saved post genuinely earns its keep.
+
+**Still synthetic, still not evidence.** It aims a question at the mentor; it does not answer one.

@@ -65,6 +65,9 @@ even that needs Troupe read directly first, since Troupe ships ranked group voti
 4. **Google Maps lists**, to hold the places
 5. **Traveloka or Trip.com**, to book it
 
+> **The order above was challenged on 2026-09-07 and half of it did not survive.** Kept as written, because the
+> correction is worth more than a tidy list. See [The Stack, Corrected](#the-stack-corrected---2026-09-07) below.
+
 **Not one of those is a trip planner, and that is the point.** The stack is free, already installed, and socially
 default. Any pitch that positions us against Wanderlog is answering a question nobody asked.
 
@@ -95,3 +98,40 @@ the brief are the same sentence. That is the strongest position available to us 
 
 **Why the planner proposes rather than asks.** The competitor above that asks least of the user is the group chat,
 which asks nothing. That is why day-claiming was dropped - see [`../decisions/dropped.md`](../decisions/dropped.md).
+
+## The Stack, Corrected - 2026-09-07
+
+**Items 1 and 2 above are our invention, not the persona's behaviour.** Three models were given Aisyah's identity and
+asked, directly and by name, whether she uses ChatGPT and Xiaohongshu. Method, caveats and full quotes:
+[`../users/synthetic-panel-2026-09-07.md`](../users/synthetic-panel-2026-09-07.md). **This is synthetic and is not
+evidence about real travellers**, but a claim no version of the persona will make is a claim that should not open a
+pitch.
+
+**ChatGPT: none of the three, and two had tried it and stopped.** The reason was the same each time - it cannot know
+the constraints that are the actual problem.
+
+> "It gives me a confident list I then have to verify in Maps and Klook anyway, so it's just an extra step wearing a
+> helpful face." - A
+
+> "It assumed a budget and a style that has nothing to do with how we travel. It felt like it was written for a
+> different kind of person - someone with more money and more holiday leave." - C
+
+**The 40% figure stays.** It is Trip.com's published data and it describes travellers worldwide, not this user. What
+does not stay is putting it first in a list of what she opens.
+
+**Xiaohongshu: none of the three.** One has it installed and uses it for makeup. Instagram and TikTok are used, but not
+where the stack claims, and A's description inverts the assumed direction of travel:
+
+> "I don't go to Instagram to decide where to go; the destination is decided by AirAsia prices and leave ... when a
+> trip exists, I open my saved folder for that city and maybe two of the forty things get used." - A
+
+**And what is missing from the stack entirely is money.** All three named a money tool unprompted, and all three named
+a different one - a banking app, a splitting app, and a spreadsheet. All three said the same thing about it.
+
+> "The sheet works perfectly. The collection is the problem." - C
+
+> "Nothing is disputed, ever, no one argues a number. It's purely the lag." - A
+
+**The corrected stack, for this user.** WhatsApp first, then whatever books the flight and the bed, then Google Maps to
+hold the pins, then a money tool to carry the cost. **The break in it is unchanged** - none of them owns the plan
+afterwards - so the argument this file makes survives, and only the opening line of it changes.

@@ -209,6 +209,117 @@ it does is aim tonight's mentor session, where a human can settle each one.
 **Question 3 is the one to take to Zach first.** It is the only one that changes the sentence the whole submission is
 built on.
 
+---
+
+# Round Two - The Two Apps We Assumed, And The One We Missed
+
+**Run the same afternoon**, after round one showed that neither ChatGPT nor Xiaohongshu appeared in any of the three
+answers. Each model was fed **its own round-one transcript** and asked to continue in character, so the trips, the
+friends and the amounts stay consistent.
+
+## The Question Design, Because It Is Deliberately Uneven
+
+| Asked About | How | Why |
+| ---------------------------- | -------------------------------------- | ----------------------------------------------------------------- |
+| **ChatGPT, Xiaohongshu**     | **Named directly**                     | These are our claims. Testing them means saying the names          |
+| **Money**                    | **Open-ended, no tool named**          | This is an open question. Naming a candidate would plant the answer |
+
+**Naming an app someone did not mention is a leading question**, and [`interviews/_template.md`](interviews/_template.md)
+warns about exactly that. Each brief therefore said in full that being asked about an app does not mean you use it, that
+"no, never" is an expected answer, and not to add an app to the story to be agreeable. **All three said no anyway**,
+which is a stronger result than round one's silence.
+
+## ChatGPT: None Of The Three, And Two Had Already Tried It
+
+> "I don't use ChatGPT or Gemini or anything like that for trips, not even once. Not because of some principle - I
+> actually use ChatGPT at work sometimes to rewrite emails ... If I ask an AI for 'things to do in Krabi,' it gives me a
+> confident list I then have to verify in Maps and Klook anyway, so it's just an extra step wearing a helpful face." - A
+
+> "I tried once, months ago, just to see. I asked it for a two-day Penang itinerary and it gave me stuff like 'visit the
+> batik factory' and 'enjoy a romantic dinner by the sea.' Completely wrong. It assumed a budget and a style that has
+> nothing to do with how we travel." - C
+
+> "An AI doesn't know that Azrin hates spicy food and won't bother with street markets, or that Shahrul has an hour slot
+> at 3 PM every Friday where he disappears from the group chat." - B
+
+**One reason, three times: the chatbot cannot know the group's constraints, and the group's constraints are the
+problem.** That is the same argument [`../decisions/storybook-shape.md`](../decisions/storybook-shape.md) already uses
+to keep the AI off a chat panel and on the bench, arriving from the user's side instead of ours.
+
+**And one warning aimed squarely at us**, which is not about ChatGPT at all:
+
+> "The group would take an AI itinerary as one more 'Aisyah made a thing' to ignore." - A
+
+## Xiaohongshu: None Of The Three. Instagram And TikTok: Yes, But Not Where We Put Them
+
+Nobody used Xiaohongshu. One has it installed for makeup and skincare; one said colleagues use it and she never got
+into it. **What the other two described is a real behaviour in a different place in the flow.**
+
+**A saves continuously and consults the saves after the destination is fixed.** The direction of travel is the opposite
+of the one [`../market/landscape.md`](../market/landscape.md) assumed:
+
+> "I don't go to Instagram to decide where to go; the destination is decided by AirAsia prices and leave ... months of
+> scrolling, I save a cafe or a viewpoint with no plan attached. Then when a trip exists, I open my saved folder for
+> that city and maybe two of the forty things get used. So the pipeline is: saved post, I check the location in Google
+> Maps, if it survives the pin test - close to the villa, not 40 minutes away - it becomes a pin, and the pin goes into
+> the chat. Nobody else in the group sees the Instagram part. They see the Maps screenshot." - A
+
+**That is our badge model, described by the user before we showed it to her.** "Close to the villa, not 40 minutes
+away" is `on Day N` / `N km off Day N` / `N km away`, which
+[`../prototype/travel-planner-slides.html`](../prototype/travel-planner-slides.html) already computes.
+
+**C puts social media somewhere more uncomfortable for us:**
+
+> "Social media is for filling the gaps in the moment - deciding lunch, **finding a backup when somewhere is closed** -
+> not for building the itinerary." - C
+
+Her mechanism for a closed stop is TikTok search, then paste the name into Grab, and if Grab finds it they go. **So the
+disruption case is not served by nothing.** It is served by TikTok plus Grab, badly and by hand, and that is the
+incumbent our claim actually displaces. Worth knowing before saying the space is empty.
+
+## Money: All Three Named A Tool, All Three Named A Different One, All Three Named The Same Pain
+
+Nothing was suggested to them. What came back:
+
+| | **A** | **B** | **C** |
+| ------------------- | ------------------------------ | -------------------------------- | ------------------------------------ |
+| **Tracks it with**  | A note in her phone, "krabi $$" | A screenshot breakdown in the chat, then a splitting app | A Google Sheet, reconciled per line |
+| **Settles through** | Bank transfers to her account  | Bank transfers, then the app for small items | Bank transfer or an e-wallet |
+| **Fronted**         | ~RM2,500 on a credit card      | RM1,005                          | RM680                                |
+
+**The arithmetic is solved and the collection is not.** Three different tools, one identical complaint:
+
+> "Nothing is disputed, ever, no one argues a number. It's purely the lag. Meanwhile I'm carrying RM2,500 on a credit
+> card for a month, and I'm the one who has to decide between nagging and quietly eating it." - A
+
+> "The sheet works perfectly. The collection is the problem." - C
+
+> "Suddenly four people start uploading transfer screenshots within the same hour - probably seeing each other pay
+> creates this competitive thing." - B
+
+**This sharpens the round-one finding rather than repeating it.** A split-bill feature would solve the half that already
+works. `SwipeSights` ships bill splitting and
+[`../market/competitors.md`](../market/competitors.md) already lists it among the things nobody should pitch as new -
+and now there is a second reason not to, which is that splitting is not where the pain is.
+
+**B's answer contains the only mechanism anyone described that actually moves money:** people pay when they can see
+other people paying. That is a visibility effect, not a payments feature.
+
+## What Round Two Changes
+
+| # | Finding | Lands On |
+| - | --------------------------------------------------------------------------- | ---------------------------------------- |
+| 1 | ChatGPT and Xiaohongshu leave the front of the stack                        | `../market/landscape.md`, corrected      |
+| 2 | Saves are a backlog filtered by distance from base, not a trip's origin      | Skeleton screen 4, "Start From A Post"   |
+| 3 | The disruption incumbent is TikTok plus Grab, not nothing                    | The originality claim's honest wording   |
+| 4 | Money's pain is collection lag, not splitting                                | Stays out of scope, for a better reason  |
+
+**Finding 2 is the one with build consequences.** "Start From A Post" was drawn as a front door that begins a trip. The
+persona does not begin trips that way - she begins with a flight price and a leave balance. **The same screen is worth
+more pointed the other way**: once the trip exists, read the saves and say which two of the forty are near where the
+group is staying. That is a filter rather than an importer, it reuses the badge model already built, and it matches the
+one place all three said social media genuinely earns its keep.
+
 ## The Raw Answers
 
 Not committed. They were generated into a scratch directory outside the repo and are reproducible from the method above;
