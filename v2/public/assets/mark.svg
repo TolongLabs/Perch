@@ -1,6 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="Perch">
-  <rect x="8" y="33" width="32" height="3" rx="1.5" fill="#2E261F"/>
-  <circle cx="16" cy="25" r="7" fill="#1B7F86"/>
-  <circle cx="27" cy="27" r="5" fill="#1B7F86" opacity="0.45"/>
-  <circle cx="35" cy="29" r="3.5" fill="#1B7F86" opacity="0.22"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 168 168" width="168" height="168" role="img" aria-label="Perch">
+  <rect width="168" height="168" rx="28" fill="#2E261F"/>
+  <rect x="32" y="92" width="104" height="5" rx="2.5" fill="#FBF8F2"/>
+  <circle cx="54" cy="76" r="16" fill="#FBF8F2"/>
+  <circle cx="90" cy="81" r="12" fill="#FBF8F2"/>
+  <circle cx="118" cy="85" r="9" fill="#FBF8F2"/>
 </svg>

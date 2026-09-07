@@ -80,7 +80,7 @@ position, and it is unoccupied.
 | ---------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
 | **It is**  | An instrument. A tool she operates                                                                                | A plate. A document she and four others read  |
 | **Radius** | **24 or 999. Nothing between them** — a committed extreme reads as designed, a middling corner reads as a default |
-| **Type**   | Archivo alone                                                                                                     | Archivo for labels, Newsreader for prose      |
+| **Type**   | Quicksand alone                                                                                                   | Quicksand for labels, Newsreader for prose    |
 | **Ground** | Paper `#FBF8F2`                                                                                                   | Plate `#F2EDE0`                               |
 | **Colour** | The day's tint on chips and numerals                                                                              | The day's tint on the band, eyebrow and plate |
 
@@ -138,26 +138,60 @@ rule in the full colour, and a plumage dot — not a solid fill, which would car
 tinted near-white is the single most common failure. Where a state colour carries text it is used at full strength on
 paper, never as grey-on-tint.
 
+## The Mark
+
+**The Seal.** 判子 _hanko_ is what you press on a document once the thing is settled, which is exactly what a Book is.
+The mark is the bar and the ranked bench reversed out of a solid rounded square: one form ahead and largest, two
+receding behind it. Same sentence as the product, pressed rather than drawn.
+
+| Property        | Value                                                                                                |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| **Geometry**    | 168 unit square, corner radius 28. Bar at y 92, 104×5, r 2.5. Discs r 16, 12, 9 on a descending line |
+| **Light theme** | `v2/public/assets/mark.svg` — ink plate `#2E261F`, the drawing reversed out in paper `#FBF8F2`       |
+| **Dark theme**  | `v2/public/assets/mark-dark.svg` — the plate inverts, the drawing does not. One geometry, two files  |
+| **Colour**      | Two values, never three. The lead disc takes no tint: its size already ranks it                      |
+| **Floor**       | 16px. Below that the third disc is dropped rather than the whole mark scaled down                    |
+
+**Why This One, Out Of Five.** Five marks were drawn against the same sentence, each taking one principle: 家紋 _kamon_
+the crest, 間 _ma_ the empty seat, 円相 _ensō_ the open ring, 判子 _hanko_ the seal, and メリハリ _merihari_ the
+half-step. Each was then re-rendered at 48, 24 and 16px on paper and reversed on an ink plate. **The Seal is the only
+one that survives both the 16px column and the ink plate** — every mark carrying a hairline ring loses the ring in each.
+The comparison sheet is the `Brand — Logo And Typeface` frame in the
+[Visual Mockups file](https://www.figma.com/design/lei5YdT1r8Dky1QjfwZGfY/Perch---Visual-Mockups).
+
+**None of the five is a bird, a torii or a kanji radical**, which are the three ways this brief goes wrong. Japanese
+design supplies the method here and not the motifs, which is the translation rule study 07 sets out.
+
+---
+
 ## Type
 
-**Two families, and the second one only exists on The Book.**
+**Two families. The serif carries prose on The Book and every italic in the product, and nothing else.**
 
-| Role                   | Family     | Size / Weight                        | Notes                                                                                                               |
-| ---------------------- | ---------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| **Display**            | Archivo    | 40–56 / **100**, **+0.01em**         | Thin, and tracked **positive** — study 07 found +0.05em on Japanese display type, the reverse of the Western reflex |
-| **Plate title** (Book) | Archivo    | 32–44 / 100, **+0.01em**             | Set over the image, never centred                                                                                   |
-| **Prose** (Book only)  | Newsreader | 18 / 400, 1.6                        | The only serif in the product                                                                                       |
-| **Body** (Desk)        | Archivo    | 15 / 400, 1.5                        |                                                                                                                     |
-| **Label**              | Archivo    | 12 / **700**, +0.06em, uppercase     | Section heads, eyebrows, state chips                                                                                |
-| **Specimen line**      | Archivo    | 12 / 400, italic                     | The metadata under a name: time, cost, distance                                                                     |
-| **Numerals**           | Archivo    | `font-variant-numeric: tabular-nums` | **Everywhere.** Times, ringgit, distances, vote counts                                                              |
+| Role                   | Family     | Size / Weight                        | Notes                                                                                                                                                           |
+| ---------------------- | ---------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Display**            | Quicksand  | 40–56 / **300**, **+0.01em**         | Light, and tracked **positive** — study 07 found +0.05em on Japanese display type, the reverse of the Western reflex                                            |
+| **Plate title** (Book) | Quicksand  | 32–44 / 300, **+0.01em**             | Set over the image, never centred                                                                                                                               |
+| **Prose** (Book only)  | Newsreader | 18 / 400, 1.6                        | The only serif in the product                                                                                                                                   |
+| **Body** (Desk)        | Quicksand  | 15 / 400, 1.5                        |                                                                                                                                                                 |
+| **Label**              | Quicksand  | 12 / **700**, +0.06em, uppercase     | Section heads, eyebrows, state chips                                                                                                                            |
+| **Specimen line**      | Newsreader | 13 / 400, italic                     | The metadata under a name: time, cost, distance. **Quicksand ships no italic**, and a field guide sets the binomial in italic serif regardless of its body face |
+| **Numerals**           | Quicksand  | `font-variant-numeric: tabular-nums` | **Everywhere.** Times, ringgit, distances, vote counts                                                                                                          |
 
-**Nothing is set at 500 or 600.** The jump from 100 to 700 is the field guide's own hierarchy and it is what stops this
-reading as another SaaS product. Two weights carry meaning; a middle weight would carry none.
+**Nothing is set at 400 except body and prose, and nothing at all at 500 or 600.** The jump from 300 to 700 is the field
+guide's own hierarchy and it is what stops this reading as another SaaS product. Two weights carry meaning; a middle
+weight would carry none.
 
-**Why Archivo.** A grotesque with a true 100 through 900 range and a width axis, OFL-licensed. It is not Inter and it is
-not Space Grotesk, which `AGENTS.md` names as the safe-default tell. **Why Newsreader.** A screen-first serif with low
-stroke contrast that holds at 18px on a phone, which a display serif does not.
+**Why Quicksand.** A rounded near-geometric sans with soft terminals, effectively no stroke contrast, and a 300–700
+variable axis, OFL-licensed. It is not Inter and it is not Space Grotesk, which `AGENTS.md` names as the safe-default
+tell. **Why Newsreader.** A screen-first serif with low stroke contrast that holds at 18px on a phone, which a display
+serif does not; it was picked on measurement and the change of sans did not disturb it.
+
+**What The Change Cost, Stated Rather Than Hidden.** Quicksand has no weight below 300, so the display jump is 300 → 700
+where the previous pairing ran 100 → 700. The hero is measurably less airy. The two-weight contrast, which is the part
+that carries meaning, survives intact. **Neither face is Japanese**, and that is deliberate: study 07 is explicit that
+setting Latin in a face drawn for Japanese text is the exact cargo-culting it exists to correct. The method travels, the
+font file does not.
 
 ---
 
@@ -250,28 +284,29 @@ cannot rebuild honestly:
 
 ## Checked Against The Tells
 
-| `AGENTS.md` Tell                         | Us                                                                                                                                            |
-| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Warm cream, serif display, terracotta    | Plate stock is warm, but the display face is a **thin grotesque** and every hue is sourced to a named species                                 |
-| Near-black with one acid pop             | Warm printing ink and eight plumage hues, none of them acid                                                                                   |
-| Purple-to-blue gradient hero             | No gradients. No hero                                                                                                                         |
-| Inter or Space Grotesk                   | Archivo and Newsreader                                                                                                                        |
-| Everything centre-aligned                | Left, always                                                                                                                                  |
-| One large radius on every surface        | **24 or 999 on The Desk and plate geometry on The Book, and the difference is the mechanic.** Study 07: a committed extreme reads as designed |
-| A coloured rail down a rounded card      | Cards are used only where they are the best affordance, never nested, and never railed or shadowed                                            |
-| Numbered markers on non-sequences        | Numerals appear only on the perch, where they are a real rank                                                                                 |
-| Three items because three feels balanced | Three states because the product has three; eight palette entries because there are eight                                                     |
-| Unmotivated glassmorphism                | None                                                                                                                                          |
-| Dark dashboard, neon lines, no data      | Light, printed, and every number on screen is derived from a vote                                                                             |
+| `AGENTS.md` Tell                          | Us                                                                                                                                                                         |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Warm cream, serif display, terracotta     | Plate stock is warm, but the display face is a **thin grotesque** and every hue is sourced to a named species                                                              |
+| Near-black with one acid pop              | Warm printing ink and eight plumage hues, none of them acid                                                                                                                |
+| Purple-to-blue gradient hero              | No gradients. No hero                                                                                                                                                      |
+| Inter or Space Grotesk                    | Quicksand and Newsreader                                                                                                                                                   |
+| Geometric-rounded as the friendly default | **The nearest tell to us, and the one to watch.** Held off it by a square seal rather than a rounded pill, a paper ground rather than white, and left alignment throughout |
+| Everything centre-aligned                 | Left, always                                                                                                                                                               |
+| One large radius on every surface         | **24 or 999 on The Desk and plate geometry on The Book, and the difference is the mechanic.** Study 07: a committed extreme reads as designed                              |
+| A coloured rail down a rounded card       | Cards are used only where they are the best affordance, never nested, and never railed or shadowed                                                                         |
+| Numbered markers on non-sequences         | Numerals appear only on the perch, where they are a real rank                                                                                                              |
+| Three items because three feels balanced  | Three states because the product has three; eight palette entries because there are eight                                                                                  |
+| Unmotivated glassmorphism                 | None                                                                                                                                                                       |
+| Dark dashboard, neon lines, no data       | Light, printed, and every number on screen is derived from a vote                                                                                                          |
 
 ---
 
 ## Open
 
-- **The logo** is not drawn. Direction is settled — one solid form with lighter ones queued behind, which is the perch
-  and the ranked bench in one mark. Generated with Codex, per `AGENTS.md`
 - **The specimen illustration is unresolved and is the next thing to make.** The plates are flat-vector landscapes built
   in Figma, which works. The bird itself does not survive being assembled from primitives and goes to Codex, per
   `AGENTS.md`. Photography stays out — the field-guide reading argues for drawn specimens over destination hero shots,
   which is also what the strongest Dribbble result did
-- **Dark mode** is out of scope for the prototype. A field guide is printed on paper
+- **Dark mode** is out of scope for the prototype. A field guide is printed on paper. The mark still ships in both
+  themes, because a logo outlives the surface it was drawn for and gets used on slides and a title card that are not
+  paper

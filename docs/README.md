@@ -134,24 +134,33 @@ them, so either can be regenerated rather than redrawn.
 
 ### 2.3 Mentor Consultation
 
-| Date       | Mentor     | Feedback Received | What Was Changed |
-| ---------- | ---------- | ----------------- | ---------------- |
-| _None yet_ | _None yet_ | —                 | —                |
+| Date        | Mentor                                                                            | Feedback Received                                                                                                                                                                                                                                                  | What Was Changed                                                                                                                                                         |
+| ----------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 7 Sept 2026 | **Zach Khong**, Full Stack Engineer at Solana Foundation, Cursor hackathon winner | _"All these features right, like one to six, is stuff that people will already build."_ Nine of his twelve teams are building a travel planner. Voting is table stakes; _"the way that how you represent the voting feature is what would make your app special."_ | Voting rebuilt as a Tinder-style swipe on a big photo with the name hidden, so the group judges on instinct. The flow reframed as **vibe based planning**, his phrase    |
+|             |                                                                                   | _"I have to click a lot and I have to know what I want."_ _"The results could be nice UI, but the data collection could be just unstructured text."_                                                                                                               | The onboarding collapsed to one screen where free text comes first and choice chips are shortcuts under it. The eat-shop-do page and its separate vote step were dropped |
+|             |                                                                                   | _"I feel like the voting part is a bit stiff"_ - a 50-50 split had no answer. _"Actively thinking is harder than just deciding yes or no."_                                                                                                                        | The 50-50 case is settled by the plan owner's swipe carrying tie-break weight, and the pre-trip plan proposes so the group only accepts or rejects                       |
+|             |                                                                                   | _"Being specific can definitely be your strength... you could plan to that level of cultural detail."_                                                                                                                                                             | The demo trip is Japan for Aisyah, with transit times between areas modelled rather than a generic international planner                                                 |
+|             |                                                                                   | _"Voting doesn't have to be yes or no. You could be like, oh, I like this place like maybe 65 percent."_                                                                                                                                                           | **Not changed yet.** Binary swipe ships in the mockup; a strength-of-swipe spectrum is logged as the first candidate for the build phase                                 |
 
-**Zero mentor sessions have a written record, and we are not going to pretend otherwise.** The first is booked for **7
-September, 21:40** and is tracked in [issue #23](https://github.com/TolongLabs/codenection-dev/issues/23). The template
-for writing one up is already on `research` at `docs/mentors/_template.md`, because a session with no write-up scores
-the same as no session at all.
+**The full session is transcribed verbatim** at
+[`source/mentor-session-1-transcript.md`](source/mentor-session-1-transcript.md): 38 minutes, Whisper-transcribed with
+timestamps preserved, with a table of the quotes most likely to be cited. It was booked through
+[issue #23](https://github.com/TolongLabs/codenection-dev/issues/23).
+
+**What the session did not endorse is recorded too.** He proposed a group chat with an AI reading it, and drawing on a
+map; both are in the transcript and neither was adopted, because a chat panel invites the "why not ChatGPT" comparison
+and a canvas does not survive a five-minute demo. The Fruit Ninja slice vote was our idea, and he was _"not sure about a
+slashing thing"_; it was dropped on the call.
 
 ---
 
 ## 3. Design & Prototype
 
-| Link                                                                                                           | What Is In It                                                                                                   | Access                                     |
-| -------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| **[The running prototype](https://prototype-yskhynz4la-as.a.run.app)**                                         | The built app. Redeployed on every merge to `main`                                                              | **Public, opens in incognito**             |
-| [Perch - Prototype Wireframe](https://www.figma.com/design/54WzxphGf6z5qeCzOXZscK/Perch---Prototype-Wireframe) | Eight screens in greyscale, captioned per screen. Structure and behaviour, no visual direction                  | Link + password                            |
-| [Perch - Visual Mockups](https://www.figma.com/design/lei5YdT1r8Dky1QjfwZGfY/Perch---Visual-Mockups)           | One page. The design system layer, the desktop plate, and three mobile screens against [`DESIGN.md`](DESIGN.md) | **Private. Must be shared before 13 Sept** |
+| Link                                                                                                           | What Is In It                                                                                                                                                                          | Access                                     |
+| -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| **[The running prototype](https://prototype-yskhynz4la-as.a.run.app)**                                         | The built app. Redeployed on every merge to `main`                                                                                                                                     | **Public, opens in incognito**             |
+| [Perch - Prototype Wireframe](https://www.figma.com/design/54WzxphGf6z5qeCzOXZscK/Perch---Prototype-Wireframe) | Eight screens in greyscale, captioned per screen. Structure and behaviour, no visual direction                                                                                         | Link + password                            |
+| [Perch - Visual Mockups](https://www.figma.com/design/lei5YdT1r8Dky1QjfwZGfY/Perch---Visual-Mockups)           | One page, left to right. The design system layer, the brand sheet that settles the mark and the typeface, the desktop plate, and three mobile screens against [`DESIGN.md`](DESIGN.md) | **Private. Must be shared before 13 Sept** |
 
 **Greys are deliberate.** The wireframe was drawn before [`DESIGN.md`](DESIGN.md) existed so that structure could be
 judged without visual direction leaking into it, and so a structural problem and a styling problem never get argued

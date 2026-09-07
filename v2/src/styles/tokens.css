@@ -19,7 +19,7 @@
   --ink-muted: #6a5f53;
 
   /* Type */
-  --face-sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --face-sans: "Quicksand", "Helvetica Neue", Arial, sans-serif;
   --face-serif: "Newsreader", Georgia, "Times New Roman", serif;
 
   /* Space. 4px base, and a grouping gap is twice the internal gap. */
