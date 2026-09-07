@@ -80,23 +80,11 @@ const days: Day[] = [
     date: '2026-11-24',
     weekday: 'Tuesday',
     tint: 4,
-    title: 'South To The Coast',
-    slots: [
-      slot('d4-morning', 'morning', 'pindul', ['timang', 'kalibiru', 'bukit-panguk', 'batik-workshop'], 'decided'),
-      slot('d4-afternoon', 'afternoon', 'parangtritis', ['ratu-boko', 'tebing-breksi', 'kalibiru'], 'open'),
-      slot('d4-evening', 'evening', 'bakmi-mbah-gito', ['sate-klathak', 'oseng-mercon', 'alun-alun-kidul'], 'decided')
-    ]
-  },
-  {
-    index: 5,
-    date: '2026-11-25',
-    weekday: 'Wednesday',
-    tint: 5,
     title: 'Inside The Walls',
     slots: [
-      slot('d5-morning', 'morning', 'kraton', ['sonobudoyo', 'vredeburg', 'affandi', 'batik-workshop'], 'decided'),
-      slot('d5-midday', 'midday', 'taman-sari', ['vredeburg', 'kotagede', 'sonobudoyo'], 'decided'),
-      slot('d5-afternoon', 'afternoon', 'beringharjo', ['malioboro', 'kotagede', 'affandi'], 'open')
+      slot('d4-morning', 'morning', 'kraton', ['sonobudoyo', 'vredeburg', 'affandi', 'batik-workshop'], 'decided'),
+      slot('d4-midday', 'midday', 'taman-sari', ['vredeburg', 'kotagede', 'sonobudoyo'], 'decided'),
+      slot('d4-afternoon', 'afternoon', 'beringharjo', ['malioboro', 'kotagede', 'parangtritis'], 'open')
     ]
   }
 ]
@@ -128,18 +116,18 @@ export const trip: Trip = {
   destination: 'Yogyakarta',
   country: 'Indonesia',
   startDate: '2026-11-21',
-  nights: 4,
-  budgetRM: 450,
+  nights: 3,
+  budgetRM: 400,
   party: [
-    { id: 'aisyah', name: 'Aisyah', initials: 'AI', availableDays: [1, 2, 3, 4, 5], wants: [] },
+    { id: 'aisyah', name: 'Aisyah', initials: 'AI', availableDays: [1, 2, 3, 4], wants: [] },
     {
       id: 'farah',
       name: 'Farah',
       initials: 'FA',
-      availableDays: [1, 2, 3, 4, 5],
+      availableDays: [1, 2, 3, 4],
       wants: ['prambanan', 'parangtritis']
     },
-    { id: 'hana', name: 'Hana', initials: 'HA', availableDays: [2, 3, 4, 5], wants: ['sate-klathak'] },
+    { id: 'hana', name: 'Hana', initials: 'HA', availableDays: [2, 3, 4], wants: ['sate-klathak'] },
     { id: 'iman', name: 'Iman', initials: 'IM', availableDays: [], wants: [] }
   ],
   days,

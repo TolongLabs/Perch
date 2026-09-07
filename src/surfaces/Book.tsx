@@ -32,7 +32,7 @@ export const Book = () => {
         <p className="t-label cover-eyebrow">{printed ? 'Printed' : 'Still Setting'}</p>
         <h1 className="t-display cover-title">{trip.destination}</h1>
         <p className="t-prose cover-prose">
-          Five days, four nights, put together by Aisyah.{' '}
+          {trip.days.length} days, {trip.nights} nights, put together by Aisyah.{' '}
           {printed
             ? 'Everything below is settled.'
             : `There are ${blanks.length} things still open, and they are marked.`}
