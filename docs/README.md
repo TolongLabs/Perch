@@ -234,42 +234,53 @@ assumed away.
 
 ### Tech Stack
 
-| Layer         | Choice                                           | Why, And What It Costs                                                                                             |
-| ------------- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| **Frontend**  | Vite, React, TypeScript strict                   | No SSR need, so no framework tax. `noUncheckedIndexedAccess` is on, which catches the class of bug a fixture hides |
-| **Styling**   | Plain CSS with custom properties                 | The `DESIGN.md` tokens **are** the design system. Tailwind's scale fights a palette using only weights 100 and 700 |
-| **Backend**   | **None, by design, for the prototype phase**     | Nothing in the Must tier writes to a server. An unnecessary service is an unnecessary way to fail on stage         |
-| **Database**  | **None.** A committed TypeScript fixture         | Place data is the one unsolved dependency. It is named and costed in [`TRD.md`](TRD.md)                            |
-| **State**     | React state plus `localStorage`                  | Validated at the boundary, not cast. Storage being unavailable degrades to forgetting, not throwing                |
-| **APIs**      | **None. No key exists, and none is needed**      | The demo cannot fail on someone else's rate limit. Google Maps is a handoff link, which is free                    |
-| **Fonts**     | Archivo and Newsreader, **self-hosted woff2**    | No CDN call, so the demo cannot fail on someone else's network either                                              |
-| **Hosting**   | **Google Cloud Run**, `asia-southeast1`          | Scales to zero, so it is free at our traffic. Region chosen for a Malaysian audience                               |
-| **CI/CD**     | GitHub Actions, Workload Identity Federation     | **No service-account key exists**, in the repo or in GitHub Secrets. Every merge to `main` redeploys               |
-| **Container** | Two-stage `Dockerfile`: Bun builds, nginx serves | The build happens inside the image, so the deploy workflow is four lines and has nothing to configure              |
+| Layer         | Choice                                           | Why, And What It Costs                            |
+| ------------- | ------------------------------------------------ | ------------------------------------------------- |
+| **Frontend**  | Vite 8, React 19, react-router-dom 7             | No SSR need, so no framework tax                  |
+| **Language**  | TypeScript 7 strict, `noUncheckedIndexedAccess`  | Catches the bug class a committed fixture hides   |
+| **Tooling**   | Bun                                              | Package manager and script runner                 |
+| **Styling**   | Plain CSS custom properties, no framework        | One tokens file, one CSS file per surface         |
+| **Fonts**     | Quicksand and Newsreader, self-hosted woff2      | No CDN call the demo can fail on                  |
+| **State**     | One React context mirrored to `localStorage`     | Validated at the boundary, not cast               |
+| **Data**      | Committed TypeScript fixtures                    | Versioned with the code, reviewable in a PR       |
+| **Drag**      | `@dnd-kit/core`, the one new dependency          | Accessible drag for the calendar slots            |
+| **Backend**   | **None, by design, for the prototype**           | Nothing in the Must tier writes to a server       |
+| **APIs**      | **None. No key exists**                          | The demo cannot fail on someone else's rate limit |
+| **Reels**     | Small muted MP4s from a public GCS bucket        | The one network call on stage                     |
+| **Hosting**   | Google Cloud Run, `asia-southeast1`              | Scales to zero, so free at our traffic            |
+| **CI/CD**     | GitHub Actions on every merge to `main`          | Workload Identity Federation, no stored key       |
+| **Container** | Two-stage `Dockerfile`: Bun builds, nginx serves | The build happens inside the image                |
 
 **Why not Vercel**, since it is the obvious choice: its Hobby tier only builds commits authored by the account owner, so
 a teammate's merge would not ship. Cloud Run has no such rule, and no one person holds the keys.
 
-**The constraint we expect to hit** is place data. Opening hours, prices and travel times are a fixture today. The build
-phase either pays for a place API or scopes to one destination with hand-curated data, and
-[`TRD.md`](TRD.md#the-real-place-data-gap) sets out what each costs.
+**The constraints on stage.** The prototype has no backend, no auth, no API key and no network call other than reel MP4s
+from a public GCS bucket. The demo is one city, Tokyo; the data model carries legs, so multi-area Japan is a README
+claim backed by a type rather than a screen. Place data is hand-authored for now: 24 places across four clusters and a
+24 x 24 travel matrix, both committed.
+
+### Build Phase Additions
+
+The build phase adds, and only adds, the following to a stack that already works:
+
+- **Supabase** for auth, votes and realtime
+- **Place seeding** from OpenStreetMap, Wikidata and Wikimedia Commons, not Google Places, whose terms cap caching at 30
+  days and forbid storing photos
+- **Google only** for Maps deep links and a Routes call
+- **An LLM only** for parsing free text intent and writing rationale sentences, never for a scheduling decision
+- **Cloud Run hosting** stays as is
 
 ### Build Plan & Scope
 
-**Three weeks, 21 September to 11 October.** The scope below is deliberately narrow, and everything in it already has a
-working prototype behind it.
+**Three weeks, 21 September to 11 October.** The build phase takes the prototype from fixture to product: Supabase
+replaces the fixture for auth and votes, seeded place data replaces the hand-authored set behind the same shape, and the
+Routes call plus the LLM rationale land last.
 
-| Week      | What Gets Built                                                                                                      |
-| --------- | -------------------------------------------------------------------------------------------------------------------- |
-| **One**   | Real place data for one destination, behind the same `Option` shape the fixture already uses. Persistence for a trip |
-| **Two**   | The shared link as a real link: a trip id that resolves, and taps from more than one device reaching one ranking     |
-| **Three** | Travel time from the previous stop rather than from the city centre, and the Before We Go checklist. Then freeze     |
+**What it will not build:** multi-area Japan beyond the legs type, native apps, and any surface outside the route table
+in [`PRD.md`](PRD.md). Interview and the current Desk body are deleted, not kept behind a flag.
 
-**What is explicitly not in the build plan:** accounts, bill splitting, a chat panel, photo spots, a destination news
-feed, and native apps. [`PRD.md`](PRD.md#out-of-scope) gives the one-line reason for each.
-
-**Deployment phase, 12 to 31 October, is bug fixes only.** Landing a feature in it is grounds for disqualification, so
-the freeze at the end of week three is a hard date and not a preference.
+**Deployment phase, 12 to 31 October, is bug fixes only.** Landing a major feature in it is grounds for
+disqualification, so scope freezes at the end of week three and does not reopen.
 
 ---
 
