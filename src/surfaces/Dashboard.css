@@ -1,0 +1,155 @@
+.dash {
+  max-width: 430px;
+  margin: 0 auto;
+  padding: var(--s7) var(--s5) var(--s8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+}
+
+@media (min-width: 1024px) {
+  .dash {
+    max-width: 720px;
+    padding-top: 96px;
+  }
+}
+
+.dash-mark {
+  color: var(--open);
+  margin-bottom: var(--s3);
+}
+
+.dash-sub {
+  margin-top: var(--s4);
+  max-width: 40ch;
+}
+
+/* The one solid button on the screen, per DESIGN.md. Starting a plan is the only thing you can do from nothing. */
+.dash-new {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  align-items: center;
+  gap: var(--s4);
+  padding: var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.dash-new-plus {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 26px;
+  font-weight: 100;
+  line-height: 1;
+}
+
+.dash-new-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dash-new-body .t-specimen {
+  color: color-mix(in oklab, var(--paper) 72%, var(--ink));
+}
+
+.dash-kicker {
+  color: var(--ink-muted);
+  margin-bottom: var(--s3);
+}
+
+.dash-list,
+.dash-shared {
+  border-radius: var(--r-desk);
+  padding: var(--s5);
+}
+
+.dash-list {
+  background: var(--plate);
+}
+
+.dash-shared {
+  background: var(--ground-open);
+}
+
+/* The day tints, before you have opened anything. Colour is doing wayfinding from the very first screen. */
+.dash-trip {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--s3) var(--s4);
+  padding: var(--s4) var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--paper);
+  text-decoration: none;
+  color: inherit;
+}
+
+.dash-strip {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: var(--s1);
+  height: 8px;
+}
+
+.dash-strip span {
+  flex: 1;
+  border-radius: var(--r-pill);
+}
+
+.dash-strip span[data-day="1"] {
+  background: var(--day-1);
+}
+.dash-strip span[data-day="2"] {
+  background: var(--day-2);
+}
+.dash-strip span[data-day="3"] {
+  background: var(--day-3);
+}
+.dash-strip span[data-day="4"] {
+  background: var(--day-4);
+}
+.dash-strip span[data-day="5"] {
+  background: var(--day-5);
+}
+
+.dash-trip-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.dash-trip-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+.dash-empty {
+  margin-top: var(--s4);
+  max-width: 44ch;
+}
+
+.dash-shared-copy {
+  color: var(--ink-muted);
+  margin-bottom: var(--s4);
+  max-width: 44ch;
+}
+
+.dash-shared-cta {
+  display: inline-block;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid var(--open);
+  border-radius: var(--r-pill);
+  color: var(--open);
+  text-decoration: none;
+}

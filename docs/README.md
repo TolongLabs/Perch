@@ -157,17 +157,22 @@ the same as no session at all.
 judged without visual direction leaking into it, and so a structural problem and a styling problem never get argued
 about at the same time.
 
-### Seven Screens From The Running Build
+### Nine Screens From The Running Build
 
-| Screen                                                               | What It Proves                                                                                                                                                                            |
-| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Question three of the interview](assets/screens/01-interview.png)  | **The bench is made here.** Three picks rank 1 to 3; the seven that lose take ranks 4 to 10 and settle rather than disappearing. Everything the product does later is spent on that order |
-| ![The Desk with Day 3 open](assets/screens/02-desk.png)              | **Perch has already chosen.** The whole trip exists before anyone is consulted, and each day carries its own bird tint so colour says which day you are on                                |
-| ![The perch drawer](assets/screens/03-perch.png)                     | **Fit comes before rank, and the rows that fail say why** - `25 min too far`, `Shut on Mondays`. Hiding them would hide the argument                                                      |
-| ![The What Changed strip](assets/screens/04-what-changed.png)        | **The repair has already happened.** Nobody was asked. The delta is in two units, travel then money                                                                                       |
-| ![The Book in its setting state](assets/screens/05-book-setting.png) | **What the group opens is a magazine with gaps, not a planner.** A tap moves an option up; it never edits a slot                                                                          |
-| ![The Book, printed](assets/screens/06-book-printed.png)             | **The same object, finished.** Every slot resolved, every control gone, a drawn plate for each day. The half worth keeping after the trip                                                 |
-| ![The Desk at 1440](assets/screens/07-desk-desktop.png)              | **Two columns, not a dashboard.** The instrument gets wider above 1024px; it does not sprout a sidebar or a chart                                                                         |
+| Screen                                                               | What It Proves                                                                                                                                                                                                         |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![The dashboard](assets/screens/01-dashboard.png)                    | **Where it starts, and it starts with nothing.** One trip, a New Plan button, and the day tints already doing wayfinding on the card. A shared link opens the Book without an account                                  |
+| ![New Plan](assets/screens/02-new-plan.png)                          | **Three rows of prefilled chips, not a form.** One is already chosen in each, because `PRODUCT.md`'s rule is that Perch does not ask what it can infer. A destination without place data says so instead of pretending |
+| ![Question three of the interview](assets/screens/03-interview.png)  | **The bench is made here.** Three picks rank 1 to 3; the seven that lose take ranks 4 to 10 and settle rather than disappearing. Everything the product does later is spent on that order                              |
+| ![The Desk with Day 3 open](assets/screens/04-desk.png)              | **Perch has already chosen.** The whole trip exists before anyone is consulted, and each day carries its own bird tint so colour says which day you are on                                                             |
+| ![The perch drawer](assets/screens/05-perch.png)                     | **Fit comes before rank, and the rows that fail say why** - `25 min too far`, `Shut on Mondays`. Hiding them would hide the argument                                                                                   |
+| ![The What Changed strip](assets/screens/06-what-changed.png)        | **The repair has already happened.** Nobody was asked. The delta is in two units, travel then money                                                                                                                    |
+| ![The Book in its setting state](assets/screens/07-book-setting.png) | **What the group opens is a magazine with gaps, not a planner.** A tap moves an option up; it never edits a slot                                                                                                       |
+| ![The Book, printed](assets/screens/08-book-printed.png)             | **The same object, finished.** Every slot resolved, every control gone, a drawn plate for each day. The half worth keeping after the trip                                                                              |
+| ![The Desk at 1440](assets/screens/09-desk-desktop.png)              | **Two columns, not a dashboard.** The instrument gets wider above 1024px; it does not sprout a sidebar or a chart                                                                                                      |
+
+**The flow is Dashboard, New Plan, three questions, The Desk, then The Book**, and every step is a real click in the
+deployed prototype. Nothing is a static mock-up of a screen that does not exist.
 
 **The Prototype Controls block is deliberate and is labelled as not part of the product.** A fixture has nothing to
 observe, so the disruption has to be fired by hand. **A hidden timer would demo better and be less honest**, and a judge

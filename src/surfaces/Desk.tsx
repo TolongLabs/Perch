@@ -35,7 +35,9 @@ export const Desk = () => {
   return (
     <main className="desk">
       <header className="desk-head">
-        <p className="t-label desk-eyebrow">Perch &middot; The Desk</p>
+        <Link className="t-label desk-eyebrow" to="/">
+          &larr; Perch &middot; The Desk
+        </Link>
         <h1 className="t-display">{trip.destination}</h1>
         <p className="t-specimen desk-dates">
           {dayLabel(trip.startDate)} &ndash; {dayLabel(trip.days[trip.days.length - 1]?.date ?? trip.startDate)}

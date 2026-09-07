@@ -120,7 +120,7 @@ export const Interview = () => {
             })}
           </ul>
 
-          <button type="button" className="ask-next t-label" disabled={!settling} onClick={() => navigate('/')}>
+          <button type="button" className="ask-next t-label" disabled={!settling} onClick={() => navigate('/desk')}>
             {settling ? 'Perch Proposes The Trip' : `Pick ${3 - picked.length} More`}
           </button>
 

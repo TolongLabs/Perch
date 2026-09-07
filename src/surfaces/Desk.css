@@ -41,8 +41,10 @@
 }
 
 .desk-eyebrow {
+  display: inline-block;
   color: var(--ink-muted);
   margin-bottom: var(--s3);
+  text-decoration: none;
 }
 
 .desk-dates {
