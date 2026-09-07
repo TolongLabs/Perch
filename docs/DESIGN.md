@@ -169,7 +169,8 @@ receding behind it. Same sentence as the product, pressed rather than drawn.
 | **Colour**      | Two values, never three. The lead disc takes no tint: its size already ranks it                                                                                                                                                                                                     |
 | **Floor**       | 16px. Below that the third disc is dropped rather than the whole mark scaled down                                                                                                                                                                                                   |
 | **Favicon**     | `v2/public/favicon.svg`, which swaps plate and drawing on `prefers-color-scheme` so the tab reads on either browser chrome. `favicon-32.png` / `favicon-16.png` are the raster fallback, `apple-touch-icon.png` sets the mark on paper with margin because iOS applies its own mask |
-| **Social card** | `v2/public/assets/og-banner.png`, 1200×630. Lockup top left, and the motif — the bar with three discs — repeated at decreasing size and opacity out of the bottom right corner, climbing diagonally                                                                                 |
+| **Social card** | `v2/public/assets/og-banner.png`, 1200×630. Lockup top left on empty paper; the rest is a topographic contour set around one summit off the bottom right corner, masked by a diagonal fade so it thins to nothing before it reaches the lockup                                      |
+| **Repo hero**   | `docs/assets/hero.jpg`, 1600×668. The plate is generated, the lockup and the type are not: the same rule as the social card, because a generated wordmark is an approximation of a wordmark                                                                                         |
 
 **Why This One, Out Of Five.** Five marks were drawn against the same sentence, each taking one principle: 家紋 _kamon_
 the crest, 間 _ma_ the empty seat, 円相 _ensō_ the open ring, 判子 _hanko_ the seal, and メリハリ _merihari_ the
@@ -177,6 +178,10 @@ half-step. Each was then re-rendered at 48, 24 and 16px on paper and reversed on
 one that survives both the 16px column and the ink plate** — every mark carrying a hairline ring loses the ring in each.
 The comparison sheet is the `Brand — Logo And Typeface` frame in the
 [Visual Mockups file](https://www.figma.com/design/lei5YdT1r8Dky1QjfwZGfY/Perch---Visual-Mockups).
+
+**The social card does not repeat the mark.** An early version tiled the bar and discs across it, which made the card
+state the same shape twice while saying nothing about what the product is for. Contours read as map, terrain and route
+at a glance, and they are the field-guide direction made literal rather than decoration borrowed to fill space.
 
 **None of the five is a bird, a torii or a kanji radical**, which are the three ways this brief goes wrong. Japanese
 design supplies the method here and not the motifs, which is the translation rule study 07 sets out.

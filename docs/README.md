@@ -1,3 +1,5 @@
+![Perch - a field-guide plate of a volcanic landscape in the specimen palette, with the Perch seal and wordmark set on the empty left third](assets/hero.jpg)
+
 # Perch, By TolongLabs
 
 |                         |                                                                                         |
