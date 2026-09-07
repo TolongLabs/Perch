@@ -34,5 +34,9 @@ tag. Copy `out/manifest.json` to `v2/src/data/reels.json` and set the base URL t
 - **`login required` or a 429**: cookies are stale or the account is rate-limited. Re-export, wait, and use a spare
   account rather than a main one
 - **A Xiaohongshu note downloads only images**: it was a photo post, not a video. Pick a different note
+- **A Xiaohongshu clip comes out as a narrow slice**: the note was landscape and the crop kept the middle. Most of its
+  video notes are, and most carry a caption banner, which is why the shipped set is Instagram only
+- **The credit field is empty**: yt-dlp reports `NA` as the uploader for Xiaohongshu notes. Fill it by hand from the
+  note page before committing the manifest
 - **Instagram returns a low-res file**: add `--cookies` from a logged-in session; anonymous fetches get the preview
   rendition
