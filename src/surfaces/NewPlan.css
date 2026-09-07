@@ -70,8 +70,8 @@
   border-color: var(--ink);
 }
 
-.np-chip[data-ready="false"] {
-  opacity: 0.55;
+.np-chip[data-stub="true"] {
+  opacity: 0.5;
 }
 
 .np-stub {
