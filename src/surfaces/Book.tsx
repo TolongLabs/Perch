@@ -9,6 +9,8 @@ import { dayCostRM, tripCostRM } from '../lib/repair'
 import { useTrip } from '../state'
 import './Book.css'
 
+const WORDS: Record<number, string> = { 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven' }
+
 const PERIOD: Record<Slot['period'], string> = {
   morning: 'In The Morning',
   midday: 'Around Midday',
@@ -32,10 +34,12 @@ export const Book = () => {
         <p className="t-label cover-eyebrow">{printed ? 'Printed' : 'Still Setting'}</p>
         <h1 className="t-display cover-title">{trip.destination}</h1>
         <p className="t-prose cover-prose">
-          {trip.days.length} days, {trip.nights} nights, put together by Aisyah.{' '}
+          {WORDS[trip.days.length]} days, {WORDS[trip.nights]} nights, put together by Aisyah.{' '}
           {printed
             ? 'Everything below is settled.'
-            : `There are ${blanks.length} things still open, and they are marked.`}
+            : blanks.length === 1
+              ? 'One thing is still open, and it is marked.'
+              : `${WORDS[blanks.length]} things are still open, and they are marked.`}
         </p>
 
         <dl className="cover-facts">

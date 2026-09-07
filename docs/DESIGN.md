@@ -92,20 +92,28 @@ Peninsular Malaysia, and each is named with its binomial so the source is checka
 
 > **Revised 2026-09-07 after review.** The first pass took the field guide's _paper_ — ink, hairlines, plate stock — and
 > left the specimens grey. That is why it read as bland: a plate with no plate on it. **In a real field guide the birds
-> are the saturated part**, so the palette expanded from three states to eight species and colour moved from 1px chip
+> are the saturated part**, so the palette expanded from three states to ten species and colour moved from 1px chip
 > outlines to tints, bands and illustration.
 
-| Token       | Value     | Specimen                                    | Used For                             |
-| ----------- | --------- | ------------------------------------------- | ------------------------------------ |
-| `--ink`     | `#2E261F` | Magpie-Robin, _Copsychus saularis_          | All text and rules. **Never `#000`** |
-| `--paper`   | `#FBF8F2` | —                                           | The Desk ground                      |
-| `--plate`   | `#F2EDE0` | Zebra Dove, _Geopelia striata_              | The Book ground, card fills          |
-| `--open`    | `#1B7F86` | Bee-eater, _Merops viridis_                 | Awaiting a decision. Rank numerals   |
-| `--decided` | `#3E7A3A` | Green Broadbill, _Calyptomena viridis_      | Settled, booked, done                |
-| `--at-risk` | `#C0342F` | Crimson Sunbird, _Aethopyga siparaja_       | Something changed, or a critical gap |
-| `--day-1`   | `#C2622F` | Kingfisher, _Actenoides concretus_          | Day tint                             |
-| `--day-2`   | `#2A4C9B` | Fairy-bluebird, _Irena puella_              | Day tint                             |
-| `--day-3`   | `#E0A32C` | Yellow-vented Bulbul, _Pycnonotus goiavier_ | Day tint                             |
+| Token       | Value     | Specimen                                     | Used For                             |
+| ----------- | --------- | -------------------------------------------- | ------------------------------------ |
+| `--ink`     | `#2E261F` | Magpie-Robin, _Copsychus saularis_           | All text and rules. **Never `#000`** |
+| `--paper`   | `#FBF8F2` | —                                            | The Desk ground                      |
+| `--plate`   | `#F2EDE0` | Zebra Dove, _Geopelia striata_               | The Book ground, card fills          |
+| `--open`    | `#1B7F86` | Bee-eater, _Merops viridis_                  | Awaiting a decision. Rank numerals   |
+| `--decided` | `#3E7A3A` | Green Broadbill, _Calyptomena viridis_       | Settled, booked, done                |
+| `--at-risk` | `#C0342F` | Crimson Sunbird, _Aethopyga siparaja_        | Something changed, or a critical gap |
+| `--day-1`   | `#C2622F` | Kingfisher, _Actenoides concretus_           | Day tint                             |
+| `--day-2`   | `#2A4C9B` | Fairy-bluebird, _Irena puella_               | Day tint                             |
+| `--day-3`   | `#E0A32C` | Yellow-vented Bulbul, _Pycnonotus goiavier_  | Day tint                             |
+| `--day-4`   | `#6E4A8E` | Violet Cuckoo, _Chrysococcyx xanthorhynchus_ | Day tint                             |
+| `--day-5`   | `#B0567E` | Pink-necked Green Pigeon, _Treron vernans_   | Day tint                             |
+
+**There are five day tints because a day tint that repeats is not a wayfinding device.** The first pass named three,
+which meant day 4 borrowed day 1's bird and the reader lost the one thing the colour was there to tell them. The two
+added on 7 September were picked for hue regions nothing else occupies: **violet, which no state colour uses, and a
+mauve-pink far enough from `--at-risk` that neither is mistaken for the other.** Both species occur in Peninsular
+Malaysia, on the same rule as the rest.
 
 **Each day of a trip is assigned a bird, and that bird tints the day.** The band at the top of the plate, the eyebrow,
 the rank numerals and the day's chips all carry it. **So colour tells you which day you are on** — it is a wayfinding
