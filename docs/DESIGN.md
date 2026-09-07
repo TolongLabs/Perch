@@ -3,8 +3,20 @@
 **The spec, not the reading.** [`design/`](design/) is what we looked at; this file is what we are doing. A developer
 implements against this. Where the two disagree, this file wins.
 
-**Scope: the app.** Landing and auth pages are out — the product starts on a shared link and an account is optional, so
-neither is in the wireframe or in the prototype submission.
+**Scope: the whole surface, revised 8 September.** This file previously put landing and auth pages out of scope on the
+grounds that the product starts on a shared link. **Both are now in**, and the reasoning that excluded them still holds
+for the product while no longer holding for the submission: a judge opens a URL, and what that URL renders is the first
+thing scored under Design.
+
+| Surface       | Standing                                                                                               |
+| ------------- | ------------------------------------------------------------------------------------------------------ |
+| **Landing**   | **In.** One screen, no scroll, a footer. Premium and quiet, not a marketing page                       |
+| **Auth**      | **In**, as a two-pane screen with no authentication behind it. Only **Sign In As Guest** does anything |
+| **Post-auth** | **In.** Everything already specified here, now carrying the footer                                     |
+| **The Book**  | Unchanged. Still reached from a link, still needs no account                                           |
+
+**Nothing about the product's rules changed.** The account is still optional, the shared link still opens without one,
+and the auth screen exists to be walked past.
 
 ---
 
@@ -199,6 +211,40 @@ first at demo scale.
 | **The blank**    | The Book's unfinished slot. A 1.5px **dashed rule in `--open`** over a 6% tint — the only dashed line in the product |
 | **Cost delta**   | Always two units, travel then money: `20 min closer · −RM 15`. Never one without the other                           |
 | **Buttons**      | Pill by default, generous padding. One solid button per screen, maximum                                              |
+| **Info tooltip** | The only home for a card's caption. A 16px circled `i` in `--ink-muted`, **beside the heading, never under it**      |
+| **Footer**       | A drawer the page folds over. Fixed behind at `z-index: 0`; the page column is opaque and reserves its height        |
+
+### Captions Live In A Tooltip, Not Under The Heading
+
+**Revised 8 September after review.** Explanatory captions were being set as a second line of italic prose under every
+heading, and on a screen with four cards that is four paragraphs of chrome competing with the data.
+
+| Where                    | Rule                                                                                                        |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| **The hero**             | **No caption at all.** The display line carries it, or it is not worth saying                               |
+| **Every other card**     | The caption moves **into an info tooltip beside the heading or subheading**, revealed on hover and on focus |
+| **What may stay inline** | Data, state and specimen lines. **A specimen line is not a caption** — it is the record for that row        |
+
+**The tooltip is a real affordance, not a decoration**, so it follows the same rules as everything else here: pill
+radius, a 3px outline in `--ink`, the tinted ground of the section it sits in, and body type at 15px. It opens on hover
+and on keyboard focus, and it is reachable by tab, because a caption only a mouse can read is a caption half the readers
+never get.
+
+**If a caption cannot survive being hidden, it is not a caption.** It is either a label, which belongs on the element,
+or it is a limitation, which belongs where a reader cannot miss it.
+
+### Nothing Native Is Left Styled By The Browser
+
+**Every control is drawn by us.** Scrollbars, dropdowns, checkboxes, radios, range inputs, text fields, the focus ring
+and the text selection all get the tokens above, because a default select on a field-guide plate is the one element that
+says nobody looked at this screen.
+
+**Three exceptions, and they are deliberate.** The native control stays when replacing it would remove behaviour we
+cannot rebuild honestly:
+
+1. **The text caret**, which is the operating system's and is better than any imitation of it
+2. **Autofill**, where fighting the browser produces an unreadable field on someone else's machine
+3. **`prefers-reduced-motion`**, which is the platform telling us something and is obeyed rather than restyled
 
 ---
 
