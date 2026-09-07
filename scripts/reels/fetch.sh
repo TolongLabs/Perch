@@ -31,7 +31,7 @@ while IFS=$'\t' read -r -u 3 slug url skip; do
   if [ -z "$src" ]; then
     for ext in jpg jpeg png webp; do [ -f "raw/$slug.$ext" ] && still="raw/$slug.$ext" && break; done
     if [ -z "$still" ]; then
-      uvx gallery-dl "${COOKIE_ARGS[@]}" --range 1 -D raw -f "$slug.{extension}" "$url" < /dev/null \
+      uvx gallery-dl "${COOKIE_ARGS[@]}" --range 1 --write-metadata -D raw -f "$slug.{extension}" "$url" < /dev/null \
         || { echo "download failed for $slug, skipping"; continue; }
       for ext in jpg jpeg png webp; do [ -f "raw/$slug.$ext" ] && still="raw/$slug.$ext" && break; done
     fi
@@ -64,7 +64,15 @@ for line in open('urls.tsv', encoding='utf-8'):
     info = {}
     try: info = json.load(open(f'raw/{slug}.info.json', encoding='utf-8'))
     except FileNotFoundError: pass
-    handle = info.get('uploader') or info.get('uploader_id') or info.get('channel') or ''
+    # An image post comes from gallery-dl, which writes <file>.json beside the still and uses its own key names.
+    if not info:
+        for ext in ('jpg', 'jpeg', 'png', 'webp'):
+            try:
+                info = json.load(open(f'raw/{slug}.{ext}.json', encoding='utf-8'))
+                break
+            except FileNotFoundError: continue
+    handle = (info.get('uploader') or info.get('fullname') or info.get('username')
+              or info.get('uploader_id') or info.get('channel') or '')
     platform = 'xhs' if ('xiaohongshu' in url or 'xhslink' in url) else 'instagram'
     rows.append({'place': slug, 'src': f'{slug}.mp4', 'poster': f'{slug}.jpg', 'platform': platform, 'credit': handle, 'source': url})
 json.dump(rows, open(f'{out}/manifest.json', 'w', encoding='utf-8'), ensure_ascii=False, indent=2)
