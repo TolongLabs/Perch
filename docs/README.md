@@ -351,16 +351,19 @@ docs/
   assets/ideation/       the two diagram exports in section 2.2, copied from research
   source/                organiser material, append-only
   demo/                  video script, slides, assets
-src/
-  data/                  types, the place fixture, the seeded trip
-  lib/                   repair, ranking, persistence, formatting
-  surfaces/              Dashboard, NewPlan, Interview, Desk, Book
-  components/            the perch drawer, state chip, What Changed, the plate
-  styles/                tokens.css and base.css, the DESIGN.md system in CSS
-index.html               the Vite entry
-public/                  static assets copied verbatim: the mark and the self-hosted fonts
-Dockerfile               two stages. Bun builds, nginx serves dist/ on 8080
-nginx.conf               static config, with the SPA fallback the shared link needs
+v1/                      the slide-deck mockup this replaced. Static HTML, served at /v1/
+v2/
+  index.html             the Vite entry
+  public/                static assets copied verbatim: the mark and the self-hosted fonts
+  src/
+    data/                types, the place fixture, the seeded trip
+    lib/                 repair, ranking, persistence, formatting
+    surfaces/            Dashboard, NewPlan, Interview, Desk, Book
+    components/          the perch drawer, state chip, What Changed, the plate
+    styles/              tokens.css and base.css, the DESIGN.md system in CSS
+vite.config.ts           roots the build at v2/ and writes dist/
+Dockerfile               two stages. Bun builds v2, nginx serves dist/ and v1/ on 8080
+nginx.conf               static config: /v1/ resolves first, then the SPA fallback
 .github/workflows/       deploy.yml, which builds and ships on every merge
 ```
 
@@ -376,8 +379,12 @@ nginx.conf               static config, with the SPA fallback the shared link ne
 | **Project** | `codenection-2026`, region `asia-southeast1`                                               |
 
 **The prototype is built, not copied.** The first stage of `Dockerfile` runs `bun run build` and nginx serves the
-resulting `dist/`. **`public/` is Vite's static asset folder**, holding the mark and the fonts; everything else comes
-from `src/`.
+resulting `dist/`. **`v2/public/` is Vite's static asset folder**, holding the mark and the fonts; everything else comes
+from `v2/src/`.
+
+**v1 ships in the same image, at [`/v1/`](https://prototype-yskhynz4la-as.a.run.app/v1/).** It is static HTML rather
+than routes, so `nginx.conf` resolves it before the SPA fallback - without that ordering every path under it would
+render v2 instead.
 
 **The shared link needs the SPA fallback.** `/t/<trip>` is a real path with no file behind it, so `nginx.conf` falls
 every unknown path back to `index.html`. Delete that line and the link at the centre of the product returns a 404.
