@@ -8,12 +8,20 @@ grounds that the product starts on a shared link. **Both are now in**, and the r
 for the product while no longer holding for the submission: a judge opens a URL, and what that URL renders is the first
 thing scored under Design.
 
-| Surface       | Standing                                                                                               |
-| ------------- | ------------------------------------------------------------------------------------------------------ |
-| **Landing**   | **In.** One screen, no scroll, a footer. Premium and quiet, not a marketing page                       |
-| **Auth**      | **In**, as a two-pane screen with no authentication behind it. Only **Sign In As Guest** does anything |
-| **Post-auth** | **In.** Everything already specified here, now carrying the footer                                     |
-| **The Book**  | Unchanged. Still reached from a link, still needs no account                                           |
+| Surface                      | Standing                                                                                                                           |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| **Landing**                  | **In.** One screen, no scroll, a footer. Premium and quiet, not a marketing page                                                   |
+| **Auth**                     | **In**, as a two-pane screen with no authentication behind it. Only **Sign In As Guest** does anything                             |
+| **Dashboard And Onboarding** | **In.** The dashboard is re-fixtured for Tokyo with an invite code and who has voted; onboarding is new and replaces the interview |
+| **The Deck**                 | **In.** The swipe surface. Joiners land here from the invite link and skip onboarding                                              |
+| **The Tally**                | **In.** Percentage per place, unanimous places in `--gold`, zero-vote places greyed and eliminated                                 |
+| **The Desk**                 | **In.** Rebuilt: the 4 day × 3 slot calendar, the sidebar of voted-in cards, Apply, pins and feasibility chips                     |
+| **Before We Go**             | **In.** The checklist derived from the trip; every item ticked enables Print The Book                                              |
+| **The Book**                 | **In.** Re-fixtured for Tokyo, one plate per day, a Maps deep link per day. Still reached from a link, still needs no account      |
+
+**Revised 8 September with the rebuild.** The route set follows the plan: the interview is deleted, the Deck, the Tally
+and Before We Go are new, and the Desk is rebuilt around a three-slot calendar. The Book survives, re-fixtured for
+Tokyo, and the footer carries on every surface, the new ones included.
 
 **Nothing about the product's rules changed.** The account is still optional, the shared link still opens without one,
 and the auth screen exists to be walked past.
@@ -93,13 +101,19 @@ position, and it is unoccupied.
 
 **Radius is not a style value here. It is what tells you which surface you are on.**
 
-|            | **The Desk**                                                                                                      | **The Book**                                  |
-| ---------- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| **It is**  | An instrument. A tool she operates                                                                                | A plate. A document she and four others read  |
-| **Radius** | **24 or 999. Nothing between them** — a committed extreme reads as designed, a middling corner reads as a default |
-| **Type**   | Quicksand alone                                                                                                   | Quicksand for labels, Newsreader for prose    |
-| **Ground** | Paper `#FBF8F2`                                                                                                   | Plate `#F2EDE0`                               |
-| **Colour** | The day's tint on chips and numerals                                                                              | The day's tint on the band, eyebrow and plate |
+|                 | **The Desk**                                                                                                                                                                                        | **The Book**                                  |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| **It is**       | An instrument. A tool she operates                                                                                                                                                                  | A plate. A document she and four others read  |
+| **Radius**      | **24 or 999. Nothing between them** - a committed extreme reads as designed, a middling corner reads as a default                                                                                   | Zero. A printed plate has no rounded corners  |
+| **Type**        | Quicksand alone                                                                                                                                                                                     | Quicksand for labels, Newsreader for prose    |
+| **Ground**      | Paper `#FBF8F2`                                                                                                                                                                                     | Plate `#F2EDE0`                               |
+| **Colour**      | The day's tint on chips and numerals                                                                                                                                                                | The day's tint on the band, eyebrow and plate |
+| **Feasibility** | A state chip on the day heading: `--decided` when the day fits, `--gold` when it fits but runs more than 25 percent slower than the scheduler's order, `--at-risk` on overrun or out-of-hours stops | None. The plate prints the settled trip       |
+
+**Revised 8 September for the rebuild.** The feasibility row is new, and it is a state chip on each day heading in the
+chip spec below, not a new token family: green when every stop fits its hours and the day's travel plus dwell fits 09:00
+to 21:00, gold when it fits but the order runs more than 25 percent slower than the scheduler's, red when a stop is
+outside its hours or the day overruns.
 
 **Revised 2026-09-07 after review.** The first pass ran The Desk at 3/5/8px and read as rigid. The contrast is stronger,
 not weaker, when The Desk is genuinely soft — so it moved to the squircle register and the difference between the two
@@ -124,19 +138,25 @@ Peninsular Malaysia, and each is named with its binomial so the source is checka
 > are the saturated part**, so the palette expanded from three states to ten species and colour moved from 1px chip
 > outlines to tints, bands and illustration.
 
-| Token       | Value     | Specimen                                     | Used For                             |
-| ----------- | --------- | -------------------------------------------- | ------------------------------------ |
-| `--ink`     | `#2E261F` | Magpie-Robin, _Copsychus saularis_           | All text and rules. **Never `#000`** |
-| `--paper`   | `#FBF8F2` | —                                            | The Desk ground                      |
-| `--plate`   | `#F2EDE0` | Zebra Dove, _Geopelia striata_               | The Book ground, card fills          |
-| `--open`    | `#1B7F86` | Bee-eater, _Merops viridis_                  | Awaiting a decision. Rank numerals   |
-| `--decided` | `#3E7A3A` | Green Broadbill, _Calyptomena viridis_       | Settled, booked, done                |
-| `--at-risk` | `#C0342F` | Crimson Sunbird, _Aethopyga siparaja_        | Something changed, or a critical gap |
-| `--day-1`   | `#C2622F` | Kingfisher, _Actenoides concretus_           | Day tint                             |
-| `--day-2`   | `#2A4C9B` | Fairy-bluebird, _Irena puella_               | Day tint                             |
-| `--day-3`   | `#E0A32C` | Yellow-vented Bulbul, _Pycnonotus goiavier_  | Day tint                             |
-| `--day-4`   | `#6E4A8E` | Violet Cuckoo, _Chrysococcyx xanthorhynchus_ | Day tint                             |
-| `--day-5`   | `#B0567E` | Pink-necked Green Pigeon, _Treron vernans_   | Day tint                             |
+| Token       | Value     | Specimen                                     | Used For                                                          |
+| ----------- | --------- | -------------------------------------------- | ----------------------------------------------------------------- |
+| `--ink`     | `#2E261F` | Magpie-Robin, _Copsychus saularis_           | All text and rules. **Never `#000`**                              |
+| `--paper`   | `#FBF8F2` | —                                            | The Desk ground                                                   |
+| `--plate`   | `#F2EDE0` | Zebra Dove, _Geopelia striata_               | The Book ground, card fills                                       |
+| `--open`    | `#1B7F86` | Bee-eater, _Merops viridis_                  | Awaiting a decision. Rank numerals                                |
+| `--decided` | `#3E7A3A` | Green Broadbill, _Calyptomena viridis_       | Settled, booked, done                                             |
+| `--at-risk` | `#C0342F` | Crimson Sunbird, _Aethopyga siparaja_        | Something changed, or a critical gap                              |
+| `--gold`    | `#E8A317` | Black-naped Oriole, _Oriolus chinensis_      | Unanimous places on The Tally; a Desk day that fits but runs slow |
+| `--day-1`   | `#C2622F` | Kingfisher, _Actenoides concretus_           | Day tint                                                          |
+| `--day-2`   | `#2A4C9B` | Fairy-bluebird, _Irena puella_               | Day tint                                                          |
+| `--day-3`   | `#E0A32C` | Yellow-vented Bulbul, _Pycnonotus goiavier_  | Day tint                                                          |
+| `--day-4`   | `#6E4A8E` | Violet Cuckoo, _Chrysococcyx xanthorhynchus_ | Day tint                                                          |
+| `--day-5`   | `#B0567E` | Pink-necked Green Pigeon, _Treron vernans_   | Day tint                                                          |
+
+**Revised 8 September with the rebuild.** `--gold` joins the state colours as the fourth, because the rebuild gave both
+of its uses a screen: the Tally marks a unanimous place with it, and the Desk shows it on a day that fits but runs slow.
+It is Black-naped Oriole, _Oriolus chinensis_, on the same rule as the rest - a species that occurs in Peninsular
+Malaysia, so the source stays checkable.
 
 **There are five day tints because a day tint that repeats is not a wayfinding device.** The first pass named three,
 which meant day 4 borrowed day 1's bird and the reader lost the one thing the colour was there to tell them. The two
@@ -148,8 +168,14 @@ Malaysia, on the same rule as the rest.
 the rank numerals and the day's chips all carry it. **So colour tells you which day you are on** — it is a wayfinding
 device, not decoration, which is what `AGENTS.md` requires of any device on screen.
 
-**Every colour has a five-step ramp toward the plate stock**, used for tinted fills. State chips are a 10% tint, a 1px
-rule in the full colour, and a plumage dot — not a solid fill, which would carry no extra information.
+**`--gold` and `--day-3` share a hue region, and that is survivable only because they do not answer the same question.**
+The day tint is a ground; the gold chip is a 10% tint with a 1px rule and a plumage dot, never a solid fill of either.
+Where a day 3 heading runs the slow-day chip, form carries the distinction that hue cannot.
+
+**Every colour has a five-step ramp toward the plate stock**, used for tinted fills, and `--gold` joins on exactly the
+rule the other palette entries follow: five steps mixed toward `#F2EDE0`, the 10% step being what the unanimous and
+slow-day chips fill with. State chips are a 10% tint, a 1px rule in the full colour, and a plumage dot - not a solid
+fill, which would carry no extra information.
 
 **Contrast.** Body text hits ≥4.5:1 against its ground and large text ≥3:1, per the `impeccable` rule that muted grey on
 tinted near-white is the single most common failure. Where a state colour carries text it is used at full strength on
@@ -161,16 +187,15 @@ paper, never as grey-on-tint.
 The mark is the bar and the ranked bench reversed out of a solid rounded square: one form ahead and largest, two
 receding behind it. Same sentence as the product, pressed rather than drawn.
 
-| Property        | Value                                                                                                                                                                                                                                                                               |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Geometry**    | 168 unit square, corner radius 28. Bar at y 92, 104×5, r 2.5. Discs r 16, 12, 9 on a descending line                                                                                                                                                                                |
-| **Light theme** | `v2/public/assets/mark.svg` — ink plate `#2E261F`, the drawing reversed out in paper `#FBF8F2`                                                                                                                                                                                      |
-| **Dark theme**  | `v2/public/assets/mark-dark.svg` — the plate inverts, the drawing does not. One geometry, two files                                                                                                                                                                                 |
-| **Colour**      | Two values, never three. The lead disc takes no tint: its size already ranks it                                                                                                                                                                                                     |
-| **Floor**       | 16px. Below that the third disc is dropped rather than the whole mark scaled down                                                                                                                                                                                                   |
-| **Favicon**     | `v2/public/favicon.svg`, which swaps plate and drawing on `prefers-color-scheme` so the tab reads on either browser chrome. `favicon-32.png` / `favicon-16.png` are the raster fallback, `apple-touch-icon.png` sets the mark on paper with margin because iOS applies its own mask |
-| **Social card** | `v2/public/assets/og-banner.png`, 1200×630. Lockup top left on empty paper; the rest is a topographic contour set around one summit off the bottom right corner, masked by a diagonal fade so it thins to nothing before it reaches the lockup                                      |
-| **Repo hero**   | `docs/assets/hero.jpg`, 1600×668. The plate is generated, the lockup and the type are not: the same rule as the social card, because a generated wordmark is an approximation of a wordmark                                                                                         |
+| Property        | Value                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Geometry**    | 168 unit square, corner radius 28. Bar at y 92, 104×5, r 2.5. Discs r 16, 12, 9 on a descending line                                                                                                                                                                                                                                                                                                                                                    |
+| **Light theme** | `v2/public/assets/mark.svg` — ink plate `#2E261F`, the drawing reversed out in paper `#FBF8F2`                                                                                                                                                                                                                                                                                                                                                          |
+| **Dark theme**  | `v2/public/assets/mark-dark.svg` — the plate inverts, the drawing does not. One geometry, two files                                                                                                                                                                                                                                                                                                                                                     |
+| **Colour**      | Two values, never three. The lead disc takes no tint: its size already ranks it                                                                                                                                                                                                                                                                                                                                                                         |
+| **Floor**       | 16px. Below that the third disc is dropped rather than the whole mark scaled down                                                                                                                                                                                                                                                                                                                                                                       |
+| **Favicon**     | `v2/public/favicon.svg`, which swaps plate and drawing on `prefers-color-scheme` so the tab reads on either browser chrome. `favicon-32.png` / `favicon-16.png` are the raster fallback, `apple-touch-icon.png` sets the mark on paper with margin because iOS applies its own mask                                                                                                                                                                     |
+| **Social card** | `v2/public/assets/og-banner.png`, 1200×630. Lockup top left on empty paper; the rest is a topographic contour set around one summit off the bottom right corner, masked by a diagonal fade so it thins to nothing before it reaches the lockup. The meta tag carries a `?v=` suffix that **must be bumped whenever the art changes**, because a scraper caches its preview against the exact image URL and will not re-fetch a path it has already seen |
 
 **Why This One, Out Of Five.** Five marks were drawn against the same sentence, each taking one principle: 家紋 _kamon_
 the crest, 間 _ma_ the empty seat, 円相 _ensō_ the open ring, 判子 _hanko_ the seal, and メリハリ _merihari_ the
@@ -243,17 +268,22 @@ a document.
 ## Motion
 
 **One mechanic, tied to the brand, per study 05.** When an option is displaced, **the next one steps forward** — the
-perch, animated. It is used in exactly three places and nowhere else:
+perch, animated. The perch keeps its three places, and the calendar drag joins it as the fourth sanctioned motion.
 
-1. **Question 3** — the seven unpicked options settle down onto the perch, staggered 40ms apart
-2. **The bench drawer** — the swapped-in option rises into the slot the old one vacated
-3. **What Changed** — the same movement, replayed small, next to the sentence
+**Revised 8 September with the rebuild.** The perch's homes moved with the flow that carries them: the interview's third
+question and the What Changed replay are gone with the surfaces deleted, and the same displacement now plays on the
+Deck, in the perch drawer and on the Tally. The mechanic itself is untouched.
+
+1. **The Deck** - a swiped card leaves and the next reel steps forward onto the perch
+2. **The perch drawer** - the next-ranked voted-in card rises into the slot the deleted one vacated
+3. **The Tally** - a place that falls to zero leaves the running order and the rows below step up
+4. **The calendar drag, on Apply** - a card flies into its slot, staggered 40ms, on the same easing as the perch
 
 **Everything else is a 120ms opacity cross-fade.** The Book's spreads cross-fade and scroll-snap; **there is no 3D page
 turn**, which answers open question 3 in the resume note — a real flip fights the in-app browser, costs days, and breaks
 first at demo scale.
 
-`prefers-reduced-motion` removes the step-forward and leaves the cross-fade.
+`prefers-reduced-motion` removes the step-forward and the calendar drag, and leaves the cross-fade.
 
 ---
 
@@ -261,16 +291,19 @@ first at demo scale.
 
 **Only the ones where the rules above are not obvious.**
 
-| Component        | Spec                                                                                                                 |
-| ---------------- | -------------------------------------------------------------------------------------------------------------------- |
-| **State chip**   | A 10% tint, a 1px rule in the state colour, a plumage dot, pill radius. Never a solid fill                           |
-| **Rank numeral** | `--open`, 12/700, tabular. **Only ever on the perch**, where the number is a real rank                               |
-| **Perch drawer** | Rises from the bottom, pill rows on a tinted ground, 3px outlines. Each row: rank, name, specimen line, action       |
-| **The blank**    | The Book's unfinished slot. A 1.5px **dashed rule in `--open`** over a 6% tint — the only dashed line in the product |
-| **Cost delta**   | Always two units, travel then money: `20 min closer · −RM 15`. Never one without the other                           |
-| **Buttons**      | Pill by default, generous padding. One solid button per screen, maximum                                              |
-| **Info tooltip** | The only home for a card's caption. A 16px circled `i` in `--ink-muted`, **beside the heading, never under it**      |
-| **Footer**       | A drawer the page folds over. Fixed behind at `z-index: 0`; the page column is opaque and reserves its height        |
+| Component        | Spec                                                                                                                                                                                                                                                                                                  |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **State chip**   | A 10% tint, a 1px rule in the state colour, a plumage dot, pill radius. Never a solid fill                                                                                                                                                                                                            |
+| **Rank numeral** | `--open`, 12/700, tabular. **Only ever on the perch**, where the number is a real rank                                                                                                                                                                                                                |
+| **Perch drawer** | Rises from the bottom, pill rows on a tinted ground, 3px outlines. Each row: rank, name, specimen line, action                                                                                                                                                                                        |
+| **Reel card**    | 9:16, radius 24, muted autoplay loop. Name and specimen line small in the bottom-left; creator handle and platform in the bottom-right. The video mounts only on the top two cards; the rest hold their poster frame. The MP4 comes from a public GCS bucket and is the prototype's only network call |
+| **Buttons**      | Pill by default, generous padding. One solid button per screen, maximum                                                                                                                                                                                                                               |
+| **Info tooltip** | The only home for a card's caption. A 16px circled `i` in `--ink-muted`, **beside the heading, never under it**                                                                                                                                                                                       |
+| **Footer**       | A drawer the page folds over. Fixed behind at `z-index: 0`; the page column is opaque and reserves its height                                                                                                                                                                                         |
+
+**Revised 8 September with the rebuild.** The reel card is new, and it is the one component that carries moving
+photography. It keeps the Desk register - radius 24, no shadow - and the credit stays on the card because a field guide
+labels its plate with the collector.
 
 ### Captions Live In A Tooltip, Not Under The Heading
 
@@ -308,20 +341,22 @@ cannot rebuild honestly:
 
 ## Checked Against The Tells
 
-| `AGENTS.md` Tell                          | Us                                                                                                                                                                         |
-| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Warm cream, serif display, terracotta     | Plate stock is warm, but the display face is a **thin grotesque** and every hue is sourced to a named species                                                              |
-| Near-black with one acid pop              | Warm printing ink and eight plumage hues, none of them acid                                                                                                                |
-| Purple-to-blue gradient hero              | No gradients. No hero                                                                                                                                                      |
-| Inter or Space Grotesk                    | Quicksand and Newsreader                                                                                                                                                   |
-| Geometric-rounded as the friendly default | **The nearest tell to us, and the one to watch.** Held off it by a square seal rather than a rounded pill, a paper ground rather than white, and left alignment throughout |
-| Everything centre-aligned                 | Left, always                                                                                                                                                               |
-| One large radius on every surface         | **24 or 999 on The Desk and plate geometry on The Book, and the difference is the mechanic.** Study 07: a committed extreme reads as designed                              |
-| A coloured rail down a rounded card       | Cards are used only where they are the best affordance, never nested, and never railed or shadowed                                                                         |
-| Numbered markers on non-sequences         | Numerals appear only on the perch, where they are a real rank                                                                                                              |
-| Three items because three feels balanced  | Three states because the product has three; eight palette entries because there are eight                                                                                  |
-| Unmotivated glassmorphism                 | None                                                                                                                                                                       |
-| Dark dashboard, neon lines, no data       | Light, printed, and every number on screen is derived from a vote                                                                                                          |
+**Rechecked 8 September against the rebuilt screens**, row by row.
+
+| `AGENTS.md` Tell                          | Us                                                                                                                                                                                                                                                                                                            |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Warm cream, serif display, terracotta     | Plate stock is warm, but the display face is a **thin grotesque** and every hue is sourced to a named species                                                                                                                                                                                                 |
+| Near-black with one acid pop              | Warm printing ink and nine plumage hues, none of them acid                                                                                                                                                                                                                                                    |
+| Purple-to-blue gradient hero              | No gradients. No hero                                                                                                                                                                                                                                                                                         |
+| Inter or Space Grotesk                    | Quicksand and Newsreader                                                                                                                                                                                                                                                                                      |
+| Geometric-rounded as the friendly default | **The nearest tell to us, and closer since the rebuild: pills throughout, the `--gold` chip and the reel card at radius 24.** Held off it by a square seal rather than a rounded pill, a paper ground rather than white, left alignment throughout, and by the radius mechanic itself, 24 or 999 against zero |
+| Everything centre-aligned                 | Left, always                                                                                                                                                                                                                                                                                                  |
+| One large radius on every surface         | **24 or 999 on The Desk and plate geometry on The Book, and the difference is the mechanic.** Study 07: a committed extreme reads as designed                                                                                                                                                                 |
+| A coloured rail down a rounded card       | Cards are used only where they are the best affordance, never nested, and never railed or shadowed                                                                                                                                                                                                            |
+| Numbered markers on non-sequences         | Numerals appear only on the perch and on the day numerals of a four-day calendar, both real sequences                                                                                                                                                                                                         |
+| Three items because three feels balanced  | Four states because the product has four; nine chromatic palette entries because there are nine                                                                                                                                                                                                               |
+| Unmotivated glassmorphism                 | None                                                                                                                                                                                                                                                                                                          |
+| Dark dashboard, neon lines, no data       | Light, printed, and every number on screen is derived from a vote                                                                                                                                                                                                                                             |
 
 ---
 
@@ -329,8 +364,9 @@ cannot rebuild honestly:
 
 - **The specimen illustration is unresolved and is the next thing to make.** The plates are flat-vector landscapes built
   in Figma, which works. The bird itself does not survive being assembled from primitives and goes to Codex, per
-  `AGENTS.md`. Photography stays out — the field-guide reading argues for drawn specimens over destination hero shots,
-  which is also what the strongest Dribbble result did
+  `AGENTS.md`. Photography stays out of the plates, and the reel does not change that - the reel is a field recording on
+  the card, not a hero shot on the plate. The field-guide reading still argues for drawn specimens, which is also what
+  the strongest Dribbble result did
 - **Dark mode** is out of scope for the prototype. A field guide is printed on paper. The mark still ships in both
   themes, because a logo outlives the surface it was drawn for and gets used on slides and a title card that are not
   paper
