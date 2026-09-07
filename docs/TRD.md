@@ -58,18 +58,26 @@ Nothing else was added, and **`.env.example` is unchanged** because there is sti
 
 ## The Shape Of The Build
 
-Three surfaces, four route entries, and no more. A fifth would be a page for something that is a state.
+Five surfaces, six route entries, and no more. A seventh would be a page for something that is a state.
 
 | Path         | Surface       | Who Lands There                                                                   |
 | ------------ | ------------- | --------------------------------------------------------------------------------- |
-| `/`          | The Desk      | Aisyah. Her private workspace, the cold-load default, and where the demo opens    |
-| `/interview` | The Interview | Aisyah, first run. Reached deliberately, because the demo shows it after the plan |
+| `/`          | The Dashboard | Anyone opening cold. Lists the trips and carries the New Plan call to action      |
+| `/new`       | New Plan      | Where a trip starts. Prefilled chips for destination, length and party            |
+| `/interview` | The Interview | The three questions, reached from New Plan                                        |
+| `/desk`      | The Desk      | Aisyah's private workspace. **This was the root until 7 September**               |
 | `/t/:tripId` | The Book      | The group, from the link pasted in WhatsApp. **The shared link, shaped like one** |
-| `*`          | The Desk      | Anything else. No 404 screen, no redirect, no bounce to an onboarding wall        |
+| `*`          | The Dashboard | Anything else. No 404 screen, no bounce to an onboarding wall                     |
+
+**The front two exist because the prototype opened on a finished trip and had nowhere to begin.** It showed the payoff
+and hid the mechanism that earns it, which is the wrong half to lead a walkthrough with.
 
 **`/t/:tripId` is the point.** `PRODUCT.md`'s rule is that the link is the trip, and a link is a path with the trip in
-it — not a query string on a workspace route. The Desk holds the root because a cold load with nothing stored has to
-land on a finished plan, which is `PRODUCT.md`'s first rule made literal: the trip is valid with zero group input.
+it — not a query string on a workspace route.
+
+**New Plan is not a form and must not become one.** Three rows of chips with one already chosen in each, because
+`PRODUCT.md`'s rule is that no question is asked which Perch can infer. A destination with no fixture behind it says so
+and disables the continue button, which is also the honest way to show that place data covers one city.
 
 **The Perch and What Changed have no route on purpose.** The Perch is a drawer over any slot, and What Changed is a
 strip that renders on both surfaces from the same component.
@@ -79,10 +87,12 @@ export const App = () => (
   <TripProvider>
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Desk />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/new" element={<NewPlan />} />
         <Route path="/interview" element={<Interview />} />
+        <Route path="/desk" element={<Desk />} />
         <Route path="/t/:tripId" element={<Book />} />
-        <Route path="*" element={<Desk />} />
+        <Route path="*" element={<Dashboard />} />
       </Routes>
     </BrowserRouter>
   </TripProvider>
@@ -97,7 +107,7 @@ src/
   main.tsx                mounts <App /> into #root; imports tokens.css then base.css
   App.tsx                 TripProvider wrapping BrowserRouter and the four routes above
   state.tsx               the one context: trip, disrupt, swap, tap, settle, undo, restart
-  surfaces/               Desk.tsx, Book.tsx, Interview.tsx, each beside its own .css
+  surfaces/               Dashboard, NewPlan, Interview, Desk, Book. Each beside its own .css
   components/             Perch.tsx, Plate.tsx, StateChip.tsx, WhatChanged.tsx
   lib/                    repair.ts, ranking.ts, store.ts, format.ts
   data/                   types.ts, places.ts, trip.ts

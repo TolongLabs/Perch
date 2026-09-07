@@ -354,7 +354,7 @@ docs/
 src/
   data/                  types, the place fixture, the seeded trip
   lib/                   repair, ranking, persistence, formatting
-  surfaces/              Interview, Desk, Book
+  surfaces/              Dashboard, NewPlan, Interview, Desk, Book
   components/            the perch drawer, state chip, What Changed, the plate
   styles/                tokens.css and base.css, the DESIGN.md system in CSS
 index.html               the Vite entry
