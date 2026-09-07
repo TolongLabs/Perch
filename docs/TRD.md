@@ -23,7 +23,7 @@ mockups, and because **an unnecessary service is an unnecessary way to fail on s
 | **Build**           | Vite 8 + React 19 + TypeScript 7, `strict` and `noUncheckedIndexedAccess`, per `tsconfig.json`       |
 | **Package Manager** | Bun, per `AGENTS.md`                                                                                 |
 | **Styling**         | Plain CSS with custom properties. One `tokens.css`, one `base.css`, one CSS file per surface         |
-| **Routing**         | `react-router-dom` 7 under `BrowserRouter`. Four `Route` entries over three surfaces                 |
+| **Routing**         | `react-router-dom` 7 under `BrowserRouter`. Six `Route` entries over five surfaces                   |
 | **Fonts**           | One Archivo variable face and two static Newsreader faces, self-hosted under `public/fonts/`         |
 | **Motion**          | CSS keyframes and transitions, seven keyframe rules total. No animation library                      |
 | **Icons**           | **None.** No icon library is installed and no icon set is chosen. See the open decisions below       |
@@ -38,17 +38,17 @@ Nothing else was added, and **`.env.example` is unchanged** because there is sti
 
 ### Rejected Alternatives
 
-| Rejected             | Why Not                                                                                                      |
-| -------------------- | ------------------------------------------------------------------------------------------------------------ |
-| **Next.js**          | An SSR framework with no server to justify it, and it complicates the single-container Cloud Run deploy      |
-| **Tailwind**         | Its default type scale fights a palette that uses only weights 100 and 700. **The tokens are the system**    |
-| **A Real Backend**   | Nothing in the Must tier writes to a server. An unnecessary service is an unnecessary way to fail on stage   |
-| **Vercel**           | Already rejected, for a reason unrelated to this file: [`README.md`](README.md#deployment)                   |
-| **An Animation Lib** | Seven keyframe rules across the whole build. A library for seven effects is a dependency for nothing         |
-| **A State Library**  | One trip, one context, one storage key. Redux or Zustand is scaffolding around a single object               |
-| **An Icon Library**  | Every affordance in the three surfaces is a labelled control or a drawn shape. A glyph set earns nothing yet |
-| **A Schema Library** | One boundary, `localStorage`. The guard that ships is a hand-written `isTrip`, and it is fourteen lines      |
-| **ID Type Aliases**  | Even `type SlotId = string` was dropped. Every id is `string` in `types.ts`, and the discipline is manual    |
+| Rejected             | Why Not                                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- |
+| **Next.js**          | An SSR framework with no server to justify it, and it complicates the single-container Cloud Run deploy     |
+| **Tailwind**         | Its default type scale fights a palette that uses only weights 100 and 700. **The tokens are the system**   |
+| **A Real Backend**   | Nothing in the Must tier writes to a server. An unnecessary service is an unnecessary way to fail on stage  |
+| **Vercel**           | Already rejected, for a reason unrelated to this file: [`README.md`](README.md#deployment)                  |
+| **An Animation Lib** | Seven keyframe rules across the whole build. A library for seven effects is a dependency for nothing        |
+| **A State Library**  | One trip, one context, one storage key. Redux or Zustand is scaffolding around a single object              |
+| **An Icon Library**  | Every affordance in the five surfaces is a labelled control or a drawn shape. A glyph set earns nothing yet |
+| **A Schema Library** | One boundary, `localStorage`. The guard that ships is a hand-written `isTrip`, and it is fourteen lines     |
+| **ID Type Aliases**  | Even `type SlotId = string` was dropped. Every id is `string` in `types.ts`, and the discipline is manual   |
 
 **Two TypeScript settings bite, and are meant to.** `verbatimModuleSyntax` means every type-only import is written
 `import type`; `noUncheckedIndexedAccess` makes every `Record` and array lookup `T | undefined`, which is why
@@ -105,7 +105,7 @@ export const App = () => (
 index.html                Vite entry, at the repo root. Preloads the Archivo face
 src/
   main.tsx                mounts <App /> into #root; imports tokens.css then base.css
-  App.tsx                 TripProvider wrapping BrowserRouter and the four routes above
+  App.tsx                 TripProvider wrapping BrowserRouter and the six routes above
   state.tsx               the one context: trip, disrupt, swap, tap, settle, undo, restart
   surfaces/               Dashboard, NewPlan, Interview, Desk, Book. Each beside its own .css
   components/             Perch.tsx, Plate.tsx, StateChip.tsx, WhatChanged.tsx
@@ -662,8 +662,8 @@ were chosen, and the seven that lost settle onto the perch beneath them, which i
 pick lands.
 
 **The interview is a demonstration of the mechanism, not an input to it, and the screen says so.** Its final button
-navigates to `/` and writes nothing; questions 1 and 2 are answered into local component state and discarded. The honest
-line under the cards is in the shipped copy:
+navigates to `/desk` and writes nothing; questions 1 and 2 are answered into local component state and discarded. The
+honest line under the cards is in the shipped copy:
 
 > This prototype always proposes the same trip, seeded from 3 picks. The ranking your taps produce is real and the
 > repair uses it.
@@ -760,7 +760,7 @@ state required, no bounce to the interview, no 404 on a hard refresh. That last 
 fallback: `/t/<trip>` has no file behind it, and the one thing the group does with the link is open it cold.
 
 **One device, one browser, one storage key.** The Desk and The Book are two routes over the same context, so a tap made
-on `/t/yogya-nov-2026` is visible on `/` because it is the same object in the same tab, not because anything synced.
+on `/t/yogya-nov-2026` is visible on `/desk` because it is the same object in the same tab, not because anything synced.
 Four limits follow, and the video must not imply otherwise.
 
 - **Nothing crosses a device.** There is no fragment payload, no encoding, no server. A second phone opening the link
@@ -1113,7 +1113,7 @@ Three things that need a person, not a commit. Each is one decision and none of 
 | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **The demo sentence's figure** | `PRODUCT.md`'s demo moment ends **"the day stays at RM 40"**; the code emits **"the day stays at RM 119"**. _Stays at_ is true either way, only the figure differs. Either `PRODUCT.md` updates, or the demo day is re-priced |
 | **`DESIGN.md`'s tint table**   | `tokens.css` ships five day tints; `DESIGN.md`'s palette table still lists `--day-1` to `--day-3`. Two rows need adding to the spec, or the two new birds need rejecting                                                      |
-| **An icon set**                | None is chosen and none is installed. Nothing in the three surfaces needs one today. If the pitch deck or a later surface does, it is a dependency decision that has not been made                                            |
+| **An icon set**                | None is chosen and none is installed. Nothing in the five surfaces needs one today. If the pitch deck or a later surface does, it is a dependency decision that has not been made                                             |
 
 **The figure is the one with a deadline.** It appears in `PRODUCT.md`, and it will appear in the video script and the
 slides, so it wants settling before `pitch-smith` writes against either. `PRODUCT.md` also abbreviates the option as
