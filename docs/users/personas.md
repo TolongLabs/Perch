@@ -69,3 +69,9 @@ is a user our mechanism does not help.
 
 **What turns this from a guess into a target group** is issue #4, three real conversations. Until then this page is
 worth the 2-3 band, and it is on the page so that a mentor can break it tonight rather than so that it can be cited.
+
+**A synthetic panel was run against this page on 7 September** and is recorded in
+[`synthetic-panel-2026-09-07.md`](synthetic-panel-2026-09-07.md). **It is not evidence and does not upgrade any claim
+above.** Three models were given the identity block and asked six behavioural questions with the testable claims
+withheld. It corroborated the install refusal and the trip length, and it contradicted two things this page and the
+product both assume: **that the group votes**, and **that a broken stop gets replaced rather than dropped**.

@@ -56,6 +56,8 @@ is what earns the marks.
 | 2026-09-06 | Pictures added throughout eat-shop-do: a thumbnail per drawer and three inside | "so a layman can plan a trip as well" - a wall of ratings is a page for people who already know | Jin Siang |
 | 2026-09-06 | Shop leads with what to buy; eat and do keep leading with where | Nobody lands somewhere wondering which shop to visit. They wonder what to bring back | Jin Siang asked which order |
 | 2026-09-06 | Eat-shop-do now measures every place against the voted plan; the fake day labels are gone | They were hardcoded strings that no vote had ever touched, the same bug the route page had | Jin Siang asked whether the page reflects the plan |
+| 2026-09-07 | Tripeza downgraded as a threat; SwipeSights named as the closest competitor instead | Both were read directly. Tripeza votes on the destination then generates the stops unvoted; SwipeSights ranks real places and spends the ranking on dwell time | Fourth scan, `../market/competitors.md` |
+| 2026-09-07 | Three models were asked to play Aisyah, and two of the product's premises failed | Nobody described a vote, and nobody substituted a broken stop. Synthetic, so it aims the mentor session rather than settling anything | `../users/synthetic-panel-2026-09-07.md` |
 
 ## Longer Entries
 
@@ -763,3 +765,47 @@ is weaker than using the product and much stronger than the `[snippet only]` and
 
 **What changed.** [`../market/competitors.md`](../market/competitors.md) - both entries rewritten, and a fourth-pass
 verdict added. **Troupe is now the most important unchecked product.**
+
+### 2026-09-07 - Three models played Aisyah, and disagreed with us twice
+
+**Before.** [`../users/personas.md`](../users/personas.md) named a user for the first time, and every claim on it was
+marked `[assumed]`. The plan was to leave it that way until three real conversations could be had.
+
+**What was done instead.** Three language models were given Aisyah's identity - her age, her job, her group, the fact
+that she always ends up organising - and asked six behavioural questions in character. **The behavioural claims we
+wanted to test were deliberately withheld**, so the five-app stack, the two late-night moments and the app-install
+refusal were not fed in. Full method and every quote:
+[`../users/synthetic-panel-2026-09-07.md`](../users/synthetic-panel-2026-09-07.md).
+
+**It is not user research and the page says so twice.** Three models with overlapping training data measure a shared
+prior, not Malaysia. `interviews/` is still empty. Convergence here means "our assumption is the obvious one", which is
+weaker than evidence and stronger than nothing.
+
+**What it agreed with.** The group will not install anything, and all three independently produced the same product
+requirement - it has to work for the people who never install it. Trips are three to four days, and all three named
+annual leave as the cause without being asked.
+
+**The two disagreements are the reason the exercise was worth running.**
+
+**Nobody voted.** Asked how disagreements actually get settled, not one of the three described a vote. All three
+described the same mechanism: one person acts, pays or books, and the rest ratify by not objecting. A's phrasing was
+"whoever pays first wins". **That is an argument against the 6 September fork resolution**, which requires the planner to
+be "a durable shared surface the group lives in over days" to earn its separation from the interview.
+
+**Nobody substituted.** All three described a real disruption, and none replaced the broken stop with a ranked
+alternative. Two collapsed the day to something low-effort and said it turned out better - "it ended up being nicer than
+the plan honestly". **That is the strongest rebuttal to the bench yet recorded, and it did not come from a competitor.**
+
+**But the third answer relocates the claim rather than killing it.** A's group did re-plan, and Aisyah did it alone:
+"the part that stung wasn't the cancellation, it was that I spent my holiday morning re-planning on my phone while
+everyone else waited to be told where to walk." **The defensible claim is not that the trip survives - it is that she
+does not repair it by herself.** Narrower, harder to rebut, and the same single-shot demo.
+
+**Also surfaced, and currently unaddressed anywhere in the deck:** the worst pain all three named was not planning and
+not disruption. It was waiting for people to commit while flight prices rise, and being the unpaid treasurer chasing
+repayment. Not a reason to build either - [`build-verdict.md`](build-verdict.md) is explicit that breadth is a liability
+here - but a reason to have an answer ready when a judge asks.
+
+**What changed.** Nothing in the product yet, on purpose. Five questions were carried into tonight's mentor session,
+and the third one - whether the headline claim is "the trip survives" or "she does not repair it alone" - is the one
+that changes the sentence the whole submission is built on.
