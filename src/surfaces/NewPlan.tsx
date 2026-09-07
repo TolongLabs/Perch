@@ -2,25 +2,25 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './NewPlan.css'
 
-type Choice = { id: string; label: string; note: string; ready?: boolean }
+type Choice = { id: string; label: string; note: string; stub?: boolean }
 
 const WHERE: Choice[] = [
-  { id: 'yogya', label: 'Yogyakarta', note: '27 places loaded', ready: true },
-  { id: 'penang', label: 'Penang', note: 'No place data yet' },
-  { id: 'bangkok', label: 'Bangkok', note: 'No place data yet' },
-  { id: 'da-nang', label: 'Da Nang', note: 'No place data yet' }
+  { id: 'yogya', label: 'Yogyakarta', note: '27 places loaded' },
+  { id: 'penang', label: 'Penang', note: 'No place data yet', stub: true },
+  { id: 'bangkok', label: 'Bangkok', note: 'No place data yet', stub: true },
+  { id: 'da-nang', label: 'Da Nang', note: 'No place data yet', stub: true }
 ]
 
 /** The lengths are prefills, not a date picker. The middle one is what every panel answer described unprompted. */
 const HOW_LONG: Choice[] = [
   { id: 'weekend', label: 'Just The Weekend', note: '2 days, 1 night' },
-  { id: 'leave', label: 'One Day Of Leave', note: '4 days, 3 nights. Tag a weekend', ready: true },
+  { id: 'leave', label: 'One Day Of Leave', note: '4 days, 3 nights. Tag a weekend' },
   { id: 'week', label: 'A Full Week', note: '7 days, 6 nights' }
 ]
 
 const WHO: Choice[] = [
   { id: 'solo', label: 'Just Me', note: 'The questions get shorter' },
-  { id: 'four', label: 'Four Of Us', note: 'Aisyah, Farah, Hana, Iman', ready: true },
+  { id: 'four', label: 'Four Of Us', note: 'Aisyah, Farah, Hana, Iman' },
   { id: 'more', label: 'More Than Six', note: 'Availability comes first' }
 ]
 
@@ -45,7 +45,7 @@ export const NewPlan = () => {
               type="button"
               className="np-chip"
               data-on={value === o.id}
-              data-ready={o.ready === true}
+              data-stub={o.stub === true}
               onClick={() => set(o.id)}
             >
               <span className="t-name">{o.label}</span>
