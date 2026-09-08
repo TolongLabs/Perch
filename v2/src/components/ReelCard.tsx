@@ -17,16 +17,10 @@ const PLATFORM: Record<Place['reel']['platform'], string> = {
 export const ReelCard = ({ place, live }: { place: Place; live: boolean }) => (
   <article className="reel">
     {live ? (
-      <video
-        className="reel-media"
-        src={place.reel.src}
-        poster={place.reel.poster}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="metadata"
-      />
+      <video className="reel-media" poster={place.reel.poster} autoPlay muted loop playsInline preload="metadata">
+        <source src={place.reel.src} type="video/mp4" />
+        <source src={place.reel.webm} type="video/webm" />
+      </video>
     ) : (
       <img className="reel-media" src={place.reel.poster} alt="" loading="lazy" />
     )}

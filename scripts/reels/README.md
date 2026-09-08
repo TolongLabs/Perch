@@ -34,8 +34,9 @@ gcloud storage buckets add-iam-policy-binding gs://perch-reels --member allUsers
 gcloud storage cp -r out/* gs://perch-reels/
 ```
 
-Files are then served at `https://storage.googleapis.com/perch-reels/<slug>.mp4`, no CORS setup needed for a `<video>`
-tag. Copy `out/manifest.json` to `v2/src/data/reels.json` and set the base URL there.
+Files are then served at `https://storage.googleapis.com/perch-reels/<slug>.mp4`, with a `<slug>.webm` beside each for a
+browser that cannot decode H.264, no CORS setup needed for a `<video>` tag. Copy `out/manifest.json` to
+`v2/src/data/reels.json` and set the base URL there.
 
 ## If Something Breaks
 

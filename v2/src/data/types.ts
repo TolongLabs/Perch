@@ -16,6 +16,8 @@ export type ClusterId = 'asakusa-ueno' | 'shibuya-harajuku-shinjuku' | 'tsukiji-
 
 export type Reel = {
   src: string
+  /** The same clip as VP9, for a browser with no H.264 decoder; Firefox on Linux without system codecs is one. */
+  webm: string
   poster: string
   platform: 'instagram' | 'xhs'
   creditHandle: string
