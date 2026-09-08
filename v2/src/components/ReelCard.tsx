@@ -1,6 +1,6 @@
 import type { Place } from '../data/types'
 import { duration, price } from '../lib/format'
-import { CLUSTER_LABEL } from '../lib/schedule'
+import { CLUSTER_AREA } from '../lib/schedule'
 import './ReelCard.css'
 
 const PLATFORM: Record<Place['reel']['platform'], string> = {
@@ -36,7 +36,7 @@ export const ReelCard = ({ place, live }: { place: Place; live: boolean }) => (
       {/* The specimen line is the metadata under a name, so it takes the full width under it rather than sharing a
           row with the credit, where a long creator handle squeezes it into a column. */}
       <p className="t-specimen reel-line">
-        {CLUSTER_LABEL[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
+        {CLUSTER_AREA[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
       </p>
     </div>
   </article>

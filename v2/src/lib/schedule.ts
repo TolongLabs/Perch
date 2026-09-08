@@ -15,6 +15,14 @@ export const CLUSTER_LABEL: Record<ClusterId, string> = {
   'odaiba-toyosu-teamlab': 'Odaiba, Toyosu And teamLab'
 }
 
+/** The same areas for a specimen line under a place name, where metadata is sentence case. */
+export const CLUSTER_AREA: Record<ClusterId, string> = {
+  'asakusa-ueno': 'Asakusa and Ueno',
+  'shibuya-harajuku-shinjuku': 'Shibuya, Harajuku and Shinjuku',
+  'tsukiji-ginza-station': 'Tsukiji, Ginza and the Station',
+  'odaiba-toyosu-teamlab': 'Odaiba, Toyosu and teamLab'
+}
+
 const CLUSTERS = Object.keys(CLUSTER_LABEL) as ClusterId[]
 
 export const minutes = (hhmm: string): number => {

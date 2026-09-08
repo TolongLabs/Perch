@@ -1,6 +1,6 @@
 import type { Place } from '../data/types'
 import { duration, price } from '../lib/format'
-import { CLUSTER_LABEL } from '../lib/schedule'
+import { CLUSTER_AREA } from '../lib/schedule'
 import './Perch.css'
 
 /**
@@ -41,7 +41,7 @@ export const Perch = ({
           <span className="perch-lead">
             <span className="t-name perch-name">{place.name}</span>
             <span className="t-specimen perch-line">
-              {CLUSTER_LABEL[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
+              {CLUSTER_AREA[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
             </span>
           </span>
           <button type="button" className="perch-swap t-label" onClick={onSwap}>

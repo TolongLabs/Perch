@@ -5,7 +5,7 @@ import { Heading } from '../components/Ui'
 import { Voters } from '../components/Voters'
 import { duration, price } from '../lib/format'
 import { isJoiner } from '../lib/joiner'
-import { CLUSTER_LABEL } from '../lib/schedule'
+import { CLUSTER_AREA } from '../lib/schedule'
 import { tallyFor } from '../lib/votes'
 import { useTrip } from '../state'
 import './Tally.css'
@@ -76,7 +76,7 @@ export const Tally = () => {
                 {/* Full width under the name, where a specimen line belongs, rather than sharing the row with a
                     percentage and a chip that squeeze it into a column. */}
                 <p className="t-specimen tally-line">
-                  {CLUSTER_LABEL[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
+                  {CLUSTER_AREA[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
                 </p>
               </li>
             )
