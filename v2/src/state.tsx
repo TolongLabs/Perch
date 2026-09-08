@@ -20,6 +20,10 @@ type Ctx = {
   tick: (itemId: string) => void
   /** Regenerates the calendar for new dates. Votes and pins are on places, so only the days are replaced. */
   setDates: (startDate: string, nights: number) => void
+  /** Opens a second slot in a period of a day. Each period holds at most two, so a day tops out at six. */
+  addSlot: (dayIndex: number, period: Period) => void
+  /** Closes a period's second slot, only while it is empty. The first slot of a period never goes. */
+  removeSlot: (dayIndex: number, slotId: string) => void
   restart: () => void
 }
 
@@ -50,6 +54,24 @@ const setSlot = (days: Day[], dayIndex: number, slotIndex: number, patch: Partia
       ? { ...day, slots: day.slots.map((s, i) => (i === slotIndex ? { ...s, ...patch } : s)) }
       : day
   )
+
+export const SLOTS_PER_PERIOD = 2
+
+/** The new slot sits after the last slot of its period, so the day stays in morning, afternoon, evening order. */
+export const withSlot = (day: Day, period: Period): Day => {
+  const held = day.slots.filter((s) => s.period === period)
+  if (held.length >= SLOTS_PER_PERIOD) return day
+  const at = day.slots.findLastIndex((s) => s.period === period)
+  const slot: Slot = { id: `d${day.index}-${period}-${held.length + 1}`, period, placeId: null, pinned: false }
+  return { ...day, slots: [...day.slots.slice(0, at + 1), slot, ...day.slots.slice(at + 1)] }
+}
+
+export const withoutSlot = (day: Day, slotId: string): Day => {
+  const slot = day.slots.find((s) => s.id === slotId)
+  if (!slot || slot.placeId) return day
+  if (day.slots.findIndex((s) => s.period === slot.period) === day.slots.indexOf(slot)) return day
+  return { ...day, slots: day.slots.filter((s) => s.id !== slotId) }
+}
 
 const clearPlace = (days: Day[], placeId: string): Day[] =>
   days.map((day) =>
@@ -167,14 +189,28 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     }))
   }, [])
 
+  const addSlot = useCallback((dayIndex: number, period: Period) => {
+    setTrip((current) => ({
+      ...current,
+      days: current.days.map((day) => (day.index === dayIndex ? withSlot(day, period) : day))
+    }))
+  }, [])
+
+  const removeSlot = useCallback((dayIndex: number, slotId: string) => {
+    setTrip((current) => ({
+      ...current,
+      days: current.days.map((day) => (day.index === dayIndex ? withoutSlot(day, slotId) : day))
+    }))
+  }, [])
+
   const restart = useCallback(() => {
     reset()
     setTrip(load())
   }, [])
 
   const value = useMemo(
-    () => ({ trip, swipe, setParty, place, remove, apply, pin, unpin, tick, setDates, restart }),
-    [trip, swipe, setParty, place, remove, apply, pin, unpin, tick, setDates, restart]
+    () => ({ trip, swipe, setParty, place, remove, apply, pin, unpin, tick, setDates, addSlot, removeSlot, restart }),
+    [trip, swipe, setParty, place, remove, apply, pin, unpin, tick, setDates, addSlot, removeSlot, restart]
   )
   return <TripContext.Provider value={value}>{children}</TripContext.Provider>
 }
