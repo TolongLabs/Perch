@@ -515,3 +515,59 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
     expect(streams.stdout).toContain('audio')
   }, 30_000)
 })
+
+// narration.txt holds the spoken lines and record.mjs holds the beat budgets, in two files that must agree. They
+// drifted once already, when #166 re-chained shot-7's offsets and the recorder's budgets were not re-checked, and
+// the failure would have been a line still being spoken over the start of the next beat rather than anything that
+// throws. These cases read both files as they ship and refuse that drift.
+describe('the narration fits the beats the recorder films', () => {
+  // Kokoro at the voice the film uses, measured rather than assumed: 175 words per minute, not the 155 first taken
+  // from the docs. This estimates a line's spoken length closely enough to catch drift, and is not a substitute for
+  // the measured beats.json a real take produces.
+  const WPM = 175
+  const spokenMs = (text: string) => (text.split(/\s+/).filter(Boolean).length / WPM) * 60_000
+
+  const source = readFileSync(join(import.meta.dir, 'record.mjs'), 'utf8')
+  const budgets = new Map<string, number>()
+  for (const [, name, value] of source.matchAll(/finishShot\('([a-z0-9-]+)', ([\d_]+)\)/g)) {
+    budgets.set(name, Number(value.replaceAll('_', '')))
+  }
+
+  const script: Array<{ beat: string; offset: number; text: string }> = []
+  for (const line of readFileSync(narration, 'utf8').split('\n')) {
+    const match = /^(\S+) \| (\d+) \| (.*)$/.exec(line.trim())
+    if (match?.[1] && match[2] && match[3]) script.push({ beat: match[1], offset: Number(match[2]), text: match[3] })
+  }
+
+  const order = [...new Set(script.map((line) => line.beat))]
+
+  // The regex above is the only link between this file and the recorder's budgets, so it checks its own catch rather
+  // than silently skipping a call written in a shape it does not match.
+  test('reads a budget for every finishShot call in the recorder', () => {
+    expect(budgets.size).toBe(source.split('finishShot(').length - 1)
+    expect(budgets.size).toBeGreaterThan(0)
+  })
+
+  test('gives every beat in the narration a budget in the recorder', () => {
+    expect(order.filter((beat) => !budgets.has(beat))).toEqual([])
+  })
+
+  // The assertion is that a line clears the next line, not that it fits inside its own beat. A line is allowed to run
+  // past its beat's end, because the next beat opens with its own lead-in offset before anyone speaks again. Asserting
+  // the narrower thing reports beats as broken when they are not: shot-8 runs 29ms past its budget and is fine.
+  test('leaves every line finished before the next one starts', () => {
+    const seams = order.slice(0, -1).map((beat, index) => {
+      const lines = script.filter((line) => line.beat === beat)
+      const ends = Math.max(...lines.map((line) => line.offset + spokenMs(line.text)))
+      const next = order[index + 1] as string
+      const starts = (budgets.get(beat) as number) + (script.find((line) => line.beat === next)?.offset ?? 0)
+      return { beat, gap: starts - ends }
+    })
+    expect(seams.filter((seam) => seam.gap < 0).map((seam) => seam.beat)).toEqual([])
+  })
+
+  test('keeps the film inside the five minute ceiling', () => {
+    const total = [...budgets.values()].reduce((sum, value) => sum + value, 0)
+    expect(total).toBeLessThanOrEqual(300_000)
+  })
+})
