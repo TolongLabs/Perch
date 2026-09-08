@@ -36,7 +36,7 @@ export const PoolCard = ({ place, unanimous }: { place: Place; unanimous: boolea
 
 /**
  * A card sitting in a slot. Draggable to another slot, and carrying the two controls the owner has over it: Pin, which
- * survives the next Apply, and Remove, which opens the drawer rather than leaving a hole.
+ * survives the next Plan The Days, and Remove, which opens the drawer rather than leaving a hole.
  */
 export const PlacedCard = ({
   place,
@@ -52,7 +52,7 @@ export const PlacedCard = ({
   dayIndex: number
   slotIndex: number
   pinned: boolean
-  /** True for the one render after Apply, which is what plays the fly-in. */
+  /** True for the one render after Plan The Days, which is what plays the fly-in. */
   flying: boolean
   /** Position in the stagger, so the cards land in reading order rather than all at once. */
   order: number
