@@ -196,7 +196,7 @@ export const Desk = () => {
                             onRemove={() => setDrawer({ dayIndex: day.index, slotIndex })}
                           />
                         ) : (
-                          <p className="desk-empty t-label">Empty</p>
+                          <p className="desk-empty">Empty</p>
                         )}
                       </SlotCell>
                     </div>
