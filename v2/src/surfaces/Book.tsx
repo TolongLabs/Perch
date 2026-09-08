@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom'
 import { Plate } from '../components/Plate'
-import type { Slot } from '../data/types'
+import { transitMin } from '../data/travel'
+import type { Place, Slot } from '../data/types'
 import { dayCostRM, tripCostRM } from '../lib/cost'
 import { dayLabel, duration, money, price } from '../lib/format'
+import { transitRoute } from '../lib/mapsLink'
 import { useTrip } from '../state'
 import './Book.css'
 
@@ -15,27 +17,23 @@ const PERIOD: Record<Slot['period'], string> = {
 }
 
 /**
- * The magazine, and the shared link. A holding render against the new model: the cover, one spread per day, and the
- * checklist as the colophon. Issue #66 re-fixtures it for Tokyo properly.
+ * The keepsake, and the shared link. Printed state only: there is no setting state here, no blank slot and no
+ * awaiting-decision chip, because a plate prints what was settled. A day that has not been scheduled simply has
+ * fewer entries rather than a row of holes.
  */
 export const Book = () => {
   const { trip } = useTrip()
-  const empty = trip.days.flatMap((d) => d.slots.filter((s) => s.placeId === null))
-  const printed = empty.length === 0 && trip.checklist.every((item) => item.ticked)
+  const owner = trip.party.find((p) => p.id === trip.ownerId)?.name ?? 'the owner'
 
   return (
     <main className="book">
       <article className="spread cover">
-        <p className="t-label cover-eyebrow">{printed ? 'Printed' : 'Still Setting'}</p>
+        <p className="t-label cover-eyebrow">The Book</p>
         <h1 className="t-display cover-title">{trip.destination}</h1>
         <p className="t-prose cover-prose">
-          {WORDS[trip.days.length]} days, {WORDS[trip.nights]} nights, put together by{' '}
-          {trip.party.find((p) => p.id === trip.ownerId)?.name ?? 'the owner'}.{' '}
-          {empty.length === 0
-            ? 'Every slot is filled.'
-            : empty.length === 1
-              ? 'One slot is still open, and it is marked.'
-              : `${empty.length} slots are still open, and they are marked.`}
+          {WORDS[trip.days.length] ?? trip.days.length} days,{' '}
+          {(WORDS[trip.nights] ?? String(trip.nights)).toLowerCase()} nights, put together by {owner} and voted on by{' '}
+          {trip.party.length - 1} others.
         </p>
 
         <dl className="cover-facts">
@@ -56,43 +54,56 @@ export const Book = () => {
         </dl>
       </article>
 
-      {trip.days.map((day) => (
-        <article key={day.index} className="spread day-spread" data-day={day.tint}>
-          <div className="spread-plate">
-            <Plate day={day.index} title={day.title} />
-          </div>
+      {trip.days.map((day) => {
+        const stops = day.slots
+          .map((slot) => (slot.placeId ? trip.options[slot.placeId] : undefined))
+          .filter((p): p is Place => p !== undefined)
+        const route = transitRoute(stops)
 
-          <div className="spread-text">
-            <p className="t-label spread-band">
-              Day {day.index} &middot; {day.weekday} {dayLabel(day.date)} &middot; {money(dayCostRM(day, trip.options))}
-            </p>
-            <h2 className="t-plate-title">{day.title}</h2>
+        return (
+          <article key={day.index} className="spread day-spread" data-day={day.tint}>
+            <div className="spread-plate">
+              <Plate day={day.index} title={day.title} stops={stops} />
+            </div>
 
-            {day.slots.map((slot) => {
-              const option = slot.placeId ? trip.options[slot.placeId] : undefined
-              if (!option) {
+            <div className="spread-text">
+              <p className="t-label spread-band">
+                Day {day.index} &middot; {day.weekday} {dayLabel(day.date)} &middot;{' '}
+                {money(dayCostRM(day, trip.options))}
+              </p>
+              <h2 className="t-plate-title">{day.title}</h2>
+
+              {day.slots.map((slot, i) => {
+                const place = slot.placeId ? trip.options[slot.placeId] : undefined
+                if (!place) return null
+                const previousId = day.slots
+                  .slice(0, i)
+                  .reverse()
+                  .find((s) => s.placeId !== null)?.placeId
+                const transit = previousId ? transitMin(previousId, place.id) : 0
+
                 return (
-                  <section key={slot.id} className="gap">
+                  <section key={slot.id} className="entry">
                     <p className="t-label entry-when">{PERIOD[slot.period]}</p>
-                    <h3 className="t-name gap-title">Nothing Here Yet</h3>
-                    <p className="t-prose entry-prose">This slot fills when the calendar is applied on the Desk.</p>
+                    <h3 className="t-name">{place.name}</h3>
+                    <p className="t-prose entry-prose">{place.blurb}</p>
+                    <p className="t-specimen">
+                      {duration(place.dwellMin)} &middot; {price(place)}
+                      {transit > 0 && <> &middot; {transit} min from the last stop</>}
+                    </p>
                   </section>
                 )
-              }
-              return (
-                <section key={slot.id} className="entry">
-                  <p className="t-label entry-when">{PERIOD[slot.period]}</p>
-                  <h3 className="t-name">{option.name}</h3>
-                  <p className="t-prose entry-prose">{option.blurb}</p>
-                  <p className="t-specimen">
-                    {duration(option.dwellMin)} &middot; {price(option)}
-                  </p>
-                </section>
-              )
-            })}
-          </div>
-        </article>
-      ))}
+              })}
+
+              {route && (
+                <a className="t-label day-route" href={route} target="_blank" rel="noreferrer noopener">
+                  Transit Route
+                </a>
+              )}
+            </div>
+          </article>
+        )
+      })}
 
       <article className="spread colophon">
         <p className="t-label">Before We Go</p>
