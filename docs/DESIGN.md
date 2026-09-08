@@ -178,8 +178,15 @@ slow-day chips fill with. State chips are a 10% tint, a 1px rule in the full col
 fill, which would carry no extra information.
 
 **Contrast.** Body text hits ≥4.5:1 against its ground and large text ≥3:1, per the `impeccable` rule that muted grey on
-tinted near-white is the single most common failure. Where a state colour carries text it is used at full strength on
-paper, never as grey-on-tint.
+tinted near-white is the single most common failure. Where open, decided or at-risk carries text it is used at full
+strength on paper, never as grey-on-tint.
+
+**Gold cannot carry text on a light ground at any tint.** Black-naped Oriole `#E8A317` measures about 1.9:1 on paper, a
+hue limit no ground fixes. So a gold chip keeps its 1px rule and plumage dot at full gold, which is what reads as gold,
+and sets its label in `color-mix(in srgb, var(--state) 34%, var(--ink))`, which measures 6.9:1. Found on The Tally.
+
+**A state colour set as text on its own 10 percent tint fails contrast every time**, three for three in the build: the
+onboarding legend at 4.4:1, Who Has Voted at 4.3:1, the gold chip at 1.9:1. Text on a tint is always ink-weighted.
 
 ## The Mark
 
