@@ -48,6 +48,9 @@ while IFS=$'\t' read -r -u 3 slug url skip; do
       -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,zoompan=z='min(zoom+0.0008,1.12)':d=$((SECONDS_KEEP*25)):x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s=540x960:fps=25,format=yuv420p" \
       -c:v libx264 -preset slow -crf 26 -movflags +faststart "$OUT/$slug.mp4" < /dev/null
   fi
+  # The same clip as VP9 WebM, for a browser with no H.264 decoder. Firefox reports that as
+  # NS_ERROR_DOM_MEDIA_METADATA_ERR and plays nothing; the <video> lists both and takes the one it can decode.
+  ffmpeg -y -loglevel error -i "$OUT/$slug.mp4" -an -c:v libvpx-vp9 -b:v 0 -crf 34 -row-mt 1 "$OUT/$slug.webm" < /dev/null
   ffmpeg -y -loglevel error -i "$OUT/$slug.mp4" -frames:v 1 -q:v 4 "$OUT/$slug.jpg" < /dev/null
 done 3< urls.tsv
 

@@ -14,6 +14,7 @@ export const reels: Record<string, Reel> = Object.fromEntries(
     entry.place,
     {
       src: base + entry.src,
+      webm: base + entry.src.replace(/\.mp4$/, '.webm'),
       poster: base + entry.poster,
       platform: isPlatform(entry.platform) ? entry.platform : 'instagram',
       creditHandle: entry.credit,
