@@ -2,12 +2,12 @@ import { useDraggable } from '@dnd-kit/core'
 import type { CSSProperties } from 'react'
 import type { Place } from '../data/types'
 import { duration, price } from '../lib/format'
-import { CLUSTER_LABEL } from '../lib/schedule'
+import { CLUSTER_AREA } from '../lib/schedule'
 import './PlacedCard.css'
 
 const Line = ({ place }: { place: Place }) => (
   <p className="t-specimen card-line">
-    {CLUSTER_LABEL[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
+    {CLUSTER_AREA[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
   </p>
 )
 

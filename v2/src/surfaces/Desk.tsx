@@ -16,7 +16,7 @@ import { type ChipState, StateChip } from '../components/StateChip'
 import { Heading, Info } from '../components/Ui'
 import type { DayFeasibility, Slot } from '../data/types'
 import { dayLabel, duration, price } from '../lib/format'
-import { CLUSTER_LABEL } from '../lib/schedule'
+import { CLUSTER_AREA } from '../lib/schedule'
 import { nextReplacement, tallyFor, votedIn } from '../lib/votes'
 import { useTrip } from '../state'
 import './Desk.css'
@@ -223,7 +223,7 @@ export const Desk = () => {
           <article className="card card-pool card-ghost">
             <p className="t-name card-name">{dragged.name}</p>
             <p className="t-specimen card-line">
-              {CLUSTER_LABEL[dragged.cluster]} · {duration(dragged.dwellMin)} · {price(dragged)}
+              {CLUSTER_AREA[dragged.cluster]} · {duration(dragged.dwellMin)} · {price(dragged)}
             </p>
           </article>
         )}
