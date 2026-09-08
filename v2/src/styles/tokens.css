@@ -86,11 +86,17 @@
   --ground-decided: color-mix(in oklab, var(--decided) 8%, var(--paper));
   --ground-at-risk: color-mix(in oklab, var(--at-risk) 8%, var(--paper));
   --ground-gold: color-mix(in oklab, var(--gold) 10%, var(--paper));
-  --ground-day-1: color-mix(in oklab, var(--day-1) 9%, var(--paper));
-  --ground-day-2: color-mix(in oklab, var(--day-2) 9%, var(--paper));
-  --ground-day-3: color-mix(in oklab, var(--day-3) 10%, var(--paper));
-  --ground-day-4: color-mix(in oklab, var(--day-4) 9%, var(--paper));
-  --ground-day-5: color-mix(in oklab, var(--day-5) 9%, var(--paper));
+  /* 26 percent, not 9. The day tint is a wayfinding device, and at 9 the four columns on a Desk were separated by
+     a CIEDE2000 of 2.4 to 3.7: blue and violet both desaturate toward the same grey when mixed into warm paper,
+     and orange and yellow both stay warm. Adjacent days now clear 8 across a four-day trip in both themes. The
+     five-day worst pair, the Violet Cuckoo against the Pink-necked Green Pigeon, holds at 7.1 and is the recorded
+     limit of five hue-adjacent birds; a per-day mix reached 10.7 but at a 20-point spread, which makes the days
+     look ranked when they are not. */
+  --ground-day-1: color-mix(in oklab, var(--day-1) 26%, var(--paper));
+  --ground-day-2: color-mix(in oklab, var(--day-2) 26%, var(--paper));
+  --ground-day-3: color-mix(in oklab, var(--day-3) 26%, var(--paper));
+  --ground-day-4: color-mix(in oklab, var(--day-4) 26%, var(--paper));
+  --ground-day-5: color-mix(in oklab, var(--day-5) 26%, var(--paper));
 }
 
 /* A day sets --tint and --ground once, and everything inside it reads those two. This is the wayfinding device. */
