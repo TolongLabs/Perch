@@ -176,7 +176,7 @@ about at the same time.
 | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ![The landing screen](assets/screens/01-landing.png) | The one screen before you commit to anything. It states the mechanism rather than the benefit, and offers two ways in: start a plan, or open a book someone has already shared with you                                                                                                        |
 | ![The dashboard](assets/screens/02-dashboard.png)    | Aisyah sees the trip, who has already swiped, and the link to send the ones who have not. The button reads Open The Deck while she has reels left and See The Tally once she is finished, so the card always names the next thing to do                                                        |
-| ![Onboarding](assets/screens/03-onboarding.png)      | She types what she wants out of the trip in her own words before she taps anything, then sets the dates by tapping a drawn month twice. Only Tokyo can be picked, and the screen says why instead of letting her find out later                                                                |
+| ![Onboarding](assets/screens/03-onboarding.png)      | She sets the dates by tapping a drawn month twice, then says what she wants out of the trip in her own words before she taps any of the suggestions. Only Tokyo can be picked, and the screen says why instead of letting her find out later                                                   |
 | ![The Deck](assets/screens/04-deck.png)              | The invite link opens here, on a phone, with no account and no sign-up. She swipes each reel left or right and the count goes down. Her three friends swiped when she sent the link, so the tally is never waiting on everyone at once                                                         |
 | ![The Tally](assets/screens/05-tally.png)            | Every place carries a percentage of the group's weighted vote, where the owner's swipe counts one and a half. Places everyone said yes to take the gold mark; places nobody wanted are greyed and drop out of the running order entirely                                                       |
 | ![The Desk](assets/screens/06-desk.png)              | She drags a card into a slot and Apply orders each day around whatever she has fixed. Day 1 has just turned gold: it still fits, but she moved a stop across the city and the day now runs 32 minutes slower than the order the scheduler would have chosen                                    |
@@ -186,10 +186,10 @@ about at the same time.
 **The flow is Landing, Dashboard, Onboarding, The Deck, The Tally, The Desk, Before We Go, The Book**, and every step is
 a real click in the deployed prototype. Nothing here is a static mock-up of a screen that does not exist.
 
-**The six phone screens are captured at 390 by 844 and the two desktop screens at 1440 by 900**, which is why their
-proportions differ. The Desk is the one surface built for a wider screen, because four day columns and a sidebar cannot
-be read at phone width; the story the product tells has the group swiping on their phones from a link and the owner
-shaping the days at a desk.
+**The six phone screens are captured at 390 by 844 and the two desktop screens at 1440 by 900, every one rendered at
+double scale so it stays sharp on a high-density display**, which is why their proportions differ. The Desk is the one
+surface built for a wider screen, because four day columns and a sidebar cannot be read at phone width; the story the
+product tells has the group swiping on their phones from a link and the owner shaping the days at a desk.
 
 **The Prototype Controls block on The Desk is deliberate and is labelled as not part of the product.** The trip lives in
 one browser with no account behind it, so there is no other way to put the fixture back between runs, and a demo that
