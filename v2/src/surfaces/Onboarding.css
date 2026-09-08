@@ -60,3 +60,33 @@
     padding: var(--s8) var(--s5);
   }
 }
+
+/* Four rows rather than four labelled fields: the label on each would repeat Friend three times down the page,
+   which reads as three different questions rather than one list of who is coming. */
+.ob-party {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ob-party-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.ob-party-role {
+  flex: 0 0 5ch;
+  color: var(--ink-muted);
+}
+
+.ob-party-row .field-input {
+  flex: 1;
+}
+
+.ob-party-help {
+  margin-top: var(--s3);
+}
