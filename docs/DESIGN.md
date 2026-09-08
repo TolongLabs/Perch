@@ -8,16 +8,16 @@ grounds that the product starts on a shared link. **Both are now in**, and the r
 for the product while no longer holding for the submission: a judge opens a URL, and what that URL renders is the first
 thing scored under Design.
 
-| Surface                      | Standing                                                                                                                           |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| **Landing**                  | **In.** One screen, no scroll, a footer. Premium and quiet, not a marketing page                                                   |
-| **Auth**                     | **In**, as a two-pane screen with no authentication behind it. Only **Sign In As Guest** does anything                             |
-| **Dashboard And Onboarding** | **In.** The dashboard is re-fixtured for Tokyo with an invite code and who has voted; onboarding is new and replaces the interview |
-| **The Deck**                 | **In.** The swipe surface. Joiners land here from the invite link and skip onboarding                                              |
-| **The Tally**                | **In.** Percentage per place, unanimous places in `--gold`, zero-vote places greyed and eliminated                                 |
-| **The Desk**                 | **In.** Rebuilt: the 4 day × 3 slot calendar, the sidebar of voted-in cards, Apply, pins and feasibility chips                     |
-| **Before We Go**             | **In.** The checklist derived from the trip; every item ticked enables Print The Book                                              |
-| **The Book**                 | **In.** Re-fixtured for Tokyo, one plate per day, a Maps deep link per day. Still reached from a link, still needs no account      |
+| Surface                      | Standing                                                                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Landing**                  | **In.** One screen that folds over the footer like every other surface, so its only scroll is the footer's height. Premium and quiet |
+| **Auth**                     | **In**, as a two-pane screen with no authentication behind it. Only **Sign In As Guest** does anything                               |
+| **Dashboard And Onboarding** | **In.** The dashboard is re-fixtured for Tokyo with an invite code and who has voted; onboarding is new and replaces the interview   |
+| **The Deck**                 | **In.** The swipe surface. Joiners land here from the invite link and skip onboarding                                                |
+| **The Tally**                | **In.** Percentage per place, unanimous places in `--gold`, zero-vote places greyed and eliminated                                   |
+| **The Desk**                 | **In.** Rebuilt: the 4 day × 3 slot calendar, the sidebar of voted-in cards, Apply, pins and feasibility chips                       |
+| **Before We Go**             | **In.** The checklist derived from the trip; every item ticked enables Print The Book                                                |
+| **The Book**                 | **In.** Re-fixtured for Tokyo, one plate per day, a Maps deep link per day. Still reached from a link, still needs no account        |
 
 **Revised 8 September with the rebuild.** The route set follows the plan: the interview is deleted, the Deck, the Tally
 and Before We Go are new, and the Desk is rebuilt around a three-slot calendar. The Book survives, re-fixtured for
