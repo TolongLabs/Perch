@@ -658,9 +658,22 @@ export async function recordDemo(options = {}) {
 
     await nextSegment()
 
-    await page.goto(new URL('/desk/before-we-go', baseUrl).href, { waitUntil: 'domcontentloaded' })
-    await must(page.locator('.bwg-row'), 'shot 9 checklist rows')
+    // Enter the Book's checklist the way a person does, by the band under the calendar, rather than by typing a URL
+    // the viewer never sees. A URL jump is a cut pretending to be a flow, and this band is the affordance #161 added
+    // precisely because the way on could not be found. The band renders only once a day has been scheduled, which
+    // the walkthrough has done by shot-7; the state is persisted, so it survives this segment's reload.
+    await page.goto(new URL('/desk', baseUrl).href, { waitUntil: 'domcontentloaded' })
+    const onward = page.locator('.desk-onward-go')
+    await must(onward, 'shot 9 Before We Go band')
+    await scrollTo(onward)
+    // The beat opens on the band, not on the checklist, because the click has to be inside it. A segment's leading
+    // dead time runs from its start to its first mark, so marking after the click would stamp the click itself as
+    // unscripted and cut the one thing this change exists to film. Everything before this line is the page load and
+    // the scroll, which the seam cut removes; that is where the added beat is paid for.
     await mark('shot-9')
+    await click(onward, 600)
+    await page.waitForURL(/\/desk\/before-we-go/)
+    await must(page.locator('.bwg-row'), 'shot 9 checklist rows')
     await click(page.locator('.bwg-row').nth(0).locator('.check-label'), 500)
     await click(page.locator('.bwg-row').nth(1).locator('.check-label'), 500)
     await click(page.locator('.bwg-row').nth(2).locator('.check-label'), 500)
