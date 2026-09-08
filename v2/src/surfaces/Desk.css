@@ -154,12 +154,27 @@
   background: color-mix(in oklab, var(--tint) 18%, transparent);
 }
 
+/* A well and one rule, not a drawn box. The dashed perimeter was 3px at the browser's own 67% duty cycle around
+   twelve 176x57 slots, which put more ink on the Desk than every card on it, and spent the loudest mark available
+   on the state that is true all of the time, leaving nothing to escalate to when a card is actually over the slot.
+   1.4.11 wants the boundary identifiable, not the whole outline drawn. */
 .desk-empty {
+  --slot-rule: color-mix(in oklab, var(--ink) 62%, transparent);
   padding: var(--s4);
-  border: var(--outline) dashed color-mix(in oklab, var(--ink) 62%, transparent);
+  border: var(--outline) dashed transparent;
   border-radius: var(--r-desk);
+  background:
+    linear-gradient(var(--slot-rule), var(--slot-rule)) no-repeat bottom var(--s3) left var(--s4) /
+    calc(100% - var(--s4) * 2) var(--outline),
+    color-mix(in oklab, var(--ink) 5%, transparent);
   color: var(--ink-muted);
   text-align: left;
+}
+
+/* The perimeter comes back where it earns the weight: a card is over this slot and it is about to take it. */
+.slot-drop[data-over="true"] .desk-empty {
+  border-color: var(--slot-rule);
+  background: none;
 }
 
 .desk-unset {
@@ -178,14 +193,14 @@
 }
 
 .desk-poolcount {
-  margin-top: calc(var(--s2) * -1);
+  margin-top: calc(var(--s1) * -1);
 }
 
 .desk-poollist {
   display: flex;
   flex-direction: column;
   gap: var(--s2);
-  max-height: 320px;
+  max-height: 268px;
   overflow-y: auto;
 }
 

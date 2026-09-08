@@ -9,10 +9,10 @@ export const GOLD_SLACK = 1.25
 const PERIODS: Period[] = ['morning', 'afternoon', 'evening']
 
 export const CLUSTER_LABEL: Record<ClusterId, string> = {
-  'asakusa-ueno': 'Asakusa And Ueno',
-  'shibuya-harajuku-shinjuku': 'Shibuya, Harajuku And Shinjuku',
-  'tsukiji-ginza-station': 'Tsukiji, Ginza And The Station',
-  'odaiba-toyosu-teamlab': 'Odaiba, Toyosu And teamLab'
+  'asakusa-ueno': 'Asakusa and Ueno',
+  'shibuya-harajuku-shinjuku': 'Shibuya, Harajuku and Shinjuku',
+  'tsukiji-ginza-station': 'Tsukiji, Ginza and the Station',
+  'odaiba-toyosu-teamlab': 'Odaiba, Toyosu and teamLab'
 }
 
 const CLUSTERS = Object.keys(CLUSTER_LABEL) as ClusterId[]
