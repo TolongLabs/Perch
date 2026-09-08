@@ -1,0 +1,62 @@
+/* Onboarding runs on The Desk register: paper ground, Quicksand only, radius 24 or 999 and nothing between. */
+
+.ob {
+  display: flex;
+  flex-direction: column;
+  /* A group sits twice its internal gap from the next one, so the sections need no rule between them. */
+  gap: var(--s7);
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s5) var(--s8);
+  text-align: left;
+}
+
+/* Each section is grounded rather than divided, and the ground is the answer's state: open while it is still a
+   question, decided once it has been answered. The colour is doing wayfinding, not decoration. */
+.ob-section {
+  --tint: var(--state);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  padding: var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--state-ground);
+  transition: background var(--motion-fade) var(--ease);
+}
+
+/* The state hue, weighted toward ink so it clears 4.5:1 on its own tinted ground. `DESIGN.md` names a state colour
+   set as text on a tint as the most common contrast failure, and at full strength this lands at 4.41. */
+.ob-legend {
+  color: color-mix(in oklab, var(--state) 76%, var(--ink));
+}
+
+.ob-count {
+  font-style: italic;
+}
+
+/* The one solid button on the screen. */
+.ob-go {
+  align-self: flex-start;
+  padding: var(--s4) var(--s6);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+  transition:
+    background var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease),
+    border-color var(--motion-fade) var(--ease);
+}
+
+.ob-go:disabled {
+  border-color: color-mix(in oklab, var(--ink) 14%, transparent);
+  background: transparent;
+  color: color-mix(in oklab, var(--ink) 42%, transparent);
+  cursor: not-allowed;
+}
+
+@media (min-width: 720px) {
+  .ob {
+    padding: var(--s8) var(--s5);
+  }
+}

@@ -5,7 +5,7 @@ import { Book } from './surfaces/Book'
 import { Dashboard } from './surfaces/Dashboard'
 import { Desk } from './surfaces/Desk'
 import { Landing } from './surfaces/Landing'
-import { NewPlan } from './surfaces/NewPlan'
+import { Onboarding } from './surfaces/Onboarding'
 import { SignIn } from './surfaces/SignIn'
 
 export const App = () => (
@@ -37,7 +37,7 @@ export const App = () => (
           path="/new"
           element={
             <Shell>
-              <NewPlan />
+              <Onboarding />
             </Shell>
           }
         />

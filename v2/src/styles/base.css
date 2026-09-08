@@ -86,7 +86,8 @@ svg {
 /* Type roles. Nothing is set at 500 or 600: the jump from 100 to 700 is the field guide's own hierarchy. */
 
 .t-display {
-  font-size: clamp(34px, 9vw, 56px);
+  /* 40 is the floor `DESIGN.md` states for the Display role. 9vw put a 390px phone at 35px, under our own spec. */
+  font-size: clamp(40px, 10.5vw, 56px);
   font-weight: 300;
   letter-spacing: 0.01em;
   line-height: 1.04;
