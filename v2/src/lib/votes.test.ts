@@ -72,4 +72,25 @@ describe('nextReplacement', () => {
     const second = nextReplacement(day.slots[0], filled, trip, tally)
     expect(second?.id).not.toBe(first?.id)
   })
+
+  test('never offers a card already placed on another day', () => {
+    const tally = tallyFor(trip)
+    const day = trip.days[0]
+    const other = trip.days[1]
+    if (!day?.slots[0] || !other?.slots[0]) throw new Error('fixture has too few days')
+
+    const offer = nextReplacement(day.slots[0], day, trip, tally)
+    if (!offer) throw new Error('fixture offers nothing to replace with')
+
+    // Park that same card in another day. Offering it again would steal it from there on swap.
+    const held = {
+      ...trip,
+      days: trip.days.map((d) =>
+        d.index === other.index
+          ? { ...d, slots: d.slots.map((s, i) => (i === 0 ? { ...s, placeId: offer.id } : s)) }
+          : d
+      )
+    }
+    expect(nextReplacement(day.slots[0], day, held, tally)?.id).not.toBe(offer.id)
+  })
 })

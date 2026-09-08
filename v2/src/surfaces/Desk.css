@@ -1,316 +1,215 @@
+/* The Desk is the instrument: paper ground, radius 24 or 999, 3px outlines, no shadows and no dividers. */
+
 .desk {
-  max-width: 430px;
-  margin: 0 auto;
-  padding: var(--s6) var(--s5) var(--s8);
   display: flex;
   flex-direction: column;
   gap: var(--s5);
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s5) var(--s8);
 }
 
-/* Two columns above 1024: the instrument gets wider, it does not get a sidebar. */
-@media (min-width: 1024px) {
-  .desk {
-    max-width: 1040px;
-    display: grid;
-    grid-template-columns: 400px 1fr;
-    grid-template-areas:
-      "head days"
-      "changed days"
-      "together days"
-      "proto days";
-    align-content: start;
-    gap: var(--s5) var(--s7);
-    padding-top: var(--s8);
-  }
-
-  .desk-head {
-    grid-area: head;
-  }
-  .changed {
-    grid-area: changed;
-  }
-  .together {
-    grid-area: together;
-  }
-  .days {
-    grid-area: days;
-  }
-  .proto {
-    grid-area: proto;
-  }
+.desk-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
 }
 
-.desk-eyebrow {
-  display: inline-block;
-  color: var(--ink-muted);
-  margin-bottom: var(--s3);
-  text-decoration: none;
+.desk-acts {
+  display: flex;
+  gap: var(--s3);
 }
 
 .desk-dates {
-  margin-top: var(--s2);
-}
-
-.desk-budget {
-  margin-top: var(--s5);
-  display: flex;
-  flex-direction: column;
-  gap: var(--s2);
-}
-
-.desk-budget-bar {
-  height: 10px;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
   border-radius: var(--r-pill);
-  background: var(--plate);
-  overflow: hidden;
+  background: transparent;
+  transition: border-color var(--motion-fade) var(--ease);
 }
 
-.desk-budget-bar span {
-  display: block;
-  height: 100%;
-  background: var(--decided);
-  border-radius: var(--r-pill);
-  transition: width var(--motion-step) var(--ease);
+.desk-dates:hover {
+  border-color: var(--ink);
 }
 
-/* Plan It Together */
-
-.together {
-  background: var(--ground-open);
-  border-radius: var(--r-desk);
-  padding: var(--s5);
-}
-
-.together-kicker {
-  color: var(--open);
-  margin-bottom: var(--s3);
-}
-
-.together-copy {
-  color: var(--ink-muted);
-  margin-bottom: var(--s5);
-}
-
-.together-party {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s3);
-  margin-bottom: var(--s5);
-}
-
-.together-person {
-  display: flex;
-  align-items: center;
-  gap: var(--s2);
-  padding: var(--s1) var(--s3) var(--s1) var(--s1);
-  border-radius: var(--r-pill);
-  background: var(--paper);
-}
-
-.together-initials {
-  display: grid;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: var(--r-pill);
-  background: var(--plate);
-  color: var(--ink-muted);
-}
-
-.together-person[data-tapped="true"] .together-initials {
-  background: var(--open);
-  color: var(--paper);
-}
-
-.together-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s3);
-}
-
-.together-open {
+/* The one solid button on the screen. */
+.desk-apply {
+  padding: var(--s3) var(--s6);
+  border: var(--outline) solid var(--ink);
   border-radius: var(--r-pill);
   background: var(--ink);
   color: var(--paper);
-  padding: var(--s3) var(--s5);
-  text-decoration: none;
 }
 
-.together-nudge {
+.desk-legend {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  color: var(--ink-muted);
+}
+
+/* The date panel */
+
+.desk-datepick {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  padding: var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--ground-open);
+}
+
+.desk-datefoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.desk-dateset {
+  padding: var(--s3) var(--s5);
   border: var(--outline) solid var(--ink);
   border-radius: var(--r-pill);
   background: transparent;
-  padding: var(--s3) var(--s5);
+  transition: opacity var(--motion-fade) var(--ease);
 }
 
-.together-nudge:disabled {
-  opacity: 0.4;
-  cursor: default;
+.desk-dateset:disabled {
+  border-color: color-mix(in oklab, var(--ink) 14%, transparent);
+  color: color-mix(in oklab, var(--ink) 42%, transparent);
+  cursor: not-allowed;
 }
 
-/* The days */
+/* Calendar and sidebar */
 
-.days {
+.desk-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s5);
+}
+
+.desk-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--s3);
+}
+
+/* A day owns its tint, and everything inside it reads that. This is the wayfinding device, not decoration. */
+.desk-day {
   display: flex;
   flex-direction: column;
   gap: var(--s3);
-}
-
-.day {
-  border-radius: var(--r-pill);
-  background: var(--ground);
-  transition: border-radius var(--motion-fade) var(--ease);
-}
-
-.day[data-expanded="true"] {
-  border-radius: var(--s5);
-}
-
-.day-row {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 14px 1fr auto;
-  align-items: center;
-  gap: var(--s4);
-  text-align: left;
-  border: 0;
-  border-radius: inherit;
-  background: transparent;
-  padding: var(--s4) var(--s5);
-}
-
-.day-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: var(--r-pill);
-  background: var(--tint);
-}
-
-.day-body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.day-index {
-  color: var(--tint);
-}
-
-.day-meta {
-  display: flex;
-  align-items: center;
-  gap: var(--s3);
-}
-
-.day-open {
-  padding: 0 var(--s4) var(--s4);
-  animation: day-open var(--motion-step) var(--ease);
-}
-
-.slots {
-  display: grid;
-  gap: var(--s3);
-}
-
-@media (min-width: 640px) {
-  .slots {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.slot {
-  background: var(--paper);
-  container-type: inline-size;
-  border: var(--outline) solid var(--state);
-  min-width: 0;
-  border-radius: var(--r-desk);
   padding: var(--s4);
+  border-radius: var(--r-desk);
+  background: var(--ground);
+}
+
+.desk-dayhead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
+}
+
+.desk-dayindex {
+  display: flex;
+  align-items: baseline;
+  gap: var(--s2);
+  color: color-mix(in oklab, var(--tint) 62%, var(--ink));
+}
+
+.desk-daydate {
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.desk-fit {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.desk-slot {
   display: flex;
   flex-direction: column;
   gap: var(--s1);
 }
 
-.slot[data-state="decided"] {
-  border-color: transparent;
+.desk-period {
+  color: var(--ink-muted);
+  font-size: 10px;
 }
 
-.slot-period {
-  color: var(--tint);
-  margin-bottom: var(--s2);
-}
-
-.slot-empty {
-  color: var(--at-risk);
-}
-
-.slot-foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s2);
-  margin-top: var(--s4);
-  flex-wrap: wrap;
-}
-
-.slot-perch {
-  white-space: nowrap;
-  border: 0;
-  border-radius: var(--r-pill);
-  background: var(--ground-open);
-  color: var(--open);
-  padding: var(--s2) var(--s3);
-}
-
-.day-maps {
-  display: inline-block;
-  margin-top: var(--s4);
-  padding: var(--s3) var(--s5);
-  border: var(--outline) solid var(--tint);
-  border-radius: var(--r-pill);
-  color: var(--tint);
-  text-decoration: none;
-}
-
-/* Prototype controls. Labelled, because pretending a fixture is a live feed is worse than saying so. */
-
-.proto {
-  background: var(--plate);
+/* An empty slot is drawn as a target rather than as nothing, so it is obvious where a card can go. */
+.slot-drop {
   border-radius: var(--r-desk);
-  padding: var(--s5);
+  transition: background var(--motion-fade) var(--ease);
 }
 
-.proto-kicker {
+.slot-drop[data-over="true"] {
+  background: color-mix(in oklab, var(--tint) 18%, transparent);
+}
+
+.desk-empty {
+  padding: var(--s4);
+  border: var(--outline) dashed color-mix(in oklab, var(--ink) 18%, transparent);
+  border-radius: var(--r-desk);
   color: var(--ink-muted);
-  margin-bottom: var(--s2);
+  text-align: left;
 }
 
-.proto-actions {
+.desk-unset {
+  margin: 0;
+}
+
+/* The sidebar */
+
+.desk-pool {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: var(--s3);
-  margin-top: var(--s4);
+  padding: var(--s4);
+  border-radius: var(--r-desk);
+  background: var(--plate);
 }
 
-.proto-fire {
-  border: var(--outline) solid var(--at-risk);
-  border-radius: var(--r-pill);
-  background: transparent;
-  color: var(--at-risk);
-  padding: var(--s3) var(--s4);
+.desk-poolcount {
+  margin-top: calc(var(--s2) * -1);
 }
 
-.proto-reset {
-  border: var(--outline) solid var(--ink-muted);
-  border-radius: var(--r-pill);
-  background: transparent;
-  color: var(--ink-muted);
-  padding: var(--s3) var(--s4);
+.desk-poollist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
-@keyframes day-open {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
+/* The card under the cursor while it is being carried. */
+.card-ghost {
+  width: 240px;
+  border-color: var(--ink);
+  cursor: grabbing;
+}
+
+/* Wide enough for the four columns and the sidebar side by side. Below this the days stack, which is the same
+   information in one column rather than a four-column grid squeezed to 85px a day. */
+@media (min-width: 900px) {
+  .desk-body {
+    grid-template-columns: 1fr 260px;
+    align-items: start;
+  }
+
+  .desk-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .desk-pool {
+    position: sticky;
+    top: var(--s5);
   }
 }

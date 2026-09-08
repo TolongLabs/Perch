@@ -1,0 +1,104 @@
+/* Rises from the bottom. Pill rows on a tinted ground, 3px outlines, per DESIGN.md. */
+
+.perch {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: center;
+  padding: var(--s4);
+  animation: perch-rise var(--motion-step) var(--ease);
+}
+
+@keyframes perch-rise {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+.perch-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  width: min(560px, 100%);
+  padding: var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-desk);
+  background: var(--ground-open);
+}
+
+.perch-legend {
+  color: color-mix(in oklab, var(--open) 76%, var(--ink));
+}
+
+.perch-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  padding: var(--s3) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 14%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+}
+
+/* The one place a numeral is allowed, because here it is a real rank. */
+.perch-rank {
+  flex: none;
+  color: var(--open);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A bare numeral read aloud says "3" and nothing else, so the word it stands for is present but not drawn. */
+.perch-rank-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.perch-lead {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+}
+
+.perch-name {
+  font-size: 15px;
+}
+
+.perch-body .perch-line {
+  font-size: 12px;
+}
+
+.perch-swap {
+  flex: none;
+  padding: var(--s2) var(--s4);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.perch-acts {
+  display: flex;
+  gap: var(--s2);
+}
+
+.perch-alt {
+  padding: var(--s2) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
+  border-radius: var(--r-pill);
+  background: transparent;
+  transition: border-color var(--motion-fade) var(--ease);
+}
+
+.perch-alt:hover {
+  border-color: var(--ink);
+}

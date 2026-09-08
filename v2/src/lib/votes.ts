@@ -41,14 +41,21 @@ export const votedIn = (tally: TallyEntry[]): TallyEntry[] =>
 export const tallyFor = (trip: Trip): TallyEntry[] => computeTally(trip.votes, trip.options, trip.party, trip.ownerId)
 
 /**
- * The Perch drawer's answer: the next-ranked voted-in place not already on this day, open on this weekday, that
- * belongs in this slot's period. Null when nothing fits, in which case the slot may stay empty.
+ * The Perch drawer's answer: the next-ranked voted-in place not already placed anywhere in the trip, open on this
+ * weekday, that belongs in this slot's period. Null when nothing fits, in which case the slot may stay empty.
+ *
+ * Anywhere, not just on this day: offering a card that is already sitting in another day steals it from there when it
+ * is swapped in, which drops that day's stop count and silently destroys the pin if it had one.
+ *
+ * `day` is read as well as `trip`, and may be a day the trip does not hold yet, so a caller can ask what would fit a
+ * hypothetical arrangement without committing it first.
  */
 export const nextReplacement = (slot: Slot, day: Day, trip: Trip, tally: TallyEntry[]): Place | null => {
-  const onDay = new Set(day.slots.map((s) => s.placeId).filter((id): id is string => id !== null))
+  const held = (slots: Slot[]) => slots.map((s) => s.placeId).filter((id): id is string => id !== null)
+  const placed = new Set([...trip.days.flatMap((d) => held(d.slots)), ...held(day.slots)])
   const weekday = day.weekday.toLowerCase()
   const fits = (place: Place): boolean =>
-    !onDay.has(place.id) && !place.closedOn.includes(weekday) && place.bestPeriod.includes(slot.period)
+    !placed.has(place.id) && !place.closedOn.includes(weekday) && place.bestPeriod.includes(slot.period)
   for (const entry of votedIn(tally)) {
     const place = trip.options[entry.placeId]
     if (place && fits(place)) return place
