@@ -1,0 +1,69 @@
+/* The one component that carries moving photography. It keeps the Desk register: radius 24, no shadow. */
+
+.reel {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--r-desk);
+  background: var(--plate);
+}
+
+.reel-media {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Not a shadow: a scrim. Type over photography needs a ground or it is unreadable on a bright frame, and there is no
+   ground to tint here. It reads as part of the image rather than as a raised surface. */
+.reel-foot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  padding: var(--s6) var(--s4) var(--s4);
+  background: linear-gradient(to top, rgb(0 0 0 / 78%), rgb(0 0 0 / 42%) 46%, transparent);
+  color: var(--paper);
+}
+
+.reel-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--s4);
+}
+
+.reel-name {
+  color: var(--paper);
+}
+
+/* The specimen line is muted ink on paper everywhere else. Over a photograph it has to be near-white to stay legible.
+   Scoped to the foot so it beats `.t-specimen` on specificity rather than on which stylesheet happens to load last. */
+.reel-foot .reel-line {
+  color: color-mix(in oklab, var(--paper) 92%, transparent);
+}
+
+.reel-credit {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 48%;
+  text-align: right;
+}
+
+/* A creator's display name can be a sentence. One line, clipped, because the card is the plate and not the caption. */
+.reel-handle {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reel-platform {
+  color: color-mix(in oklab, var(--paper) 76%, transparent);
+}
