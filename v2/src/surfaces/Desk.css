@@ -133,10 +133,51 @@
   gap: var(--s2);
 }
 
+/* The day's own controls, on the day's own heading. Small and quiet: they change the shape of the day, which is a
+   thing an owner does once and then forgets, not a thing the eye should land on before the stops do. */
+.desk-slotacts {
+  display: inline-flex;
+  gap: var(--s1);
+  order: 1;
+}
+
+.desk-slotact {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fade) var(--ease),
+    opacity var(--motion-fade) var(--ease);
+}
+
+.desk-slotact:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+
+/* Dimmed rather than hidden. A control that vanishes at the ceiling leaves the owner wondering whether they broke
+   it; one that is visibly spent says the day is full, and the title says why. */
+.desk-slotact:disabled {
+  opacity: 0.34;
+  cursor: not-allowed;
+}
+
 .desk-slot {
   display: flex;
   flex-direction: column;
   gap: var(--s1);
+}
+
+.desk-slot .slot-drop + .slot-drop {
+  margin-top: calc(var(--s1) * -1 + 2px);
 }
 
 .desk-period {
@@ -275,9 +316,10 @@
     top: var(--s5);
   }
 
-  /* The list takes the height the column has, which puts Prototype Controls under the fold at 1440x900 rather
-     than half in view at the bottom edge. Scaffolding that announces it is not part of the product should not be
-     the last thing in frame. */
+  /* The viewport, not the calendar. Matching the calendar exactly needs a grid row sized by a spanning sibling,
+     which loses to the taller item in the same row: the list's fourteen cards drove the row to 1903px and the
+     column ran further past the days than before. This ends the column at the fold, which is where the eye stops
+     anyway, and keeps Prototype Controls out of frame. */
   .desk-poollist {
     max-height: calc(100vh - 260px);
   }
