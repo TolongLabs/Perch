@@ -50,3 +50,11 @@ exports/
 Never overwrite an old export.
 
 Add a line to `index.md` for each one so a reader knows what they are looking at.
+
+**Two stamps exist for the same two diagrams, and that is deliberate.** The 6 September exports render bold words
+fused into the word after them, as "Redis a question still open", because the renderer discarded the space that
+separates a bold run from the text following it. The 8 September exports are the same two canvases with that fixed.
+The 6 September pair stays here because it is the trail: a diagram that rendered fused on the day it was drawn is
+part of the record, and overwriting it would break the rule directly above. Only `docs/assets/ideation/` was
+repointed to the 8 September pair, since that is what the README shows a reader.
+

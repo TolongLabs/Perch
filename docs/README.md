@@ -117,13 +117,13 @@ each.
 
 ### 2.2 Ideation Boards
 
-![Ideation mindmap](assets/ideation/2026-09-06-ideation-mindmap.svg)
+![Ideation mindmap](assets/ideation/2026-09-08-ideation-mindmap.svg)
 
 **Six days of ideation drawn as a tree**: what we claimed, what got built, the three competitor scans, the four branches
 we dropped, and the marks still unclaimed. The dropped branches are on the page deliberately rather than only in the
 decisions log.
 
-![User flow](assets/ideation/2026-09-06-user-flow.svg)
+![User flow](assets/ideation/2026-09-08-user-flow.svg)
 
 **What a group actually does, stage 0 to stage 8**, and the loop back from "it broke" to "the plan re-derives". The
 mindmap shows how the thinking moved; this shows the product it produced.
