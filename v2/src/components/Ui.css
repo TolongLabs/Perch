@@ -139,21 +139,23 @@
   height: 20px;
   flex: none;
   border: var(--outline) solid color-mix(in oklab, var(--ink) 30%, transparent);
-  border-radius: 6px;
+  /* Pill, not 6px. `DESIGN.md` allows 24 or 999 and nothing between, and this was the one control sitting in between. */
+  border-radius: var(--r-pill);
   transition:
     background var(--motion-fade) var(--ease),
     border-color var(--motion-fade) var(--ease);
 }
 
+/* Ticked is a settled state, so the box takes the Green Broadbill rather than plain ink. */
 .check-box[data-on="true"] {
-  background: var(--ink);
-  border-color: var(--ink);
+  border-color: var(--decided);
+  background: var(--decided);
 }
 
 .check-box[data-on="true"]::after {
   content: "";
   position: absolute;
-  inset: 3px 4px 5px;
+  inset: 3px 5px 6px;
   border-right: 2px solid var(--paper);
   border-bottom: 2px solid var(--paper);
   transform: rotate(42deg);
@@ -252,9 +254,23 @@
 
 .check-label {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--s3);
   cursor: pointer;
+}
+
+.check-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.check-name {
+  font-size: 15px;
+}
+
+.check .check-detail {
+  font-size: 13px;
 }
 
 .check-input:focus-visible + .check-label .check-box {

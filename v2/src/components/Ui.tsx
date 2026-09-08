@@ -117,18 +117,43 @@ export const Field = ({
   )
 }
 
-export const Check = ({ label, defaultChecked }: { label: string; defaultChecked?: boolean }) => {
+export const Check = ({
+  label,
+  detail,
+  defaultChecked,
+  checked,
+  onChange
+}: {
+  label: string
+  /** The value this item was read off the trip from. A record for the row, so it stays inline. */
+  detail?: ReactNode
+  defaultChecked?: boolean
+  /** Pass with `onChange` to drive the box from outside. Without it the box keeps its own state. */
+  checked?: boolean
+  onChange?: (next: boolean) => void
+}) => {
   const id = useId()
-  const [on, setOn] = useState(defaultChecked === true)
+  const [own, setOwn] = useState(defaultChecked === true)
+  const controlled = checked !== undefined
+  const on = controlled ? checked : own
 
   // The input stays, hidden, because its keyboard handling and form semantics are not worth reimplementing. Only the
   // box is ours, which is what `DESIGN.md` asks for: nothing native is left *styled* by the browser.
   return (
     <div className="check">
-      <input id={id} className="check-input" type="checkbox" checked={on} onChange={(e) => setOn(e.target.checked)} />
+      <input
+        id={id}
+        className="check-input"
+        type="checkbox"
+        checked={on}
+        onChange={(e) => (controlled ? onChange?.(e.target.checked) : setOwn(e.target.checked))}
+      />
       <label className="check-label" htmlFor={id}>
         <span className="check-box" data-on={on} aria-hidden="true" />
-        <span className="t-specimen">{label}</span>
+        <span className="check-text">
+          <span className="check-name">{label}</span>
+          {detail && <span className="t-specimen check-detail">{detail}</span>}
+        </span>
       </label>
     </div>
   )

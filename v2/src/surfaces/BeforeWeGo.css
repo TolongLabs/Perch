@@ -1,0 +1,72 @@
+/* The bridge from The Desk to The Book. Drawn controls, tinted ground, no lines and no shadows. */
+
+.bwg {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s5) var(--s8);
+}
+
+.bwg-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+}
+
+/* The ground carries the progress: open while anything is outstanding, settled once it is all true. */
+.bwg-list {
+  padding: var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--state-ground);
+  transition: background var(--motion-fade) var(--ease);
+}
+
+.bwg-list ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+
+.bwg-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s4);
+}
+
+/* The one solid button, and outline-only while it is not yet earned. */
+.bwg-print {
+  padding: var(--s4) var(--s6);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+  transition:
+    background var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease),
+    border-color var(--motion-fade) var(--ease);
+}
+
+.bwg-print:disabled {
+  border-color: color-mix(in oklab, var(--ink) 22%, transparent);
+  background: transparent;
+  color: color-mix(in oklab, var(--ink) 46%, transparent);
+  cursor: not-allowed;
+}
+
+.bwg-back {
+  align-self: flex-start;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
+  border-radius: var(--r-pill);
+  background: transparent;
+  transition: border-color var(--motion-fade) var(--ease);
+}
+
+.bwg-back:hover {
+  border-color: var(--ink);
+}
