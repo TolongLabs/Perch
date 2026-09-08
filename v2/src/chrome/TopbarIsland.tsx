@@ -90,11 +90,11 @@ export const TopbarIsland = () => {
         <div className="top-panel">
           <p className="t-label top-panel-head">Notifications</p>
           {notices.length === 0 ? (
-            <p className="t-specimen top-empty">Nothing yet. It fills as the group swipes.</p>
+            <p className="top-empty">Nothing yet. It fills as the group swipes.</p>
           ) : (
             <ul className="top-notices">
               {notices.map((n) => (
-                <li key={n.id} className="t-specimen" data-kind={n.kind}>
+                <li key={n.id} className="top-notice" data-kind={n.kind}>
                   {n.text}
                 </li>
               ))}

@@ -4,7 +4,7 @@
 :root {
   --rail-inset: 16px;
   --rail-collapsed: 64px;
-  --rail-expanded: 232px;
+  --rail-expanded: 176px;
   /* What the page reserves. The rail expands over this, never through it, so nothing reflows. */
   --rail-gutter: calc(var(--rail-inset) * 2 + var(--rail-collapsed));
   /* 44px is the touch target, not 40: the dock is the only navigation on a phone and it is hit with a thumb. */
@@ -59,21 +59,21 @@
   width: var(--rail-expanded);
 }
 
-/* The pin is not an eighth destination, it changes how the rail behaves, so a rule closes the group of places you
-   can go. It sits on the list rather than on the pin so it spans the rail's content box and narrows with it as the
-   rail collapses, instead of staying at the expanded width and being clipped. */
+/* The pin is not an eighth destination, it changes how the rail behaves, so it is set off from the places you can
+   go. By the gap and nothing else: `DESIGN.md` allows no horizontal dividers anywhere in the product, and a rule
+   here would be redundant besides, since the 60px pitch to the pin already reads against the 40px between rows. */
 .rail-list {
   display: flex;
   flex-direction: column;
   gap: var(--s1);
   list-style: none;
-  margin: 0 0 var(--s2);
-  padding: 0 0 var(--s3);
-  border-bottom: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  margin: 0 0 var(--s4);
+  padding: 0;
 }
 
 .rail-item,
 .rail-pin {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--s3);
@@ -90,21 +90,48 @@
   transition: background var(--motion-fade) var(--ease);
 }
 
-.rail-item:hover,
-.rail-pin:hover {
+/* The chip is a layer under the row, not the row's own background. The row is as wide as the expanded rail so the
+   icon never moves, which means a background painted on it is cut flat by the collapsed rail's clip: the
+   current-page mark was a pill when open and a squared-off block butted against the border when closed. The layer
+   is a disc around the icon and grows with the rail, so the mark is the same shape in both states. */
+.rail-item::before,
+.rail-pin::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--rail-collapsed) - var(--s3) * 2);
+  border-radius: var(--r-pill);
+  background: transparent;
+  transition:
+    width var(--island-motion) var(--ease-expo),
+    background var(--motion-fade) var(--ease);
+}
+
+.rail-item:hover::before,
+.rail-pin:hover::before {
   background: color-mix(in oklab, var(--ink) 7%, transparent);
 }
 
 /* The current page. A tinted ground with the label mixed toward ink, which is the chip's device from DESIGN.md:
    the state colour as text on its own tint measures 4.39:1 at best and falls as the tint deepens. This reads
-   8.65:1 in light and 9.65:1 in dark, and the icon stays pure --open at 4.26:1, well past the 3:1 a non-text
+   8.69:1 in light and 9.63:1 in dark, and the icon stays pure --open at 4.26:1, well past the 3:1 a non-text
    element is held to. */
-.rail-item[data-current="true"] {
+.rail-item[data-current="true"]::before {
   background: color-mix(in oklab, var(--open) 12%, var(--paper));
+}
+
+.rail-item[data-current="true"] {
   color: color-mix(in oklab, var(--open) 34%, var(--ink));
 }
 
+.island-rail[data-open="true"] .rail-item::before,
+.island-rail[data-open="true"] .rail-pin::before {
+  width: calc(var(--rail-expanded) - var(--s3) * 2);
+}
+
+/* Above the chip layer. */
 .rail-icon {
+  position: relative;
   flex: none;
 }
 
@@ -113,6 +140,7 @@
 }
 
 .rail-label {
+  position: relative;
   white-space: nowrap;
   opacity: 0;
   pointer-events: none;
@@ -140,11 +168,19 @@
   opacity: 0.28;
 }
 
+/* In dark the ink is the cream, so the same veil lightens instead of darkening, and lightening a near-black page
+   compresses the day tints it is sitting on: day 2's separation from the ground fell 36% against 20% in light. */
+:root[data-theme="dark"] .island-scrim[data-on="true"] {
+  opacity: 0.2;
+}
+
 /* The cluster */
 
+/* The same inset as the rail. At 24 right and 12 top against the rail's 16 and 16, the two read as separately
+   placed objects rather than one frame. */
 .island-top {
-  top: 12px;
-  right: var(--s4);
+  top: var(--rail-inset);
+  right: var(--rail-inset);
   padding: 6px;
   display: flex;
   flex-direction: column;
@@ -152,10 +188,10 @@
   gap: var(--s1);
 }
 
-@media (min-width: 1024px) {
-  .island-top {
-    right: var(--s5);
-  }
+/* The cluster is chrome, not content, so it goes under the veil with the page. Above it, an unread badge at full
+   saturation was the brightest thing on a screen that had just dimmed everything but the rail. */
+body:has(.island-scrim[data-on="true"]) .island-top {
+  z-index: 20;
 }
 
 .top-cluster {
@@ -181,6 +217,13 @@
   background: color-mix(in oklab, var(--ink) 7%, transparent);
 }
 
+/* The rail's chip, not a second neutral tint that exists in no token. Two recipes for the same idea, 100px apart
+   on one screen, is the kind of thing that reads as generated. */
+.top-control[aria-expanded="true"] {
+  background: color-mix(in oklab, var(--open) 12%, var(--paper));
+  color: color-mix(in oklab, var(--open) 34%, var(--ink));
+}
+
 .top-badge {
   position: absolute;
   top: 2px;
@@ -195,13 +238,17 @@
 }
 
 /* Both panels hang off the cluster, not off the control that opened them, so they share one right edge and one
-   gap below the bar however wide their contents are. */
+   gap below the bar however wide their contents are.
+
+   No border. The panel sits inside the island's own outline, so its own drew a second 3px keyline 6px inside the
+   first with identical ground between them, which reads as a panel that failed to clip rather than as depth. It
+   is the plate ground that separates it, per DESIGN.md: sections are separated by the ground under them, never by
+   a line. The radius is the island's less the padding it sits inside, so the two curves are concentric. */
 .top-panel {
   width: min(288px, calc(100vw - var(--s6)));
   padding: var(--s4);
-  border: var(--outline) solid var(--ink);
-  border-radius: var(--r-desk);
-  background: var(--paper);
+  border-radius: calc(var(--r-desk) - 6px);
+  background: var(--plate);
 }
 
 .top-panel-head {
@@ -218,6 +265,10 @@
   padding: 0;
 }
 
+/* Body type, not the specimen line. Six sentences of prose are neither Book prose nor the metadata under a name,
+   which are the only two places DESIGN.md puts Newsreader; set in its italic at 2.0 leading they were also 40%
+   over-led against the Desk's own body. */
+.top-notice,
 .top-empty {
   margin: 0;
 }
@@ -274,6 +325,13 @@
     border-radius: var(--r-pill);
     color: var(--ink);
     text-decoration: none;
+  }
+
+  /* New Plan is the only item in the row that does something rather than going somewhere, and six destinations
+     around it gave it no way to say so. Solid ink says it. */
+  .dock-item[data-action="true"] {
+    background: var(--ink);
+    color: var(--paper);
   }
 
   .dock-item[data-current="true"] {

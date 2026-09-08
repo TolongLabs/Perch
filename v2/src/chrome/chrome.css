@@ -8,19 +8,6 @@
   }
 }
 
-/* The footer is fixed to the floor and revealed from behind the page, and below the breakpoint the dock is fixed to
-   that same floor, so the footer's four links sat underneath it. Padding on the page cannot reach this: the footer
-   is not in the page's flow. The footer grows by the dock's clearance instead and its centred content rides up. */
-@media (max-width: 899px) {
-  :root:has(.island-dock) {
-    --foot-extra: var(--dock-clear);
-  }
-
-  :has(.island-dock) .foot-inner {
-    padding-bottom: var(--dock-clear);
-  }
-}
-
 /* The page. Opaque, above the footer, and reserving its height so the footer stays covered until the end. */
 .shell {
   position: relative;
@@ -83,6 +70,19 @@
     justify-items: end;
     text-align: right;
     padding-inline: var(--s7);
+  }
+}
+
+/* The footer is fixed to the floor and revealed from behind the page, and below the breakpoint the dock is fixed to
+   that same floor, so the footer's four links sat underneath it. Padding on the page cannot reach this: the footer
+   is not in the page's flow. The footer grows by the dock's clearance instead and its centred content rides up. */
+@media (max-width: 899px) {
+  :root:has(.island-dock) {
+    --foot-extra: var(--dock-clear);
+  }
+
+  :has(.island-dock) .foot-inner {
+    padding-bottom: var(--dock-clear);
   }
 }
 

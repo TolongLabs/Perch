@@ -123,6 +123,7 @@ export const BottomDock = () => {
             <NavLink
               to={to}
               className="dock-item"
+              data-action={to === '/new'}
               data-current={to === current?.to}
               aria-current={to === current?.to ? 'page' : undefined}
               aria-label={label}
