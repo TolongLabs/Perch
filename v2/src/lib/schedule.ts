@@ -72,14 +72,23 @@ export const evaluateDay = (day: Day, options: Record<string, Place>): DayFeasib
   let transit = 0
   let dwell = 0
   const outside: string[] = []
+  const reasons: string[] = []
+  const hhmm = (m: number): string => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`
   stops.forEach((place, i) => {
     const previous = stops[i - 1]
     const travel = previous ? transitMin(previous.id, place.id) : 0
     transit += travel
     const arrive = Math.max(clock + travel, minutes(place.opens))
     const leave = arrive + place.dwellMin
-    if (!openOn(place, day) || arrive >= minutes(place.closes) || leave > minutes(place.closes)) {
+    if (!openOn(place, day)) {
       outside.push(place.id)
+      reasons.push(`${place.name} is closed on ${day.weekday}s`)
+    } else if (arrive >= minutes(place.closes)) {
+      outside.push(place.id)
+      reasons.push(`${place.name} would be reached at ${hhmm(arrive)}, after it closes at ${place.closes}`)
+    } else if (leave > minutes(place.closes)) {
+      outside.push(place.id)
+      reasons.push(`${place.name} closes at ${place.closes}, before its ${place.dwellMin} minutes are done`)
     }
     dwell += place.dwellMin
     clock = leave
@@ -89,8 +98,7 @@ export const evaluateDay = (day: Day, options: Record<string, Place>): DayFeasib
 
   const base = { transitMin: transit, dwellMin: dwell, daySpanMin, stopsOutsideHours: outside }
   if (outside.length > 0) {
-    const names = outside.map((id) => options[id]?.name ?? id).join(' and ')
-    return { ...base, status: 'red', rationale: `${names} would be reached outside opening hours.` }
+    return { ...base, status: 'red', rationale: `${reasons.join(', and ')}.` }
   }
   if (overrun > 0) {
     return { ...base, status: 'red', rationale: `The day runs ${overrun} minutes past 21:00.` }
@@ -106,7 +114,7 @@ export const evaluateDay = (day: Day, options: Record<string, Place>): DayFeasib
   return {
     ...base,
     status: 'green',
-    rationale: `Every stop fits its hours and the day ends by ${Math.floor(clock / 60)}:${String(clock % 60).padStart(2, '0')}.`
+    rationale: `Every stop fits its hours and the day ends by ${hhmm(clock)}.`
   }
 }
 

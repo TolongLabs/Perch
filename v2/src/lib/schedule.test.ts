@@ -96,12 +96,23 @@ describe('evaluateDay', () => {
     const result = evaluateDay(dayWith(['ueno-park', 'tokyo-national-museum', 'ameyoko'], 'Monday'), trip.options)
     expect(result?.status).toBe('red')
     expect(result?.stopsOutsideHours).toEqual(['tokyo-national-museum'])
+    expect(result?.rationale).toBe('Tokyo National Museum is closed on Mondays.')
+  })
+
+  test('the closed-day sentence names the weekday, not a generic hours line', () => {
+    const result = evaluateDay(
+      dayWith(['ueno-park', 'imperial-palace-east-gardens', 'teamlab-planets'], 'Friday'),
+      trip.options
+    )
+    expect(result?.status).toBe('red')
+    expect(result?.rationale).toContain('Imperial Palace East Gardens is closed on Fridays')
   })
 
   test('a stop reached after it closes is red', () => {
     const result = evaluateDay(dayWith(['omoide-yokocho', 'tsukiji-outer-market', 'meiji-jingu']), trip.options)
     expect(result?.status).toBe('red')
     expect(result?.stopsOutsideHours).toContain('tsukiji-outer-market')
+    expect(result?.rationale).toMatch(/Tsukiji Outer Market would be reached at \d+:\d\d, after it closes at 14:00/)
   })
 
   test('an order far slower than the heuristic order is gold', () => {
