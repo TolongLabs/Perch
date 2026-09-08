@@ -3,8 +3,8 @@ import { Check, Field } from '../components/Ui'
 import './SignIn.css'
 
 /**
- * Two panes, and only one control on it does anything. There is no authentication behind this screen and the copy
- * says so rather than letting a judge discover it by typing into a dead field.
+ * Two panes, and only one control on it does anything. The fields are drawn rather than wired, which the disabled
+ * state says on its own; the page fits the viewport at both demo sizes and carries no explanatory prose.
  */
 export const SignIn = () => {
   const navigate = useNavigate()
@@ -18,14 +18,9 @@ export const SignIn = () => {
 
         <h1 className="t-plate-title auth-title">Sign In</h1>
 
-        <p className="auth-note t-specimen">
-          The fields below are drawn, not wired. Sign In As Guest is the one control that works, and it is the one the
-          product is designed around: an account is optional and the shared link never needs one.
-        </p>
-
         <div className="auth-fields">
           <Field label="Email" type="email" placeholder="you@example.com" autoComplete="off" disabled />
-          <Field label="Password" type="password" placeholder="••••••••" autoComplete="off" disabled />
+          <Field label="Password" type="password" placeholder="Your password" autoComplete="off" disabled />
           <Check label="Keep me signed in" />
         </div>
 
@@ -36,10 +31,6 @@ export const SignIn = () => {
         <button type="button" className="auth-go t-label" onClick={() => navigate('/trips')}>
           Sign In As Guest
         </button>
-
-        <p className="auth-foot t-specimen">
-          No account is created and nothing is stored on a server. The trip lives in this browser.
-        </p>
       </section>
 
       <aside className="auth-hero" aria-hidden="true">

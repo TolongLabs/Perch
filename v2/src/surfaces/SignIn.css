@@ -1,4 +1,5 @@
-/* Two panes, and no footer: DESIGN.md puts the footer on the landing and on everything after sign-in, not here. */
+/* Two panes, and no footer. This is a deviation: DESIGN.md carries the footer on every surface, and a footer here
+   re-breaks the exact viewport fit the page is built to hold. Recorded as a named exception rather than asserted. */
 .auth {
   display: grid;
   min-height: 100dvh;
@@ -37,13 +38,6 @@
   margin: 0;
 }
 
-.auth-note {
-  max-width: 46ch;
-  padding: var(--s4);
-  border-radius: var(--r-desk);
-  background: var(--ground-open);
-}
-
 .auth-fields {
   display: flex;
   flex-direction: column;
@@ -57,21 +51,31 @@
   padding: var(--s4) var(--s5);
 }
 
+/* The same disabled recipe as .bwg-print:disabled, which was the only other permanently-styled off control in
+   the product. At 14 percent the border measured 1.31:1 against paper, which is no boundary at all, and the
+   field read as a void rather than as a control that is deliberately off. */
 .auth-dead {
-  border: var(--outline) solid color-mix(in oklab, var(--ink) 14%, transparent);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
   background: transparent;
-  color: color-mix(in oklab, var(--ink) 40%, transparent);
+  color: color-mix(in oklab, var(--ink) 46%, transparent);
   cursor: not-allowed;
 }
 
+/* Carries the outline like every other solid button in the product. Without it this pill measured 50px against
+   the disabled one's 56px, which made the dead control the largest thing on the screen. */
 .auth-go {
-  border: 0;
+  border: var(--outline) solid var(--ink);
   background: var(--ink);
   color: var(--paper);
+  transition: background var(--motion-fade) var(--ease);
 }
 
-.auth-foot {
-  max-width: 44ch;
+.auth-go:hover {
+  background: color-mix(in oklab, var(--ink) 88%, var(--paper));
+}
+
+.auth-back:hover {
+  color: var(--ink);
 }
 
 /* The right pane is the plate. It is a drawn specimen rather than a destination photograph, which is the whole
@@ -89,7 +93,12 @@
   }
 }
 
+/* Absolute, because height:100% against an auto-height parent falls back to the viewBox's own 640:900 ratio: at a
+   720px column that computes to 1013px and pushes the page 113px past a 900px viewport. Filling the pane instead
+   lets `slice` crop the plate, which is what it is drawn to do. */
 .auth-plate {
+  position: absolute;
+  inset: 0;
   display: block;
   width: 100%;
   height: 100%;
