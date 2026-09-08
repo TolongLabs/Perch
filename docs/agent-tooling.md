@@ -92,3 +92,21 @@ graphify . --update     # incremental, after notable code changes
 dependency entries dilutes every query run against it.
 
 **Not worth building on the bare scaffold.** Build it once there is real code.
+
+---
+
+## Machine Gotchas
+
+Two findings from 8 September that fail silently and look plausible. Both cost every session on the machine time.
+
+**`--disable-dev-shm-usage` starves headless Chrome here.** The flag moves Chrome's shared memory off `/dev/shm` and
+onto `/tmp`. On this machine `/tmp` is a 1 GB tmpfs that runs near full, while `/dev/shm` is 1 GB and almost empty, so
+the flag aims the compositor at the one filesystem with no room. Symptoms: `Unable to capture screenshot`,
+`Target crashed`, `ERR_INSUFFICIENT_RESOURCES`, tracking raster area rather than free RAM, unchanged by adding swap.
+Drop the flag; it is Docker advice for a 64 MB `/dev/shm`, the inverse of this machine. Keep scratch output out of
+`/tmp` for the same reason: write captures and bundles under `~/.cache/`.
+
+**`ps -e` with `-C` unions, it does not intersect.** `ps -eo comm -C chrome-headless` returns every process on the
+machine, looking exactly like a list of browsers; it once reported 343 browsers when there were 2, and nearly produced a
+kill list covering every session here. Count with `pgrep -c chrome-headless`, or `ps -C chrome-headless --no-headers`
+without `-e`.
