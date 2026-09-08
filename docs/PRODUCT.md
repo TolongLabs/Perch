@@ -134,8 +134,8 @@ One shot, and everything above exists to make it land. The video is 3 to 5 minut
 plan, swipe, see the votes, drag the calendar, apply, checklist, book.
 
 > **Four days, twelve slots, about ninety seconds of dragging. Aisyah hits Apply, the cards fly into their slots, and
-> the calendar colours itself: three days green, one gold, and the gold one says the plan is fine and the order is
-> slow.**
+> the calendar colours itself green. She drags one stop to where she would rather have it, and that day turns gold: the
+> plan is fine and the order is slow, and it says so.**
 
 **The claim that moment supports is narrower than it first looks, and the narrow one is the defensible one.** It is not
 that the scheduler is clever. It is that **the group's decision, made in swipes, survives intact all the way to a
