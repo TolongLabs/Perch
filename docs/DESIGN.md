@@ -171,9 +171,9 @@ device, not decoration, which is what `AGENTS.md` requires of any device on scre
 **Revised 8 September, the day grounds mix at 26 percent.** Each day column's ground is its bird mixed toward `--paper`
 in OKLab. At the original 9 percent the columns were too close to tell apart, which defeats the one thing the colour is
 for: measured with CIEDE2000, adjacent days sat at ΔE 2.4 to 3.7 in light and about the same in dark, the blue and the
-violet both greying toward the paper. At 26 percent every pair among days 1 to 4 clears ΔE 9.3 in light and 8.7 in dark,
+violet both greying toward the paper. At 26 percent every pair among days 1 to 4 clears ΔE 8.6 in light and 8.7 in dark,
 with ink on any ground above 9:1. The known limit is day 4 against day 5, the Violet Cuckoo and the Pink-necked Green
-Pigeon, which are hue-adjacent and reach only 7.1 light and 6.7 dark; a per-day mix could push them past 8 but would
+Pigeon, which are hue-adjacent and reach only 7.4 light and 6.7 dark; a per-day mix could push them past 8 but would
 make the columns read as ranked by weight, so the uniform mix was kept. The empty slot's dashed boundary is drawn in 62
 percent ink so it clears 3:1 against these deeper tints.
 
