@@ -40,7 +40,7 @@ const SlotCell = ({ dayIndex, slotIndex, children }: { dayIndex: number; slotInd
 }
 
 export const Desk = () => {
-  const { trip, place, remove, apply, pin, unpin, setDates } = useTrip()
+  const { trip, place, remove, apply, pin, unpin, setDates, restart } = useTrip()
   const [flight, setFlight] = useState(0)
   const [dragging, setDragging] = useState<string | null>(null)
   const [drawer, setDrawer] = useState<{ dayIndex: number; slotIndex: number } | null>(null)
@@ -203,6 +203,16 @@ export const Desk = () => {
                 const p = trip.options[entry.placeId]
                 return p ? <PoolCard key={p.id} place={p} unanimous={entry.unanimous} /> : null
               })}
+            </div>
+
+            {/* Inside the product surface and labelled as not being part of it, per `TRD.md`. A live demo has to be
+                resettable between runs by whoever is holding the laptop, not by opening devtools. */}
+            <div className="desk-proto">
+              <p className="t-label desk-protolegend">Prototype Controls</p>
+              <p className="t-specimen">Not part of the product. Clears this browser and reloads the fixture.</p>
+              <button type="button" className="desk-reset t-label" onClick={restart}>
+                Start Over
+              </button>
             </div>
           </aside>
         </div>
