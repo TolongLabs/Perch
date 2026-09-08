@@ -12,17 +12,21 @@ const isTrip = (value: unknown): value is Trip => {
   const t = value as Partial<Trip>
   return (
     typeof t.id === 'string' &&
+    typeof t.ownerId === 'string' &&
     Array.isArray(t.days) &&
     Array.isArray(t.party) &&
-    Array.isArray(t.ranking) &&
-    Array.isArray(t.changes) &&
+    Array.isArray(t.legs) &&
+    Array.isArray(t.pins) &&
+    Array.isArray(t.checklist) &&
+    typeof t.votes === 'object' &&
+    t.votes !== null &&
     typeof t.options === 'object' &&
     t.options !== null &&
-    t.days.every((d) => Array.isArray(d?.slots) && d.slots.every((s) => Array.isArray(s?.blockedIds)))
+    t.days.every((d) => Array.isArray(d?.slots) && d.slots.every((s) => typeof s?.pinned === 'boolean'))
   )
 }
 
-/** A cold load with nothing stored is the normal case, not an error: the trip is valid with zero group input. */
+/** A cold load with nothing stored is the normal case, not an error: the fixture renders as authored. */
 export const load = (): Trip => {
   try {
     const raw = localStorage.getItem(KEY)

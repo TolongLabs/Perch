@@ -1,49 +1,63 @@
-export type Period = 'morning' | 'midday' | 'afternoon' | 'evening'
-
-export type SlotState = 'open' | 'decided' | 'at-risk'
+export type Period = 'morning' | 'afternoon' | 'evening'
 
 export type OptionKind =
   | 'temple'
-  | 'volcano'
+  | 'shrine'
   | 'market'
   | 'food'
   | 'museum'
-  | 'beach'
-  | 'cave'
-  | 'craft'
+  | 'park'
   | 'viewpoint'
+  | 'mall'
+  | 'entertainment'
   | 'street'
 
-export type Option = {
+export type ClusterId = 'asakusa-ueno' | 'shibuya-harajuku-shinjuku' | 'tsukiji-ginza-station' | 'odaiba-toyosu-teamlab'
+
+export type Reel = {
+  src: string
+  poster: string
+  platform: 'instagram' | 'xhs'
+  creditHandle: string
+  sourceUrl: string
+}
+
+export type Place = {
   id: string
   name: string
   kind: OptionKind
-  area: string
-  /** Driving minutes from the city centre. The unit that makes a swap honest. */
-  travelMin: number
+  cluster: ClusterId
+  lat: number
+  lng: number
+  yen: number
+  costRM: number
   /** How long a visitor actually spends there, not the minimum possible. */
   dwellMin: number
-  costRM: number
   opens: string
   closes: string
+  /** Lowercase weekday names, compared against Day.weekday.toLowerCase(). */
   closedOn: string[]
   bestPeriod: Period[]
   tags: string[]
   blurb: string
+  reel: Reel
 }
 
 export type Slot = {
   id: string
   period: Period
-  /** The option currently in the slot. Null only while The Book is in its setting state. */
-  chosenId: string | null
-  /** Everything that lost, in rank order. The replacement pool, the cut list and the change list at once. */
-  benchIds: string[]
-  /** Options the world has taken off the table for this slot. A cancelled jeep tour is still cancelled. */
-  blockedIds: string[]
-  state: SlotState
-  /** Why the slot is at risk. Present only when state is 'at-risk'. */
-  cause: string | null
+  /** The place occupying the slot, null while the calendar is empty. */
+  placeId: string | null
+  pinned: boolean
+}
+
+export type DayFeasibility = {
+  status: 'green' | 'gold' | 'red'
+  transitMin: number
+  dwellMin: number
+  daySpanMin: number
+  stopsOutsideHours: string[]
+  rationale: string
 }
 
 export type Day = {
@@ -53,31 +67,41 @@ export type Day = {
   /** The bird that tints this day. Matches --day-N in tokens.css. */
   tint: 1 | 2 | 3 | 4 | 5
   title: string
+  /** Always three: morning, afternoon, evening. */
   slots: Slot[]
+  /** Null until the day has been scheduled, which renders as the blank state. */
+  feasibility: DayFeasibility | null
 }
 
 export type Person = {
   id: string
   name: string
   initials: string
-  /** Days this person tapped as available in phase 1. Empty means they have not opened the link. */
-  availableDays: number[]
-  /** Option ids this person tapped as unmissable in phase 2. */
-  wants: string[]
 }
 
-export type ChangeEvent = {
-  id: string
-  at: string
+/** Member id to place id to answer. Null means that member has not swiped that place yet. */
+export type Votes = Record<string, Record<string, 'yes' | 'no' | null>>
+
+/** One city and a run of consecutive days, with a fixed transfer block before it. */
+export type Leg = {
+  city: string
+  startDay: number
+  endDay: number
+  transferMin: number
+}
+
+export type Pin = {
+  placeId: string
   dayIndex: number
-  slotId: string
-  cause: string
-  fromId: string
-  toId: string
-  /** Negative is closer. Always reported with deltaRM, never alone. */
-  deltaMin: number
-  deltaRM: number
-  sentence: string
+  slotIndex: number
+}
+
+export type ChecklistItem = {
+  id: string
+  label: string
+  ticked: boolean
+  /** The trip fact this item is derived from, for example destination:japan. */
+  derivedFrom: string
 }
 
 export type Trip = {
@@ -87,10 +111,12 @@ export type Trip = {
   startDate: string
   nights: number
   budgetRM: number
+  ownerId: string
   party: Person[]
   days: Day[]
-  options: Record<string, Option>
-  /** The order the interview produced, most wanted first. Group taps reorder it; they never edit a slot. */
-  ranking: string[]
-  changes: ChangeEvent[]
+  options: Record<string, Place>
+  legs: Leg[]
+  votes: Votes
+  pins: Pin[]
+  checklist: ChecklistItem[]
 }

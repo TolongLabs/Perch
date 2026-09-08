@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Info } from '../components/Ui'
+import { tripCostRM } from '../lib/cost'
 import { dayLabel, money } from '../lib/format'
-import { tripCostRM } from '../lib/repair'
 import { useTrip } from '../state'
 import './Dashboard.css'
 
@@ -11,7 +11,7 @@ import './Dashboard.css'
  */
 export const Dashboard = () => {
   const { trip } = useTrip()
-  const open = trip.days.flatMap((d) => d.slots).filter((s) => s.state === 'open').length
+  const open = trip.days.flatMap((d) => d.slots).filter((s) => s.placeId === null).length
   const last = trip.days[trip.days.length - 1]
 
   return (
@@ -57,7 +57,9 @@ export const Dashboard = () => {
 
           <span className="dash-trip-meta">
             <span className="t-label">{money(tripCostRM(trip))}</span>
-            <span className="t-specimen">{open === 0 ? 'Settled' : `${open} still open`}</span>
+            <span className="t-specimen">
+              {open === 0 ? 'Every slot filled' : `${open} of ${trip.days.length * 3} slots open`}
+            </span>
           </span>
         </Link>
       </section>
