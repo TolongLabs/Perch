@@ -521,11 +521,20 @@ export async function recordDemo(options = {}) {
     await must(page.locator('.desk-day'), 'shot 5 day columns')
     await must(page.locator('.desk-pool'), 'shot 5 sidebar')
     await mark('shot-5')
-    await claim(
-      'shot-5',
-      'twelve empty slots and a sidebar of everything that won',
-      async () => (await countOf('.slot-drop')) === 12 && (await countOf('.desk-poollist .card-pool')) > 0
-    )
+    // Read the shape off the board rather than asserting twelve. Since #136 a day's period can hold a second slot,
+    // so twelve is the opening state, not a property of the calendar. What the narration actually claims is that
+    // every day starts empty with a slot per period and the sidebar holds what won.
+    await claim('shot-5', 'a slot for every period of every day, all empty, beside a sidebar of what won', async () => {
+      const days = await countOf('.desk-day')
+      const slots = await countOf('.slot-drop')
+      const filled = await countOf('.card-placed')
+      const waiting = await countOf('.desk-poollist .card-pool')
+      if (days < 1) return 'no day columns on the board'
+      if (slots !== days * 3) return `${slots} slots across ${days} days, expected ${days * 3}`
+      if (filled !== 0) return `${filled} slots already filled, the board is not empty`
+      if (waiting < 1) return 'the sidebar holds nothing'
+      return true
+    })
     await finishShot('shot-5', 11_000)
 
     await mark('shot-6')
@@ -582,15 +591,22 @@ export async function recordDemo(options = {}) {
     }
     if (goldDayIndex < 0) throw new Error('required recording anchor is absent: shot 7 Sensoji day')
     const goldDay = page.locator('.desk-day').nth(goldDayIndex)
-    const slotAt = (index) => goldDay.locator('.desk-slot').nth(index)
-    const afternoonName = (await slotAt(1).locator('.card-placed').first().innerText()).split('\n')[0]
+    // Since #136 a .desk-slot is a period group holding one or two cells, not a single slot, and a day can run to
+    // six. Addressing a period by its index within the day is therefore a guess about shape. Address it by the
+    // heading it carries instead, and take the first cell inside it, which is the one the scheduler filled.
+    const periodGroup = (label) => goldDay.locator('.desk-slot').filter({ has: page.getByText(exactText(label)) })
+    const afternoon = periodGroup('Afternoon')
+    const evening = periodGroup('Evening')
+    await must(afternoon, 'shot 7 afternoon period')
+    await must(evening, 'shot 7 evening period')
+    const afternoonName = (await afternoon.locator('.card-placed').first().innerText()).split('\n')[0]
 
     // A card dropped on an occupied slot evicts the occupant to the sidebar rather than trading places with it, so
     // the swap is two gestures: move the evening stop up, then bring the evicted afternoon stop back down.
-    const eveningGrip = slotAt(2).locator('.card-placed .card-grip')
+    const eveningGrip = evening.locator('.card-placed .card-grip').first()
     await must(eveningGrip, 'shot 7 evening card')
     await moveTo(eveningGrip)
-    const target = await centerOf(slotAt(1).locator('.slot-drop'))
+    const target = await centerOf(afternoon.locator('.slot-drop').first())
     await gesture(page, await centerOf(eveningGrip), target)
     pointer = target
     await pause(1_600)
@@ -600,7 +616,7 @@ export async function recordDemo(options = {}) {
     // asserting it here is what broke the beat: the day is measured against its own best route, not against Apply's.
     const displaced = page.locator('.desk-poollist .card-pool').filter({ hasText: afternoonName })
     await must(displaced, 'shot 7 displaced card')
-    const backTo = await centerOf(slotAt(2).locator('.slot-drop'))
+    const backTo = await centerOf(evening.locator('.slot-drop').first())
     await moveTo(displaced.first())
     await gesture(page, await centerOf(displaced.first()), backTo)
     pointer = backTo
