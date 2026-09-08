@@ -7,6 +7,27 @@
   --rail-expanded: 232px;
   /* What the page reserves. The rail expands over this, never through it, so nothing reflows. */
   --rail-gutter: calc(var(--rail-inset) * 2 + var(--rail-collapsed));
+  /* 44px is the touch target, not 40: the dock is the only navigation on a phone and it is hit with a thumb. */
+  --dock-item: 44px;
+  --dock-h: calc(var(--s2) * 2 + var(--dock-item));
+  /* Everything that has to stay clear of the dock measures it from here: the page's own padding, the footer's,
+     and the scroll padding. Three numbers that must agree are one number. */
+  --dock-clear: calc(var(--rail-inset) * 2 + var(--dock-h));
+  --cluster-clear: calc(12px + 48px + var(--s3));
+}
+
+/* A browser scrolling a focused element into view stops as soon as it is barely inside the viewport, which puts it
+   directly under fixed chrome. Tabbing to New Plan and to all four footer links landed them under the dock. Scroll
+   padding is what tells the browser the viewport is smaller than it looks; nothing else fixes keyboard focus, since
+   the page never chose the scroll position. */
+:root:has(.island-top) {
+  scroll-padding-top: var(--cluster-clear);
+}
+
+@media (max-width: 899px) {
+  :root:has(.island-dock) {
+    scroll-padding-bottom: var(--dock-clear);
+  }
 }
 
 .island {
@@ -19,15 +40,16 @@
 
 /* The rail */
 
+/* The rail is as tall as its rows and no taller. Stretched to the viewport it was a floating pill that was more
+   than half empty, with the pin marooned at the far end: an object whose size does not match its contents reads as
+   an accidental container rather than a designed one, which is the whole difference between an island and a bar. */
 .island-rail {
   top: var(--rail-inset);
-  bottom: var(--rail-inset);
   left: var(--rail-inset);
   width: var(--rail-collapsed);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: var(--s4);
+  gap: var(--s2);
   padding: var(--s3);
   overflow: hidden;
   transition: width var(--island-motion) var(--ease-expo);
@@ -37,13 +59,17 @@
   width: var(--rail-expanded);
 }
 
+/* The pin is not an eighth destination, it changes how the rail behaves, so a rule closes the group of places you
+   can go. It sits on the list rather than on the pin so it spans the rail's content box and narrows with it as the
+   rail collapses, instead of staying at the expanded width and being clipped. */
 .rail-list {
   display: flex;
   flex-direction: column;
   gap: var(--s1);
   list-style: none;
-  margin: 0;
-  padding: 0;
+  margin: 0 0 var(--s2);
+  padding: 0 0 var(--s3);
+  border-bottom: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
 }
 
 .rail-item,
@@ -243,8 +269,8 @@
   .dock-item {
     display: grid;
     place-items: center;
-    width: 40px;
-    height: 40px;
+    width: var(--dock-item);
+    height: var(--dock-item);
     border-radius: var(--r-pill);
     color: var(--ink);
     text-decoration: none;
