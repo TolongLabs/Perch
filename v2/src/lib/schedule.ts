@@ -137,7 +137,10 @@ export const scheduleTrip = (trip: Trip): Day[] => {
     }, null)
     if (cluster) taken.add(cluster)
 
-    let local = candidates.filter((p) => p.cluster === cluster)
+    // The pool is in rank order, so the day keeps only as many cluster cards as it has open slots before ordering
+    // them. Otherwise the period and geography picks below can seat three weaker cards and bench a unanimous one.
+    const open = day.slots.filter((s) => !(s.pinned && s.placeId)).length
+    let local = candidates.filter((p) => p.cluster === cluster).slice(0, open)
     let previous: string | null = null
     const slots = day.slots.map((slot) => {
       if (slot.pinned && slot.placeId) {

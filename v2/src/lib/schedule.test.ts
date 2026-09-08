@@ -61,6 +61,15 @@ describe('scheduleTrip', () => {
     })
   })
 
+  test('seats the highest ranked cards of a cluster before any weaker one', () => {
+    const owner = trip.ownerId
+    const mine = { ...trip.votes[owner] }
+    for (const id of ['nakamise', 'kappabashi', 'tokyo-national-museum']) mine[id] = 'yes'
+    const scheduled = scheduleTrip({ ...trip, votes: { ...trip.votes, [owner]: mine } })
+    const asakusa = scheduled.find((d) => d.title === 'Asakusa And Ueno')
+    expect(asakusa?.slots.map((s) => s.placeId)).toContain('sensoji')
+  })
+
   test('keeps each day inside one cluster', () => {
     for (const day of scheduleTrip(trip)) {
       const clusters = new Set(day.slots.map((s) => (s.placeId ? trip.options[s.placeId]?.cluster : null)))
