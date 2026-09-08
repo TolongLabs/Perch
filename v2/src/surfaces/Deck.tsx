@@ -1,4 +1,5 @@
-import { type AnimationEvent, useCallback, useState } from 'react'
+import { ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react'
+import { type AnimationEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ReelCard } from '../components/ReelCard'
 import { Heading } from '../components/Ui'
@@ -8,6 +9,9 @@ import './Deck.css'
 
 /** Three is enough for the stack to read as a deck; the fourth would never be seen. */
 const VISIBLE = 3
+
+/** How long the edge glow holds. Long enough to register after the card has gone, short enough not to queue. */
+const FLASH_MS = 520
 
 export const Deck = () => {
   const navigate = useNavigate()
@@ -20,8 +24,22 @@ export const Deck = () => {
   const [queue] = useState(() => Object.values(trip.options).filter((p) => trip.votes[me]?.[p.id] == null))
   const [index, setIndex] = useState(0)
   const [leaving, setLeaving] = useState<Swipe | null>(null)
+  const [flash, setFlash] = useState<Swipe | null>(null)
+  const flashTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  const commit = useCallback((s: Swipe) => setLeaving((current) => current ?? s), [])
+  /**
+   * The edge glow runs on its own clock rather than on the card's exit. Under reduced motion that exit collapses to
+   * nothing, and feedback tied to it would be gone before it was seen; here the answer stays on screen for the same
+   * window whether or not it animated getting there.
+   */
+  const commit = useCallback((s: Swipe) => {
+    setLeaving((current) => current ?? s)
+    setFlash(s)
+    clearTimeout(flashTimer.current)
+    flashTimer.current = setTimeout(() => setFlash(null), FLASH_MS)
+  }, [])
+
+  useEffect(() => () => clearTimeout(flashTimer.current), [])
 
   // The card that left tells us when it has gone, so the queue advances on the animation rather than on a timer that
   // has to guess its length. `prefers-reduced-motion` collapses the animation to nothing and this still fires.
@@ -64,6 +82,26 @@ export const Deck = () => {
       </header>
 
       <div className="deck-stack">
+        {/* Behind the cards, so the answer reads as light off the edge the hand threw the card at rather than as a
+            panel laid over the reel. */}
+        <div className="deck-flash" data-flash={flash ?? undefined} aria-hidden="true" />
+
+        {/* On the reel rather than above it. The gold answer glows from the top, and a label sitting in the page
+            above the card was washed out by it; on the reel it takes the scrim the reel's own marks take and stays
+            legible against anything. Its text carries the one piece of state the mechanic has, and it stays after
+            the mark is spent, because a Must Go moves rather than being used up. */}
+        <p className="deck-up t-label">
+          <ArrowUp size={14} strokeWidth={2} aria-hidden="true" />
+          Must Go ({mustGo ? 'Move' : '1 Left'})
+        </p>
+
+        <span className="deck-hint" data-side="pass" aria-hidden="true">
+          <ChevronLeft size={18} strokeWidth={2} />
+        </span>
+        <span className="deck-hint" data-side="keep" aria-hidden="true">
+          <ChevronRight size={18} strokeWidth={2} />
+        </span>
+
         {rest.map((place, depth) => {
           const top = depth === 0
           return (

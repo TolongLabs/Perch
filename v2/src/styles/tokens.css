@@ -47,6 +47,7 @@
 
   /* The island's own motion. Kept separate from the two above because it is the one movement in the product that
      plays even when the reader has asked the OS for less: the width change is the affordance, not an ornament. */
+  --flash: 520ms;
   --island-motion: 220ms;
   --island-label: 150ms;
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);

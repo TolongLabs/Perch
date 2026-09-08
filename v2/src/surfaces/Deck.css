@@ -173,3 +173,105 @@
   flex: none;
   padding: var(--s4) var(--s6);
 }
+
+/* The three gestures, and the answer to each */
+
+/* At the top of the reel, in the direction it names, on the same translucent black the reel's own marks use. */
+.deck-up {
+  position: absolute;
+  top: var(--s3);
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  margin: 0;
+  padding: var(--s2) var(--s3);
+  border-radius: var(--r-pill);
+  background: rgb(0 0 0 / 42%);
+  color: var(--paper);
+  pointer-events: none;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* Over the reel, so they take the scrim treatment the reel's own marks take: a translucent black disc and a paper
+   glyph, which holds on any frame of any video rather than on one theme's ground. */
+.deck-hint {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-pill);
+  background: rgb(0 0 0 / 42%);
+  color: var(--paper);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.deck-hint[data-side="pass"] {
+  left: var(--s3);
+}
+
+.deck-hint[data-side="keep"] {
+  right: var(--s3);
+}
+
+.deck-flash {
+  position: absolute;
+  inset: -36px;
+  z-index: -2;
+  border-radius: calc(var(--r-desk) + 36px);
+  opacity: 0;
+  pointer-events: none;
+  /* Blurred, because an unblurred gradient behind an opaque card is a coloured plate showing at the edges rather
+     than light coming off one. The falloff does the shape; the blur is what makes it read as a glow. */
+  filter: blur(18px);
+}
+
+/* Held by the attribute, not by the animation, so the answer is still on screen under reduced motion where the
+   animation is suppressed. Only the islands are exempt from that suppression, and these are not islands. */
+.deck-flash[data-flash] {
+  opacity: 1;
+}
+
+.deck-flash[data-flash="keep"] {
+  background: linear-gradient(to left, var(--decided), transparent 46%);
+}
+
+/* Dull, per the issue: a pass is the answer you give most often and it should not celebrate. */
+.deck-flash[data-flash="pass"] {
+  background: linear-gradient(to right, var(--ink-muted), transparent 40%);
+  opacity: 0.66;
+}
+
+/* Held closer to the card than the other two. Gold reaching the page heading read as the whole screen flashing
+   rather than as light off the edge the card left by. */
+.deck-flash[data-flash="must"] {
+  top: -14px;
+  background: linear-gradient(to bottom, var(--gold), transparent 44%);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* --flash and FLASH_MS in Deck.tsx are the same window: the attribute is removed as the animation ends. */
+  .deck-flash[data-flash] {
+    animation: flash-out var(--flash) var(--ease-expo) forwards;
+  }
+
+  @keyframes flash-out {
+    from {
+      opacity: 0;
+    }
+
+    35% {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
+  }
+}
