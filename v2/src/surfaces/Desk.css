@@ -156,7 +156,7 @@
 
 .desk-empty {
   padding: var(--s4);
-  border: var(--outline) dashed color-mix(in oklab, var(--ink) 18%, transparent);
+  border: var(--outline) dashed color-mix(in oklab, var(--ink) 62%, transparent);
   border-radius: var(--r-desk);
   color: var(--ink-muted);
   text-align: left;
@@ -185,7 +185,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--s2);
-  max-height: 60vh;
+  max-height: 320px;
   overflow-y: auto;
 }
 
@@ -230,9 +230,25 @@
 /* Wide enough for the four columns and the sidebar side by side. Below this the days stack, which is the same
    information in one column rather than a four-column grid squeezed to 85px a day. */
 @media (min-width: 900px) {
+  /* The calendar spans both rows on the right so Prototype Controls can sit at the foot of the left column while
+     being last in the DOM: on a phone the column comes first now, and scaffolding that says it is not part of the
+     product has no business between the waiting cards and the days. */
   .desk-body {
-    grid-template-columns: 1fr 260px;
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: auto auto;
     align-items: start;
+  }
+
+  .desk-pool {
+    grid-area: 1 / 1;
+  }
+
+  .desk-grid {
+    grid-area: 1 / 2 / span 2 / auto;
+  }
+
+  .desk-proto {
+    grid-area: 2 / 1;
   }
 
   .desk-grid {
@@ -242,5 +258,12 @@
   .desk-pool {
     position: sticky;
     top: var(--s5);
+  }
+
+  /* The list takes the height the column has, which puts Prototype Controls under the fold at 1440x900 rather
+     than half in view at the bottom edge. Scaffolding that announces it is not part of the product should not be
+     the last thing in frame. */
+  .desk-poollist {
+    max-height: calc(100vh - 260px);
   }
 }

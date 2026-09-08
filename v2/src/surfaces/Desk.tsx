@@ -141,6 +141,23 @@ export const Desk = () => {
         )}
 
         <div className="desk-body">
+          <aside className="desk-pool" aria-label="Voted in">
+            <p className="t-label desk-legend">
+              Voted In
+              <Info>
+                Everything the group put at or above half the weighted vote, in tally order. Drag one into a slot, or
+                let Apply place them.
+              </Info>
+            </p>
+            <p className="t-specimen desk-poolcount">{pool.length} waiting</p>
+            <div className="desk-poollist">
+              {pool.map((entry) => {
+                const p = trip.options[entry.placeId]
+                return p ? <PoolCard key={p.id} place={p} unanimous={entry.unanimous} /> : null
+              })}
+            </div>
+          </aside>
+
           <section className="desk-grid" aria-label="The calendar">
             {trip.days.map((day, dayPos) => (
               <section key={day.index} className="desk-day" data-day={day.tint}>
@@ -189,32 +206,15 @@ export const Desk = () => {
             ))}
           </section>
 
-          <aside className="desk-pool" aria-label="Voted in">
-            <p className="t-label desk-legend">
-              Voted In
-              <Info>
-                Everything the group put at or above half the weighted vote, in tally order. Drag one into a slot, or
-                let Apply place them.
-              </Info>
-            </p>
-            <p className="t-specimen desk-poolcount">{pool.length} waiting</p>
-            <div className="desk-poollist">
-              {pool.map((entry) => {
-                const p = trip.options[entry.placeId]
-                return p ? <PoolCard key={p.id} place={p} unanimous={entry.unanimous} /> : null
-              })}
-            </div>
-
-            {/* Inside the product surface and labelled as not being part of it, per `TRD.md`. A live demo has to be
-                resettable between runs by whoever is holding the laptop, not by opening devtools. */}
-            <div className="desk-proto">
-              <p className="t-label desk-protolegend">Prototype Controls</p>
-              <p className="t-specimen">Not part of the product. Clears this browser and reloads the fixture.</p>
-              <button type="button" className="desk-reset t-label" onClick={restart}>
-                Start Over
-              </button>
-            </div>
-          </aside>
+          {/* Inside the product surface and labelled as not being part of it, per `TRD.md`. A live demo has to be
+              resettable between runs by whoever is holding the laptop, not by opening devtools. */}
+          <div className="desk-proto">
+            <p className="t-label desk-protolegend">Prototype Controls</p>
+            <p className="t-specimen">Not part of the product. Clears this browser and reloads the fixture.</p>
+            <button type="button" className="desk-reset t-label" onClick={restart}>
+              Start Over
+            </button>
+          </div>
         </div>
       </main>
 
