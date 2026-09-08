@@ -314,6 +314,45 @@ pass, and wait for the leaving animation before the next swipe.
 
 ---
 
+## Setting The Subtitles In The Product's Own Face
+
+**The subtitles are the only type in every frame of the film**, so leaving them in libass's fallback puts a generic sans
+over five minutes of a designed interface. `narrate.sh` takes `DEMO_SUBTITLE_FONT`, `DEMO_SUBTITLE_SIZE` and
+`DEMO_FONTSDIR`; the defaults are unchanged, so this is opt-in.
+
+**libass cannot read woff2, and the app ships nothing else.** Instance the variable Quicksand to a static TTF once, into
+the scratch directory — never into the repo, it is derived from a font already in `v2/public/fonts/`:
+
+```python
+from fontTools.ttLib import TTFont
+from fontTools.varLib import instancer
+
+f = TTFont('v2/public/fonts/quicksand-variable.woff2')
+f = instancer.instantiateVariableFont(f, {'wght': 500})
+f.flavor = None
+for rec in f['name'].names:            # the instance inherits "Quicksand Light" from the variable font
+    if rec.nameID in (1, 4, 16):
+        rec.string = 'Quicksand'
+    elif rec.nameID == 2:
+        rec.string = 'Regular'
+    elif rec.nameID == 6:
+        rec.string = 'Quicksand-Regular'
+f.save('$DEMO_FONTSDIR/Quicksand-Medium.ttf')
+```
+
+**The name-table rewrite is the part that will catch you.** An instanced variable font keeps the family name of the axis
+default, so the file reports as `Quicksand Light`. `FontName=Quicksand` then matches nothing, libass falls back to its
+default face **without warning**, and the render looks exactly like a fontsdir that failed to load. Check
+`getDebugName(1)` on the saved file rather than assuming.
+
+```bash
+export DEMO_FONTSDIR="$HOME/.cache/perch-demo/fonts"
+export DEMO_SUBTITLE_FONT="Quicksand"
+export DEMO_SUBTITLE_SIZE=13
+```
+
+---
+
 ## Why It Looks The Way It Does
 
 Inherited reasoning, all of it learned by watching a bad render rather than by reasoning about it in advance.

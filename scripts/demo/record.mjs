@@ -346,6 +346,8 @@ export async function recordDemo(options = {}) {
         el.querySelector('.specimen').textContent = specimen
         if (aside) el.querySelector('.aside').textContent = aside
         document.body.append(el)
+        const pointer = document.getElementById('perch-demo-cursor')
+        if (pointer) pointer.style.display = 'none'
       },
       { eyebrow, display, specimen, aside }
     )
@@ -353,7 +355,11 @@ export async function recordDemo(options = {}) {
   }
 
   const hideCard = async () => {
-    await page.evaluate(() => document.getElementById('demo-card')?.remove())
+    await page.evaluate(() => {
+      document.getElementById('demo-card')?.remove()
+      const pointer = document.getElementById('perch-demo-cursor')
+      if (pointer) pointer.style.display = ''
+    })
     await pause(500)
   }
 

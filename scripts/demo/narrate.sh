@@ -95,7 +95,17 @@ PY
 then
   fit="tpad=stop_mode=clone:stop_duration=$tail_seconds,$fit"
 fi
-subtitle_style="FontName=DejaVu Sans,FontSize=14,PrimaryColour=&H00FFFFFF,OutlineColour=&H40101010,BorderStyle=3,Outline=3,Shadow=0,Alignment=2,MarginV=28"
+# The subtitles are the only type in every frame, so they should be the product's own face rather than whatever
+# libass falls back to. Point DEMO_FONTSDIR at a directory holding a static TTF; libass cannot read woff2, so the
+# app's variable Quicksand has to be instanced and converted first. See the README.
+subtitle_font="${DEMO_SUBTITLE_FONT:-DejaVu Sans}"
+subtitle_size="${DEMO_SUBTITLE_SIZE:-14}"
+fontsdir="${DEMO_FONTSDIR:-}"
+subtitle_style="FontName=$subtitle_font,FontSize=$subtitle_size,PrimaryColour=&H00FFFFFF,OutlineColour=&H40101010,BorderStyle=3,Outline=3,Shadow=0,Alignment=2,MarginV=28"
+subtitle_filter="subtitles=filename=narration.srt:force_style='$subtitle_style'"
+if [ -n "$fontsdir" ]; then
+  subtitle_filter="subtitles=filename=narration.srt:fontsdir='$(realpath "$fontsdir")':force_style='$subtitle_style'"
+fi
 source_path="$(realpath "$source")"
 audio_path="$(realpath "$demo_dir/narration.wav")"
 output_path="$(cd -- "$(dirname -- "$output")" && pwd)/$(basename -- "$output")"
@@ -103,7 +113,7 @@ output_path="$(cd -- "$(dirname -- "$output")" && pwd)/$(basename -- "$output")"
 (
   cd "$demo_dir"
   "$ffmpeg" -y -loglevel error -i "$source_path" -i "$audio_path" \
-    -filter_complex "[0:v]$fit,subtitles=filename=narration.srt:force_style='$subtitle_style'[video]" \
+    -filter_complex "[0:v]$fit,$subtitle_filter[video]" \
     -map '[video]' -map 1:a -c:v libx264 -preset "$preset" -crf 20 -pix_fmt yuv420p \
     -c:a aac -b:a 160k -movflags +faststart "$output_path"
 )
