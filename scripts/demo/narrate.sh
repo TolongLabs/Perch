@@ -110,11 +110,44 @@ source_path="$(realpath "$source")"
 audio_path="$(realpath "$demo_dir/narration.wav")"
 output_path="$(cd -- "$(dirname -- "$output")" && pwd)/$(basename -- "$output")"
 
+# A music bed is opt-in and has no default, so a run without DEMO_MUSIC is silent under the voice exactly as before.
+# The level is derived rather than guessed: both the narration and the chosen slice of the bed are measured, and the
+# bed is placed DEMO_MUSIC_DUCK decibels under the narration's mean. A fixed offset beats a guessed gain, because a
+# quiet mix and a loud one need different numbers to sit in the same place.
+music="${DEMO_MUSIC:-}"
+music_start="${DEMO_MUSIC_START:-0}"
+music_duck="${DEMO_MUSIC_DUCK:-20}"
+music_fade_in="${DEMO_MUSIC_FADE_IN:-4}"
+music_fade_out="${DEMO_MUSIC_FADE_OUT:-7}"
+
+audio_inputs=()
+audio_map='1:a'
+audio_filter=''
+if [ -n "$music" ]; then
+  [ -f "$music" ] || { echo "missing music: $music" >&2; exit 1; }
+  music_path="$(realpath "$music")"
+  video_seconds="$("$ffprobe" -v error -show_entries format=duration -of csv=p=0 "$source_path")"
+  mean_of() {
+    "$ffmpeg" -hide_banner -nostats -i "$1" ${2:+-ss "$2"} -t "$3" -af volumedetect -f null /dev/null 2>&1 |
+      sed -n 's/.*mean_volume: \(-\?[0-9.]*\) dB.*/\1/p' | tail -1
+  }
+  narration_mean="$(mean_of "$audio_path" "" "$video_seconds")"
+  music_mean="$(mean_of "$music_path" "$music_start" "$video_seconds")"
+  music_gain="$(python3 -c "print(round(($narration_mean - $music_duck) - ($music_mean), 2))")"
+  fade_out_at="$(python3 -c "print(max(0, round($video_seconds - $music_fade_out, 3)))")"
+  echo "music: bed ${music_duck}dB under narration (${narration_mean}dB), applying ${music_gain}dB from ${music_start}s"
+  audio_inputs=(-ss "$music_start" -i "$music_path")
+  audio_map='[audio]'
+  # The narration ends before the picture does, and amix takes its first input's duration, so without padding the
+  # voice out to the full video the mix stops early and the bed's fade-out is cut off partway through.
+  audio_filter=";[1:a]apad=whole_dur=${video_seconds}[voice];[2:a]volume=${music_gain}dB,afade=t=in:st=0:d=${music_fade_in},afade=t=out:st=${fade_out_at}:d=${music_fade_out}[bed];[voice][bed]amix=inputs=2:duration=first:normalize=0[audio]"
+fi
+
 (
   cd "$demo_dir"
-  "$ffmpeg" -y -loglevel error -i "$source_path" -i "$audio_path" \
-    -filter_complex "[0:v]$fit,$subtitle_filter[video]" \
-    -map '[video]' -map 1:a -c:v libx264 -preset "$preset" -crf 20 -pix_fmt yuv420p \
+  "$ffmpeg" -y -loglevel error -i "$source_path" -i "$audio_path" "${audio_inputs[@]}" \
+    -filter_complex "[0:v]$fit,$subtitle_filter[video]$audio_filter" \
+    -map '[video]' -map "$audio_map" -c:v libx264 -preset "$preset" -crf 20 -pix_fmt yuv420p \
     -c:a aac -b:a 160k -movflags +faststart "$output_path"
 )
 
