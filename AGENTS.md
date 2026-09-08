@@ -384,7 +384,7 @@ minutes before that branch was squash-merged and deleted; nothing errors, the co
 September the advisor keeps the clone at `Perch/`, and the other two work in sibling worktrees of the same repository:
 
 ```bash
-git worktree add --detach ../Perch-designer origin/main   # then bun install at the root and in v2/
+git worktree add --detach ../Perch-designer origin/main   # then bun install once, at the root
 git worktree add --detach ../Perch-pitcher  origin/main
 git worktree list                                         # every checkout, its HEAD and its branch
 ```
