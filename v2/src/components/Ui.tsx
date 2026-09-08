@@ -76,15 +76,23 @@ export const Field = ({
   type = 'text',
   placeholder,
   autoComplete,
-  disabled
+  disabled,
+  help,
+  value,
+  onChange
 }: {
   label: string
   type?: string
   placeholder?: string
   autoComplete?: string
   disabled?: boolean
+  /** An instruction attached to the control, not a caption: it says how to answer, so it cannot survive being hidden. */
+  help?: string
+  value?: string
+  onChange?: (v: string) => void
 }) => {
   const id = useId()
+  const helpId = useId()
   return (
     <div className="field">
       <label className="t-label field-label" htmlFor={id}>
@@ -97,7 +105,14 @@ export const Field = ({
         placeholder={placeholder}
         autoComplete={autoComplete}
         disabled={disabled}
+        aria-describedby={help ? helpId : undefined}
+        {...(onChange ? { value: value ?? '', onChange: (e) => onChange(e.target.value) } : {})}
       />
+      {help && (
+        <p className="t-specimen field-help" id={helpId}>
+          {help}
+        </p>
+      )}
     </div>
   )
 }
@@ -186,3 +201,43 @@ export const Select = ({
     </div>
   )
 }
+
+export type Chip = { id: string; label: string; disabled?: boolean }
+
+/**
+ * Pills with a 3px outline and a 10 percent tint when on. A chip that cannot be picked is drawn at reduced opacity and
+ * the group carries a note saying why, because a control that is off for a reason the reader cannot see is just broken.
+ */
+export const ChipGroup = ({
+  label,
+  chips,
+  selected,
+  onToggle,
+  note
+}: {
+  label: string
+  chips: Chip[]
+  selected: string[]
+  onToggle: (id: string) => void
+  /** A limitation, so it sits inline where it cannot be missed rather than in a tooltip. */
+  note?: string
+}) => (
+  <fieldset className="chips">
+    <legend className="t-label chips-legend">{label}</legend>
+    <div className="chips-row">
+      {chips.map((c) => (
+        <button
+          key={c.id}
+          type="button"
+          className="chip"
+          aria-pressed={selected.includes(c.id)}
+          disabled={c.disabled === true}
+          onClick={() => onToggle(c.id)}
+        >
+          {c.label}
+        </button>
+      ))}
+    </div>
+    {note && <p className="t-specimen chips-note">{note}</p>}
+  </fieldset>
+)

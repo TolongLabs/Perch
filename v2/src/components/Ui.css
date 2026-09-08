@@ -261,3 +261,66 @@
   outline: var(--outline) solid var(--open);
   outline-offset: 2px;
 }
+
+.field-help {
+  margin-top: calc(var(--s1) * -1);
+}
+
+/* Chips */
+
+/* A fieldset, because these are one set of related controls. Its border, padding and legend indent are the browser's
+   and go, per the rule that nothing native is left styled by the browser. */
+.chips {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.chips-legend {
+  padding: 0;
+  color: var(--ink-muted);
+}
+
+.chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  /* 8px inside the group, and the group itself sits 16px from its neighbour. Study 03's grouping gap. */
+  gap: var(--s2);
+}
+
+.chip {
+  padding: var(--s2) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 14%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  font-size: 15px;
+  transition:
+    border-color var(--motion-fade) var(--ease),
+    background var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease);
+}
+
+.chip:hover:not(:disabled) {
+  border-color: var(--ink);
+}
+
+.chip[aria-pressed="true"] {
+  border-color: var(--tint, var(--open));
+  background: color-mix(in oklab, var(--tint, var(--open)) 10%, var(--paper));
+  color: var(--tint, var(--open));
+  font-weight: 700;
+}
+
+/* Reduced, not erased: a destination that is off still has to be readable, because the note beside it explains why. */
+.chip:disabled {
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+.chips-note {
+  margin-top: var(--s1);
+}

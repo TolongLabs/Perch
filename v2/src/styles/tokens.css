@@ -8,6 +8,7 @@
   --open: #1b7f86; /* Bee-eater, Merops viridis */
   --decided: #3e7a3a; /* Green Broadbill, Calyptomena viridis */
   --at-risk: #c0342f; /* Crimson Sunbird, Aethopyga siparaja */
+  --gold: #e8a317; /* Black-naped Oriole, Oriolus chinensis */
 
   --day-1: #c2622f; /* Rufous-collared Kingfisher, Actenoides concretus */
   --day-2: #2a4c9b; /* Asian Fairy-bluebird, Irena puella */
@@ -50,6 +51,7 @@
   --ground-open: color-mix(in oklab, var(--open) 8%, var(--paper));
   --ground-decided: color-mix(in oklab, var(--decided) 8%, var(--paper));
   --ground-at-risk: color-mix(in oklab, var(--at-risk) 8%, var(--paper));
+  --ground-gold: color-mix(in oklab, var(--gold) 10%, var(--paper));
   --ground-day-1: color-mix(in oklab, var(--day-1) 9%, var(--paper));
   --ground-day-2: color-mix(in oklab, var(--day-2) 9%, var(--paper));
   --ground-day-3: color-mix(in oklab, var(--day-3) 10%, var(--paper));
@@ -90,4 +92,8 @@
 [data-state="at-risk"] {
   --state: var(--at-risk);
   --state-ground: var(--ground-at-risk);
+}
+[data-state="gold"] {
+  --state: var(--gold);
+  --state-ground: var(--ground-gold);
 }

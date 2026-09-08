@@ -1,0 +1,126 @@
+/* A drawn month. No native date input, no dialog, and the range band is the only fill on it. */
+
+.dr {
+  /* Inherits the tint of the section it sits in, so the band, the endpoints and the section's own legend agree. Falls
+     back to the Bee-eater when it is used outside a stateful section; never a day tint, which would claim a day
+     number the trip has not got yet. */
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+}
+
+.dr-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+}
+
+.dr-month {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+.dr-nav {
+  display: flex;
+  gap: var(--s2);
+}
+
+.dr-step {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 14%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  transition: border-color var(--motion-fade) var(--ease);
+}
+
+.dr-step:hover {
+  border-color: var(--ink);
+}
+
+.dr-chev {
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid var(--ink);
+  border-bottom: 2px solid var(--ink);
+}
+
+.dr-chev[data-dir="back"] {
+  transform: translateX(2px) rotate(135deg);
+}
+
+.dr-chev[data-dir="on"] {
+  transform: translateX(-2px) rotate(-45deg);
+}
+
+.dr-week,
+.dr-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  /* Zero, so consecutive in-range cells butt up and the band reads as one continuous run rather than seven stripes. */
+  gap: 0;
+}
+
+.dr-weekday {
+  padding-bottom: var(--s2);
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.dr-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+}
+
+.dr-cell[data-in="true"] {
+  background: color-mix(in oklab, var(--tint, var(--open)) 18%, transparent);
+}
+
+/* A run rounds wherever it stops: at the range's own two ends, and at either end of a week row, so a range that wraps
+   past Sunday reads as two rounded runs rather than one band someone cut with scissors. */
+.dr-cell[data-in="true"]:nth-child(7n + 1),
+.dr-cell[data-edge="start"],
+.dr-cell[data-edge="both"] {
+  border-top-left-radius: var(--r-pill);
+  border-bottom-left-radius: var(--r-pill);
+}
+
+.dr-cell[data-in="true"]:nth-child(7n),
+.dr-cell[data-edge="end"],
+.dr-cell[data-edge="both"] {
+  border-top-right-radius: var(--r-pill);
+  border-bottom-right-radius: var(--r-pill);
+}
+
+.dr-num {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: var(--outline) solid transparent;
+  border-radius: var(--r-pill);
+  background: none;
+  font-variant-numeric: tabular-nums;
+  transition:
+    border-color var(--motion-fade) var(--ease),
+    background var(--motion-fade) var(--ease);
+}
+
+.dr-num:hover {
+  background: color-mix(in oklab, var(--ink) 7%, transparent);
+}
+
+.dr-cell[data-edge] .dr-num {
+  border-color: var(--tint, var(--open));
+  background: var(--paper);
+  color: var(--tint, var(--open));
+  font-weight: 700;
+}
