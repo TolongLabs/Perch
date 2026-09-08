@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { FlatShell, Shell } from './chrome/Shell'
 import { TripProvider } from './state'
+import { BeforeWeGo } from './surfaces/BeforeWeGo'
 import { Book } from './surfaces/Book'
 import { Dashboard } from './surfaces/Dashboard'
 import { Deck } from './surfaces/Deck'
@@ -70,6 +71,15 @@ export const App = () => (
           }
         />
         {/* The invite link is the swipe link. A joiner lands here directly, with no sign in and no onboarding. */}
+        <Route
+          path="/desk/before-we-go"
+          element={
+            <Shell>
+              <BeforeWeGo />
+            </Shell>
+          }
+        />
+
         <Route
           path="/t/:tripId/swipe"
           element={
