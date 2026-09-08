@@ -342,6 +342,49 @@ gh issue close <n>                     # done
 
 ---
 
+## The Release Cycle
+
+**From 8 September until code freeze, the v2 prototype ships in tagged releases, and the team comments on each one in
+[issue #108](https://github.com/TolongLabs/Perch/issues/108).** Code freeze is **13 September 2026, 11:59 MYT**, twelve
+hours before the submission deadline. After the freeze nothing changes but the form.
+
+| Step | Who      | What                                                                                              |
+| ---- | -------- | ------------------------------------------------------------------------------------------------- |
+| 1    | Advisor  | Tags `main` as `v2-X.Y.0`, publishes the GitHub release, posts "intake open" on #108              |
+| 2    | Team     | Comments on #108 with suggestions and opinions on that release                                    |
+| 3    | Leader   | Says "enough". The advisor closes the intake with what was accepted, what was declined and why    |
+| 4    | Advisor  | Turns the accepted items into GitHub issues for the designer, in dependency order                 |
+| 5    | Designer | Changes `v2/` through PRs, then hands the pitcher the new state                                   |
+| 6    | Pitcher  | Re-records the demo video against the deployed release and uploads it to the team's review folder |
+| 7    | Advisor  | Tags the next release and opens the next intake on #108. Repeat until the freeze                  |
+
+The review folder's link is held by the team leader and is never written into the repo.
+
+### The Three Sessions
+
+Three Claude Code sessions share this one checkout, each with a role, a heartbeat and the same working-tree rules.
+
+| Session      | Model            | Owns                                                                                              |
+| ------------ | ---------------- | ------------------------------------------------------------------------------------------------- |
+| **Advisor**  | Claude Fable 5.1 | Sequencing, review of every PR, `docs/`, the data and lib modules, releases, the @mention monitor |
+| **Designer** | Claude Opus 5    | Every surface under `v2/`, the visual checks, the README's screens, the slides' design pass       |
+| **Pitcher**  | Claude Opus 5    | `scripts/demo/`, the video script through `pitch-smith`, recording, upload to the review folder   |
+
+**How to rebuild them if they die.** Open a session in this directory per role. Each one calls `ListAgents`, sends the
+other two a one-line introduction naming its role, and creates a recurring `CronCreate` heartbeat off the :00 and :30
+marks (the advisor at :17 and :47, the designer at :08, :33 and :58, the pitcher at :12 and :42) whose prompt says: if
+paused by a session or usage limit, resume the task you were on; run `git status` first; if nothing is pending, reply
+"heartbeat: idle". The advisor also arms a persistent `Monitor` that polls `gh api notifications` every minute for
+mentions on this repo only, and marks them read.
+
+**Working-tree rules, because the three sessions share one index and one HEAD.** Send the other two a one-line heads-up
+before any branch switch. Stage only in the same breath as committing, and check `git diff --cached --name-only` before
+every commit; a staged deletion of someone else's rode into a commit once. Commit by explicit pathspec, never
+`git add .` or `commit -a`. Keep captures and bundles out of `/tmp`; see
+[`docs/agent-tooling.md`](docs/agent-tooling.md#machine-gotchas).
+
+---
+
 ## Critical Do-Nots
 
 - **Do not** import or adapt code written before 30 Aug 2026 **into the product**, including anything the team privately
