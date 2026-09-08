@@ -19,14 +19,20 @@
 }
 
 @media (min-width: 1024px) {
+  /* 80 + 640 + 64 + 576 + 80 is 1440, so the spread is 1440 wide, not 1280. At 1280 the content box was 1120 against
+     1280 of columns, and the text column ran straight through the right margin: 80px of margin measured as 0, and
+     anything narrower than 1440 scrolled sideways. */
   .spread {
-    max-width: 1280px;
+    max-width: 1440px;
     padding: var(--s7) 80px var(--s8);
   }
 
+  /* 640 and 576 are exactly 10 and 9 sixty-fourths, so 10fr to 9fr lands on 640 and 576 at a 1280 content box and
+     holds that ratio at every narrower width. Fixed pixels here pushed a horizontal scrollbar onto a 1280 laptop, and
+     minmax shrank the two columns to equal widths, which is not the proportion the spread is drawn on. */
   .day-spread {
     display: grid;
-    grid-template-columns: 640px 576px;
+    grid-template-columns: 10fr 9fr;
     gap: var(--s8);
     align-items: start;
   }
