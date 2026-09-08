@@ -1,6 +1,8 @@
+/* One screen exactly. A percentage would resolve against the shell's auto height and collapse to content, which
+   would stop .land-body centring against the viewport and leave the fold in the wrong place. */
 .land {
   display: flex;
-  min-height: 100%;
+  min-height: 100dvh;
   flex-direction: column;
   gap: var(--s4);
   max-width: 1040px;

@@ -33,36 +33,6 @@
   background: var(--plate);
 }
 
-/* The landing has no scroll, so the same footer stands in flow instead of being uncovered by one. */
-/* The landing does not scroll. The shell takes the viewport exactly and the body absorbs what is left after the
-   footer, so the page itself never grows past it. The inner overflow is a floor for very short windows, not a
-   scrollbar anyone is meant to meet. */
-.flat-shell {
-  display: flex;
-  height: 100dvh;
-  flex-direction: column;
-  overflow: hidden;
-  background: var(--paper);
-}
-
-.flat-shell-body {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  overflow: auto;
-}
-
-.flat-foot {
-  flex: none;
-}
-
-.flat-foot {
-  height: var(--foot-h);
-  background: var(--plate);
-}
-
 .foot-inner {
   display: grid;
   gap: var(--s3);
