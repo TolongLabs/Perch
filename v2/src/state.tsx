@@ -1,12 +1,14 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import type { Day, Period, Slot, Trip } from './data/types'
+import type { Answer, Day, Period, Person, Slot, Trip } from './data/types'
 import { scheduleTrip, withFeasibility } from './lib/schedule'
 import { load, reset, save } from './lib/store'
 
 type Ctx = {
   trip: Trip
-  /** A member's yes or no on a place. Votes live on places, so they survive a date change. */
-  swipe: (memberId: string, placeId: string, answer: boolean) => void
+  /** A member's yes, no or Must Go on a place. Votes live on places, so they survive a date change. */
+  swipe: (memberId: string, placeId: string, answer: boolean | 'must') => void
+  /** Renames the party. Ids are kept where a row keeps its position, so votes keyed by member id survive. */
+  setParty: (names: string[]) => void
   /** Puts a place into a day and slot on the calendar, taking it out of any other slot it held. */
   place: (placeId: string, dayIndex: number, slotIndex: number) => void
   remove: (dayIndex: number, slotIndex: number) => void
@@ -66,14 +68,30 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     save(trip)
   }, [trip])
 
-  const swipe = useCallback((memberId: string, placeId: string, answer: boolean) => {
-    setTrip((current) => ({
-      ...current,
-      votes: {
-        ...current.votes,
-        [memberId]: { ...current.votes[memberId], [placeId]: answer ? 'yes' : 'no' }
+  const swipe = useCallback((memberId: string, placeId: string, answer: boolean | 'must') => {
+    setTrip((current) => {
+      const mine: Record<string, Answer> = { ...current.votes[memberId] }
+      if (answer === 'must') {
+        for (const id of Object.keys(mine)) if (mine[id] === 'must') mine[id] = 'yes'
       }
-    }))
+      mine[placeId] = answer === 'must' ? 'must' : answer ? 'yes' : 'no'
+      return { ...current, votes: { ...current.votes, [memberId]: mine } }
+    })
+  }, [])
+
+  const setParty = useCallback((names: string[]) => {
+    setTrip((current) => {
+      const party: Person[] = names
+        .map((name, i) => ({ name: name.trim(), previous: current.party[i] }))
+        .filter(({ name }) => name.length > 0)
+        .map(({ name, previous }) => ({
+          id: previous?.id ?? name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+          name,
+          initials: name.slice(0, 2).toUpperCase()
+        }))
+      const owner = party.some((p) => p.id === current.ownerId) ? current.ownerId : (party[0]?.id ?? current.ownerId)
+      return { ...current, party, ownerId: owner }
+    })
   }, [])
 
   const place = useCallback((placeId: string, dayIndex: number, slotIndex: number) => {
@@ -155,8 +173,8 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const value = useMemo(
-    () => ({ trip, swipe, place, remove, apply, pin, unpin, tick, setDates, restart }),
-    [trip, swipe, place, remove, apply, pin, unpin, tick, setDates, restart]
+    () => ({ trip, swipe, setParty, place, remove, apply, pin, unpin, tick, setDates, restart }),
+    [trip, swipe, setParty, place, remove, apply, pin, unpin, tick, setDates, restart]
   )
   return <TripContext.Provider value={value}>{children}</TripContext.Provider>
 }

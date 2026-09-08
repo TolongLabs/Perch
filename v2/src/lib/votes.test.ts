@@ -43,6 +43,30 @@ describe('computeTally', () => {
   })
 })
 
+describe('Must Go', () => {
+  test('does not change the percentage but ranks the place higher', () => {
+    const plain: Votes = { farah: { sensoji: 'yes', ameyoko: 'yes' } }
+    const must: Votes = { farah: { sensoji: 'yes', ameyoko: 'must' } }
+    const a = computeTally(plain, trip.options, trip.party, trip.ownerId)
+    const b = computeTally(must, trip.options, trip.party, trip.ownerId)
+    expect(a.slice(0, 2).map((t) => t.placeId)).toEqual(['sensoji', 'ameyoko'])
+    expect(b.slice(0, 2).map((t) => t.placeId)).toEqual(['ameyoko', 'sensoji'])
+    expect(b.find((t) => t.placeId === 'ameyoko')?.percentage).toBe(a.find((t) => t.placeId === 'ameyoko')?.percentage)
+    expect(b.find((t) => t.placeId === 'ameyoko')?.mustBy).toEqual(['farah'])
+  })
+
+  test('counts as a yes for unanimous', () => {
+    const votes: Votes = Object.fromEntries(trip.party.map((p) => [p.id, { sensoji: 'must' as const }]))
+    expect(computeTally(votes, trip.options, trip.party, trip.ownerId)[0]?.unanimous).toBe(true)
+  })
+
+  test('the fixture gives each friend exactly one', () => {
+    for (const id of ['farah', 'hana', 'iman']) {
+      expect(Object.values(trip.votes[id] ?? {}).filter((a) => a === 'must').length).toBe(1)
+    }
+  })
+})
+
 describe('the votes fixture', () => {
   const tally = tallyFor(trip)
 

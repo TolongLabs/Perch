@@ -79,8 +79,13 @@ export type Person = {
   initials: string
 }
 
-/** Member id to place id to answer. Null means that member has not swiped that place yet. */
-export type Votes = Record<string, Record<string, 'yes' | 'no' | null>>
+export type Answer = 'yes' | 'no' | 'must' | null
+
+/**
+ * Member id to place id to answer. Null means that member has not swiped that place yet. A must is a yes the member
+ * wants weighted extra; each member holds at most one, and the tally ranks it higher without changing percentages.
+ */
+export type Votes = Record<string, Record<string, Answer>>
 
 /** One city and a run of consecutive days, with a fixed transfer block before it. */
 export type Leg = {
@@ -132,4 +137,6 @@ export type TallyEntry = {
   unanimous: boolean
   /** True when the weighted yes score is zero. */
   eliminated: boolean
+  /** Members who marked this place Must Go. */
+  mustBy: string[]
 }
