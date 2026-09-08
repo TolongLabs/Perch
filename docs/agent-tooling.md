@@ -115,3 +115,8 @@ without `-e`.
 the temporary profile follows `TMPDIR`, and on this machine that is the same near-full tmpfs. It surfaces only as
 `Page crashed` while `/dev/shm`, free RAM and `dmesg` all look innocent. Export `TMPDIR` to real disk, for example
 `~/.cache/perch-demo`, before launching any browser from a script.
+
+**A PDF printed from Chromium can silently drop a font the browser shows.** `document.fonts.ready` resolves only for
+faces something has already requested; a face named only in SVG presentation attributes is never requested, so the print
+falls back to DejaVu while the same page looks right in the browser. Half the deck's type system went missing that way.
+Call `document.fonts.load` for every face by name before printing, and check `pdffonts` on the output.
