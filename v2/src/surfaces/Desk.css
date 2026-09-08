@@ -176,10 +176,6 @@
   gap: var(--s1);
 }
 
-.desk-slot .slot-drop + .slot-drop {
-  margin-top: calc(var(--s1) * -1 + 2px);
-}
-
 .desk-period {
   color: var(--ink-muted);
   font-size: 10px;
@@ -193,6 +189,12 @@
 
 .slot-drop[data-over="true"] {
   background: color-mix(in oklab, var(--tint) 18%, transparent);
+}
+
+/* The two stops of one period sit closer to each other than the period sits to the next, so a period reads as one
+   group holding two rather than as two periods. */
+.desk-slot .slot-drop + .slot-drop {
+  margin-top: calc(var(--s1) * -1 + 2px);
 }
 
 /* A well and one rule, not a drawn box. The dashed perimeter was 3px at the browser's own 67% duty cycle around
@@ -323,4 +325,39 @@
   .desk-poollist {
     max-height: calc(100vh - 260px);
   }
+}
+
+/* The way on. Below the calendar rather than in the heading, because it is what happens after the days are
+   settled, and a person reading down the page reaches it where the days end. */
+.desk-onward {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s4);
+  margin-top: var(--s5);
+  padding: var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--plate);
+}
+
+.desk-onward-line {
+  flex: 1 1 24ch;
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.desk-onward-go {
+  flex: none;
+  padding: var(--s4) var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--plate);
+  cursor: pointer;
+  transition: opacity var(--motion-fade) var(--ease);
+}
+
+.desk-onward-go:hover {
+  opacity: 0.86;
 }

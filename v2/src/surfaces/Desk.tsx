@@ -9,6 +9,7 @@ import {
   useSensors
 } from '@dnd-kit/core'
 import { type ReactNode, useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { addDays, DateRangePicker, nightsBetween, type Range } from '../components/DateRangePicker'
 import { Perch } from '../components/Perch'
 import { PlacedCard, PoolCard } from '../components/PlacedCard'
@@ -67,6 +68,7 @@ const SlotCell = ({ dayIndex, slotIndex, children }: { dayIndex: number; slotInd
 }
 
 export const Desk = () => {
+  const navigate = useNavigate()
   const { trip, place, remove, apply, pin, unpin, setDates, addSlot, removeSlot, restart } = useTrip()
   const [flight, setFlight] = useState(0)
   const [dragging, setDragging] = useState<string | null>(null)
@@ -117,6 +119,9 @@ export const Desk = () => {
 
   const dragged = dragging ? trip.options[dragging] : undefined
 
+  // Only once there is something to go on from. Before the days are scheduled the checklist has no trip to check.
+  const settled = trip.days.some((d) => d.feasibility !== null)
+
   return (
     <DndContext
       sensors={sensors}
@@ -127,7 +132,7 @@ export const Desk = () => {
     >
       <main className="desk">
         <header className="desk-head">
-          <Heading as="h1" info="Drag a card into a slot, then Apply to let the scheduler order each day.">
+          <Heading as="h1" info="Drag a card into a slot, then Plan The Days to let the scheduler order each day.">
             <span className="t-display">The Desk</span>
           </Heading>
 
@@ -141,7 +146,7 @@ export const Desk = () => {
               Dates
             </button>
             <button type="button" className="desk-apply t-label" onClick={onApply}>
-              Apply
+              Plan The Days
             </button>
           </div>
         </header>
@@ -177,7 +182,7 @@ export const Desk = () => {
               Voted In
               <Info>
                 Everything the group put at or above half the weighted vote, in tally order. Drag one into a slot, or
-                let Apply place them.
+                let Plan The Days place them.
               </Info>
             </p>
             <p className="t-specimen desk-poolcount">{pool.length} waiting</p>
@@ -287,6 +292,19 @@ export const Desk = () => {
             </button>
           </div>
         </div>
+        {/* The way forward, on the Desk itself. It was reachable only through the sidebar island, and the person
+            who asked for this could not find it. The line names the Book because the Book is what they were
+            looking for, and it is one step past this button rather than on it. */}
+        {settled && (
+          <section className="desk-onward">
+            <p className="desk-onward-line">
+              The days are planned. Tick what you need to bring, and the Book is one step past that.
+            </p>
+            <button type="button" className="desk-onward-go t-label" onClick={() => navigate('/desk/before-we-go')}>
+              Before We Go
+            </button>
+          </section>
+        )}
       </main>
 
       <DragOverlay dropAnimation={null}>
