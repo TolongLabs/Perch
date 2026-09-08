@@ -16,6 +16,28 @@
   background: var(--paper);
 }
 
+/* The page reserves the collapsed rail's gutter and never gives it back: the rail expands over the page, so
+   content that reflowed on hover would make every owner screen jump whenever the pointer crossed the left edge. */
+@media (min-width: 900px) {
+  .shell[data-islands="true"] {
+    padding-left: var(--rail-gutter);
+  }
+}
+
+/* The cluster is fixed at the top right, and a surface with its own right-aligned controls collides with it: on
+   the Desk, Dates and Apply sat underneath it. The page reserves the cluster's height for the same reason it
+   reserves the rail's width, rather than each surface learning to dodge a piece of chrome it does not own. */
+.shell[data-islands="true"] {
+  padding-top: calc(12px + 48px + var(--s3));
+}
+
+/* The dock sits on the floor below the breakpoint, so the page ends above it rather than behind it. */
+@media (max-width: 899px) {
+  .shell[data-islands="true"] {
+    padding-bottom: calc(var(--rail-inset) * 2 + 56px);
+  }
+}
+
 .shell[data-footer="true"] {
   margin-bottom: var(--foot-h);
 }

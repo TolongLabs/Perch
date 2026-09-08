@@ -1,0 +1,271 @@
+/* Two islands. Both float clear of every edge, because an object detached from the frame reads as sitting on the
+   page rather than being part of its border, which is the whole difference between a rail and a chrome bar. */
+
+:root {
+  --rail-inset: 16px;
+  --rail-collapsed: 64px;
+  --rail-expanded: 232px;
+  /* What the page reserves. The rail expands over this, never through it, so nothing reflows. */
+  --rail-gutter: calc(var(--rail-inset) * 2 + var(--rail-collapsed));
+}
+
+.island {
+  position: fixed;
+  z-index: 40;
+  background: var(--paper);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-desk);
+}
+
+/* The rail */
+
+.island-rail {
+  top: var(--rail-inset);
+  bottom: var(--rail-inset);
+  left: var(--rail-inset);
+  width: var(--rail-collapsed);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding: var(--s3);
+  overflow: hidden;
+  transition: width var(--island-motion) var(--ease-expo);
+}
+
+.island-rail[data-open="true"] {
+  width: var(--rail-expanded);
+}
+
+.rail-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rail-item,
+.rail-pin {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  /* The row is as wide as the expanded rail even while the rail is narrow, so the icon never shifts sideways as
+     the width animates: only the clipped edge moves. */
+  width: calc(var(--rail-expanded) - var(--s3) * 2);
+  padding: var(--s2);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: background var(--motion-fade) var(--ease);
+}
+
+.rail-item:hover,
+.rail-pin:hover {
+  background: color-mix(in oklab, var(--ink) 7%, transparent);
+}
+
+/* The current page. A tinted ground with the label mixed toward ink, which is the chip's device from DESIGN.md:
+   the state colour as text on its own tint measures 4.39:1 at best and falls as the tint deepens. This reads
+   8.65:1 in light and 9.65:1 in dark, and the icon stays pure --open at 4.26:1, well past the 3:1 a non-text
+   element is held to. */
+.rail-item[data-current="true"] {
+  background: color-mix(in oklab, var(--open) 12%, var(--paper));
+  color: color-mix(in oklab, var(--open) 34%, var(--ink));
+}
+
+.rail-icon {
+  flex: none;
+}
+
+.rail-item[data-current="true"] .rail-icon {
+  color: var(--open);
+}
+
+.rail-label {
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--island-label) var(--ease);
+}
+
+.island-rail[data-open="true"] .rail-label {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* The scrim. One fixed layer under the islands and over the page, never a filter on the content tree: filtering
+   the page would create a containing block for every fixed child inside it and drag the islands down with it. */
+.island-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  background: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--island-motion) var(--ease-expo);
+}
+
+.island-scrim[data-on="true"] {
+  opacity: 0.28;
+}
+
+/* The cluster */
+
+.island-top {
+  top: 12px;
+  right: var(--s4);
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--s1);
+}
+
+@media (min-width: 1024px) {
+  .island-top {
+    right: var(--s5);
+  }
+}
+
+.top-cluster {
+  display: flex;
+  gap: var(--s1);
+}
+
+.top-control {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background var(--motion-fade) var(--ease);
+}
+
+.top-control:hover {
+  background: color-mix(in oklab, var(--ink) 7%, transparent);
+}
+
+.top-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--r-pill);
+  background: var(--at-risk);
+  color: var(--paper);
+  font: 700 10px / 16px var(--face-sans);
+}
+
+/* Both panels hang off the cluster, not off the control that opened them, so they share one right edge and one
+   gap below the bar however wide their contents are. */
+.top-panel {
+  width: min(288px, calc(100vw - var(--s6)));
+  padding: var(--s4);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-desk);
+  background: var(--paper);
+}
+
+.top-panel-head {
+  color: var(--ink-muted);
+  margin: 0 0 var(--s3);
+}
+
+.top-notices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.top-empty {
+  margin: 0;
+}
+
+.top-who {
+  margin: 0;
+  font-weight: 700;
+}
+
+.top-role {
+  margin: var(--s1) 0 var(--s4);
+  color: var(--ink-muted);
+}
+
+.top-out {
+  width: 100%;
+  padding: var(--s3) var(--s4);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* Below the tablet breakpoint the rail is replaced rather than shrunk: a 64px rail down the side of a 390px
+   screen spends a sixth of the width on navigation. The dock is the same items along the bottom. */
+@media (max-width: 899px) {
+  .island-rail {
+    display: none;
+  }
+
+  .island-dock {
+    top: auto;
+    right: var(--rail-inset);
+    bottom: var(--rail-inset);
+    left: var(--rail-inset);
+    padding: var(--s2);
+  }
+
+  .dock-list {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .dock-item {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--r-pill);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .dock-item[data-current="true"] {
+    background: color-mix(in oklab, var(--open) 12%, var(--paper));
+    color: var(--open);
+  }
+}
+
+@media (min-width: 900px) {
+  .island-dock {
+    display: none;
+  }
+}
+
+/* Chrome is not part of a printed page. The Book is the thing that prints. */
+@media print {
+  .island,
+  .island-scrim {
+    display: none;
+  }
+}

@@ -1,0 +1,137 @@
+import { BarChart3, BookOpen, CalendarDays, Layers, ListChecks, Map as MapIcon, PanelLeft, Plus } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { NavLink, useLocation } from 'react-router-dom'
+import { useTrip } from '../state'
+
+const OPEN_AFTER = 120
+const CLOSE_AFTER = 200
+
+type Item = { to: string; label: string; Icon: typeof MapIcon }
+
+export const navItems = (tripId: string): Item[] => [
+  { to: '/trips', label: 'Your Trips', Icon: MapIcon },
+  { to: '/new', label: 'New Plan', Icon: Plus },
+  { to: `/t/${tripId}/swipe`, label: 'The Deck', Icon: Layers },
+  { to: `/t/${tripId}/votes`, label: 'The Tally', Icon: BarChart3 },
+  { to: '/desk', label: 'The Desk', Icon: CalendarDays },
+  { to: '/desk/before-we-go', label: 'Before We Go', Icon: ListChecks },
+  { to: `/t/${tripId}`, label: 'The Book', Icon: BookOpen }
+]
+
+/**
+ * Longest prefix wins, so /desk/before-we-go lights its own row rather than The Desk's, and /t/:id, which is a
+ * prefix of both the deck and the votes paths, does not light the Book on every trip route.
+ */
+export const currentItem = (items: Item[], pathname: string): Item | undefined =>
+  items.filter((i) => pathname === i.to || pathname.startsWith(`${i.to}/`)).sort((a, b) => b.to.length - a.to.length)[0]
+
+/**
+ * A nav rail that floats clear of all four edges rather than sitting against them, so it reads as an object on the
+ * page rather than a border of it. Collapsed it is icons; expanded it is icons and labels. Three things open it,
+ * and they are deliberately different: a pointer dwelling on it, a keyboard arriving at it, and a pin for touch,
+ * where neither of the first two exists.
+ */
+export const SidebarIsland = ({ expandedChanged }: { expandedChanged: (open: boolean) => void }) => {
+  const { trip } = useTrip()
+  const { pathname } = useLocation()
+  const [pinned, setPinned] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const [focused, setFocused] = useState(false)
+  // One timer for both directions. Two would race: leaving and re-entering inside the close delay would leave a
+  // pending close that fires after the reopen, and the rail would shut under a pointer resting on it.
+  const timer = useRef<number | null>(null)
+
+  const open = pinned || hovered || focused
+
+  useEffect(() => {
+    expandedChanged(open)
+  }, [open, expandedChanged])
+
+  useEffect(() => () => window.clearTimeout(timer.current ?? undefined), [])
+
+  const schedule = (fn: () => void, delay: number) => {
+    window.clearTimeout(timer.current ?? undefined)
+    timer.current = window.setTimeout(fn, delay)
+  }
+
+  const items = navItems(trip.id)
+  const current = currentItem(items, pathname)
+
+  return (
+    <nav
+      className="island island-rail"
+      data-open={open}
+      aria-label="Perch"
+      onPointerEnter={(e) => {
+        if (e.pointerType === 'touch') return
+        schedule(() => setHovered(true), OPEN_AFTER)
+      }}
+      onPointerLeave={(e) => {
+        if (e.pointerType === 'touch') return
+        schedule(() => setHovered(false), CLOSE_AFTER)
+      }}
+      // Only a keyboard arrival should hold the rail open. A mouse click also focuses the link it hit, and without
+      // this test the rail would stay expanded after the click that navigated away from it.
+      onFocus={(e) => setFocused(e.target.matches(':focus-visible'))}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setFocused(false)
+      }}
+    >
+      <ul className="rail-list">
+        {items.map(({ to, label, Icon }) => (
+          <li key={to}>
+            <NavLink
+              to={to}
+              className="rail-item"
+              data-current={to === current?.to}
+              aria-current={to === current?.to ? 'page' : undefined}
+            >
+              <Icon className="rail-icon" size={20} strokeWidth={1.75} aria-hidden="true" />
+              <span className="rail-label t-label">{label}</span>
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+
+      <button
+        type="button"
+        className="rail-pin"
+        aria-pressed={pinned}
+        onClick={() => setPinned((p) => !p)}
+        title={pinned ? 'Unpin the rail' : 'Pin the rail open'}
+      >
+        <PanelLeft className="rail-icon" size={20} strokeWidth={1.75} aria-hidden="true" />
+        <span className="rail-label t-label">{pinned ? 'Unpin' : 'Pin Open'}</span>
+      </button>
+    </nav>
+  )
+}
+
+/** The same items along the bottom below the tablet breakpoint. A 64px rail on a 390px screen spends a sixth of
+ *  the width on navigation, so the rail is replaced there rather than shrunk. */
+export const BottomDock = () => {
+  const { trip } = useTrip()
+  const { pathname } = useLocation()
+  const items = navItems(trip.id)
+  const current = currentItem(items, pathname)
+
+  return (
+    <nav className="island island-dock" aria-label="Perch">
+      <ul className="dock-list">
+        {items.map(({ to, label, Icon }) => (
+          <li key={to}>
+            <NavLink
+              to={to}
+              className="dock-item"
+              data-current={to === current?.to}
+              aria-current={to === current?.to ? 'page' : undefined}
+              aria-label={label}
+            >
+              <Icon size={20} strokeWidth={1.75} aria-hidden="true" />
+            </NavLink>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
