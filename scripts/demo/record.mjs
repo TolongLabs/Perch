@@ -698,16 +698,28 @@ export async function recordDemo(options = {}) {
     const spreads = page.locator('.day-spread')
     await must(spreads.first(), 'shot 10 book day plates')
     await mark('shot-10')
+    // Each spread gets two framings: its stops, then its foot, where the drawn route and the Transit Route link live.
+    // #164 rebuilt the spreads around the reel posters and made them far taller than the viewport, so scrolling only
+    // their tops into view left the foot below the fold for the whole beat. The narration says every plate draws the
+    // day's route and carries a link into Google Maps while the picture showed neither, which is the film asserting
+    // something the viewer cannot see.
     const count = await spreads.count()
     for (let i = 0; i < count; i += 1) {
       await spreads.nth(i).scrollIntoViewIfNeeded()
-      await pause(2_500)
+      await pause(1_500)
+      await spreads.nth(i).locator('.day-foot').scrollIntoViewIfNeeded()
+      await pause(1_400)
     }
     await claim('shot-10', 'four plates, each drawing its route, each with a Transit Route link', async () => {
       const maps = await countOf('a[href*="google.com/maps"]')
       const drawn = await countOf('.day-spread svg path')
       if (maps !== 4) return `${maps} Transit Route links, expected 4`
       if (drawn < 4) return `${drawn} drawn routes, expected at least 4 -- plates are placeholders`
+      // Counting the DOM is not enough here and never was: the first cut of this beat passed every count while the
+      // camera sat on the posters and never framed a plate. Assert the last one is actually inside the viewport.
+      const box = await page.locator('a[href*="google.com/maps"]').last().boundingBox()
+      if (!box) return 'the Transit Route link has no box'
+      if (box.y < 0 || box.y + box.height > 900) return 'the Transit Route link is on the page but not in frame'
       return true
     })
     await finishShot('shot-10', 21_000)
