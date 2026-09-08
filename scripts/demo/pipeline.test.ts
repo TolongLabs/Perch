@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, test } from 'bun:test'
 import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
-import { tmpdir } from 'node:os'
+import { homedir } from 'node:os'
 import { join } from 'node:path'
 
 const schedule = join(import.meta.dir, 'schedule.py')
@@ -62,8 +62,16 @@ const browserBeats = [
   { name: 'end', ms: 120_000 }
 ]
 
+// These cases write audio, video and font fixtures, and the system temp dir on this machine is a 1 GB tmpfs shared
+// with every other session. When it fills, the suite fails with ENOSPC, which names the symptom and not the cause.
+// Defaulting to the cache directory puts the fixtures on real disk without anyone having to remember to export
+// TMPDIR first; DEMO_SCRATCH overrides it for a run that wants them somewhere specific.
+const scratchRoot =
+  process.env.DEMO_SCRATCH ?? join(process.env.XDG_CACHE_HOME ?? join(homedir(), '.cache'), 'perch-demo', 'test')
+
 function makeScratchDir() {
-  const path = mkdtempSync(join(tmpdir(), 'perch-demo-pipeline-'))
+  mkdirSync(scratchRoot, { recursive: true })
+  const path = mkdtempSync(join(scratchRoot, 'pipeline-'))
   scratchDirs.push(path)
   return path
 }
