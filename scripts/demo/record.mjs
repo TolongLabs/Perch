@@ -421,23 +421,32 @@ export async function recordDemo(options = {}) {
     await click(page.getByRole('button', { name: exactText('23 November 2026') }))
     await page.getByText('4 days, 3 nights').waitFor()
 
+    // Scroll to the section by the legend it carries, not by its position. #167 inserted Who Is Coming between When
+    // and What You Are After, which moved both of these by one. The inputs are found by placeholder, so the typing
+    // stayed correct and only the camera was wrong: the beat would have filmed the wrong panel and still passed its
+    // claim check, which is the quietest way for this beat to break.
+    const obSection = (legend) => page.locator('.ob-section').filter({ has: page.getByText(exactText(legend)) })
     const whatYouWant = page.locator('input[placeholder="Tell Perch what you want out of this trip"]')
-    await scrollTo(page.locator('.ob-section').nth(1))
+    await scrollTo(obSection('What You Are After'))
     await type(whatYouWant, 'temples and snacks, early starts')
     await click(page.getByRole('button', { name: exactText('Food') }))
     await click(page.getByRole('button', { name: exactText('Temples') }))
     await click(page.getByRole('button', { name: exactText('Shopping') }))
 
-    await scrollTo(page.locator('.ob-section').nth(2))
+    await scrollTo(obSection('Where'))
     await type(page.locator('input[placeholder="Name a city"]'), 'Tokyo')
     // Start Swiping really does navigate, to the deck, which belongs to shot-3 and is showing a reel that has not
     // finished loading. The beat is padded on the finished form before the press, and everything from the moment
     // onboarding is left until the dashboard is on screen is recorded as dead and cut from the film.
-    await claim(
-      'shot-1',
-      'the range reads four days and three nights',
-      async () => (await page.getByText('4 days, 3 nights').count()) > 0
-    )
+    // Since #167 Start Swiping waits on the owner's name as well as the dates, and the take never types one: it
+    // relies on the row being prefilled. If that prefill ever goes, the button stays disabled and the next click
+    // times out complaining about a click, which says nothing about the cause. Assert the dependency here instead.
+    await claim('shot-1', 'the range reads four days and three nights, and the party is named', async () => {
+      if ((await page.getByText('4 days, 3 nights').count()) === 0) return 'the range does not read four days'
+      const owner = await page.getByLabel('Your name').inputValue()
+      if (!owner.trim()) return 'the owner row is blank, so Start Swiping is disabled'
+      return true
+    })
     await finishShot('shot-1', 15_000)
     await click(page.getByRole('button', { name: exactText('Start Swiping') }), 0)
     const leftOnboarding = elapsed()
