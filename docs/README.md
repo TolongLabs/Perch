@@ -259,6 +259,9 @@ from a public GCS bucket. The demo is one city, Tokyo; the data model carries le
 claim backed by a type rather than a screen. Place data is hand-authored for now: 24 places across four clusters and a
 24 x 24 travel matrix, both committed.
 
+**Onboarding's free text and activity chips are captured on the screen and inform nothing downstream.** Turning them
+into tag weights is specified in [`TRD.md`](TRD.md) under Specified, Not Yet Built, and is build-phase work.
+
 ### Build Phase Additions
 
 The build phase adds, and only adds, the following to a stack that already works:
