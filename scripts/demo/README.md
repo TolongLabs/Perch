@@ -171,6 +171,14 @@ Learned the hard way against the deployed site on 8 September, and every one of 
 | `waitUntil: 'domcontentloaded'`, then wait on a selector | `waitUntil: 'networkidle'`                                  |
 | Write `DEMO_DIR` somewhere on disk                       | Leave it under `/tmp`, which here is a 1 GB tmpfs           |
 | Film the deployed Cloud Run URL                          | Film `bun run dev`                                          |
+| Pin `colorScheme: 'light'` on the context                | Let headless Chromium resolve `prefers-color-scheme`        |
+
+**The theme is the quietest of these.** The app falls back to the OS theme, so an unpinned context can record a whole
+take in dark. Nothing throws, no claim check fails, and nothing in the log mentions it — every assertion is about
+structure, and the structure is identical. You find out by watching ten minutes of film. Both the recorder and the
+pre-flight gate pin light, and they have to agree: a gate that passes on a screen nobody will record is not a gate. The
+demo is light because the field-guide direction is printed paper, and the README screens and the slides are light too.
+Dark exists because the team asked for a switcher, not because the demo lives there.
 
 ### The Flag That Cost An Afternoon
 

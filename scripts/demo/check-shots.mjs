@@ -46,7 +46,9 @@ export async function runShotChecks(options = {}) {
     // surfaces as an int3 trap in chrome-headless-shell, which reads like a memory problem and is not one.
     args: ['--disable-gpu', '--no-sandbox', '--renderer-process-limit=2']
   })
-  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+  // Pinned light for the same reason the recorder is: the gate has to see the theme the film is shot in, or it
+  // passes on a screen nobody will ever record.
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: 'light' })
 
   // Clear any saved fixture so the gate sees a cold state, exactly as the demo video would start.
   // Clears the saved fixture once, not on every navigation. An unguarded init script re-runs on each page load and

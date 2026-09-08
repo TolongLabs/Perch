@@ -149,6 +149,10 @@ export async function recordDemo(options = {}) {
     context = await browser.newContext({
       viewport: { width: 1440, height: 900 },
       deviceScaleFactor: 1,
+      // The app falls back to the OS theme, and headless Chromium resolves prefers-color-scheme on its own, so an
+      // unpinned take can come out entirely in dark. Nothing throws and nothing appears in the log; the film simply
+      // looks wrong ten minutes later. The demo is light because the field-guide direction is printed paper.
+      colorScheme: 'light',
       storageState,
       recordVideo: { dir: videoDir, size: { width: 1440, height: 900 } }
     })
