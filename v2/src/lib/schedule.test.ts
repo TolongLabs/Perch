@@ -3,7 +3,7 @@ import { places } from '../data/places'
 import { travelMatrix } from '../data/travel'
 import { trip } from '../data/trip'
 import type { Day } from '../data/types'
-import { evaluateDay, scheduleTrip } from './schedule'
+import { CLUSTER_LABEL, evaluateDay, scheduleTrip } from './schedule'
 
 const ids = places.map((p) => p.id)
 
@@ -66,7 +66,7 @@ describe('scheduleTrip', () => {
     const mine = { ...trip.votes[owner] }
     for (const id of ['nakamise', 'kappabashi', 'tokyo-national-museum']) mine[id] = 'yes'
     const scheduled = scheduleTrip({ ...trip, votes: { ...trip.votes, [owner]: mine } })
-    const asakusa = scheduled.find((d) => d.title === 'Asakusa And Ueno')
+    const asakusa = scheduled.find((d) => d.title === CLUSTER_LABEL['asakusa-ueno'])
     expect(asakusa?.slots.map((s) => s.placeId)).toContain('sensoji')
   })
 

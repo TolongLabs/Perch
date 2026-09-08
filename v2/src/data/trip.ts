@@ -26,10 +26,10 @@ const day = (index: number, date: string, weekday: string, tint: Day['tint'], ti
 })
 
 const days: Day[] = [
-  day(1, '2026-11-20', 'Friday', 1, 'Asakusa and Ueno'),
-  day(2, '2026-11-21', 'Saturday', 2, 'Shibuya, Harajuku and Shinjuku'),
-  day(3, '2026-11-22', 'Sunday', 3, 'Tsukiji, Ginza and the Station'),
-  day(4, '2026-11-23', 'Monday', 4, 'Odaiba, Toyosu and teamLab')
+  day(1, '2026-11-20', 'Friday', 1, 'Asakusa And Ueno'),
+  day(2, '2026-11-21', 'Saturday', 2, 'Shibuya, Harajuku And Shinjuku'),
+  day(3, '2026-11-22', 'Sunday', 3, 'Tsukiji, Ginza And The Station'),
+  day(4, '2026-11-23', 'Monday', 4, 'Odaiba, Toyosu And teamLab')
 ]
 
 /** Six things a Tokyo trip in November needs, each traced to the fact that produced it. JR Pass is pre-ticked: not needed. */
