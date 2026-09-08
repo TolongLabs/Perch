@@ -62,17 +62,12 @@ export const Book = () => {
 
         return (
           <article key={day.index} className="spread day-spread" data-day={day.tint}>
-            <div className="spread-plate">
-              <Plate day={day.index} title={day.title} stops={stops} />
-            </div>
+            <p className="t-label spread-band">
+              Day {day.index} &middot; {day.weekday} {dayLabel(day.date)} &middot; {money(dayCostRM(day, trip.options))}
+            </p>
+            <h2 className="t-plate-title">{day.title}</h2>
 
-            <div className="spread-text">
-              <p className="t-label spread-band">
-                Day {day.index} &middot; {day.weekday} {dayLabel(day.date)} &middot;{' '}
-                {money(dayCostRM(day, trip.options))}
-              </p>
-              <h2 className="t-plate-title">{day.title}</h2>
-
+            <div className="spread-stops">
               {day.slots.map((slot, i) => {
                 const place = slot.placeId ? trip.options[slot.placeId] : undefined
                 if (!place) return null
@@ -84,23 +79,35 @@ export const Book = () => {
 
                 return (
                   <section key={slot.id} className="entry">
-                    <p className="t-label entry-when">{PERIOD[slot.period]}</p>
-                    <h3 className="t-name">{place.name}</h3>
-                    <p className="t-prose entry-prose">{place.blurb}</p>
-                    <p className="t-specimen">
-                      {duration(place.dwellMin)} &middot; {price(place)}
-                      {transit > 0 && <> &middot; {transit} min from the last stop</>}
-                    </p>
+                    {/* The reel's own poster frame. Nothing new is fetched: this is the still the deck already
+                        showed for the place, so the Book is made of the trip's pictures rather than of a map. */}
+                    <img className="entry-shot" src={place.reel.poster} alt="" loading="lazy" />
+                    <div className="entry-text">
+                      <p className="t-label entry-when">{PERIOD[slot.period]}</p>
+                      <h3 className="t-name">{place.name}</h3>
+                      <p className="t-prose entry-prose">{place.blurb}</p>
+                      <p className="t-specimen">
+                        {duration(place.dwellMin)} &middot; {price(place)}
+                        {transit > 0 && <> &middot; {transit} min from the last stop</>}
+                      </p>
+                    </div>
                   </section>
                 )
               })}
+            </div>
 
+            {/* The drawing is secondary now: it says the shape of the day beside the one link that is a real map,
+                rather than owning half the spread while the stops it plots are read as a list. */}
+            <footer className="day-foot">
+              <div className="day-foot-plate">
+                <Plate day={day.index} title={day.title} stops={stops} />
+              </div>
               {route && (
                 <a className="t-label day-route" href={route} target="_blank" rel="noreferrer noopener">
-                  Transit Route
+                  Open The Transit Route
                 </a>
               )}
-            </div>
+            </footer>
           </article>
         )
       })}

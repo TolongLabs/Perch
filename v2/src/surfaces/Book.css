@@ -27,21 +27,19 @@
     padding: var(--s7) 80px var(--s8);
   }
 
-  /* 640 and 576 are exactly 10 and 9 sixty-fourths, so 10fr to 9fr lands on 640 and 576 at a 1280 content box and
-     holds that ratio at every narrower width. Fixed pixels here pushed a horizontal scrollbar onto a 1280 laptop, and
-     minmax shrank the two columns to equal widths, which is not the proportion the spread is drawn on. */
-  .day-spread {
+  /* The stops run two across once there is room. The spread is no longer split between a drawing and a list: the
+     pictures are the spread, and the drawing sits at its foot. */
+  .spread-stops {
     display: grid;
-    grid-template-columns: 10fr 9fr;
-    gap: var(--s8);
-    align-items: start;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s7) var(--s8);
   }
 
-  /* The plate stays beside the entries it belongs to rather than scrolling out from under them. */
-  .spread-plate {
-    position: sticky;
-    top: var(--s7);
-    margin-bottom: 0;
+  /* The picture takes the whole column and the words sit under it. Beside the text at 200px it was a thumbnail
+     illustrating a paragraph; the ask was to show the trip's pictures, so the picture leads and the paragraph
+     follows it, which is also the order the issue names. */
+  .entry-shot {
+    margin-bottom: var(--s4);
   }
 }
 
@@ -101,12 +99,48 @@
   margin-bottom: var(--s6);
 }
 
-.spread-plate {
-  margin-bottom: var(--s6);
+/* The drawing keeps its place in the Book, at a size that says it is a reference rather than the subject. */
+/* The drawing and the link are one thing, the day's geography: the drawing says its shape and the link opens the
+   only real map. Pushed to opposite ends of the spread they read as two unrelated marks. */
+.day-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s6);
+  margin-top: var(--s7);
+  padding-top: var(--s5);
+}
+
+.day-foot-plate {
+  flex: 0 1 260px;
+}
+
+/* Square-cornered, like everything on the plate. A 9:16 reel still is far too tall for a page you read across, so
+   it is cropped to a landscape window rather than shown whole. */
+.entry-shot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  /* Above centre. A reel burns its caption into the lower third of the frame, and a centred crop of a 9:16 still
+     puts that band across the middle of the picture; the subject is above it. */
+  object-position: 50% 34%;
+  margin-bottom: var(--s3);
+  background: var(--ground);
+}
+
+.spread-stops {
+  display: grid;
+  gap: var(--s7);
+  margin-top: var(--s6);
 }
 
 .entry {
-  margin-bottom: var(--s6);
+  margin-bottom: 0;
+}
+
+.entry-text > .t-name {
+  margin: var(--s2) 0 0;
 }
 
 .entry-when {
