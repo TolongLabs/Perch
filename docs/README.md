@@ -8,7 +8,7 @@
 | **Problem Statement**   | Travel Planner, Track 1: Lifestyle & Personal Productivity                              |
 | **Live Prototype**      | **https://prototype-yskhynz4la-as.a.run.app** - opens in incognito, no account          |
 | **Video Presentation**  | Not recorded yet. Tracked in [issue #10](https://github.com/TolongLabs/Perch/issues/10) |
-| **Presentation Slides** | Not built yet. Tracked in [issue #11](https://github.com/TolongLabs/Perch/issues/11)    |
+| **Presentation Slides** | [`demo/slides.pdf`](demo/slides.pdf), 18 pages, one per rubric band and then some       |
 
 > **Every tool a group already uses can produce a plan. None of them turns the group's decision into days. Perch does,
 > and prints them.**
