@@ -1,139 +1,62 @@
-"""Narration voice for the demo video. Chatterbox by default, Kokoro as the fallback.
-
-Piper was the shortcut and it is audibly synthetic. The owner asked for an anime
-voice, which is a real constraint rather than a flourish: it sets the register of
-the whole video, and the wrong one makes a food product sound like a compliance
-training module.
-
-**Why jf_nezumi, measured rather than guessed.** Eight candidates were
-synthesised on the same line, then scored two ways: median fundamental frequency
-for register, and word error rate from an independent ASR pass for
-intelligibility. Adult female speech sits near 165-200 Hz and anime voice acting
-near 250-350 Hz, so pitch alone favoured jf_alpha at 273 Hz -- but jf_alpha is
-the *least* intelligible of the eight at 50% WER ("Every kick shows the post").
-
-    voice        F0     WER
-    jf_alpha    273Hz   50%
-    jf_nezumi   242Hz   14%   <- chosen
-    bf_lily     200Hz   29%
-    af_bella    198Hz   29%
-    af_sky      155Hz   29%
-
-jf_nezumi is in register and is the clearest of every voice tested. Across the
-real script it scores 5%, and its only error is hearing "MakanLah" as "Makan La"
--- which is how the words are actually pronounced.
-
-A phonetic respelling was tried and made it worse (7%), turning "Makan" into
-"Mark on". The raw text wins; do not re-add a hint without re-measuring.
-
-Licence matters as much as sound. Kokoro is Apache 2.0 and Chatterbox is MIT.
-XTTS v2, F5-TTS and Fish Speech all sound good and are all non-commercial. Check
-the licence before the voice.
-
-**The table above was measured on another project's script, not this one.** It is
-carried over as the reason the fallback voice is `jf_nezumi` rather than as a
-claim about our narration. Re-measure before trusting it here.
-"""
+#!/usr/bin/env python3
+"""Render one neutral English narration line with local Kokoro TTS."""
 
 import os
 import sys
 from pathlib import Path
 
-# Models live outside the repo: Kokoro alone is 311 MB and has no business in a git
-# checkout. XDG-style default rather than a personal folder, so it is the same path
-# on every machine. KOKORO_HOME overrides it.
-HERE = Path(os.environ.get('KOKORO_HOME', Path.home() / '.local/share/codenection-demo'))
-VOICE = os.environ.get('DEMO_VOICE', 'jf_nezumi')
-SPEED = float(os.environ.get('DEMO_SPEED', '1.0'))
 
-# Chatterbox is the default here because the point of this suite is a dub in one of
-# our own voices. It clones from a reference clip, which is a setup step Kokoro does
-# not have -- set DEMO_TTS=kokoro for a synthetic voice that needs no reference and
-# renders in a second rather than forty.
-TTS = os.environ.get('DEMO_TTS', 'chatterbox')
-CB_HOME = Path(os.environ.get('CHATTERBOX_HOME', HERE / 'chatterbox-spike'))
-CB_REF = Path(os.environ.get('CHATTERBOX_REF', CB_HOME / 'reference.wav'))
+def kokoro_home():
+    data_home = Path(os.environ.get('XDG_DATA_HOME', Path.home() / '.local' / 'share'))
+    return Path(os.environ.get('KOKORO_HOME', data_home / 'perch-video' / 'kokoro'))
 
 
-def speak_chatterbox(text, out):
-    """Chatterbox TTS, MIT, CPU. Lives in its own venv because it needs torch and a
-    Python that is not this one -- so re-exec there rather than making the Kokoro
-    environment carry 3 GB of wheels it never uses.
-
-    THE ATTENTION SETTING IS NOT OPTIONAL. On this hardware the fused attention
-    kernel emits all-NaN audio -- 180,960 of 180,960 samples on the first run -- and
-    the failure surfaces two layers away, as `Audio buffer is not finite everywhere`
-    raised by librosa inside the Perth watermarker. It reads as a watermarker bug and
-    is not one. The tell is `Could not initialize NNPACK! Reason: Unsupported
-    hardware` in the startup log. Eager attention plus the MATH SDPA backend produces
-    finite audio; drop either and the narration is silence with a confusing traceback.
-    """
-    import torch
-
-    # BEFORE the chatterbox import: MKL-DNN is a second fused path, separate from
-    # SDPA, and on this hardware it is the other half of the NaN. Disabling only one
-    # of the two still yields silence.
-    torch.backends.mkldnn.enabled = False
-
-    import torchaudio
-    from chatterbox.tts import ChatterboxTTS
-
-    model = ChatterboxTTS.from_pretrained(device='cpu')
-    model.t3.tfmr.config._attn_implementation = 'eager'
-    for m in model.t3.tfmr.modules():
-        if hasattr(m, 'config'):
-            m.config._attn_implementation = 'eager'
-    with torch.nn.attention.sdpa_kernel(torch.nn.attention.SDPBackend.MATH):
-        wav = model.generate(text, audio_prompt_path=str(CB_REF))
-    if not torch.isfinite(wav).all():
-        print('chatterbox produced non-finite audio; refusing to write silence', file=sys.stderr)
-        return 1
-    # int16, matching what Kokoro writes. torchaudio defaults to float32, and the
-    # rest of the pipeline reads wavs with Python's `wave` module, which raises
-    # `unknown format: 3` on IEEE float and takes the whole narration run with it.
-    torchaudio.save(out, wav, model.sr, encoding='PCM_S', bits_per_sample=16)
-    return 0
-
-
-def main():
-    if len(sys.argv) < 2:
-        print('usage: speak.py <out.wav>   (text on stdin)', file=sys.stderr)
+def main(argv):
+    if len(argv) != 2:
+        print('usage: speak.py <out.wav> (text on stdin)', file=sys.stderr)
         return 2
     text = sys.stdin.read().strip()
     if not text:
-        print('no text on stdin', file=sys.stderr)
+        print('no narration text on stdin', file=sys.stderr)
         return 2
 
-    if TTS == 'chatterbox':
-        cb_python = CB_HOME / '.venv/bin/python'
-        if not cb_python.exists():
-            print(f'missing {cb_python}. See scripts/demo/README.md for the install.', file=sys.stderr)
-            return 1
-        # Checked here rather than inside generate(): without it the failure surfaces
-        # from deep inside the model as a file-open error, after a forty-second load.
-        if not CB_REF.exists():
-            print(f'missing reference clip {CB_REF}. Record 10-20s of clean speech, or set', file=sys.stderr)
-            print('CHATTERBOX_REF, or use DEMO_TTS=kokoro. See scripts/demo/README.md.', file=sys.stderr)
-            return 1
-        # Re-exec under the venv that has torch, unless already there.
-        if Path(sys.executable).resolve() != cb_python.resolve():
-            import subprocess
+    home = kokoro_home()
+    model = home / 'kokoro-v1.0.onnx'
+    voices = home / 'voices-v1.0.bin'
+    if not model.is_file():
+        print(f'missing Kokoro model: {model}', file=sys.stderr)
+        return 1
+    if not voices.is_file():
+        print(f'missing Kokoro voices: {voices}', file=sys.stderr)
+        return 1
 
-            return subprocess.run([str(cb_python), __file__, sys.argv[1]], input=text, text=True).returncode
-        return speak_chatterbox(text, sys.argv[1])
+    try:
+        speed = float(os.environ.get('DEMO_SPEED', '1.0'))
+    except ValueError:
+        print('DEMO_SPEED must be a number', file=sys.stderr)
+        return 2
+    if speed <= 0:
+        print('DEMO_SPEED must be positive', file=sys.stderr)
+        return 2
 
-    import soundfile as sf
-    from kokoro_onnx import Kokoro
+    try:
+        import soundfile
+        from kokoro_onnx import Kokoro
+    except ModuleNotFoundError as error:
+        print(f'missing Kokoro Python dependency: {error.name}', file=sys.stderr)
+        return 1
 
-    model, voices = HERE / 'kokoro-v1.0.onnx', HERE / 'voices-v1.0.bin'
-    for f in (model, voices):
-        if not f.exists():
-            print(f'missing {f}. See scripts/demo/README.md for the download.', file=sys.stderr)
-            return 1
-    audio, rate = Kokoro(str(model), str(voices)).create(text, voice=VOICE, speed=SPEED, lang='en-us')
-    sf.write(sys.argv[1], audio, rate)
+    voice = os.environ.get('DEMO_VOICE', 'af_heart')
+    language = os.environ.get('DEMO_LANGUAGE', 'en-us')
+    audio, sample_rate = Kokoro(str(model), str(voices)).create(
+        text,
+        voice=voice,
+        speed=speed,
+        lang=language,
+    )
+    soundfile.write(argv[1], audio, sample_rate, subtype='PCM_16')
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main())
+    sys.exit(main(sys.argv))

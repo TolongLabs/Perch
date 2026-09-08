@@ -1,131 +1,123 @@
 #!/usr/bin/env bash
-# Narrates the capture and muxes the two into the deliverable.
-#
-# Narration is rendered one line at a time and delayed to the beat it describes,
-# using the offsets record.mjs measured. One continuous read drifts out of sync
-# within a few seconds and then actively contradicts the picture.
 set -euo pipefail
 
-DIR="${DEMO_DIR:-${TMPDIR:-/tmp}/codenection-demo}"
-SPEAK="${DEMO_SPEAK:-$(dirname "$0")/speak.py}"
-KOKORO="${KOKORO_HOME:-$HOME/.local/share/codenection-demo}"
-# speak.py re-execs itself into the Chatterbox venv when DEMO_TTS=chatterbox, so
-# this only has to be a Python that can import the Kokoro path, or plain python3.
-PY="${DEMO_PYTHON:-$KOKORO/.venv/bin/python}"
-[ -x "$PY" ] || PY="$(command -v python3)"
-SCRIPT="${DEMO_SCRIPT:-$(dirname "$0")/narration.txt}"
-FF="${DEMO_FFMPEG:-$(command -v ffmpeg || echo "$DIR/node_modules/ffmpeg-static/ffmpeg")}"
-OUT="${DEMO_OUT:-$DIR/demo.mp4}"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+temp_root="${TMPDIR:-$(python3 -c 'import tempfile; print(tempfile.gettempdir())')}"
+data_home="${XDG_DATA_HOME:-$HOME/.local/share}"
+demo_dir="${DEMO_DIR:-$temp_root/perch-demo}"
+kokoro_home="${KOKORO_HOME:-$data_home/perch-video/kokoro}"
+python="${DEMO_PYTHON:-$kokoro_home/.venv/bin/python}"
+speak="${DEMO_SPEAK:-$script_dir/speak.py}"
+script="${DEMO_SCRIPT:-$script_dir/narration.txt}"
+source="${DEMO_SOURCE:-$demo_dir/capture-joined.mp4}"
+output="${DEMO_OUT:-$demo_dir/TolongLabs.mp4}"
+ffmpeg="${DEMO_FFMPEG:-$(command -v ffmpeg || true)}"
+ffprobe="${DEMO_FFPROBE:-$(command -v ffprobe || true)}"
+fps="${DEMO_FPS:-25}"
+preset="${DEMO_PRESET:-veryfast}"
+segments="$demo_dir/narration-segments"
 
-# assemble.sh joins the capture to the pitch slides; when it has run, that is
-# the video to narrate over. Falls back to the raw capture for a plain demo.
-# Sampled from the app's own background so the pillarbox bars are invisible.
-# Set DEMO_PAD once docs/DESIGN.md records a background colour.
-PAD="${DEMO_PAD:-#111111}"
-SRC="${DEMO_SOURCE:-$DIR/capture-joined.mp4}"
-[ -f "$SRC" ] || SRC="$DIR/capture.webm"
-for f in "$SRC" "$DIR/beats.json" "$SCRIPT"; do
-  [ -f "$f" ] || { echo "missing: $f (run record.mjs first)" >&2; exit 1; }
-done
-[ -x "$FF" ] || { echo "no ffmpeg at $FF" >&2; exit 1; }
-
-rm -rf "$DIR/seg" && mkdir -p "$DIR/seg"
-
-# Resolve each "beat | offset | text" line against the measured beats. A line
-# naming a beat that did not happen is dropped with a warning rather than
-# silently narrating over the wrong picture.
-python3 - "$DIR" "$SCRIPT" <<'PY'
-import json, sys, pathlib
-d, script = pathlib.Path(sys.argv[1]), pathlib.Path(sys.argv[2])
-beats = {b['name']: b['ms'] for b in json.loads((d / 'beats.json').read_text())}
-out = []
-for raw in script.read_text().splitlines():
-    line = raw.strip()
-    if not line or line.startswith('#'):
-        continue
-    name, offset, text = (p.strip() for p in line.split('|', 2))
-    if name not in beats:
-        print(f'  skipped (beat {name!r} never happened): {text[:50]}...', file=sys.stderr)
-        continue
-    out.append({'ms': beats[name] + int(offset), 'text': text})
-out.sort(key=lambda x: x['ms'])
-(d / 'lines.json').write_text(json.dumps(out, indent=2))
-print(f'  {len(out)} lines resolved against {len(beats)} beats')
-PY
-
-n=$(python3 -c "import json,sys;print(len(json.load(open(sys.argv[1]))))" "$DIR/lines.json")
-[ "$n" -gt 0 ] || { echo "no narration lines resolved" >&2; exit 1; }
-
-for i in $(seq 0 $((n - 1))); do
-  python3 -c "import json,sys;print(json.load(open(sys.argv[1]))[int(sys.argv[2])]['text'])" "$DIR/lines.json" "$i" \
-    | "$PY" "$SPEAK" "$DIR/seg/$i.wav"
-done
-
-# A beat says when a moment happens, not how long the line about it takes to
-# read. Push any line that would still be speaking when the next one starts --
-# before subtitles are cut, so the words on screen carry the corrected times too.
-python3 "$(dirname "$0")/schedule.py" "$DIR" || exit 1
-
-# Subtitles come from the same lines.json and the same wavs, so the words on
-# screen cannot drift from the words being spoken.
-python3 "$(dirname "$0")/subtitles.py" "$DIR"
-
-# One delayed input per line, mixed onto a common timeline.
-inputs=(); filters=""; labels=""
-for i in $(seq 0 $((n - 1))); do
-  ms=$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))[int(sys.argv[2])]['ms'])" "$DIR/lines.json" "$i")
-  inputs+=(-i "$DIR/seg/$i.wav")
-  filters="$filters[$i:a]adelay=$ms|$ms[a$i];"
-  labels="$labels[a$i]"
-done
-"$FF" -y "${inputs[@]}" \
-  -filter_complex "${filters}${labels}amix=inputs=$n:normalize=0[out]" \
-  -map "[out]" -ar 44100 "$DIR/narration.wav" >/dev/null 2>&1
-
-# ffmpeg -i with no output file reports the duration and then exits non-zero,
-# which pipefail turns into an abort. Swallow the status; the probe is the point.
-dur() {
-  local probe
-  probe=$({ "$FF" -i "$1" 2>&1 || true; })
-  awk -F'Duration: ' '/Duration: /{split($2,a,","); split(a[1],t,":");
-    print t[1]*3600+t[2]*60+t[3]; exit}' <<<"$probe"
+require_command() {
+  command -v "$1" >/dev/null 2>&1 || [ -x "$1" ] || { echo "missing command: $1" >&2; exit 1; }
 }
-vid=$(dur "$SRC"); aud=$(dur "$DIR/narration.wav")
 
-# The capture is 1440x900, which is 16:10. Cropping to 16:9 would cut content, so
-# it scales to 1728x1080 and pads with DEMO_PAD, which should be the app's own
-# background colour so the bars are invisible. If the closing line outruns the picture, hold the
-# last frame rather than cutting the sentence off.
-pad=$(awk -v a="$aud" -v v="$vid" 'BEGIN{d=a-v; print (d>0)? d+0.4 : 0}')
-# The paragraph above was only aspirational: pad was computed and then thrown
-# away by an unconditional tpad="", so the last 2.5s of the closing line played
-# over no picture at all. ffprobe reports the two stream durations separately and
-# never calls that an error, which is why it survived a mux that "worked".
-tpad=$(awk -v p="$pad" 'BEGIN{ if (p>0) printf "tpad=stop_mode=clone:stop_duration=%.3f,", p }')
-# Alignment=2 is bottom-centre in libass. BorderStyle=3 draws a box behind the
-# text rather than an outline, which is the only thing that stays readable over a
-# screenshot whose background we do not control.
-#
-# Two of these were found by rendering a frame and looking at it, not by
-# measuring: a numeric check for "dark pixels, near the bottom, centred" passes
-# happily on type twice the size it should be. FontSize is a libass script unit
-# rather than a pixel, so 26 rendered enormous at 1080p; 14 is right. And under
-# BorderStyle=3 the box takes its colour from OutlineColour, so an alpha set on
-# BackColour is silently ignored and the scrim comes out fully opaque.
-subs="subtitles='$DIR/narration.srt':force_style='FontName=DejaVu Sans,FontSize=14,PrimaryColour=&H00FFFFFF,OutlineColour=&H40101010,BorderStyle=3,Outline=3,Shadow=0,Alignment=2,MarginV=28'"
+require_command "$python"
+require_command "$ffmpeg"
+require_command "$ffprobe"
+for input in "$source" "$demo_dir/beats.json" "$script" "$speak"; do
+  [ -f "$input" ] || { echo "missing: $input" >&2; exit 1; }
+done
+[ "$source" != "$output" ] || { echo "DEMO_OUT must differ from DEMO_SOURCE" >&2; exit 1; }
 
+mkdir -p "$demo_dir" "$segments" "$(dirname -- "$output")"
+python3 "$script_dir/schedule.py" resolve "$demo_dir" "$script"
+line_count="$(python3 - "$demo_dir/lines.json" <<'PY'
+import json
+import sys
+from pathlib import Path
 
-# The raw capture is 1440x900 and needs scaling into a 1920x1080 frame. The
-# joined pitch cut is ALREADY 1920x1080, and re-applying that scale would shrink
-# the picture inside a second set of bars -- silently, since ffmpeg is happy to
-# letterbox something that already fits. Ask the file rather than assume.
-src_w=$(ffprobe -v error -select_streams v:0 -show_entries stream=width -of csv=p=0 "$SRC" | head -1)
-if [ "${src_w:-0}" -ge 1920 ]; then fit=""; else fit="scale=1728:1080,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=$PAD,"; fi
+print(len(json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))))
+PY
+)"
 
-"$FF" -y -i "$SRC" -i "$DIR/narration.wav" \
-  -filter_complex "[0:v]${tpad}${fit}${subs}[v]" \
-  -map "[v]" -map 1:a -c:v libx264 -preset slow -crf 23 -pix_fmt yuv420p \
-  -c:a aac -b:a 128k -movflags +faststart "$OUT" >/dev/null 2>&1
+for ((index = 0; index < line_count; index += 1)); do
+  python3 - "$demo_dir/lines.json" "$index" <<'PY' | "$python" "$speak" "$segments/$index.wav"
+import json
+import sys
+from pathlib import Path
 
-printf 'video %.1fs  narration %.1fs  tail-pad %.1fs\n' "$vid" "$aud" "$pad"
-ls -lh "$OUT" | awk '{print "output: " $NF " (" $5 ")"}'
+lines = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
+print(lines[int(sys.argv[2])]['text'])
+PY
+done
+
+python3 "$script_dir/schedule.py" deconflict "$demo_dir"
+python3 "$script_dir/subtitles.py" "$demo_dir"
+
+inputs=()
+filters=''
+labels=''
+for ((index = 0; index < line_count; index += 1)); do
+  start_ms="$(python3 - "$demo_dir/lines.json" "$index" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+lines = json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
+print(lines[int(sys.argv[2])]['ms'])
+PY
+)"
+  inputs+=(-i "$segments/$index.wav")
+  filters+="[$index:a]adelay=$start_ms:all=1[n$index];"
+  labels+="[n$index]"
+done
+
+"$ffmpeg" -y -loglevel error "${inputs[@]}" \
+  -filter_complex "${filters}${labels}amix=inputs=$line_count:normalize=0:dropout_transition=0[narration]" \
+  -map '[narration]' -ar 48000 -c:a pcm_s16le "$demo_dir/narration.wav"
+
+video_seconds="$("$ffprobe" -v error -show_entries format=duration -of csv=p=0 "$source")"
+audio_seconds="$("$ffprobe" -v error -show_entries format=duration -of csv=p=0 "$demo_dir/narration.wav")"
+tail_seconds="$(python3 - "$video_seconds" "$audio_seconds" <<'PY'
+import sys
+
+video, audio = (float(value) for value in sys.argv[1:])
+print(f'{max(0, audio - video + 0.4):.3f}')
+PY
+)"
+
+fit="scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=#F5F7F5,fps=$fps,format=yuv420p"
+if python3 - "$tail_seconds" <<'PY'
+import sys
+
+raise SystemExit(0 if float(sys.argv[1]) > 0 else 1)
+PY
+then
+  fit="tpad=stop_mode=clone:stop_duration=$tail_seconds,$fit"
+fi
+# The subtitles are the only type in every frame, so they should be the product's own face rather than whatever
+# libass falls back to. Point DEMO_FONTSDIR at a directory holding a static TTF; libass cannot read woff2, so the
+# app's variable Quicksand has to be instanced and converted first. See the README.
+subtitle_font="${DEMO_SUBTITLE_FONT:-DejaVu Sans}"
+subtitle_size="${DEMO_SUBTITLE_SIZE:-14}"
+fontsdir="${DEMO_FONTSDIR:-}"
+subtitle_style="FontName=$subtitle_font,FontSize=$subtitle_size,PrimaryColour=&H00FFFFFF,OutlineColour=&H40101010,BorderStyle=3,Outline=3,Shadow=0,Alignment=2,MarginV=28"
+subtitle_filter="subtitles=filename=narration.srt:force_style='$subtitle_style'"
+if [ -n "$fontsdir" ]; then
+  subtitle_filter="subtitles=filename=narration.srt:fontsdir='$(realpath "$fontsdir")':force_style='$subtitle_style'"
+fi
+source_path="$(realpath "$source")"
+audio_path="$(realpath "$demo_dir/narration.wav")"
+output_path="$(cd -- "$(dirname -- "$output")" && pwd)/$(basename -- "$output")"
+
+(
+  cd "$demo_dir"
+  "$ffmpeg" -y -loglevel error -i "$source_path" -i "$audio_path" \
+    -filter_complex "[0:v]$fit,$subtitle_filter[video]" \
+    -map '[video]' -map 1:a -c:v libx264 -preset "$preset" -crf 20 -pix_fmt yuv420p \
+    -c:a aac -b:a 160k -movflags +faststart "$output_path"
+)
+
+final_seconds="$("$ffprobe" -v error -show_entries format=duration -of csv=p=0 "$output_path")"
+printf 'video: %.1fs  narration: %.1fs  tail pad: %.1fs\n' "$final_seconds" "$audio_seconds" "$tail_seconds"
+printf 'output: %s\n' "$output_path"

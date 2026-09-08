@@ -1,26 +1,26 @@
-# Narration, keyed to the beats record.mjs measures rather than to fixed
-# timestamps. Each line is:  beat | offset_ms | text
-#
-# The offset is from that beat, so a page that gets slower moves the narration
-# with it. schedule.py then pushes any line that would still be speaking when the
-# next one starts -- an overlap no mechanical audio check can hear, because level,
-# clipping, silence and dynamics are all normal when two voices talk at once.
-#
-# Naming a beat that never happened drops the line with a warning rather than
-# narrating over the wrong picture. Run record.mjs first and read its output: it
-# prints every beat it recorded and every surface it failed to film.
-#
-# THREE RULES FOR THE TEXT ITSELF
-#
-# 1. Every number spoken here is measured, and you say where you measured it.
-#    A figure that came from a chat message and not from the running system is
-#    the fastest way to lose a Q&A.
-# 2. One claim per line. Two claims in one breath and the subtitle splits across
-#    two cards while the picture only shows the first.
-# 3. Say what is on screen. The video is judged on Presentation, and a line that
-#    describes a feature the viewer cannot see reads as a claim, not a demo.
-#
-# The whole read has to land between 3 and 5 minutes: the organisers set both a
-# floor and a ceiling. narrate.sh prints the narration length every run.
+# One record per spoken line: beat | offset_ms | text
+# Beats are measured by record.mjs. Derived from docs/demo/video-script.md; edit that, then re-derive.
 
-landing | 0    | Replace this line once there is something to film.
+open | 400 | Aisyah's twenty-four, junior job in KL, no car, and she's always the one who ends up planning the group trip. This one's four days, three nights, built around one day of annual leave.
+landing | 400 | Farah, Hana and Iman are on different shifts. Today's trip runs on a group chat, a booking app, Google Maps and a spreadsheet, and none of them turns the group's decision into days. This is Perch: swipe The Deck, drag The Desk, print The Book.
+shot-1 | 400 | She opens a new plan. Two taps on the month grid set the twentieth to the twenty-third of November: four days, three nights. One line of free text, 'temples and snacks, early starts,' then chips for the rest, and Start Swiping.
+shot-2 | 400 | The trip card's waiting on her dashboard, with the invite link she already dropped into the group chat, the same link that got Farah, Hana and Iman here. They've voted. Aisyah hasn't, not yet.
+shot-3 | 400 | So she swipes. One reel at a time, nine by sixteen, the name shown first, so she's judging the place, not somebody's edit. Yes, no, yes, no, pure instinct, no thinking required. The counter in the corner ticks down for the whole deck, and Farah, Hana and Iman already did this on their own phones, days ago.
+shot-4 | 400 | Twenty-four places, ranked by percentage. Four voters, but Aisyah's own swipe counts one and a half times, so the group can't accidentally overrule her, and she can't overrule them.
+shot-4 | 10743 | Three places are unanimous, Sensoji, Meiji Jingu, teamLab Planets, all at a hundred percent. Further down, the ones nobody wanted are greyed out and eliminated. They never reach the calendar, and this ranked list is the only thing that does.
+shot-4 | 24857 | That's the whole tally: a ranked list, weighted once by the group and once more by the owner, and it's the only thing that reaches The Desk next.
+shot-4 | 34857 | That gap between a hundred percent and zero is the whole reason a swipe works better than a poll nobody tallies.
+shot-4 | 42457 | Everything at or above half the vote reaches the pool The Desk draws from. Everything below it stays here, ranked, in case a slot ever needs a replacement.
+shot-5 | 400 | Now, The Desk. Four days, three slots each, morning, afternoon, evening, and a sidebar holding everything that won: fourteen places, waiting.
+shot-6 | 400 | This part is just her. She drags a first pick into each day, straight out of the sidebar. No order yet, no suggestions, just the group's winners, landing where she puts them.
+shot-7 | 400 | Then, Apply. One button, and the calendar colours itself, all four days green, every stop fits, door to door.
+shot-7 | 7314 | Now watch her overrule it. She drags one stop out of order on purpose, away from its cluster and back again.
+shot-7 | 14914 | That day's chip turns gold. Right beside it, in words: this order spends more minutes in transit than the scheduler's own.
+shot-7 | 22514 | Not broken. Slow. The instrument doesn't stop her, it just answers back, the moment she overrules it.
+shot-7 | 28743 | She can leave it like this, or drag that stop right back. Either way, it's her call, and the calendar just told her the cost of it.
+shot-7 | 38400 | That's the whole idea. Not a clever schedule, an honest one, that tells her exactly what she's trading when she moves something herself.
+shot-8 | 400 | One more move. She pins Sensoji so it can never drift, then hits Apply again, the rest of that day rebuilds around it, and Sensoji doesn't move an inch.
+shot-9 | 400 | One gate before The Book. Six items, pulled straight from the trip itself: a teamLab ticket, a Suica card, the JR Pass already ticked off, because this trip never leaves Tokyo. She checks a few, on camera. Print The Book stays locked until every row is ticked.
+shot-10 | 400 | And then, The Book. Four plates, one per day, each one drawing that day's actual route, the real line between the real stops, not a stock map. Every plate carries a Transit Route link straight into Google Maps. This is what gets shared back into the group chat: not a screenshot of a plan, the whole trip, printed and done.
+stack | 400 | React nineteen, React Router, dnd-kit, TypeScript and Vite, on Cloud Run, no backend, no API key, just the reel video streamed in. Real multi-user voting is build-phase work, and it's Supabase. Three weeks: twenty-first of September to the eleventh of October.
+close | 400 | This isn't built for students. It's built for the one friend who always ends up planning. After Perch, the group spends two minutes swiping, and the only hands the plan passes through are hers, dragging. We're TolongLabs. This is Perch.
