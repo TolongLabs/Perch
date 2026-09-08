@@ -1,0 +1,22 @@
+.state-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  flex: none;
+  padding: var(--s1) var(--s3);
+  border: 1px solid var(--state);
+  border-radius: var(--r-pill);
+  background: var(--state-ground);
+  /* The rule and the dot carry the hue at full strength; the label is ink weighted toward it. `--gold` is the reason:
+     Black-naped Oriole on paper is about 1.9:1, so gold cannot carry 12px text on any light ground, at any tint. The
+     chip still reads as gold because the parts that can be pure colour are. */
+  color: color-mix(in oklab, var(--state) 34%, var(--ink));
+}
+
+/* The plumage dot. A field guide marks a specimen with the colour it is identified by. */
+.state-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-pill);
+  background: var(--state);
+}

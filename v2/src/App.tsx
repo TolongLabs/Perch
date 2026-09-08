@@ -9,6 +9,7 @@ import { Desk } from './surfaces/Desk'
 import { Landing } from './surfaces/Landing'
 import { Onboarding } from './surfaces/Onboarding'
 import { SignIn } from './surfaces/SignIn'
+import { Tally } from './surfaces/Tally'
 
 /**
  * A route change is a new surface, so it starts at the top. Without this the deck opens already scrolled past its
@@ -74,6 +75,15 @@ export const App = () => (
           element={
             <Shell>
               <Deck />
+            </Shell>
+          }
+        />
+
+        <Route
+          path="/t/:tripId/votes"
+          element={
+            <Shell>
+              <Tally />
             </Shell>
           }
         />

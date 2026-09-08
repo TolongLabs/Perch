@@ -1,0 +1,22 @@
+.copy {
+  flex: none;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  transition:
+    background var(--motion-fade) var(--ease),
+    border-color var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease);
+}
+
+.copy:hover {
+  background: var(--plate);
+}
+
+/* Confirmed, so it takes the settled colour rather than turning into a second solid button on the screen. */
+.copy[data-copied="true"] {
+  border-color: var(--decided);
+  background: var(--ground-decided);
+  color: var(--decided);
+}
