@@ -69,7 +69,7 @@ export type Day = {
   /** The bird that tints this day. Matches --day-N in tokens.css. */
   tint: 1 | 2 | 3 | 4 | 5
   title: string
-  /** Always three: morning, afternoon, evening. */
+  /** In period order, morning then afternoon then evening; three by default, and each period may hold two. */
   slots: Slot[]
   /** Null until the day has been scheduled, which renders as the blank state. */
   feasibility: DayFeasibility | null
