@@ -168,6 +168,15 @@ Malaysia, on the same rule as the rest.
 the rank numerals and the day's chips all carry it. **So colour tells you which day you are on** — it is a wayfinding
 device, not decoration, which is what `AGENTS.md` requires of any device on screen.
 
+**Revised 8 September, the day grounds mix at 26 percent.** Each day column's ground is its bird mixed toward `--paper`
+in OKLab. At the original 9 percent the columns were too close to tell apart, which defeats the one thing the colour is
+for: measured with CIEDE2000, adjacent days sat at ΔE 2.4 to 3.7 in light and about the same in dark, the blue and the
+violet both greying toward the paper. At 26 percent every pair among days 1 to 4 clears ΔE 9.3 in light and 8.7 in dark,
+with ink on any ground above 9:1. The known limit is day 4 against day 5, the Violet Cuckoo and the Pink-necked Green
+Pigeon, which are hue-adjacent and reach only 7.1 light and 6.7 dark; a per-day mix could push them past 8 but would
+make the columns read as ranked by weight, so the uniform mix was kept. The empty slot's dashed boundary is drawn in 62
+percent ink so it clears 3:1 against these deeper tints.
+
 **`--gold` and `--day-3` share a hue region, and that is survivable only because they do not answer the same question.**
 The day tint is a ground; the gold chip is a 10% tint with a 1px rule and a plumage dot, never a solid fill of either.
 Where a day 3 heading runs the slow-day chip, form carries the distinction that hue cannot.
