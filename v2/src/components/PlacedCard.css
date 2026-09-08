@@ -1,0 +1,110 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  padding: var(--s3) var(--s4);
+  border: var(--outline) solid transparent;
+  border-radius: var(--r-desk);
+  background: var(--paper);
+}
+
+.card-name {
+  font-size: 15px;
+}
+
+/* The specimen line is muted ink everywhere; scoped so it beats `.t-specimen` on specificity, not on load order. */
+.card .card-line {
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.card-kind {
+  color: var(--ink-muted);
+  font-size: 10px;
+}
+
+.card[data-dragging="true"] {
+  opacity: 0.35;
+}
+
+/* Sidebar */
+
+.card-pool {
+  border-color: color-mix(in oklab, var(--ink) 14%, transparent);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.card-pool:active {
+  cursor: grabbing;
+}
+
+/* The oriole mark, the same signal the Tally uses for a place everyone said yes to. */
+.card-pool[data-unanimous="true"] {
+  border-color: var(--gold);
+  background: var(--ground-gold);
+}
+
+/* In a slot */
+
+.card-placed {
+  gap: var(--s2);
+  border-color: color-mix(in oklab, var(--tint) 34%, transparent);
+  background: var(--paper);
+}
+
+.card-placed[data-pinned="true"] {
+  border-color: var(--tint);
+}
+
+.card-grip {
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.card-grip:active {
+  cursor: grabbing;
+}
+
+.card-acts {
+  display: flex;
+  gap: var(--s2);
+}
+
+.card-act {
+  padding: 2px var(--s3);
+  border: 1px solid color-mix(in oklab, var(--ink) 22%, transparent);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 10px;
+  transition:
+    border-color var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease);
+}
+
+.card-act:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.card-act[aria-pressed="true"] {
+  border-color: var(--tint);
+  background: color-mix(in oklab, var(--tint) 12%, transparent);
+  color: color-mix(in oklab, var(--tint) 40%, var(--ink));
+}
+
+/* `DESIGN.md`'s fourth sanctioned motion: on Apply a card flies into its slot, staggered 40ms, on the perch easing. */
+.card-placed[data-flying="true"] {
+  animation: card-land var(--motion-step) var(--ease) backwards;
+  animation-delay: calc(var(--i) * 40ms);
+}
+
+@keyframes card-land {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+  }
+}
