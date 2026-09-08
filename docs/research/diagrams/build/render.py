@@ -38,7 +38,7 @@ def wrap(text, width):
         rs = runs(para)
         cur, curlen = [], 0
         for txt, st in rs:
-            for word in re.findall(r"\S+\s*", txt) or [""]:
+            for word in re.findall(r"\s*\S+\s*", txt) or [""]:
                 wl = len(word)
                 if curlen + wl > maxch and cur:
                     lines.append(("text", cur, fs, lh)); cur, curlen = [], 0
@@ -99,7 +99,7 @@ def node_svg(n):
             if "m" in st: a.append('font-family="IBM Plex Mono, ui-monospace, Consolas, monospace" font-size="%.1f"' % (fs*0.92))
             parts.append(f'<tspan {" ".join(a)}>{esc(txt)}</tspan>')
         weight = ' font-weight="700"' if fs > FS_BODY else ""
-        o.append(f'<text x="{x+PAD}" y="{round(ty-5,1)}" font-size="{fs}" fill="{fg}"{weight}>'
+        o.append(f'<text xml:space="preserve" x="{x+PAD}" y="{round(ty-5,1)}" font-size="{fs}" fill="{fg}"{weight}>'
                  + "".join(parts) + "</text>")
     return "".join(o)
 
@@ -139,7 +139,7 @@ LIGHT_TOKENS = (
     "--dg-chip:#ffffff;--dg-chip-br:#ccd3cf;--dg-chip-fg:#5d6764;"
 )
 
-def render(path, standalone=False):
+def render(path, standalone=False, title=None):
     d = json.load(open(path, encoding="utf-8"))
     nodes = relayout(d["nodes"])
     json.dump({"nodes": nodes, "edges": d["edges"]}, open(path, "w", encoding="utf-8"), indent=2)
@@ -154,7 +154,9 @@ def render(path, standalone=False):
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="{x0:.0f} {y0:.0f} '
         f'{x1-x0:.0f} {y1-y0:.0f}" width="{x1-x0:.0f}" height="{y1-y0:.0f}" '
         f'font-family="IBM Plex Sans, Segoe UI, system-ui, sans-serif">'
-        f'<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
+        # First child of <svg>, which is what a screen reader announces and what Biome's a11y rule requires.
+        + (f'<title>{esc(title)}</title>' if title else "")
+        + f'<defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" '
         f'markerHeight="7" orient="auto-start-reverse">'
         f'<path d="M0,0 L10,5 L0,10 z" fill="var(--dg-edge)"/></marker></defs>'
         + (f'<style>svg{{{LIGHT_TOKENS}}}</style>' if standalone else "")

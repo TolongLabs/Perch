@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Render the .canvas files into a browsable page and into dated SVG exports.
 
-Run from the repository root:  python docs/diagrams/build/build.py
+Run from the repository root:  python docs/research/diagrams/build/build.py
 """
 import sys
 import os
@@ -9,17 +9,17 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from render import render
 
-STAMP = "2026-09-06"   # bump this; never overwrite an old export
+STAMP = "2026-09-08"   # bump this; never overwrite an old export
 
 DIAGRAMS = [
     ("flow", "The user flow", "user-flow",
      "What a group actually does, stage 0 to stage 8 — and the loop back from a stop "
      "closing to the plan re-deriving itself.",
-     "docs/diagrams/user-flow.canvas"),
+     "docs/research/diagrams/user-flow.canvas"),
     ("mind", "The ideation mindmap", "ideation-mindmap",
      "Six days of thinking: what we claimed, what got built, three competitor scans, four "
      "dropped branches, and the marks still unclaimed.",
-     "docs/diagrams/ideation-mindmap.canvas"),
+     "docs/research/diagrams/ideation-mindmap.canvas"),
 ]
 
 LEGEND = [
@@ -224,7 +224,7 @@ document.querySelectorAll('.panel[data-on]').forEach(fit);
 def main():
     panels, tabs = [], []
     for i, (key, title, slug, blurb, path) in enumerate(DIAGRAMS):
-        svg, (w, h) = render(path)
+        svg, (w, h) = render(path, title=title)
         svg = svg.replace('id="ar"', 'id="ar-%s"' % slug).replace("url(#ar)", "url(#ar-%s)" % slug)
         print("%-18s %.0f x %.0f" % (slug, w, h))
         on = " data-on" if i == 0 else ""
@@ -254,7 +254,7 @@ def main():
 <header>
 <h1>The ideation, drawn</h1>
 <p class="sub">Two canvases from the CodeNection&nbsp;2026 research notebook, generated from the
-JSON Canvas files in <code>docs/diagrams/</code>. The canvas files stay the source — these are
+JSON Canvas files in <code>docs/research/diagrams/</code>. The canvas files stay the source — these are
 a picture of them.</p>
 </header>
 <div class="switch" role="tablist">%s</div>
@@ -268,13 +268,13 @@ The top band asks for a mindmap <b>plus</b> a problem tree or user flow.</p>
 """ % (CSS, "".join(tabs), "".join(panels), key_html,
        JS.replace("__TOKENS__", repr(TOKENS).replace("'", '"')))
 
-    open("docs/diagrams/preview.html", "w", encoding="utf-8").write(html)
-    print("wrote docs/diagrams/preview.html")
+    open("docs/research/diagrams/preview.html", "w", encoding="utf-8").write(html)
+    print("wrote docs/research/diagrams/preview.html")
 
-    os.makedirs("docs/diagrams/exports", exist_ok=True)
+    os.makedirs("docs/research/diagrams/exports", exist_ok=True)
     for _k, _t, slug, _b, path in DIAGRAMS:
-        svg, (w, h) = render(path, standalone=True)
-        out = "docs/diagrams/exports/%s-%s.svg" % (STAMP, slug)
+        svg, (w, h) = render(path, standalone=True, title=_t)
+        out = "docs/research/diagrams/exports/%s-%s.svg" % (STAMP, slug)
         open(out, "w", encoding="utf-8").write(svg)
         print("wrote %s" % out)
 
