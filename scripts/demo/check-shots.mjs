@@ -159,7 +159,14 @@ export async function runShotChecks(options = {}) {
       page.locator('.desk-poollist .card-pool[role="button"]'),
       async (locator) => (await locator.count()) >= 10
     )
-    await check(7, 'Apply control', '.desk-apply', page.locator('.desk-apply', { hasText: exactText('Apply') }))
+    // Pinned to the visible label on purpose. A gate that passes on the class while the word on screen has changed
+    // is not a gate, and the narration says this button's name out loud.
+    await check(
+      7,
+      'Plan The Days control',
+      '.desk-apply',
+      page.locator('.desk-apply', { hasText: exactText('Plan The Days') })
+    )
     await check(
       8,
       'Sensoji sidebar card',
