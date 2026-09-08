@@ -1,0 +1,166 @@
+/* The Tally runs on The Desk register, and it is where --gold first appears on a screen. */
+
+.tally {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s7);
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s5) var(--s8);
+}
+
+.tally-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  padding: var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--state-ground);
+}
+
+.tally-legend {
+  color: color-mix(in oklab, var(--state, var(--ink)) 76%, var(--ink));
+}
+
+/* Who has voted */
+
+.tally-people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.tally-person {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 18%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  font-size: 15px;
+}
+
+/* Finished, so it takes the settled colour. Unfinished stays plain rather than taking a warning colour: not having
+   swiped yet is not a problem, and the line under the list says so. */
+.tally-person[data-done="true"] {
+  border-color: var(--decided);
+  background: color-mix(in oklab, var(--decided) 10%, var(--paper));
+  color: color-mix(in oklab, var(--decided) 76%, var(--ink));
+  font-weight: 700;
+}
+
+.tally-owner {
+  padding: 1px var(--s2);
+  border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--ink) 12%, transparent);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* The invite */
+
+.tally-invite {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.tally-code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  padding: var(--s3) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 14%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  font-family: var(--face-sans);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The running order */
+
+.tally-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.tally-rows-legend {
+  color: var(--ink-muted);
+}
+
+.tally-rows ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.tally-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--s4) var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--plate);
+  transition: background var(--motion-fade) var(--ease);
+}
+
+.tally-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+}
+
+.tally-name {
+  min-width: 0;
+}
+
+.tally-row[data-state="gold"] {
+  background: var(--ground-gold);
+}
+
+.tally-verdict {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  flex: none;
+}
+
+.tally-pct {
+  font-size: 17px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Out of the running, so it drops to the plain plate with no tint and no chip colour behind it. Deliberately not
+   reduced opacity: the row still has to be read, and dimming text on a light ground is the contrast failure
+   `DESIGN.md` names. Losing the tint is what carries "this one is out". */
+.tally-row[data-out="true"] .tally-name,
+.tally-row[data-out="true"] .tally-pct {
+  color: var(--ink-muted);
+}
+
+/* The one solid button, and the joiner's line where it would be. */
+
+.tally-go {
+  align-self: flex-start;
+  padding: var(--s4) var(--s6);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.tally-wait {
+  padding: var(--s4) var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--ground-open);
+}
