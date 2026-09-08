@@ -110,3 +110,8 @@ Drop the flag; it is Docker advice for a 64 MB `/dev/shm`, the inverse of this m
 machine, looking exactly like a list of browsers; it once reported 343 browsers when there were 2, and nearly produced a
 kill list covering every session here. Count with `pgrep -c chrome-headless`, or `ps -C chrome-headless --no-headers`
 without `-e`.
+
+**Playwright's browser profile lands under `os.tmpdir()`.** Setting the recorder's own output directory is not enough:
+the temporary profile follows `TMPDIR`, and on this machine that is the same near-full tmpfs. It surfaces only as
+`Page crashed` while `/dev/shm`, free RAM and `dmesg` all look innocent. Export `TMPDIR` to real disk, for example
+`~/.cache/perch-demo`, before launching any browser from a script.
