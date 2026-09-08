@@ -1,9 +1,12 @@
 /* The Book is a plate, so it has no rounded corners anywhere. That is the mechanic, not a preference. */
 
+/* Proximity, not mandatory. A spread runs taller than the viewport on a phone and on a short laptop, and mandatory
+   snapping fights the reader back to a spread edge when they stop part way down one. Proximity still lands a spread
+   at the top of the screen when they are near it, which is the behaviour the snap is there for. */
 .book {
   background: var(--plate);
   min-height: 100vh;
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
 }
 
 .spread {
@@ -16,10 +19,6 @@
 }
 
 @media (min-width: 1024px) {
-  .book {
-    scroll-snap-type: none;
-  }
-
   .spread {
     max-width: 1280px;
     padding: var(--s7) 80px var(--s8);
@@ -27,7 +26,7 @@
 
   .day-spread {
     display: grid;
-    grid-template-columns: 600px 576px;
+    grid-template-columns: 640px 576px;
     gap: var(--s8);
     align-items: start;
   }
@@ -69,34 +68,6 @@
 .cover-facts dd {
   margin: 0;
   font-size: 17px;
-}
-
-.cover-reader {
-  margin-bottom: var(--s6);
-}
-
-.cover-reader > .t-label {
-  display: block;
-  color: var(--ink-muted);
-  margin-bottom: var(--s3);
-}
-
-.cover-reader-pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s2);
-}
-
-.reader-pill {
-  border: var(--outline) solid var(--ink);
-  border-radius: var(--r-pill);
-  background: transparent;
-  padding: var(--s2) var(--s4);
-}
-
-.reader-pill[data-active="true"] {
-  background: var(--ink);
-  color: var(--plate);
 }
 
 /* Day spreads */
@@ -142,90 +113,6 @@
   max-width: 46ch;
 }
 
-/* The blank: the only dashed line in the product. */
-
-.blank {
-  margin-bottom: var(--s6);
-  padding: var(--s5);
-  border: 2px dashed var(--open);
-  background: color-mix(in oklab, var(--open) 6%, var(--plate));
-}
-
-.blank-ask {
-  margin: var(--s2) 0 var(--s4);
-  max-width: 46ch;
-}
-
-.blank-options {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s2);
-  margin-bottom: var(--s4);
-}
-
-.blank-option {
-  width: 100%;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-template-areas:
-    "name votes"
-    "meta votes";
-  align-items: center;
-  gap: 0 var(--s4);
-  text-align: left;
-  border: var(--outline) solid transparent;
-  background: var(--plate);
-  padding: var(--s3) var(--s4);
-}
-
-.blank-option .t-name {
-  grid-area: name;
-}
-.blank-option .t-specimen {
-  grid-area: meta;
-}
-
-.blank-votes {
-  grid-area: votes;
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--r-pill);
-  background: var(--paper);
-  color: var(--ink-muted);
-}
-
-.blank-option[data-mine="true"] {
-  border-color: var(--open);
-}
-
-.blank-option[data-mine="true"] .blank-votes {
-  background: var(--open);
-  color: var(--paper);
-}
-
-.blank-settle {
-  border: var(--outline) solid var(--ink);
-  background: transparent;
-  padding: var(--s3) var(--s5);
-}
-
-/* An unfillable slot. It borrows the blank's construction and the at-risk colour, because it is not a question the
-   group can answer by tapping. */
-
-.gap {
-  margin-bottom: var(--s6);
-  padding: var(--s5);
-  border: 2px dashed var(--at-risk);
-  background: color-mix(in oklab, var(--at-risk) 6%, var(--plate));
-}
-
-.gap-title {
-  color: var(--at-risk);
-  margin: var(--s2) 0;
-}
-
 /* Colophon */
 
 .colophon > .t-label {
@@ -261,4 +148,18 @@
   from {
     opacity: 0;
   }
+}
+
+/* The one outbound link in the Book. Underlined rather than a pill, because the plate register has no pills. */
+.day-route {
+  display: inline-block;
+  margin-top: var(--s5);
+  padding-bottom: 2px;
+  border-bottom: 2px solid var(--tint);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.day-route:hover {
+  border-bottom-color: var(--ink);
 }
