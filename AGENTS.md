@@ -175,7 +175,7 @@ bun install          # dev tooling; also wires husky hooks
 bun run lint         # biome check . && prettier --check .
 bun run format       # biome format --write . && prettier --write .
 bun run typecheck    # tsc --noEmit, once src/ exists
-bun test             # the lib, state and demo suites; run before every commit. Needs TMPDIR on real disk, see below
+bun test             # the lib, state and demo suites; run it before every commit
 ```
 
 **Application framework, database and hosting are not chosen yet**, and choosing them is not a prototype-phase job. They
@@ -193,9 +193,10 @@ Playwright installed outside the repo, and it deliberately adds nothing to `pack
 stack have no business in the app's dependency tree. It is experimental and expected to be edited in place. Read
 [`scripts/demo/README.md`](scripts/demo/README.md) before running it, especially the Chatterbox section.
 
-**`/tmp` on this machine is a 1 GB tmpfs that is usually near full**, and both the demo suite and Playwright's profile
-default to it, so `bun test` and a take fail with `No space left on device` or `Page crashed`. Export `TMPDIR` to a
-directory on real disk before either; the detail is in [`docs/agent-tooling.md`](docs/agent-tooling.md#machine-gotchas).
+**`/tmp` on this machine is a 1 GB tmpfs that is usually near full.** The test suites allocate their scratch under
+`~/.cache` since #158 and pass from any shell, but Playwright's profile still defaults to `/tmp`, so a take fails with
+`Page crashed`. Export `TMPDIR` to a directory on real disk before recording; the detail is in
+[`docs/agent-tooling.md`](docs/agent-tooling.md#machine-gotchas).
 
 `rtk` and `graphify`, both optional and per-machine, are documented in [`docs/agent-tooling.md`](docs/agent-tooling.md).
 The layout tree lives in [`docs/README.md`](docs/README.md#layout), because a reviewer must read it without opening this
