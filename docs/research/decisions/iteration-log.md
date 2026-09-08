@@ -844,3 +844,34 @@ trip exists, filter the saves by distance from where the group is staying - it b
 reuses code that already exists, and matches the one moment all three said a saved post genuinely earns its keep.
 
 **Still synthetic, still not evidence.** It aims a question at the mentor; it does not answer one.
+
+### 2026-09-08 - Mentor session 1, and the rebuild it caused
+
+**The trigger.** Zach Khong, the evening of 7 September, 38 minutes, transcribed verbatim in
+[`../../source/mentor-session-1-transcript.md`](../../source/mentor-session-1-transcript.md) and written up in
+[`../mentors/sessions/2026-09-07-zach-khong.md`](../mentors/sessions/2026-09-07-zach-khong.md). Nine of his twelve teams
+were building a travel planner. *"All these features right, like one to six, is stuff that people will already build."*
+*"The way that how you represent the voting feature is what would make your app special."* *"Actively thinking is
+harder than just deciding yes or no."*
+
+**What changed, the morning after.** The whole concept, recorded as [`rebuild-verdict-2026-09-08.md`](rebuild-verdict-2026-09-08.md):
+
+- **The self-repairing itinerary is dropped.** It needed a disruption fired by hand and a bench nobody had voted for,
+  and the 7 September entry above already conceded the video would have to carry what the interaction used to show
+- **The interview is dropped** for onboarding with free text first, from *"I have to click a lot and I have to know
+  what I want"* and *"the data collection could be just unstructured text"*
+- **Voting becomes a swipe deck of reels**, one place per card, yes or no, the name small under the picture. The
+  group's swipes are the only input to the calendar
+- **The owner drags what won** onto a three-slot-a-day calendar; a heuristic orders each day and colours it green,
+  gold or red with a stated reason; the trip prints as The Book
+- **Tokyo replaces Yogyakarta**, so *"being specific can definitely be your strength"* is real place data, 24 places
+  across four clusters, rather than a claim
+- **The ranked losers survive** as the Perch drawer: remove a card and it offers the next place the group said yes to
+
+**What did not change, and why.** A group chat with an AI reading it invites the "why not ChatGPT" comparison the
+concept exists to avoid; drawing on a map does not survive a five-minute demo; a friend's answer stays yes or no rather
+than his 65 percent, because his own argument against actively thinking is the argument against a slider; the owner's
+weight of 1.5 is where the graded answer lives instead. The Fruit Ninja slice vote was ours, and it died on the call.
+
+**Shipped.** Every surface of the rebuild was on `main` and deployed by the end of 8 September; the README's section 3
+shows them and the video walks them.
