@@ -28,13 +28,17 @@ export const Deck = () => {
   const gone = (e: AnimationEvent<HTMLDivElement>) => {
     if (e.target !== e.currentTarget || !leaving) return
     const place = queue[index]
-    if (place) swipe(me, place.id, leaving === 'keep')
+    if (place) swipe(me, place.id, leaving === 'must' ? 'must' : leaving === 'keep')
     setIndex((i) => i + 1)
     setLeaving(null)
   }
 
-  const { dx, dragging, progress, handlers } = useSwipeGesture(commit, leaving === null)
+  const { dx, dy, dragging, heading, progress, handlers } = useSwipeGesture(commit, leaving === null)
   const rest = queue.slice(index, index + VISIBLE)
+
+  // Derived, not remembered: a Must Go is whichever place this member currently holds one on, so moving it moves
+  // this line with no second copy of the fact to fall out of step.
+  const mustGo = Object.values(trip.options).find((p) => trip.votes[me]?.[p.id] === 'must')
 
   if (rest.length === 0) {
     return (
@@ -68,9 +72,13 @@ export const Deck = () => {
               className="deck-card"
               data-depth={depth}
               data-leaving={top && leaving ? leaving : undefined}
+              data-heading={top && dragging && progress > 0.15 ? heading : undefined}
               style={
                 top && dragging
-                  ? { transform: `translateX(${dx}px) rotate(${dx * 0.03}deg)`, opacity: 1 - progress * 0.35 }
+                  ? {
+                      transform: `translate(${dx}px, ${dy}px) rotate(${dx * 0.03}deg)`,
+                      opacity: 1 - progress * 0.35
+                    }
                   : undefined
               }
               onAnimationEnd={top ? gone : undefined}
@@ -87,10 +95,25 @@ export const Deck = () => {
         <button type="button" className="deck-pass t-label" onClick={() => commit('pass')}>
           Pass
         </button>
+        <button type="button" className="deck-must t-label" onClick={() => commit('must')}>
+          Must Go
+        </button>
         <button type="button" className="deck-keep t-label" onClick={() => commit('keep')}>
           Keep
         </button>
       </div>
+
+      {/* One line, and it changes once the Must Go is spent, because "where did mine go" is the question the
+          mechanic actually raises. */}
+      <p className="deck-must-note">
+        {mustGo ? (
+          <>
+            Your Must Go is on <strong>{mustGo.name}</strong>. Marking another moves it.
+          </>
+        ) : (
+          'Swipe a reel up to make it your Must Go. You get one.'
+        )}
+      </p>
     </main>
   )
 }

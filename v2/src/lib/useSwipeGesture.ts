@@ -1,12 +1,19 @@
 import { type PointerEvent as ReactPointerEvent, useCallback, useRef, useState } from 'react'
 
-export type Swipe = 'keep' | 'pass'
+export type Swipe = 'keep' | 'pass' | 'must'
 
 /** Past this many pixels the card is gone; inside it, it snaps back. Roughly a quarter of a 390px screen. */
 const THRESHOLD = 96
 
 /**
- * A horizontal drag on the top card. Pointer events rather than touch or mouse, so one path covers finger, trackpad
+ * Up is held to a longer reach, and has to beat the horizontal travel outright rather than merely pass its own bar.
+ * A Must Go costs the member the only one they have, and a hand throwing a card to the right lifts as it goes, so
+ * an up that merely cleared 96px would take keeps with it.
+ */
+const UP_THRESHOLD = 112
+
+/**
+ * A drag on the top card: right keeps, left passes, up is a Must Go. Pointer events rather than touch or mouse, so one path covers finger, trackpad
  * and stylus, and pointer capture keeps the drag alive when the finger leaves the card.
  *
  * Whether a drag is live is held in a ref, not in the state below it. A quick flick delivers pointerdown, pointermove
@@ -15,14 +22,15 @@ const THRESHOLD = 96
  */
 export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true) => {
   const [dx, setDx] = useState(0)
+  const [dy, setDy] = useState(0)
   const [dragging, setDragging] = useState(false)
   const live = useRef(false)
-  const from = useRef(0)
+  const from = useRef({ x: 0, y: 0 })
 
   const down = useCallback(
     (e: ReactPointerEvent<HTMLElement>) => {
       if (!enabled) return
-      from.current = e.clientX
+      from.current = { x: e.clientX, y: e.clientY }
       live.current = true
       setDragging(true)
       e.currentTarget.setPointerCapture(e.pointerId)
@@ -32,7 +40,10 @@ export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true
 
   const move = useCallback((e: ReactPointerEvent<HTMLElement>) => {
     if (!live.current) return
-    setDx(e.clientX - from.current)
+    setDx(e.clientX - from.current.x)
+    // Down does nothing, so the card does not follow a downward drag: an axis the card moves on but never commits
+    // to reads as a swipe the app dropped.
+    setDy(Math.min(0, e.clientY - from.current.y))
   }, [])
 
   const up = useCallback(
@@ -41,18 +52,24 @@ export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true
       live.current = false
       if (e.currentTarget.hasPointerCapture(e.pointerId)) e.currentTarget.releasePointerCapture(e.pointerId)
       setDragging(false)
-      const travelled = e.clientX - from.current
+      const x = e.clientX - from.current.x
+      const up = from.current.y - e.clientY
       setDx(0)
-      if (Math.abs(travelled) >= THRESHOLD) onCommit(travelled > 0 ? 'keep' : 'pass')
+      setDy(0)
+      if (up >= UP_THRESHOLD && up > Math.abs(x)) onCommit('must')
+      else if (Math.abs(x) >= THRESHOLD) onCommit(x > 0 ? 'keep' : 'pass')
     },
     [onCommit]
   )
 
   return {
     dx,
+    dy,
     dragging,
+    /** Which way this drag is currently headed, so the card can show what releasing it would do. */
+    heading: -dy > Math.abs(dx) ? ('must' as const) : dx > 0 ? ('keep' as const) : ('pass' as const),
     /** How committed the drag is, 0 to 1. The card fades as this approaches 1. */
-    progress: Math.min(Math.abs(dx) / THRESHOLD, 1),
+    progress: Math.min(Math.max(Math.abs(dx) / THRESHOLD, -dy / UP_THRESHOLD), 1),
     handlers: { onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: up }
   }
 }
