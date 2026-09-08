@@ -10,7 +10,8 @@
 | **Video Presentation**  | Not recorded yet. Tracked in [issue #10](https://github.com/TolongLabs/Perch/issues/10) |
 | **Presentation Slides** | Not built yet. Tracked in [issue #11](https://github.com/TolongLabs/Perch/issues/11)    |
 
-> **The itinerary knows what can break it, and repairs itself from options the group already approved.**
+> **Every tool a group already uses can produce a plan. None of them turns the group's decision into days. Perch does,
+> and prints them.**
 
 ---
 
@@ -21,23 +22,25 @@
 **The brief names it, and we quote it rather than paraphrase it:** _"when something changes mid-trip, there's rarely any
 real help from existing platforms in adjusting."_
 
-**The symptom is that planning a trip is a hassle. The causes are four, and only the fourth is unserved.**
+**The symptom is that planning a trip is a hassle. The causes are four, and only the fourth is unserved.** We are not
+competing with Wanderlog; we are competing with the stack of free apps a group already has, WhatsApp, Google Maps and a
+money tool, which is why the first three rows are not ours.
 
-| Cause                                         | Who Serves It Today                                             | Ours?                |
-| --------------------------------------------- | --------------------------------------------------------------- | -------------------- |
-| Producing a plausible itinerary is slow       | **Solved.** Chatbots commoditised it                            | No                   |
-| The plan lives in five places at once         | **Partly solved.** Wanderlog puts itinerary and map in one view | No                   |
-| Getting five calendars and budgets to line up | **Partly solved.** Polls and swipe apps produce a result        | Only as a by-product |
-| **Nothing owns the plan once it is made**     | **Nobody**                                                      | **Yes**              |
+| Cause                                                       | Who Serves It Today                                             | Ours?             |
+| ----------------------------------------------------------- | --------------------------------------------------------------- | ----------------- |
+| Producing a plausible itinerary is slow                     | **Solved.** Chatbots commoditised it                            | No                |
+| The plan lives in five places at once                       | **Partly solved.** Wanderlog puts itinerary and map in one view | No                |
+| Getting a group to decide                                   | **Partly solved.** WhatsApp polls and swipe apps produce a vote | Only as the input |
+| **Turning that decision into scheduled, costed, kept days** | **Nobody.** The vote stays a vote and the plan is a screenshot  | **Yes**           |
 
-**The stakeholders are not who the category sells to.** One person in every group does the planning, and the cost of a
-disruption is not that the trip degrades - it is who pays for the repair.
+**The stakeholders are not who the category sells to.** One person in every group does the planning, and the cost is not
+that the plan is hard to make; it is who turns thirty opinions in a chat into four days that hold.
 
-| Stakeholder                     | What They Carry Today                                                     |
-| ------------------------------- | ------------------------------------------------------------------------- |
-| **The organiser**               | Every re-check, every re-plan, and the social cost of chasing four people |
-| **The other four**              | Nothing, which is the problem. No stake means no reply                    |
-| **The person who fronts money** | The deposit, then a month of asking                                       |
+| Stakeholder                     | What They Carry Today                                                              |
+| ------------------------------- | ---------------------------------------------------------------------------------- |
+| **The organiser**               | Reading the whole chat, deciding for everyone, and the social cost of chasing them |
+| **The other three**             | Nothing, which is the problem. No stake means no reply                             |
+| **The person who fronts money** | The deposit, then a month of asking                                                |
 
 ### Similar Apps, And Where They Fall Short
 
@@ -60,22 +63,24 @@ argument than "nobody does this", and unlike that claim it is checkable.
 
 ### Our Solution
 
-**Perch turns one act of choosing into two things at once: the trip, and a ranked bench of everything that lost.** When
-a stop closes, the bench is the replacement pool, so nobody has to be consulted. When the trip goes over budget, the
-same bench is the cut list. When someone changes their mind, it is the same interaction again. **One mechanism, four
-jobs** - which is why the feature list below is short on purpose.
+**The group swipes on reels of places, the owner drags what won onto a three-slot-a-day calendar, a heuristic orders
+each day and colours it by how well the route holds, and the finished trip prints as The Book.** The decision the group
+makes in swipes survives intact to a printed keepsake, and the only hands it passes through are the organiser's,
+dragging. One chain, and the feature list below is that chain in order.
 
-| Feature            | What It Does                                                                                                            |
-| ------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| **The Interview**  | Three questions. The third deals ten places and keeps three - **and ranks the other seven rather than discarding them** |
-| **Perch Proposes** | A complete trip renders with no further input. The group's taps only reorder what it already chose                      |
-| **The Desk**       | Her private workspace. Days, slots, states, and what every day costs                                                    |
-| **The Book**       | The shared link, and it is a magazine. Undecided slots render as marked blanks the group taps                           |
-| **The Perch**      | The bench, opened on any slot. **Rows that cannot take the slot stay visible and say why**                              |
-| **What Changed**   | One sentence naming the swap, its cause, its rank, and its cost in travel and money                                     |
+| Feature          | What It Does                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| **Onboarding**   | Free text first, chips as shortcuts under it, and a drawn month tapped twice for the dates                                |
+| **The Deck**     | The invite link. Each place is a reel; friends swipe yes or no with no account and no install                             |
+| **The Tally**    | A percentage per place. The owner's swipe weighs 1.5; unanimous places go gold, places nobody wanted are greyed           |
+| **The Desk**     | Four days by three slots. She drags what won into slots, pins what must not move, and Apply orders every day around it    |
+| **Feasibility**  | Each day is green, gold or red with a stated reason: it holds, it holds but the order is slow, or a stop is outside hours |
+| **The Perch**    | Remove a card and the drawer offers the next-ranked voted-in place for that slot, so the trip cannot empty                |
+| **Before We Go** | A checklist derived from the trip itself, and all of it ticked is what unlocks the print                                  |
+| **The Book**     | The shared link and the keepsake. One plate per day drawing that day's real route, with a transit deep link under each    |
 
-**Every change is priced in two units, travel then money** - `15 min closer · same price` - because a swap that quietly
-adds forty minutes breaks the day it was meant to save.
+**The scheduler is a heuristic and the copy never calls it AI**: cluster by area per day, order by best period and
+opening hours, nearest neighbour within the day. Its colours are the explanation, and every red carries the reason.
 
 ---
 
@@ -90,20 +95,21 @@ file is linked so a reviewer can read the original rather than our summary of it
 **Chosen first, then the directions we dropped.** Reasons are the notebook's own words, not a tidier version written
 afterwards.
 
-| Idea                                                                 | Kept Or Dropped | Why                                                                                                                                                         |
-| -------------------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **The self-repairing itinerary** (chosen)                            | **Kept**        | "the headline claim moved from the round trip to the self-repairing itinerary" - it is what the problem statement literally asks for                        |
-| **The trip as a storybook, read-only when finished**                 | **Kept**        | A keepsake has to be a finished thing. The group opens a magazine with gaps, and a magazine gets tapped where a planner does not                            |
-| **The interview instead of a form**                                  | **Kept**        | Its job changed from collecting constraints to **producing the bench**. Without it there is no ranking, and without a ranking there is no claim             |
-| **Map-first planner with a round-trip decision** (the original idea) | **Superseded**  | "Stopped claiming the planner as novel; narrowed the claim to the round trip" - then Contour and calimoto were found shipping loops                         |
-| **Split planning: members claim days to fill**                       | **Dropped**     | "Splitting the work between four people does not remove the work, it distributes it." Killed by a teammate's question, and it was already built and working |
-| **One book in two states, voting inside the flipbook**               | **Dropped**     | "A flipbook is built for reading, and hosting vote widgets and swap menus inside one fights the format." **It demoed better and still lost**                |
-| **Group voting as the originality claim**                            | **Dropped**     | "Tripeza, SwipeSights and Plan Harmony all ship vote-then-generate for groups"                                                                              |
-| **Photo spots as a feature**                                         | **Dropped**     | "It is a whole product category - Locationscout has 233,000 spots"                                                                                          |
-| **All-in-one platform as the differentiation argument**              | **Dropped**     | "The incumbents own breadth, and five thin pages cost more under Feasibility than they gain under Creativity"                                               |
-| **A chat panel for planning**                                        | **Dropped**     | "Conversational planning is where ChatGPT and TripGenie win." It also invites the one comparison we lose                                                    |
-| **Bill splitting**                                                   | **Dropped**     | Every panel answer said the arithmetic is fine and **the collection is the problem**. Solving the half that already works                                   |
-| **A mascot copilot**                                                 | **Dropped**     | It makes the plan feel authored, when its whole value is that it is derived                                                                                 |
+| Idea                                                                          | Kept Or Dropped | Why                                                                                                                                                                                                                                                                                                   |
+| ----------------------------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Swipe on reels, drag what won, a heuristic orders the day** (chosen 8 Sept) | **Kept**        | The rebuild after mentor session 1, in [`research/decisions/rebuild-verdict-2026-09-08.md`](research/decisions/rebuild-verdict-2026-09-08.md): _"Actively thinking is harder than just deciding yes or no."_ The group's decision, made in swipes, reaches a printed book untouched                   |
+| **The trip as a storybook, read-only when finished**                          | **Kept**        | A keepsake has to be a finished thing. The Book is printed state only, one plate per day, and it is what the group keeps                                                                                                                                                                              |
+| **The self-repairing itinerary** (chosen 4 Sept, dropped 8 Sept)              | **Dropped**     | It needed a disruption fired by hand and a bench nobody had voted for, and _"the video now has to carry what the interaction used to show"_. After the mentor session the claim moved from repairing a plan to turning the group's decision into days; the ranked losers survived as the Perch drawer |
+| **The interview instead of a form**                                           | **Dropped**     | _"I have to click a lot and I have to know what I want."_ Replaced on 8 Sept by onboarding with free text first and the swipe deck, which asks nothing the friend has to compose                                                                                                                      |
+| **Map-first planner with a round-trip decision** (the original idea)          | **Superseded**  | "Stopped claiming the planner as novel; narrowed the claim to the round trip" - then Contour and calimoto were found shipping loops                                                                                                                                                                   |
+| **Split planning: members claim days to fill**                                | **Dropped**     | "Splitting the work between four people does not remove the work, it distributes it." Killed by a teammate's question, and it was already built and working                                                                                                                                           |
+| **One book in two states, voting inside the flipbook**                        | **Dropped**     | "A flipbook is built for reading, and hosting vote widgets and swap menus inside one fights the format." **It demoed better and still lost**                                                                                                                                                          |
+| **Group voting as the originality claim**                                     | **Dropped**     | "Tripeza, SwipeSights and Plan Harmony all ship vote-then-generate for groups"                                                                                                                                                                                                                        |
+| **Photo spots as a feature**                                                  | **Dropped**     | "It is a whole product category - Locationscout has 233,000 spots"                                                                                                                                                                                                                                    |
+| **All-in-one platform as the differentiation argument**                       | **Dropped**     | "The incumbents own breadth, and five thin pages cost more under Feasibility than they gain under Creativity"                                                                                                                                                                                         |
+| **A chat panel for planning**                                                 | **Dropped**     | "Conversational planning is where ChatGPT and TripGenie win." It also invites the one comparison we lose                                                                                                                                                                                              |
+| **Bill splitting**                                                            | **Dropped**     | Every panel answer said the arithmetic is fine and **the collection is the problem**. Solving the half that already works                                                                                                                                                                             |
+| **A mascot copilot**                                                          | **Dropped**     | It makes the plan feel authored, when its whole value is that it is derived                                                                                                                                                                                                                           |
 
 **Two of those were dropped after being built and working**, and both write-ups say what it cost us to drop them.
 [`research/decisions/dropped.md`](research/decisions/dropped.md) carries them in full, including the cost paragraph for
@@ -199,15 +205,15 @@ real bird guide and off four Japanese sites read directly. The eight studies beh
 
 ## 4. What Makes It Different
 
-**One novel mechanism, and we are deliberately not claiming more than one.**
+**One novel chain, and we are deliberately not claiming more than one.**
 
-| What                                             | Why It Is Novel, Or What The Twist Is                                                                                                                                                |
-| ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Choosing produces a ranked bench**             | Every group-preference product computes an order and then throws away everything that lost. **We keep it, and it is the only thing that makes repair possible**                      |
-| **Repair filters by fit before rank**            | A first-ranked option that is shut at the hour it is needed is not a replacement. The drawer shows the rejected rows and their reason, so the filter is visible rather than asserted |
-| **Every delta carries two units**                | Travel then money, never one alone. **The twist is that transport is priced as a cost of the swap**, which is what stops a repair quietly breaking the day                           |
-| **The shared link is a magazine, not a planner** | Open a planner and four people who install nothing do not tap. **The magazine is not the reward at the end; it is what makes people contribute at all**                              |
-| **The trip is valid with zero group input**      | Perch has already chosen. Taps only reorder. Nothing is gated on a reply that never comes                                                                                            |
+| What                                                      | Why It Is Novel, Or What The Twist Is                                                                                                                                                   |
+| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **The swipes become the calendar**                        | SwipeSights computes a ranked group preference and spends it on how long you stay. **We spend it on the days**: the tally is the only input to the scheduler, and nothing else is asked |
+| **The losing swipes are kept and spent**                  | Every voting product discards what lost. The ranked voted-in list survives as the Perch drawer, so removing a card offers the next place the group already said yes to                  |
+| **Owner priority without owner override**                 | The owner's swipe weighs 1.5 and she can pin any card the scheduler must not move. **She can carry a place in against indifference, not against three friends who said no**             |
+| **The day explains itself in colour**                     | Green, gold or red per day with the reason stated: the order is slow by so many minutes, or this stop is shut on Monday. **A heuristic that says what it did, never called AI**         |
+| **The invite link is the deck, the keepsake is the book** | Friends land on reels and swipe with nothing installed; what they get back is a printed book of the trip they chose. **The book is not a reward at the end, it is why they swipe**      |
 
 ### Against The Products We Named
 
@@ -216,17 +222,17 @@ real bird guide and off four Japanese sites read directly. The eight studies beh
 | Builds an itinerary                      |    Yes    |     Yes      |     Yes     |           No           |    Yes    |
 | Combines group preferences               |    No     |      No      |   **Yes**   |       Poll only        |    Yes    |
 | **Keeps the losing preferences**         |    No     |      No      |   **No**    |           No           |  **Yes**  |
-| **Repairs a broken slot without asking** |    No     |      No      |     No      |           No           |  **Yes**  |
-| **Prices a change in travel and money**  |    No     |      No      |     No      |           No           |  **Yes**  |
+| **Schedules the votes into routed days** |    No     |      No      |     No      |           No           |  **Yes**  |
+| **Says in colour whether a day holds**   |    No     |      No      |     No      |           No           |  **Yes**  |
 | Works with no account and no install     |    No     |      No      |     No      |        **Yes**         |  **Yes**  |
 
 **What we do not claim** is as important, and [`PRODUCT.md`](PRODUCT.md#what-we-claim-and-what-we-do-not) lists six
 non-claims with the reason for each: not better suggestions, not that generating an itinerary is hard, not a new layout,
 not clever routing, not novel group voting, and not photo spots.
 
-**The honest risk:** Troupe ships ranked group voting and **we have not read it**. If it already benches its losing
-votes, the originality claim is gone. It is named as the biggest hole in [`PRD.md`](PRD.md#market-fit) rather than
-assumed away.
+**The honest risk:** Troupe ships ranked group voting and **we have not read it**. If it already turns its votes into a
+scheduled calendar, the originality claim is gone. It is named as the biggest hole in [`PRD.md`](PRD.md#market-fit)
+rather than assumed away.
 
 ---
 
@@ -285,7 +291,7 @@ replaces the fixture for auth and votes, seeded place data replaces the hand-aut
 Routes call plus the LLM rationale land last.
 
 **What it will not build:** multi-area Japan beyond the legs type, native apps, and any surface outside the route table
-in [`PRD.md`](PRD.md). Interview and the current Desk body are deleted, not kept behind a flag.
+in [`PRD.md`](PRD.md). The Interview and the old Desk were deleted on 8 September, not kept behind a flag.
 
 **Deployment phase, 12 to 31 October, is bug fixes only.** Landing a major feature in it is grounds for
 disqualification, so scope freezes at the end of week three and does not reopen.
@@ -305,14 +311,14 @@ the trail rather than pointing at a branch a reviewer would have to fetch. Nothi
 
 ### Start Here
 
-| File                           | What's In It                                                                           |
-| ------------------------------ | -------------------------------------------------------------------------------------- |
-| [`brief.md`](brief.md)         | The whole competition: phases, rules, deliverables, judging, mentors, judges           |
-| [`PRODUCT.md`](PRODUCT.md)     | **The spine.** Who Perch is for, the one sentence, the demo moment, the scope ladder   |
-| [`PRD.md`](PRD.md)             | Problem, objectives, users, market fit, then requirements and acceptance criteria      |
-| [`TRD.md`](TRD.md)             | **Canonical on anything under `src/`.** Architecture, data model, the repair algorithm |
-| [`DESIGN.md`](DESIGN.md)       | The design system: the field-guide direction, palette, type, radius, motion            |
-| [`../AGENTS.md`](../AGENTS.md) | Project instructions for agentic tools, and humans                                     |
+| File                           | What's In It                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------ |
+| [`brief.md`](brief.md)         | The whole competition: phases, rules, deliverables, judging, mentors, judges         |
+| [`PRODUCT.md`](PRODUCT.md)     | **The spine.** Who Perch is for, the one sentence, the demo moment, the scope ladder |
+| [`PRD.md`](PRD.md)             | Problem, objectives, users, market fit, then requirements and acceptance criteria    |
+| [`TRD.md`](TRD.md)             | **Canonical on anything under `src/`.** Architecture, data model, the scheduler      |
+| [`DESIGN.md`](DESIGN.md)       | The design system: the field-guide direction, palette, type, radius, motion          |
+| [`../AGENTS.md`](../AGENTS.md) | Project instructions for agentic tools, and humans                                   |
 
 Work in progress lives in the [Issues board](https://github.com/TolongLabs/Perch/issues), not in a checklist here.
 
