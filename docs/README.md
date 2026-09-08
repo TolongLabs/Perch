@@ -259,6 +259,11 @@ from a public GCS bucket. The demo is one city, Tokyo; the data model carries le
 claim backed by a type rather than a screen. Place data is hand-authored for now: 24 places across four clusters and a
 24 x 24 travel matrix, both committed.
 
+**One piece of prior work is in the repo, and it ships nothing to a user.** `scripts/demo/` is the recorder that films
+the deployed site, dubs it and burns in subtitles for the submission video. It was written for `TolongLabs/MakanLah` on
+28-30 August 2026, ported into `MUBA-M1KU/Cekgu` on 5 September 2026 by the same author, Hee Zi Jie, hardened there, and
+carried in here on 8 September 2026. Its README declares the same. Nothing else predates 30 August.
+
 **Onboarding's free text and activity chips are captured on the screen and inform nothing downstream.** Turning them
 into tag weights is specified in [`TRD.md`](TRD.md) under Specified, Not Yet Built, and is build-phase work.
 
@@ -367,7 +372,7 @@ docs/
   TRD.md                 how: architecture, contracts, schemas. Canonical
   DESIGN.md              the design system
   design/                the eight studies DESIGN.md is drawn from
-  assets/screens/        the seven screens in section 3, from the running build
+  assets/screens/        the screens in section 3, captured from the running build
   assets/ideation/       the two diagram exports in section 2.2, copied from research/diagrams/exports/
   research/              the ideation notebook: decisions, market scans, personas, diagrams, dropped ideas
   source/                organiser material, append-only
@@ -378,10 +383,11 @@ v2/
   public/                static assets copied verbatim: the mark and the self-hosted fonts
   src/
     data/                types, the place fixture, the seeded trip
-    lib/                 repair, ranking, persistence, formatting
-    surfaces/            Dashboard, NewPlan, Interview, Desk, Book
-    components/          the perch drawer, state chip, What Changed, the plate
+    lib/                 the tally, the scheduler and feasibility, persistence, cost, formatting, with tests
+    surfaces/            one file per route: Landing, Sign In, Dashboard, Onboarding, Deck, Tally, Desk, Before We Go, Book
+    components/          the reel card, the placed card, the Perch drawer, the state chip, the plate, shared UI
     styles/              tokens.css and base.css, the DESIGN.md system in CSS
+scripts/demo/            the demo recorder. Prior work, declared above and in its own README; not in package.json
 vite.config.ts           roots the build at v2/ and writes dist/
 Dockerfile               two stages. Bun builds v2, nginx serves dist/ and v1/ on 8080
 nginx.conf               static config: /v1/ resolves first, then the SPA fallback
