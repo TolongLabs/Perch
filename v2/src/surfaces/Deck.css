@@ -70,6 +70,27 @@
   --exit: -130%;
 }
 
+/* The Must Go leaves by a different door. Sideways is a sorting motion and both of the other two use it; this one
+   lifts out of the deck and grows slightly as it goes, which is the gesture the hand just made. */
+.deck-card[data-leaving="must"] {
+  animation: card-up var(--motion-step) var(--ease-expo) forwards;
+}
+
+@keyframes card-up {
+  to {
+    transform: translateY(-130%) scale(1.06);
+    opacity: 0;
+  }
+}
+
+/* What releasing now would do. Only past the point where the drag is clearly going somewhere, so a hand resting on
+   the card does not flicker between three states. */
+.deck-card[data-heading="must"] {
+  outline: var(--outline) solid var(--decided);
+  outline-offset: calc(var(--outline) * -1);
+  border-radius: var(--r-desk);
+}
+
 @keyframes card-out {
   to {
     transform: translateX(var(--exit)) rotate(calc(var(--exit) * 0.06));
@@ -83,10 +104,14 @@
 }
 
 .deck-pass,
+.deck-must,
 .deck-keep,
 .deck-go {
   flex: 1;
-  padding: var(--s4) var(--s5);
+  padding: var(--s4) var(--s3);
+  /* Three actions rather than two: at the old padding "Must Go" broke over two lines on a 390px screen while its
+     neighbours held one, which read as the button being too small rather than the label being too long. */
+  white-space: nowrap;
   border-radius: var(--r-pill);
   transition:
     background var(--motion-fade) var(--ease),
@@ -97,6 +122,29 @@
 .deck-pass {
   border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
   background: var(--paper);
+}
+
+/* The chip's device rather than a third pill weight: a tint, a rule in the full colour, and ink for the label.
+   The state colour as its own text lands at 3.3:1 on paper, which is the trap DESIGN.md names by hand. */
+.deck-must {
+  border: var(--outline) solid var(--decided);
+  background: color-mix(in oklab, var(--decided) 10%, var(--paper));
+  color: color-mix(in oklab, var(--decided) 30%, var(--ink));
+}
+
+.deck-must:hover {
+  background: color-mix(in oklab, var(--decided) 18%, var(--paper));
+}
+
+.deck-must-note {
+  margin: var(--s3) 0 0;
+  color: var(--ink-muted);
+  text-align: center;
+}
+
+.deck-must-note strong {
+  color: var(--ink);
+  font-weight: 700;
 }
 
 .deck-pass:hover {

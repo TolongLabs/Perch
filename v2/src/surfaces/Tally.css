@@ -73,15 +73,19 @@
   transition: background var(--motion-fade) var(--ease);
 }
 
+/* The verdict wraps to its own line rather than squeezing the name. A row can now carry a percentage, Unanimous
+   and a Must Go naming who, and at 390px those three do not fit beside "teamLab Planets" on any reading. */
 .tally-top {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
-  gap: var(--s4);
+  flex-wrap: wrap;
+  gap: var(--s2) var(--s4);
 }
 
 .tally-name {
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: 10ch;
 }
 
 .tally-row[data-state="gold"] {
@@ -91,8 +95,10 @@
 .tally-verdict {
   display: flex;
   align-items: center;
-  gap: var(--s3);
-  flex: none;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--s2) var(--s3);
+  margin-left: auto;
 }
 
 .tally-pct {

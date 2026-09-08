@@ -18,6 +18,10 @@ export const Tally = () => {
 
   const places = Object.keys(trip.options).length
 
+  // Named, not counted. A Must Go says who wants this, and "2 Must Gos" says nothing a percentage does not.
+  const mustNames = (ids: string[]) =>
+    ids.map((id) => trip.party.find((p) => p.id === id)?.name).filter((n): n is string => !!n)
+
   // The trip id is the invite code: the link carries it, and there is no separate code field in the model.
   const inviteUrl = `${window.location.origin}/t/${trip.id}/swipe`
 
@@ -63,6 +67,9 @@ export const Tally = () => {
                   <div className="tally-verdict">
                     <p className="tally-pct">{entry.percentage}%</p>
                     {entry.unanimous && <StateChip state="gold">Unanimous</StateChip>}
+                    {mustNames(entry.mustBy).length > 0 && (
+                      <StateChip state="decided">Must Go · {mustNames(entry.mustBy).join(', ')}</StateChip>
+                    )}
                     {entry.eliminated && <StateChip state="at-risk">Eliminated</StateChip>}
                   </div>
                 </div>
