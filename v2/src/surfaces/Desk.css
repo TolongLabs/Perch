@@ -189,6 +189,37 @@
   overflow-y: auto;
 }
 
+/* Marked off from the pool above it by its own ground, not by a rule. */
+.desk-proto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s2);
+  margin-top: var(--s4);
+  padding: var(--s4);
+  border-radius: var(--r-desk);
+  background: var(--paper);
+}
+
+.desk-protolegend {
+  color: var(--ink-muted);
+}
+
+/* Outlined: Apply is the screen's one solid button, and this is not part of the product. */
+.desk-reset {
+  margin-top: var(--s2);
+  padding: var(--s2) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
+  border-radius: var(--r-pill);
+  background: transparent;
+  transition: border-color var(--motion-fade) var(--ease);
+}
+
+.desk-reset:hover {
+  border-color: var(--at-risk);
+  color: var(--at-risk);
+}
+
 /* The card under the cursor while it is being carried. */
 .card-ghost {
   width: 240px;
