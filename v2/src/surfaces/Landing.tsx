@@ -13,33 +13,35 @@ export const Landing = () => (
     </header>
 
     <div className="land-body">
-      <p className="t-label land-eyebrow">A Trip Planner That Keeps What You Did Not Choose</p>
+      <p className="t-label land-eyebrow">A Trip Planner The Group Actually Answers</p>
 
       <h1 className="t-display land-title">
-        The itinerary knows what can break it, and repairs itself from options the group already approved.
+        Everyone swipes on reels. What wins lands on the calendar, and the day tells you when it stops working.
       </h1>
 
       <div className="land-actions">
         <Link className="land-go t-label" to="/sign-in">
           Start Planning
         </Link>
-        <Link className="land-alt t-label" to="/t/yogya-nov-2026">
+        <Link className="land-alt t-label" to="/t/tokyo-nov-2026">
           Open A Shared Book
         </Link>
       </div>
 
+      {/* Three because the product is three surfaces, not because three sits nicely. `PRODUCT.md`: one interaction,
+          three surfaces, and the feature list is deliberately this short. */}
       <dl className="land-facts">
         <div>
-          <dt className="t-label">The Mechanic</dt>
-          <dd className="t-specimen">Choosing makes a trip and a ranked bench at the same time</dd>
+          <dt className="t-label">The Deck</dt>
+          <dd className="t-specimen">Reels of real places, one thumb, and a tally the whole group can see</dd>
         </div>
         <div>
-          <dt className="t-label">The Repair</dt>
-          <dd className="t-specimen">A closed stop is replaced without anyone being asked</dd>
+          <dt className="t-label">The Desk</dt>
+          <dd className="t-specimen">Three slots a day. Drag what won, and each day gets ordered for you</dd>
         </div>
         <div>
-          <dt className="t-label">The Cost</dt>
-          <dd className="t-specimen">Every change priced in travel and money, never one alone</dd>
+          <dt className="t-label">The Book</dt>
+          <dd className="t-specimen">The settled trip, printed as a field guide you keep</dd>
         </div>
       </dl>
     </div>
