@@ -8,16 +8,16 @@ grounds that the product starts on a shared link. **Both are now in**, and the r
 for the product while no longer holding for the submission: a judge opens a URL, and what that URL renders is the first
 thing scored under Design.
 
-| Surface                      | Standing                                                                                                                           |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| **Landing**                  | **In.** One screen, no scroll, a footer. Premium and quiet, not a marketing page                                                   |
-| **Auth**                     | **In**, as a two-pane screen with no authentication behind it. Only **Sign In As Guest** does anything                             |
-| **Dashboard And Onboarding** | **In.** The dashboard is re-fixtured for Tokyo with an invite code and who has voted; onboarding is new and replaces the interview |
-| **The Deck**                 | **In.** The swipe surface. Joiners land here from the invite link and skip onboarding                                              |
-| **The Tally**                | **In.** Percentage per place, unanimous places in `--gold`, zero-vote places greyed and eliminated                                 |
-| **The Desk**                 | **In.** Rebuilt: the 4 day × 3 slot calendar, the sidebar of voted-in cards, Apply, pins and feasibility chips                     |
-| **Before We Go**             | **In.** The checklist derived from the trip; every item ticked enables Print The Book                                              |
-| **The Book**                 | **In.** Re-fixtured for Tokyo, one plate per day, a Maps deep link per day. Still reached from a link, still needs no account      |
+| Surface                      | Standing                                                                                                                             |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **Landing**                  | **In.** One screen that folds over the footer like every other surface, so its only scroll is the footer's height. Premium and quiet |
+| **Auth**                     | **In**, as a two-pane screen with no authentication behind it. Only **Sign In As Guest** does anything                               |
+| **Dashboard And Onboarding** | **In.** The dashboard is re-fixtured for Tokyo with an invite code and who has voted; onboarding is new and replaces the interview   |
+| **The Deck**                 | **In.** The swipe surface. Joiners land here from the invite link and skip onboarding                                                |
+| **The Tally**                | **In.** Percentage per place, unanimous places in `--gold`, zero-vote places greyed and eliminated                                   |
+| **The Desk**                 | **In.** Rebuilt: the 4 day × 3 slot calendar, the sidebar of voted-in cards, Apply, pins and feasibility chips                       |
+| **Before We Go**             | **In.** The checklist derived from the trip; every item ticked enables Print The Book                                                |
+| **The Book**                 | **In.** Re-fixtured for Tokyo, one plate per day, a Maps deep link per day. Still reached from a link, still needs no account        |
 
 **Revised 8 September with the rebuild.** The route set follows the plan: the interview is deleted, the Deck, the Tally
 and Before We Go are new, and the Desk is rebuilt around a three-slot calendar. The Book survives, re-fixtured for
@@ -143,7 +143,7 @@ Peninsular Malaysia, and each is named with its binomial so the source is checka
 | `--ink`     | `#2E261F` | Magpie-Robin, _Copsychus saularis_           | All text and rules. **Never `#000`**                              |
 | `--paper`   | `#FBF8F2` | —                                            | The Desk ground                                                   |
 | `--plate`   | `#F2EDE0` | Zebra Dove, _Geopelia striata_               | The Book ground, card fills                                       |
-| `--open`    | `#1B7F86` | Bee-eater, _Merops viridis_                  | Awaiting a decision. Rank numerals                                |
+| `--open`    | `#0B777E` | Bee-eater, _Merops viridis_                  | Awaiting a decision. Rank numerals, focus rings                   |
 | `--decided` | `#3E7A3A` | Green Broadbill, _Calyptomena viridis_       | Settled, booked, done                                             |
 | `--at-risk` | `#C0342F` | Crimson Sunbird, _Aethopyga siparaja_        | Something changed, or a critical gap                              |
 | `--gold`    | `#E8A317` | Black-naped Oriole, _Oriolus chinensis_      | Unanimous places on The Tally; a Desk day that fits but runs slow |
@@ -187,6 +187,56 @@ and sets its label in `color-mix(in srgb, var(--state) 34%, var(--ink))`, which 
 
 **A state colour set as text on its own 10 percent tint fails contrast every time**, three for three in the build: the
 onboarding legend at 4.4:1, Who Has Voted at 4.3:1, the gold chip at 1.9:1. Text on a tint is always ink-weighted.
+
+**Revised 8 September, `--open` darkened from `#1B7F86` to `#0B777E`.** The original measured 4.48:1 on paper, missing
+AA by 0.02, and 4.32:1 on the plate, and it carries every rank numeral and every focus ring. The darker value keeps the
+hue and measures 5.01:1 on paper and 4.54:1 on the plate. Found while deriving the dark palette below.
+
+### Dark
+
+**Added 8 September for the topbar's theme switcher, intake 1 of the release cycle.** The Open section used to rule dark
+mode out because a field guide is printed on paper. The theme switcher is a team request, so the palette now has a dark
+face, and the mark's dark file finally has a surface to sit on.
+
+**Same token names, second set of values behind `[data-theme="dark"]`.** Every value was lifted in OKLab so the hue is
+preserved and only perceptual lightness moves, and each was targeted at the plate rather than the ground, because the
+plate is the stricter surface and chips sit on it. The ground is a warm near-black in the brand's own hue direction,
+never `#000`.
+
+| Token         | Light     | Dark      | On Paper | On Plate |
+| ------------- | --------- | --------- | -------- | -------- |
+| `--paper`     | `#FBF8F2` | `#1B1714` | ground   | —        |
+| `--plate`     | `#F2EDE0` | `#26201B` | 1.11:1   | ground   |
+| `--ink`       | `#2E261F` | `#F4EFE6` | 15.55:1  | 14.05:1  |
+| `--ink-muted` | `#6A5F53` | `#918679` | 4.99:1   | 4.51:1   |
+| `--open`      | `#0B777E` | `#38949B` | 4.98:1   | 4.50:1   |
+| `--decided`   | `#3E7A3A` | `#599654` | 5.02:1   | 4.53:1   |
+| `--at-risk`   | `#C0342F` | `#E6584F` | 4.98:1   | 4.50:1   |
+| `--gold`      | `#E8A317` | `#E8A318` | 8.21:1   | 7.42:1   |
+| `--day-1`     | `#C2622F` | `#CE6D3A` | 4.98:1   | 4.50:1   |
+| `--day-2`     | `#2A4C9B` | `#5F86DA` | 5.01:1   | 4.53:1   |
+| `--day-3`     | `#E0A32C` | `#E0A32C` | 8.01:1   | 7.24:1   |
+| `--day-4`     | `#6E4A8E` | `#9D78BF` | 4.98:1   | 4.50:1   |
+| `--day-5`     | `#B0567E` | `#C66A92` | 4.98:1   | 4.50:1   |
+
+The plate-to-paper step is 1.11:1 in dark against 1.10:1 in light, so the two grounds keep the same distance from each
+other. `--gold` and `--day-3` need no lift at all: a saturated yellow that is nearly illegible on paper is naturally
+strong on ink.
+
+**The gold limitation above is a light-mode limitation only.** Running the chip rule unchanged, a 10 percent state tint
+with the label at `color-mix(in oklab, var(--state) 34%, var(--ink))`, every chip clears AAA in dark, and the gold chip
+goes from 1.92:1 to 10.99:1. The formula does not change; it works better against ink.
+
+| Chip    | Dark Tint | Dark Label | Ratio   |
+| ------- | --------- | ---------- | ------- |
+| Open    | `#202220` | `#B8D0CC`  | 9.86:1  |
+| Decided | `#22221A` | `#BFD1B3`  | 9.90:1  |
+| At risk | `#2D1E1A` | `#F5BEB2`  | 9.82:1  |
+| Gold    | `#2C2319` | `#F1D6AD`  | 10.99:1 |
+
+**Outlines stay 3px solid ink in dark.** At 15.55:1 that is a hard keyline around a floating island, and `--ink-muted`
+was considered for a softer edge. The rule holds because the scrim already separates an expanded island from the desk,
+and a second outline recipe would be a device carrying no information.
 
 ## The Mark
 
@@ -292,6 +342,12 @@ first at demo scale.
 
 `prefers-reduced-motion` removes the step-forward and the calendar drag, and leaves the cross-fade.
 
+**One exception, added 8 September with the islands.** The sidebar island's expand and collapse on hover, and the topbar
+island's dropovers, animate regardless of the operating system's reduced-motion setting. The team asked for this in
+intake 1 of the release cycle, because the demo is recorded on a machine with reduced motion on and a chrome that snaps
+open reads as broken on camera. It is the only motion in the product that ignores the preference, and it is chrome, not
+content: the perch, the drag and the cross-fade still honour it.
+
 ---
 
 ## Components, Briefly
@@ -374,6 +430,6 @@ cannot rebuild honestly:
   `AGENTS.md`. Photography stays out of the plates, and the reel does not change that - the reel is a field recording on
   the card, not a hero shot on the plate. The field-guide reading still argues for drawn specimens, which is also what
   the strongest Dribbble result did
-- **Dark mode** is out of scope for the prototype. A field guide is printed on paper. The mark still ships in both
-  themes, because a logo outlives the surface it was drawn for and gets used on slides and a title card that are not
-  paper
+- **Dark mode was out of scope until 8 September**, when the theme switcher came in through intake 1 of the release
+  cycle. The palette is in the Dark section above. What remains open is the plates: the specimen illustrations were
+  drawn for paper and have not been checked against ink

@@ -144,7 +144,7 @@ export async function recordDemo(options = {}) {
     return Math.round(seconds * 1_000)
   }
 
-  const openSegment = async (storageState) => {
+  const openSegment = async (storageState, resetFixture = false) => {
     segmentSpans.push({ start: elapsedBefore, first: null, last: null, end: null })
     context = await browser.newContext({
       viewport: { width: 1440, height: 900 },
@@ -152,15 +152,17 @@ export async function recordDemo(options = {}) {
       storageState,
       recordVideo: { dir: videoDir, size: { width: 1440, height: 900 } }
     })
-    // Clears the saved fixture once, not on every navigation. An unguarded init script re-runs on each page load and
-    // wipes the trip the walkthrough just built, which reads as The Book rendering empty plates.
-    await context.addInitScript(() => {
-      try {
-        if (sessionStorage.getItem('perch.demo.reset')) return
-        localStorage.removeItem('perch.trip.v1')
-        sessionStorage.setItem('perch.demo.reset', '1')
-      } catch {}
-    })
+    // Only the first segment clears the fixture. A sentinel cannot do this job: storageState carries cookies and
+    // localStorage between segments but NOT sessionStorage, so a sessionStorage guard is absent in every later
+    // context, the script fires again, and the trip the walkthrough built is wiped. That reads as The Book printing
+    // placeholder plates and the checklist saying "nothing on the calendar yet", two beats after the real cause.
+    if (resetFixture) {
+      await context.addInitScript(() => {
+        try {
+          localStorage.removeItem('perch.trip.v1')
+        } catch {}
+      })
+    }
     page = await context.newPage()
     // The recorder starts with the page, so the beat clock has to start here rather than after the cursor is injected,
     // or every beat is reported a second or two earlier than it appears and the narration runs ahead of the picture.
@@ -254,7 +256,29 @@ export async function recordDemo(options = {}) {
     console.log(`tightened: cut ${(removed / 1000).toFixed(1)}s of unscripted picture at ${cuts.length} segment edges`)
   }
 
-  await openSegment(undefined)
+  // Every beat asserts, at the moment its narration makes its claim, the DOM state that claim depends on. Two defects
+  // shipped in 0.1.0 were the same shape -- the picture contradicting the voice at the instant of the claim -- and
+  // neither an anchor gate nor a frame check caught them, because the anchors were present and the frames I sampled
+  // were not the ones that lied. A take fails if any claim fails.
+  const claims = []
+  const claim = async (beat, statement, check) => {
+    let ok = false
+    let detail = ''
+    try {
+      const result = await check()
+      ok = result === true || (typeof result === 'number' && result > 0)
+      if (typeof result === 'string') {
+        ok = false
+        detail = result
+      }
+    } catch (error) {
+      detail = error instanceof Error ? error.message.split('\n')[0].slice(0, 80) : String(error)
+    }
+    claims.push({ beat, statement, ok, detail })
+  }
+  const countOf = (selector) => page.locator(selector).count()
+
+  await openSegment(undefined, true)
 
   const elapsed = () => elapsedBefore + (Date.now() - segmentStarted)
   const pause = (ms) => page.waitForTimeout(ms)
@@ -405,6 +429,11 @@ export async function recordDemo(options = {}) {
     // Start Swiping really does navigate, to the deck, which belongs to shot-3 and is showing a reel that has not
     // finished loading. The beat is padded on the finished form before the press, and everything from the moment
     // onboarding is left until the dashboard is on screen is recorded as dead and cut from the film.
+    await claim(
+      'shot-1',
+      'the range reads four days and three nights',
+      async () => (await page.getByText('4 days, 3 nights').count()) > 0
+    )
     await finishShot('shot-1', 15_000)
     await click(page.getByRole('button', { name: exactText('Start Swiping') }), 0)
     const leftOnboarding = elapsed()
@@ -416,6 +445,11 @@ export async function recordDemo(options = {}) {
     await mark('shot-2')
     await must(page.locator('.voters'), 'shot 2 voters')
     await must(page.locator('.dash-invite'), 'shot 2 invite')
+    await claim(
+      'shot-2',
+      'three friends have voted and the invite link is on screen',
+      async () => (await countOf('.voters .voter')) >= 3 && (await countOf('.dash-invite')) > 0
+    )
     await finishShot('shot-2', 13_000)
 
     await nextSegment()
@@ -425,6 +459,12 @@ export async function recordDemo(options = {}) {
     await must(counter, 'shot 3 deck counter')
     await page.getByText(exactText('Reel 1 Of 20')).waitFor()
     await mark('shot-3')
+    await claim(
+      'shot-3',
+      'the deck opens on the first of twenty reels',
+      async () =>
+        ((await counter.textContent()) ?? '').trim() === 'Reel 1 Of 20' || `counter read ${await counter.textContent()}`
+    )
 
     // The deck decodes reel video, and on a memory-tight machine the in-renderer recorder crashes the tab around the
     // fifth card. The counter tells the viewer the rest, so the take is tunable rather than fixed.
@@ -462,6 +502,13 @@ export async function recordDemo(options = {}) {
     await pause(3_000)
     const eliminated = page.locator('.tally-row[data-out="true"]').first()
     await scrollTo(eliminated, 2_500)
+    await claim(
+      'shot-4',
+      'twenty-four places ranked, three of them unanimous',
+      // Scoped to the tally. Unscoped, this counted every gold chip on the page and passed on a state where no row
+      // was unanimous at all, which is the claim the narration actually makes.
+      async () => (await countOf('.tally-row')) >= 20 && (await countOf('.tally-row[data-state="gold"]')) >= 3
+    )
     await finishShot('shot-4', 53_000)
 
     await nextSegment()
@@ -470,6 +517,11 @@ export async function recordDemo(options = {}) {
     await must(page.locator('.desk-day'), 'shot 5 day columns')
     await must(page.locator('.desk-pool'), 'shot 5 sidebar')
     await mark('shot-5')
+    await claim(
+      'shot-5',
+      'twelve empty slots and a sidebar of everything that won',
+      async () => (await countOf('.slot-drop')) === 12 && (await countOf('.desk-poollist .card-pool')) > 0
+    )
     await finishShot('shot-5', 11_000)
 
     await mark('shot-6')
@@ -491,6 +543,11 @@ export async function recordDemo(options = {}) {
       pointer = to
       await pause(600)
     }
+    await claim(
+      'shot-6',
+      'she has dragged winners into the days herself',
+      async () => (await countOf('.card-placed')) >= 4
+    )
     await finishShot('shot-6', 12_000)
 
     await mark('shot-7')
@@ -500,36 +557,67 @@ export async function recordDemo(options = {}) {
     await pause(3_000)
 
     // Apply lays each day out in the scheduler's own order, so every day it fills is green by construction. Gold is
-    // only reachable when the order is not the scheduler's: moving Sensoji into the Shibuya day makes it an
-    // out-and-back across the city, which costs 32 minutes over the heuristic order.
-    const sensojiCard = page.locator('.card-placed').filter({ hasText: 'Sensoji' })
-    await must(sensojiCard, 'shot 7 Sensoji card')
-    const grip = await centerOf(sensojiCard.locator('.card-grip'))
-    const dayOne = page.locator('.desk-day').first()
-    const target = await centerOf(dayOne.locator('.desk-slot').nth(1).locator('.slot-drop'))
-    await moveTo(sensojiCard.locator('.card-grip'))
-    await gesture(page, grip, target)
-    pointer = target
-    const goldChip = dayOne.locator('.state-chip[data-state="gold"]')
-    await must(goldChip, 'shot 7 gold day chip')
-    await pause(3_200)
+    // only reachable when the order is not the scheduler's, and the cheapest way there is to swap a day's afternoon
+    // and evening stops: same three places, same cluster, worse route. On Sensoji's day that costs 15 minutes over
+    // the heuristic order, which clears the 1.25 GOLD_SLACK in v2/src/lib/schedule.ts.
+    //
+    // Nothing here names a place or a day index. Which day Sensoji lands on depends on the order shot-6 dragged the
+    // pool into, and which stops share it depends on how Aisyah swiped, so both are read off the board at the time.
+    let goldDayIndex = -1
+    const dayCount = await page.locator('.desk-day').count()
+    for (let index = 0; index < dayCount; index += 1) {
+      const onThisDay = await page
+        .locator('.desk-day')
+        .nth(index)
+        .locator('.card-placed')
+        .filter({ hasText: 'Sensoji' })
+      if ((await onThisDay.count()) > 0) {
+        goldDayIndex = index
+        break
+      }
+    }
+    if (goldDayIndex < 0) throw new Error('required recording anchor is absent: shot 7 Sensoji day')
+    const goldDay = page.locator('.desk-day').nth(goldDayIndex)
+    const slotAt = (index) => goldDay.locator('.desk-slot').nth(index)
+    const afternoonName = (await slotAt(1).locator('.card-placed').first().innerText()).split('\n')[0]
 
-    // Moving Sensoji left its old evening slot empty. Putting the displaced card there closes the hole, so the beat
-    // ends on a full calendar: three green days, one gold, twelve slots.
-    const displaced = page.locator('.desk-poollist .card-pool').filter({ hasText: 'Takeshita' })
+    // A card dropped on an occupied slot evicts the occupant to the sidebar rather than trading places with it, so
+    // the swap is two gestures: move the evening stop up, then bring the evicted afternoon stop back down.
+    const eveningGrip = slotAt(2).locator('.card-placed .card-grip')
+    await must(eveningGrip, 'shot 7 evening card')
+    await moveTo(eveningGrip)
+    const target = await centerOf(slotAt(1).locator('.slot-drop'))
+    await gesture(page, await centerOf(eveningGrip), target)
+    pointer = target
+    await pause(1_600)
+
+    // The chip cannot turn gold yet. Halfway through the swap the day holds two stops, not three, and two stops in
+    // either order are the scheduler's own order, so it is still green. Gold is a property of the finished swap, and
+    // asserting it here is what broke the beat: the day is measured against its own best route, not against Apply's.
+    const displaced = page.locator('.desk-poollist .card-pool').filter({ hasText: afternoonName })
     await must(displaced, 'shot 7 displaced card')
-    const backTo = await centerOf(page.locator('.desk-day').nth(1).locator('.desk-slot').nth(2).locator('.slot-drop'))
+    const backTo = await centerOf(slotAt(2).locator('.slot-drop'))
     await moveTo(displaced.first())
     await gesture(page, await centerOf(displaced.first()), backTo)
     pointer = backTo
-    await must(goldChip, 'shot 7 gold day survives the refill')
-    await pause(2_400)
+    const goldChip = goldDay.locator('.state-chip[data-state="gold"]')
+    await must(goldChip, 'shot 7 gold day chip')
+    await pause(3_200)
     // The info dot opens on mouseenter and its click handler toggles, so Playwright's click closes the bubble it just
     // opened. Hovering is what a person does, and it is what leaves the rationale on screen.
-    await moveTo(dayOne.locator('.desk-fit .info-dot'))
-    await dayOne.locator('.desk-fit .info-dot').hover()
+    await moveTo(goldDay.locator('.desk-fit .info-dot'))
+    await goldDay.locator('.desk-fit .info-dot').hover()
     await must(page.locator('.info-bubble'), 'shot 7 gold rationale')
     await pause(4_500)
+    await claim('shot-7', 'twelve slots filled, exactly one day gold, its rationale on screen', async () => {
+      const filled = await countOf('.card-placed')
+      const gold = await countOf('.state-chip[data-state="gold"]')
+      const bubble = await countOf('.info-bubble')
+      if (filled !== 12) return `${filled} slots filled, expected 12`
+      if (gold !== 1) return `${gold} gold days, expected 1`
+      if (bubble < 1) return 'the gold rationale is not on screen'
+      return true
+    })
     await finishShot('shot-7', 48_000)
 
     await mark('shot-8')
@@ -541,6 +629,11 @@ export async function recordDemo(options = {}) {
     await page.locator('.card-placed[data-pinned="true"]').first().waitFor()
     await page.locator('.desk-dayhead .state-chip').first().waitFor()
     await pause(1_500)
+    await claim(
+      'shot-8',
+      'Sensoji is pinned and the day rebuilt around it',
+      async () => (await page.locator('.card-placed').filter({ hasText: 'Sensoji' }).getByText('Unpin').count()) > 0
+    )
     await finishShot('shot-8', 11_000)
 
     await nextSegment()
@@ -551,6 +644,12 @@ export async function recordDemo(options = {}) {
     await click(page.locator('.bwg-row').nth(0).locator('.check-label'), 500)
     await click(page.locator('.bwg-row').nth(1).locator('.check-label'), 500)
     await click(page.locator('.bwg-row').nth(2).locator('.check-label'), 500)
+    await claim('shot-9', 'the checklist is derived from a calendar that has stops on it', async () => {
+      const text = await page.locator('.bwg-list').innerText()
+      return /not on the calendar yet|nothing on the calendar yet/i.test(text)
+        ? 'the checklist is reading an empty calendar'
+        : true
+    })
     await finishShot('shot-9', 18_000)
 
     await page.goto(new URL('/t/tokyo-nov-2026', baseUrl).href, { waitUntil: 'domcontentloaded' })
@@ -562,6 +661,13 @@ export async function recordDemo(options = {}) {
       await spreads.nth(i).scrollIntoViewIfNeeded()
       await pause(2_500)
     }
+    await claim('shot-10', 'four plates, each drawing its route, each with a Transit Route link', async () => {
+      const maps = await countOf('a[href*="google.com/maps"]')
+      const drawn = await countOf('.day-spread svg path')
+      if (maps !== 4) return `${maps} Transit Route links, expected 4`
+      if (drawn < 4) return `${drawn} drawn routes, expected at least 4 -- plates are placeholders`
+      return true
+    })
     await finishShot('shot-10', 21_000)
 
     await showCard(
@@ -603,6 +709,18 @@ export async function recordDemo(options = {}) {
       else tighten(raw)
     }
     writeFileSync(join(demoDir, 'beats.json'), `${JSON.stringify(beats, null, 2)}\n`)
+  }
+
+  if (claims.length > 0) {
+    console.log('\nclaim checks, one per beat, asserted where the narration makes its claim:')
+    for (const entry of claims) {
+      const mark_ = entry.ok ? 'PASS' : 'FAIL'
+      console.log(`  ${mark_}  ${entry.beat.padEnd(8)} ${entry.statement}${entry.detail ? ` -- ${entry.detail}` : ''}`)
+    }
+    const failed = claims.filter((entry) => !entry.ok)
+    if (failed.length > 0) {
+      failure = failure ?? new Error(`${failed.length} claim check(s) failed: ${failed.map((e) => e.beat).join(', ')}`)
+    }
   }
 
   console.log(`video: ${capturePath}`)
