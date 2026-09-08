@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom'
 
 /**
- * One footer, two mountings. The app shell fixes it behind the scrolling page and uncovers it at the end; the landing
- * puts it in flow, because a fixed footer under a page that does not scroll would never be revealed. The content and
- * the surface are the same in both, which is the whole point of sharing it.
+ * One footer, one mounting. The shell fixes it behind the scrolling page and uncovers it at the end, on every
+ * surface including the landing, which reserves exactly its height so the reveal is the page's only scroll.
  */
 export const Footer = () => (
   <div className="foot-inner">
