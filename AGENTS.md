@@ -113,7 +113,7 @@ decision made now beats a correct decision made after a ten minute conversation.
 1. **A competition rule is at risk.** Reused prior code, outside collaboration, a feature landing during the deployment
    phase, or a deadline about to be missed
 2. **The change would break something already working**, and you cannot avoid it
-3. **`bun run lint` or `bun run typecheck` fails and you cannot fix it.** Say what fails and what you tried
+3. **`bun run lint`, `bun run typecheck` or `bun test` fails and you cannot fix it.** Say what fails and what you tried
 4. **Two pieces of work genuinely conflict** and shipping both is impossible
 5. **A credential or external account is missing** and you cannot proceed
 6. **The work would change the concept or the demo** in a way the team has not agreed to
@@ -175,6 +175,7 @@ bun install          # dev tooling; also wires husky hooks
 bun run lint         # biome check . && prettier --check .
 bun run format       # biome format --write . && prettier --write .
 bun run typecheck    # tsc --noEmit, once src/ exists
+bun test             # the lib and state suites under v2/src; run it before every commit that touches them
 ```
 
 **Application framework, database and hosting are not chosen yet**, and choosing them is not a prototype-phase job. They
