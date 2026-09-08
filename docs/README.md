@@ -176,26 +176,30 @@ notes in [`DESIGN.md`](DESIGN.md#the-figma-files), which is where the design spe
 judged without visual direction leaking into it, and so a structural problem and a styling problem never get argued
 about at the same time.
 
-### Nine Screens From The Running Build
+### Eight Screens From The Running Build
 
-| Screen                                                               | What It Proves                                                                                                                                                                                                         |
-| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![The dashboard](assets/screens/01-dashboard.png)                    | **Where it starts, and it starts with nothing.** One trip, a New Plan button, and the day tints already doing wayfinding on the card. A shared link opens the Book without an account                                  |
-| ![New Plan](assets/screens/02-new-plan.png)                          | **Three rows of prefilled chips, not a form.** One is already chosen in each, because `PRODUCT.md`'s rule is that Perch does not ask what it can infer. A destination without place data says so instead of pretending |
-| ![Question three of the interview](assets/screens/03-interview.png)  | **The bench is made here.** Three picks rank 1 to 3; the seven that lose take ranks 4 to 10 and settle rather than disappearing. Everything the product does later is spent on that order                              |
-| ![The Desk with Day 3 open](assets/screens/04-desk.png)              | **Perch has already chosen.** The whole trip exists before anyone is consulted, and each day carries its own bird tint so colour says which day you are on                                                             |
-| ![The perch drawer](assets/screens/05-perch.png)                     | **Fit comes before rank, and the rows that fail say why** - `25 min too far`, `Shut on Mondays`. Hiding them would hide the argument                                                                                   |
-| ![The What Changed strip](assets/screens/06-what-changed.png)        | **The repair has already happened.** Nobody was asked. The delta is in two units, travel then money                                                                                                                    |
-| ![The Book in its setting state](assets/screens/07-book-setting.png) | **What the group opens is a magazine with gaps, not a planner.** A tap moves an option up; it never edits a slot                                                                                                       |
-| ![The Book, printed](assets/screens/08-book-printed.png)             | **The same object, finished.** Every slot resolved, every control gone, a drawn plate for each day. The half worth keeping after the trip                                                                              |
-| ![The Desk at 1440](assets/screens/09-desk-desktop.png)              | **Two columns, not a dashboard.** The instrument gets wider above 1024px; it does not sprout a sidebar or a chart                                                                                                      |
+| Screen                                               | What Happens Here                                                                                                                                                                                                                                                                              |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![The landing screen](assets/screens/01-landing.png) | The one screen before you commit to anything. It states the mechanism rather than the benefit, and offers two ways in: start a plan, or open a book someone has already shared with you                                                                                                        |
+| ![The dashboard](assets/screens/02-dashboard.png)    | Aisyah sees the trip, who has already swiped, and the link to send the ones who have not. The button reads Open The Deck while she has reels left and See The Tally once she is finished, so the card always names the next thing to do                                                        |
+| ![Onboarding](assets/screens/03-onboarding.png)      | She sets the dates by tapping a drawn month twice, then says what she wants out of the trip in her own words before she taps any of the suggestions. Only Tokyo can be picked, and the screen says why instead of letting her find out later                                                   |
+| ![The Deck](assets/screens/04-deck.png)              | The invite link opens here, on a phone, with no account and no sign-up. She swipes each reel left or right and the count goes down. Her three friends swiped when she sent the link, so the tally is never waiting on everyone at once                                                         |
+| ![The Tally](assets/screens/05-tally.png)            | Every place carries a percentage of the group's weighted vote, where the owner's swipe counts one and a half. Places everyone said yes to take the gold mark; places nobody wanted are greyed and drop out of the running order entirely                                                       |
+| ![The Desk](assets/screens/06-desk.png)              | She drags a card into a slot and Apply orders each day around whatever she has fixed. Day 1 has just turned gold: it still fits, but she moved a stop across the city and the day now runs 32 minutes slower than the order the scheduler would have chosen                                    |
+| ![Before We Go](assets/screens/07-before-we-go.png)  | Six things read off the trip rather than written beside it. The passport date is six months past her last day, the teamLab row names the day that place actually falls on, and the yen figure is the gate total of what is on the calendar. Print The Book stays shut until all six are ticked |
+| ![The Book](assets/screens/08-book.png)              | What the group keeps. One plate per day, each drawing that day's real route through its stops, with the dwell, the ringgit and the yen under every entry, and a link that opens the whole day as transit directions in Google Maps                                                             |
 
-**The flow is Dashboard, New Plan, three questions, The Desk, then The Book**, and every step is a real click in the
-deployed prototype. Nothing is a static mock-up of a screen that does not exist.
+**The flow is Landing, Dashboard, Onboarding, The Deck, The Tally, The Desk, Before We Go, The Book**, and every step is
+a real click in the deployed prototype. Nothing here is a static mock-up of a screen that does not exist.
 
-**The Prototype Controls block is deliberate and is labelled as not part of the product.** A fixture has nothing to
-observe, so the disruption has to be fired by hand. **A hidden timer would demo better and be less honest**, and a judge
-who can fire it twice can check the repair is computed rather than replayed.
+**The six phone screens are captured at 390 by 844 and the two desktop screens at 1440 by 900, every one rendered at
+double scale so it stays sharp on a high-density display**, which is why their proportions differ. The Desk is the one
+surface built for a wider screen, because four day columns and a sidebar cannot be read at phone width; the story the
+product tells has the group swiping on their phones from a link and the owner shaping the days at a desk.
+
+**The Prototype Controls block on The Desk is deliberate and is labelled as not part of the product.** The trip lives in
+one browser with no account behind it, so there is no other way to put the fixture back between runs, and a demo that
+can only be reset by opening developer tools is a demo that cannot be handed to anyone.
 
 **The design direction is a field guide, not a travel brochure**, and [`DESIGN.md`](DESIGN.md) records where every part
 of it came from - including the two live registers that were looked at and rejected, and the measurements taken off a
