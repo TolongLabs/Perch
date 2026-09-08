@@ -389,6 +389,30 @@ export DEMO_SUBTITLE_SIZE=13
 
 ---
 
+## Review The Seams, Not Just The Beats
+
+**Check a frame at every join between two beats, not only inside them.** A beat's last second belongs to no line of
+narration, so nothing in the script or the beat log describes what is on screen there — which makes it the one place a
+wrong surface can sit unnoticed through a full review.
+
+**The case that found this rule.** `shot-1` ends by pressing `Start Swiping`, and that button really does navigate, to
+the deck. The recorder waited for that URL, finished the beat, and only then went to `/trips`, so the film carried about
+a second of The Deck between onboarding and the dashboard — showing the reel with its title card still an empty box, and
+pre-empting `shot-3`, where the deck is meant to be introduced. Frames at the start of each beat and at the moment each
+beat's claim lands were all correct. The seam was not checked, and a viewer reported it as a glitch.
+
+**Two habits come out of it.**
+
+| Habit                                                            | Why                                                                                                                        |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Pad a beat **before** its last action when that action navigates | Otherwise the dwell lands on the destination surface, which belongs to a later beat                                        |
+| Record the navigation as a **dead range**                        | `record.mjs` keeps a `deadRanges` list that `tighten` cuts alongside the segment edges, so no frame of it reaches the film |
+
+`deadRanges` is general: any beat whose last action leaves the surface can push `{ from, to }` around the transition and
+have it removed, rather than each transition needing its own special case.
+
+---
+
 ## Why It Looks The Way It Does
 
 Inherited reasoning, all of it learned by watching a bad render rather than by reasoning about it in advance.

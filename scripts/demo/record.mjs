@@ -124,6 +124,7 @@ export async function recordDemo(options = {}) {
   const errors = []
   const segments = []
   const segmentSpans = []
+  const deadRanges = []
   let context = null
   let page = null
   let video = null
@@ -204,7 +205,7 @@ export async function recordDemo(options = {}) {
   // the page is created and the beat is not marked until its anchor is on screen. Left in, those loads put the film
   // over the 5:00 submission ceiling and read as stalls. This cuts them and slides the later beats back by what it cut.
   const tighten = (raw) => {
-    const cuts = []
+    const cuts = [...deadRanges.filter((range) => range.to - range.from > 400)]
     for (const [index, span] of segmentSpans.entries()) {
       if (index > 0 && span.first !== null && span.first - 350 - span.start > 400) {
         cuts.push({ from: span.start, to: span.first - 350 })
@@ -401,12 +402,17 @@ export async function recordDemo(options = {}) {
 
     await scrollTo(page.locator('.ob-section').nth(2))
     await type(page.locator('input[placeholder="Name a city"]'), 'Tokyo')
-    await click(page.getByRole('button', { name: exactText('Start Swiping') }))
-    await page.waitForURL(/\/t\/tokyo-nov-2026\/swipe/)
+    // Start Swiping really does navigate, to the deck, which belongs to shot-3 and is showing a reel that has not
+    // finished loading. The beat is padded on the finished form before the press, and everything from the moment
+    // onboarding is left until the dashboard is on screen is recorded as dead and cut from the film.
     await finishShot('shot-1', 15_000)
+    await click(page.getByRole('button', { name: exactText('Start Swiping') }), 0)
+    const leftOnboarding = elapsed()
+    await page.waitForURL(/\/t\/tokyo-nov-2026\/swipe/)
 
     await page.goto(new URL('/trips', baseUrl).href, { waitUntil: 'domcontentloaded' })
     await must(page.locator('.dash-trip'), 'shot 2 trip card')
+    deadRanges.push({ from: leftOnboarding, to: elapsed() })
     await mark('shot-2')
     await must(page.locator('.voters'), 'shot 2 voters')
     await must(page.locator('.dash-invite'), 'shot 2 invite')
