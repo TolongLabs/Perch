@@ -53,9 +53,9 @@ stage**.
 | **Storage**         | Google Cloud Storage for reel MP4s                                                            |
 
 **The exact dependency set.** `react` and `react-dom` at `^19.2.8`, `react-router-dom` at `^7.18.3`, `@dnd-kit/core` at
-the version `AGENTS.md` records, and the usual dev dependencies: `vite` `^8.2.2`, `@vitejs/plugin-react` `^6.1.1`,
-`@types/react` `^19.2.18`, `@types/react-dom` `^19.2.7`. Nothing else was added, and **.env.example is unchanged**
-because there is still no key to name.
+`^6.3.1`, and the usual dev dependencies: `vite` `^8.2.2`, `@vitejs/plugin-react` `^6.1.1`, `@types/react` `^19.2.18`,
+`@types/react-dom` `^19.2.7`. Nothing else was added, and **.env.example is unchanged** because there is still no key to
+name.
 
 ### Rejected Alternatives
 
