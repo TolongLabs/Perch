@@ -14,7 +14,7 @@ import { Perch } from '../components/Perch'
 import { PlacedCard, PoolCard } from '../components/PlacedCard'
 import { type ChipState, StateChip } from '../components/StateChip'
 import { Heading, Info } from '../components/Ui'
-import type { DayFeasibility, Slot } from '../data/types'
+import type { Day, DayFeasibility, Period, Slot } from '../data/types'
 import { dayLabel, duration, price } from '../lib/format'
 import { CLUSTER_AREA } from '../lib/schedule'
 import { nextReplacement, tallyFor, votedIn } from '../lib/votes'
@@ -22,6 +22,33 @@ import { useTrip } from '../state'
 import './Desk.css'
 
 const PERIOD: Record<Slot['period'], string> = { morning: 'Morning', afternoon: 'Afternoon', evening: 'Evening' }
+
+const PERIODS: Period[] = ['morning', 'afternoon', 'evening']
+
+/**
+ * A day's slots grouped under the period that owns them, keeping each slot's index into `day.slots`, which is what
+ * the droppable and every mutation are keyed by. Rendering the flat list repeated the period's name above its
+ * second slot, which reads as two Mornings rather than as one Morning holding two stops.
+ */
+const byPeriod = (day: Day) =>
+  PERIODS.map((period) => ({
+    period,
+    cells: day.slots.map((slot, index) => ({ slot, index })).filter(({ slot }) => slot.period === period)
+  })).filter(({ cells }) => cells.length > 0)
+
+/** The next period that can take a second slot, in the order the day runs. Null once all three hold two. */
+const nextOpen = (day: Day): Period | null =>
+  PERIODS.find((period) => day.slots.filter((s) => s.period === period).length < 2) ?? null
+
+/** The last second slot that is empty, which is the only one that may close. Null when none can. */
+const lastClosable = (day: Day): Slot | null => {
+  for (const period of [...PERIODS].reverse()) {
+    const held = day.slots.filter((s) => s.period === period)
+    const second = held[1]
+    if (held.length === 2 && second && second.placeId === null) return second
+  }
+  return null
+}
 
 /** The three feasibility outcomes, in the words rule 5 uses. The copy never calls the scheduler AI. */
 const FEASIBILITY: Record<DayFeasibility['status'], { label: string; state: ChipState }> = {
@@ -40,7 +67,7 @@ const SlotCell = ({ dayIndex, slotIndex, children }: { dayIndex: number; slotInd
 }
 
 export const Desk = () => {
-  const { trip, place, remove, apply, pin, unpin, setDates, restart } = useTrip()
+  const { trip, place, remove, apply, pin, unpin, setDates, addSlot, removeSlot, restart } = useTrip()
   const [flight, setFlight] = useState(0)
   const [dragging, setDragging] = useState<string | null>(null)
   const [drawer, setDrawer] = useState<{ dayIndex: number; slotIndex: number } | null>(null)
@@ -83,6 +110,10 @@ export const Desk = () => {
   })()
 
   const nights = range.start && range.end ? nightsBetween(range.start, range.end) : 0
+
+  /* The flight animation staggers by a card's position across the whole calendar. Three per day was a constant
+     while every day held three; a day that holds six would collide with the next day's cards. */
+  const slotsBefore = (dayPos: number) => trip.days.slice(0, dayPos).reduce((n, d) => n + d.slots.length, 0)
 
   const dragged = dragging ? trip.options[dragging] : undefined
 
@@ -166,6 +197,43 @@ export const Desk = () => {
                     Day {day.index}
                     <span className="desk-daydate">{dayLabel(day.date)}</span>
                   </p>
+                  <span className="desk-slotacts">
+                    <button
+                      type="button"
+                      className="desk-slotact"
+                      disabled={nextOpen(day) === null}
+                      title={
+                        nextOpen(day)
+                          ? `Add a second ${PERIOD[nextOpen(day) as Period].toLowerCase()} stop to day ${day.index}`
+                          : 'Six stops is the most a day holds'
+                      }
+                      aria-label={`Add a slot to day ${day.index}`}
+                      onClick={() => {
+                        const period = nextOpen(day)
+                        if (period) addSlot(day.index, period)
+                      }}
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      className="desk-slotact"
+                      disabled={lastClosable(day) === null}
+                      title={
+                        lastClosable(day)
+                          ? `Close the empty second stop on day ${day.index}`
+                          : 'Only an empty second stop can close'
+                      }
+                      aria-label={`Remove a slot from day ${day.index}`}
+                      onClick={() => {
+                        const slot = lastClosable(day)
+                        if (slot) removeSlot(day.index, slot.id)
+                      }}
+                    >
+                      &minus;
+                    </button>
+                  </span>
+
                   {day.feasibility ? (
                     <span className="desk-fit">
                       <StateChip state={FEASIBILITY[day.feasibility.status].state}>
@@ -178,30 +246,33 @@ export const Desk = () => {
                   )}
                 </header>
 
-                {day.slots.map((slot, slotIndex) => {
-                  const held = slot.placeId ? trip.options[slot.placeId] : undefined
-                  return (
-                    <div key={slot.id} className="desk-slot">
-                      <p className="t-label desk-period">{PERIOD[slot.period]}</p>
-                      <SlotCell dayIndex={day.index} slotIndex={slotIndex}>
-                        {held ? (
-                          <PlacedCard
-                            place={held}
-                            dayIndex={day.index}
-                            slotIndex={slotIndex}
-                            pinned={slot.pinned}
-                            flying={flight > 0}
-                            order={dayPos * 3 + slotIndex}
-                            onPin={() => (slot.pinned ? unpin(held.id) : pin(held.id, day.index, slotIndex))}
-                            onRemove={() => setDrawer({ dayIndex: day.index, slotIndex })}
-                          />
-                        ) : (
-                          <p className="desk-empty">Empty</p>
-                        )}
-                      </SlotCell>
-                    </div>
-                  )
-                })}
+                {/* One period, one heading, holding the one or two stops it owns. */}
+                {byPeriod(day).map(({ period, cells }) => (
+                  <div key={period} className="desk-slot">
+                    <p className="t-label desk-period">{PERIOD[period]}</p>
+                    {cells.map(({ slot, index }) => {
+                      const held = slot.placeId ? trip.options[slot.placeId] : undefined
+                      return (
+                        <SlotCell key={slot.id} dayIndex={day.index} slotIndex={index}>
+                          {held ? (
+                            <PlacedCard
+                              place={held}
+                              dayIndex={day.index}
+                              slotIndex={index}
+                              pinned={slot.pinned}
+                              flying={flight > 0}
+                              order={slotsBefore(dayPos) + index}
+                              onPin={() => (slot.pinned ? unpin(held.id) : pin(held.id, day.index, index))}
+                              onRemove={() => setDrawer({ dayIndex: day.index, slotIndex: index })}
+                            />
+                          ) : (
+                            <p className="desk-empty">Empty</p>
+                          )}
+                        </SlotCell>
+                      )
+                    })}
+                  </div>
+                ))}
               </section>
             ))}
           </section>
