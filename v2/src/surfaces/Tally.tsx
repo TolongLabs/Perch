@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { CopyLink } from '../components/CopyLink'
 import { StateChip } from '../components/StateChip'
 import { Heading } from '../components/Ui'
+import { Voters } from '../components/Voters'
 import { duration, price } from '../lib/format'
 import { isJoiner } from '../lib/joiner'
 import { CLUSTER_LABEL } from '../lib/schedule'
@@ -16,8 +17,6 @@ export const Tally = () => {
   const joiner = isJoiner()
 
   const places = Object.keys(trip.options).length
-  const finished = (memberId: string) =>
-    Object.values(trip.votes[memberId] ?? {}).filter((v) => v !== null).length === places
 
   // The trip id is the invite code: the link carries it, and there is no separate code field in the model.
   const inviteUrl = `${window.location.origin}/t/${trip.id}/swipe`
@@ -33,16 +32,7 @@ export const Tally = () => {
 
       <section className="tally-block" data-state="open">
         <p className="t-label tally-legend">Who Has Voted</p>
-        <ul className="tally-people">
-          {trip.party.map((p) => (
-            <li key={p.id}>
-              <span className="tally-person" data-done={finished(p.id)}>
-                {p.name}
-                {p.id === trip.ownerId && <span className="tally-owner">Owner</span>}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <Voters party={trip.party} votes={trip.votes} places={places} ownerId={trip.ownerId} />
         <p className="t-specimen">Someone who has not finished is not a no. Their unswiped places count as nothing.</p>
       </section>
 

@@ -1,10 +1,10 @@
 .dash {
-  max-width: 430px;
-  margin: 0 auto;
-  padding: var(--s7) var(--s5) var(--s8);
   display: flex;
   flex-direction: column;
   gap: var(--s5);
+  max-width: 430px;
+  margin: 0 auto;
+  padding: var(--s7) var(--s5) var(--s8);
 }
 
 @media (min-width: 1024px) {
@@ -15,128 +15,114 @@
 }
 
 .dash-mark {
-  color: var(--open);
   margin-bottom: var(--s3);
+  color: var(--open);
 }
 
-/* The one solid button on the screen, per DESIGN.md. Starting a plan is the only thing you can do from nothing. */
-.dash-new {
-  display: grid;
-  grid-template-columns: 48px 1fr;
-  align-items: center;
-  gap: var(--s4);
-  padding: var(--s5);
-  border-radius: var(--r-desk);
-  background: var(--ink);
-  color: var(--paper);
-  text-decoration: none;
-}
-
-.dash-new-plus {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border-radius: var(--r-pill);
-  background: var(--paper);
-  color: var(--ink);
-  font-size: 26px;
-  font-weight: 300;
-  line-height: 1;
-}
-
-.dash-new-body {
+/* The trip card. Grounded rather than outlined, and it carries everything about the trip in one object. */
+.dash-trip {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--s5);
+  padding: var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--plate);
 }
 
-.dash-new-body .t-specimen {
-  color: color-mix(in oklab, var(--paper) 72%, var(--ink));
+/* The four day tints, which is the same wayfinding device the calendar and the plates use. */
+.dash-strip {
+  display: flex;
+  gap: var(--s2);
 }
 
-.dash-kicker {
+.dash-strip span {
+  height: 6px;
+  flex: 1;
+  border-radius: var(--r-pill);
+  background: var(--tint);
+}
+
+.dash-lead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.dash-note {
+  font-size: 15px;
+}
+
+.dash-status {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  color: var(--ink-muted);
+}
+
+.dash-count {
+  flex: none;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.dash-legend {
   display: flex;
   align-items: center;
   gap: var(--s2);
   color: var(--ink-muted);
-  margin-bottom: var(--s3);
 }
 
-.dash-list,
-.dash-shared {
-  border-radius: var(--r-desk);
-  padding: var(--s5);
-}
-
-.dash-list {
-  background: var(--plate);
-}
-
-.dash-shared {
-  background: var(--ground-open);
-}
-
-/* The day tints, before you have opened anything. Colour is doing wayfinding from the very first screen. */
-.dash-trip {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: var(--s3) var(--s4);
-  padding: var(--s4) var(--s5);
-  border-radius: var(--r-desk);
-  background: var(--paper);
-  text-decoration: none;
-  color: inherit;
-}
-
-.dash-strip {
-  grid-column: 1 / -1;
+.dash-invite {
   display: flex;
-  gap: var(--s1);
-  height: 8px;
+  align-items: center;
+  gap: var(--s3);
 }
 
-.dash-strip span {
+.dash-code {
   flex: 1;
-  border-radius: var(--r-pill);
-}
-
-.dash-strip span[data-day="1"] {
-  background: var(--day-1);
-}
-.dash-strip span[data-day="2"] {
-  background: var(--day-2);
-}
-.dash-strip span[data-day="3"] {
-  background: var(--day-3);
-}
-.dash-strip span[data-day="4"] {
-  background: var(--day-4);
-}
-.dash-strip span[data-day="5"] {
-  background: var(--day-5);
-}
-
-.dash-trip-body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
   min-width: 0;
-}
-
-.dash-trip-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
+  overflow: hidden;
+  padding: var(--s3) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 14%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  font-family: var(--face-sans);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.dash-shared-cta {
-  display: inline-block;
-  padding: var(--s3) var(--s5);
-  border: var(--outline) solid var(--open);
+/* The one solid button on the screen. */
+.dash-go {
+  padding: var(--s4) var(--s6);
+  border: var(--outline) solid var(--ink);
   border-radius: var(--r-pill);
-  color: var(--open);
-  text-decoration: none;
+  background: var(--ink);
+  color: var(--paper);
+  transition: background var(--motion-fade) var(--ease);
+}
+
+/* Outlined, because the trip card already carries the solid one. */
+.dash-new {
+  align-self: flex-start;
+  padding: var(--s4) var(--s6);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  transition: background var(--motion-fade) var(--ease);
+}
+
+.dash-new:hover {
+  background: var(--plate);
 }
