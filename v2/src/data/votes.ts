@@ -1,4 +1,4 @@
-import type { Votes } from './types'
+import type { Answer, Votes } from './types'
 
 const ids = [
   'sensoji',
@@ -27,20 +27,21 @@ const ids = [
   'hachitama-observatory'
 ]
 
-type Answer = 'yes' | 'no' | null
+const ANSWER: Record<string, Answer> = { y: 'yes', n: 'no', m: 'must' }
 
-/** A member's answers in fixture order. 'y' is yes, 'n' is no, '.' is not swiped yet. */
+/** A member's answers in fixture order. 'y' is yes, 'n' is no, 'm' is Must Go, '.' is not swiped yet. */
 const swipes = (pattern: string): Record<string, Answer> =>
-  Object.fromEntries(ids.map((id, i) => [id, pattern[i] === 'y' ? 'yes' : pattern[i] === 'n' ? 'no' : null]))
+  Object.fromEntries(ids.map((id, i) => [id, ANSWER[pattern[i] ?? '.'] ?? null]))
 
 /**
  * Farah, Hana and Iman have already swiped, so the tally has percentages the moment Aisyah finishes. Sensoji and
  * Meiji Jingu are unanimous, Hama-rikyu and Daiba Park have no yes at all, and Aisyah has only swiped the four she
- * opened the app for. Read down a column to see one place: the order is the id list above.
+ * opened the app for. Each friend holds one Must Go: Farah on Omoide Yokocho, Hana on teamLab Planets, Iman on Shibuya
+ * Crossing. Read down a column to see one place: the order is the id list above.
  */
 export const votes: Votes = {
   aisyah: swipes('y.....y..y........y.....'),
-  farah: swipes('yynyyyyyyyynynyyynyyyyny'),
-  hana: swipes('yyyynyyyynyyynyyynyyyynn'),
-  iman: swipes('ynnyyyyyyyyyynynyyynyynn')
+  farah: swipes('yynyyyyyyymnynyyynyyyyny'),
+  hana: swipes('yyyynyyyynyyynyyynmyyynn'),
+  iman: swipes('ynnyyyyyymyyynynyyynyynn')
 }
