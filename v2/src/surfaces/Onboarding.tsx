@@ -18,6 +18,9 @@ const ACTIVITIES = [
   { id: 'museums', label: 'Museums' }
 ]
 
+/** Four rows, fixed, so a key is a row rather than a name that is being typed over. */
+const PARTY_ROWS = ['owner', 'friend-1', 'friend-2', 'friend-3']
+
 const DESTINATIONS = [
   { id: 'tokyo', label: 'Tokyo' },
   { id: 'kyoto', label: 'Kyoto', disabled: true },
@@ -27,13 +30,16 @@ const DESTINATIONS = [
 
 export const Onboarding = () => {
   const navigate = useNavigate()
-  const { trip, setDates } = useTrip()
+  const { trip, setDates, setParty } = useTrip()
   // Seeded from the trip rather than left blank: onboarding configures a fixture that already has dates, and
   // `PRODUCT.md`'s rule is that no question is asked which Perch can already answer.
   const [range, setRange] = useState<Range>(() => ({
     start: trip.startDate,
     end: addDays(trip.startDate, trip.nights)
   }))
+  // Prefilled from the fixture, because PRODUCT.md's rule is that no question is asked which Perch can already
+  // answer. The owner is row one and cannot leave; a friend's row left blank drops them.
+  const [names, setNames] = useState<string[]>(() => PARTY_ROWS.map((_, i) => trip.party[i]?.name ?? ''))
   const [intent, setIntent] = useState('')
   const [city, setCity] = useState('')
   const [activities, setActivities] = useState<string[]>([])
@@ -45,7 +51,8 @@ export const Onboarding = () => {
 
   const nights = range.start && range.end ? nightsBetween(range.start, range.end) : 0
   const datesSet = nights > 0
-  const ready = datesSet && destination.includes('tokyo')
+  const named = (names[0]?.trim().length ?? 0) > 0
+  const ready = datesSet && named && destination.includes('tokyo')
 
   const toggle = (list: string[], set: (v: string[]) => void, id: string) =>
     set(list.includes(id) ? list.filter((v) => v !== id) : [...list, id])
@@ -53,6 +60,7 @@ export const Onboarding = () => {
   const start = () => {
     if (!ready || !range.start) return
     setDates(range.start, nights)
+    setParty(names)
     navigate(`/t/${trip.id}/swipe`)
   }
 
@@ -72,6 +80,29 @@ export const Onboarding = () => {
           {datesSet
             ? `${nights + 1} days, ${nights} ${nights === 1 ? 'night' : 'nights'}`
             : 'Tap the first day, then the last.'}
+        </p>
+      </section>
+
+      <section className="ob-section" data-state={named ? 'decided' : 'open'}>
+        <p className="t-label ob-legend">Who Is Coming</p>
+        <ul className="ob-party">
+          {PARTY_ROWS.map((row, i) => (
+            <li key={row} className="ob-party-row">
+              <span className="t-label ob-party-role">{i === 0 ? 'You' : 'Friend'}</span>
+              <input
+                className="field-input"
+                type="text"
+                value={names[i] ?? ''}
+                aria-label={i === 0 ? 'Your name' : `Friend ${i}`}
+                placeholder={i === 0 ? 'Your name' : 'Leave blank to drop'}
+                onChange={(e) => setNames((current) => current.map((n, j) => (j === i ? e.target.value : n)))}
+              />
+            </li>
+          ))}
+        </ul>
+        <p className="t-specimen ob-party-help">
+          Four at most in the prototype. Clear a friend's name and they leave the trip; a row keeps its votes when it is
+          renamed, so you can make this yours without losing anything.
         </p>
       </section>
 
