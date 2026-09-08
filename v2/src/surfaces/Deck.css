@@ -1,0 +1,127 @@
+/* The Deck runs on The Desk register: paper ground, Quicksand, left aligned, one solid button. */
+
+.deck {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  max-width: 420px;
+  margin: 0 auto;
+  padding: var(--s6) var(--s5) var(--s7);
+}
+
+.deck-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+}
+
+/* A count, never a bar. Tabular so the number does not jitter as it climbs. */
+.deck-count {
+  flex: none;
+  color: var(--ink-muted);
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.deck-stack {
+  position: relative;
+  isolation: isolate;
+}
+
+.deck-card {
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+}
+
+.deck-card:active {
+  cursor: grabbing;
+}
+
+/* The cards below sit behind the top one, stepped back so the deck reads as a stack rather than a single card. */
+.deck-card[data-depth="1"],
+.deck-card[data-depth="2"] {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.deck-card[data-depth="1"] {
+  transform: translateY(10px) scale(0.96);
+}
+
+.deck-card[data-depth="2"] {
+  transform: translateY(20px) scale(0.92);
+}
+
+/* `DESIGN.md`'s first sanctioned motion: the swiped card leaves and the next steps forward onto the perch. */
+.deck-card[data-leaving] {
+  animation: card-out var(--motion-step) var(--ease) forwards;
+}
+
+.deck-card[data-leaving="keep"] {
+  --exit: 130%;
+}
+
+.deck-card[data-leaving="pass"] {
+  --exit: -130%;
+}
+
+@keyframes card-out {
+  to {
+    transform: translateX(var(--exit)) rotate(calc(var(--exit) * 0.06));
+    opacity: 0;
+  }
+}
+
+.deck-acts {
+  display: flex;
+  gap: var(--s3);
+}
+
+.deck-pass,
+.deck-keep,
+.deck-go {
+  flex: 1;
+  padding: var(--s4) var(--s5);
+  border-radius: var(--r-pill);
+  transition:
+    background var(--motion-fade) var(--ease),
+    border-color var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease);
+}
+
+.deck-pass {
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
+  background: var(--paper);
+}
+
+.deck-pass:hover {
+  border-color: var(--ink);
+}
+
+/* The screen's one solid button. */
+.deck-keep,
+.deck-go {
+  border: var(--outline) solid var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.deck-done {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s4);
+  padding: var(--s7) var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--ground-decided);
+}
+
+.deck-go {
+  flex: none;
+  padding: var(--s4) var(--s6);
+}
