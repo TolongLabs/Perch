@@ -314,6 +314,42 @@ pass, and wait for the leaving animation before the next swipe.
 
 ---
 
+## The Music Bed
+
+**Opt-in and off by default.** With no `DEMO_MUSIC` the film is voice-only, exactly as version 1 shipped.
+
+| Variable              | Default | Is                                               |
+| --------------------- | ------- | ------------------------------------------------ |
+| `DEMO_MUSIC`          | none    | Path to the bed. Absent means no music at all    |
+| `DEMO_MUSIC_START`    | `0`     | Seconds into the mix, for choosing a section     |
+| `DEMO_MUSIC_DUCK`     | `20`    | Decibels below the narration's **measured** mean |
+| `DEMO_MUSIC_FADE_IN`  | `4`     | Fade in, landing over the open card              |
+| `DEMO_MUSIC_FADE_OUT` | `7`     | Fade out, landing over the close card            |
+
+**The level is derived, not set.** `narrate.sh` measures the narration and the exact slice of music it is about to use,
+then applies whatever gain puts the bed `DEMO_MUSIC_DUCK` below the voice. A hard-coded gain only holds for the mix it
+was chosen on; this holds when the track changes. At 20 dB under, adding the bed moves the finished film's overall mean
+by about 0.1 dB, which is the check that the voice still carries it.
+
+**The narration is padded to the picture before mixing.** It ends a few seconds before the video does, and `amix` takes
+its first input's duration, so without the pad the audio stops early and the fade-out is cut off partway through -- the
+music stops dead under the close card instead of fading.
+
+**Choosing a start offset is a measurement, not a guess, and only half of it can be measured.** Scan candidate windows
+with `ebur128` and read the minimum: a window whose loudness floor drops below about -60 dB contains a silent track gap,
+which is a hole in the bed mid-beat. Prefer the window with the narrowest dynamic range. **What this cannot do is detect
+a vocal**, so a person still has to listen to the chosen section before it ships.
+
+### No Track Is Cleared Yet
+
+**Nothing here names a track on purpose.** A submitted video is a public artifact, and the competition rules list
+_"plagiarism or uncredited reproduction of existing IP"_ among the grounds for immediate disqualification, so the bed
+needs a source with terms that can be written down, not an assurance. **When a track is cleared, its source, its licence
+and any required credit line go in this section**, and the submission README repeats them. Until then the knobs exist
+and no release uses them.
+
+---
+
 ## Setting The Subtitles In The Product's Own Face
 
 **The subtitles are the only type in every frame of the film**, so leaving them in libass's fallback puts a generic sans
