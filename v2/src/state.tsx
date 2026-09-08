@@ -1,5 +1,6 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { Day, Period, Slot, Trip } from './data/types'
+import { scheduleTrip, withFeasibility } from './lib/schedule'
 import { load, reset, save } from './lib/store'
 
 type Ctx = {
@@ -9,6 +10,8 @@ type Ctx = {
   /** Puts a place into a day and slot on the calendar, taking it out of any other slot it held. */
   place: (placeId: string, dayIndex: number, slotIndex: number) => void
   remove: (dayIndex: number, slotIndex: number) => void
+  /** Runs the heuristic scheduler over every day, around whatever is pinned. */
+  apply: () => void
   /** The owner fixes a card to a day and slot. The scheduler never moves a pinned card. */
   pin: (placeId: string, dayIndex: number, slotIndex: number) => void
   unpin: (placeId: string) => void
@@ -42,7 +45,7 @@ const emptyDays = (startDate: string, nights: number, titles: string[]): Day[] =
 const setSlot = (days: Day[], dayIndex: number, slotIndex: number, patch: Partial<Slot>): Day[] =>
   days.map((day) =>
     day.index === dayIndex
-      ? { ...day, slots: day.slots.map((s, i) => (i === slotIndex ? { ...s, ...patch } : s)), feasibility: null }
+      ? { ...day, slots: day.slots.map((s, i) => (i === slotIndex ? { ...s, ...patch } : s)) }
       : day
   )
 
@@ -51,8 +54,7 @@ const clearPlace = (days: Day[], placeId: string): Day[] =>
     day.slots.some((s) => s.placeId === placeId)
       ? {
           ...day,
-          slots: day.slots.map((s) => (s.placeId === placeId ? { ...s, placeId: null, pinned: false } : s)),
-          feasibility: null
+          slots: day.slots.map((s) => (s.placeId === placeId ? { ...s, placeId: null, pinned: false } : s))
         }
       : day
   )
@@ -77,7 +79,10 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
   const place = useCallback((placeId: string, dayIndex: number, slotIndex: number) => {
     setTrip((current) => ({
       ...current,
-      days: setSlot(clearPlace(current.days, placeId), dayIndex, slotIndex, { placeId, pinned: false }),
+      days: withFeasibility(
+        setSlot(clearPlace(current.days, placeId), dayIndex, slotIndex, { placeId, pinned: false }),
+        current.options
+      ),
       pins: current.pins.filter((p) => p.placeId !== placeId)
     }))
   }, [])
@@ -87,16 +92,26 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
       const removed = current.days.find((d) => d.index === dayIndex)?.slots[slotIndex]?.placeId ?? null
       return {
         ...current,
-        days: setSlot(current.days, dayIndex, slotIndex, { placeId: null, pinned: false }),
+        days: withFeasibility(
+          setSlot(current.days, dayIndex, slotIndex, { placeId: null, pinned: false }),
+          current.options
+        ),
         pins: current.pins.filter((p) => p.placeId !== removed)
       }
     })
   }, [])
 
+  const apply = useCallback(() => {
+    setTrip((current) => ({ ...current, days: scheduleTrip(current) }))
+  }, [])
+
   const pin = useCallback((placeId: string, dayIndex: number, slotIndex: number) => {
     setTrip((current) => ({
       ...current,
-      days: setSlot(clearPlace(current.days, placeId), dayIndex, slotIndex, { placeId, pinned: true }),
+      days: withFeasibility(
+        setSlot(clearPlace(current.days, placeId), dayIndex, slotIndex, { placeId, pinned: true }),
+        current.options
+      ),
       pins: [...current.pins.filter((p) => p.placeId !== placeId), { placeId, dayIndex, slotIndex }]
     }))
   }, [])
@@ -140,8 +155,8 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const value = useMemo(
-    () => ({ trip, swipe, place, remove, pin, unpin, tick, setDates, restart }),
-    [trip, swipe, place, remove, pin, unpin, tick, setDates, restart]
+    () => ({ trip, swipe, place, remove, apply, pin, unpin, tick, setDates, restart }),
+    [trip, swipe, place, remove, apply, pin, unpin, tick, setDates, restart]
   )
   return <TripContext.Provider value={value}>{children}</TripContext.Provider>
 }

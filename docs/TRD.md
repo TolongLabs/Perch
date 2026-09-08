@@ -526,7 +526,7 @@ export const computeTally = (
 ```
 
 **Percentage per place** is weighted yes over total possible weight. Each member's yes is 1, the owner's yes is 1.5.
-With four people (one owner), the total possible weight is 5.5 and the owner alone is 27 percent. Unanimous means every
+With four people (one owner), the total possible weight is 4.5 and the owner alone is 33 percent. Unanimous means every
 member said yes. Eliminated means weighted yes is zero. The ranked voted-in list is places at or above 50 percent,
 weighted score descending, ties broken by fixture order.
 
@@ -534,7 +534,7 @@ weighted score descending, ties broken by fixture order.
 | ----------------- | ------------------------------------------------------------------------ |
 | Unanimous (all)   | Marked gold. Always appears in the scheduler pool                        |
 | Eliminated (zero) | Greyed, eliminated. The scheduler never considers them                   |
-| Owner 1.5 weight  | The owner's vote counts 1.5, giving the owner 27 percent of total weight |
+| Owner 1.5 weight  | The owner's vote counts 1.5, giving the owner 33 percent of total weight |
 | Owner pinned      | Not in the tally. Pins are a Desk operation, not a voting mechanic       |
 
 **The tally is the only input to the scheduler.** Cards with zero votes across the group and the owner never reach the
