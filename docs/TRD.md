@@ -707,6 +707,10 @@ pill buttons, one solid button per screen). The Book is a plate (plate `#F2EDE0`
 **`tokens.css` carries the palette under the design's own names**, so a token in the CSS and a row in the design spec
 are searchably the same string. There is no Tailwind, no CSS-in-JS and no preprocessor.
 
+**A surface override of a `.t-*` type role loses on source order, not specificity.** `.t-specimen` sets `color`, and
+`base.css` loads after every surface stylesheet, so a single-class override such as `.reel-line` is beaten by it. Scope
+the override to its parent, `.reel-foot .reel-line`, and it wins. Found on The Deck, and it applies to every surface.
+
 ```css
 :root {
   --ink: #2e261f;
