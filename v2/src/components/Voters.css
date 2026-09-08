@@ -1,0 +1,36 @@
+.voters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s2);
+}
+
+.voter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 18%, transparent);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  font-size: 15px;
+}
+
+/* Finished, so it takes the settled colour: swiping through is a thing you complete, not a state you are put in.
+   Ink weighted, because a state colour set as text on its own tint fails contrast. */
+.voter[data-done="true"] {
+  border-color: var(--decided);
+  background: color-mix(in oklab, var(--decided) 10%, var(--paper));
+  color: color-mix(in oklab, var(--decided) 76%, var(--ink));
+  font-weight: 700;
+}
+
+.voter-owner {
+  padding: 1px var(--s2);
+  border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--ink) 12%, transparent);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}

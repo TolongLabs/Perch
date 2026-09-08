@@ -1,18 +1,24 @@
-import { Link } from 'react-router-dom'
-import { Info } from '../components/Ui'
-import { tripCostRM } from '../lib/cost'
-import { dayLabel, money } from '../lib/format'
+import { useNavigate } from 'react-router-dom'
+import { CopyLink } from '../components/CopyLink'
+import { Heading, Info } from '../components/Ui'
+import { Voters } from '../components/Voters'
+import { dayLabel } from '../lib/format'
 import { useTrip } from '../state'
 import './Dashboard.css'
 
 /**
- * Where everything starts. The prototype used to open on a finished trip, which showed the payoff and hid the
- * mechanism that earns it. Nothing here is a feature: it is the door.
+ * The door. One trip, because this is a prototype, and everything the group needs to get into the flow: who has
+ * swiped, the link to send them, and the one action that is next.
  */
 export const Dashboard = () => {
+  const navigate = useNavigate()
   const { trip } = useTrip()
-  const open = trip.days.flatMap((d) => d.slots).filter((s) => s.placeId === null).length
+
+  const places = Object.keys(trip.options).length
+  const swiped = Object.values(trip.votes[trip.ownerId] ?? {}).filter((v) => v !== null).length
+  const done = swiped === places
   const last = trip.days[trip.days.length - 1]
+  const inviteUrl = `${window.location.origin}/t/${trip.id}/swipe`
 
   return (
     <main className="dash">
@@ -21,60 +27,62 @@ export const Dashboard = () => {
         <h1 className="t-display">Your Trips</h1>
       </header>
 
-      <Link className="dash-new" to="/new">
-        <span className="dash-new-plus" aria-hidden="true">
-          +
+      <section className="dash-trip" aria-label="Tokyo">
+        <span className="dash-strip" aria-hidden="true">
+          {trip.days.map((d) => (
+            <span key={d.index} data-day={d.tint} />
+          ))}
         </span>
-        <span className="dash-new-body">
-          <span className="t-name">Start A New Plan</span>
-          <span className="t-specimen">Three questions, then Perch proposes the whole thing</span>
-        </span>
-      </Link>
 
-      <section className="dash-list" aria-label="Trips">
-        <p className="t-label dash-kicker">
-          In Progress
-          <Info>
-            One trip, because this is a prototype. A real account would list the ones you have taken underneath, and the
-            finished book is what you would keep.
-          </Info>
+        <div className="dash-lead">
+          <Heading as="h2">{trip.destination}</Heading>
+          <p className="t-specimen">
+            {dayLabel(trip.startDate)} &ndash; {dayLabel(last?.date ?? trip.startDate)} &middot; {trip.days.length} days
+            &middot; {trip.party.length} people
+          </p>
+          <p className="dash-note">Four days, three nights, one day of annual leave tagged onto a weekend.</p>
+        </div>
+
+        <p className="t-label dash-status">
+          The Deck
+          <span className="dash-count">
+            {swiped} Of {places} Reels Swiped
+          </span>
         </p>
 
-        <Link className="dash-trip" to="/desk">
-          <span className="dash-strip" aria-hidden="true">
-            {trip.days.map((d) => (
-              <span key={d.index} data-day={d.tint} />
-            ))}
-          </span>
+        <div className="dash-group">
+          <p className="t-label dash-legend">
+            Who Has Voted
+            <Info>
+              Farah, Hana and Iman swiped when Aisyah sent the link. A member part way through has said nothing about
+              the places they have not reached, and those count as nothing rather than as a no.
+            </Info>
+          </p>
+          <Voters party={trip.party} votes={trip.votes} places={places} ownerId={trip.ownerId} />
+        </div>
 
-          <span className="dash-trip-body">
-            <span className="t-name">{trip.destination}</span>
-            <span className="t-specimen">
-              {dayLabel(trip.startDate)} &ndash; {dayLabel(last?.date ?? trip.startDate)} &middot; {trip.days.length}{' '}
-              days &middot; {trip.party.length} people
-            </span>
-          </span>
+        <div className="dash-group">
+          <p className="t-label dash-legend">The Invite</p>
+          <div className="dash-invite">
+            <code className="dash-code">{inviteUrl}</code>
+            <CopyLink url={inviteUrl} />
+          </div>
+        </div>
 
-          <span className="dash-trip-meta">
-            <span className="t-label">{money(tripCostRM(trip))}</span>
-            <span className="t-specimen">
-              {open === 0 ? 'Every slot filled' : `${open} of ${trip.days.length * 3} slots open`}
-            </span>
-          </span>
-        </Link>
+        {/* The screen's one solid button, and the only thing on this card that moves you forward. Where it goes
+            depends on whether the owner still has reels left. */}
+        <button
+          type="button"
+          className="dash-go t-label"
+          onClick={() => navigate(done ? `/t/${trip.id}/votes` : `/t/${trip.id}/swipe`)}
+        >
+          {done ? 'See The Tally' : 'Open The Deck'}
+        </button>
       </section>
 
-      <section className="dash-shared" aria-label="Opened From A Link">
-        <p className="t-label dash-kicker">
-          Someone Sent You A Link
-          <Info>
-            The link is the trip. It opens as a magazine with the undecided parts marked, and needs no account.
-          </Info>
-        </p>
-        <Link className="dash-shared-cta t-label" to={`/t/${trip.id}`}>
-          Open The Book As A Guest
-        </Link>
-      </section>
+      <button type="button" className="dash-new t-label" onClick={() => navigate('/new')}>
+        New Plan
+      </button>
     </main>
   )
 }
