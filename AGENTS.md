@@ -391,9 +391,13 @@ git worktree list                                         # every checkout, its 
 
 One remote, one set of branches, the same hooks and the same PR gate; only the path differs. Every session starts in its
 own directory and never runs git in another's. A branch can be checked out in one worktree at a time, so branch from
-`origin/main` inside your own tree and run `git pull` there after a merge. The single-tree rules still hold within a
-tree: stage only in the same breath as committing, check `git diff --cached --name-only` before every commit, commit by
-explicit pathspec and never `git add .` or `commit -a`. Keep captures and bundles out of `/tmp`; see
+`origin/main` inside your own tree and run `git pull` there after a merge. **In a linked worktree, merge with
+`gh pr merge --squash` and no `--delete-branch`**: the flag tries to check out `main` for the cleanup, `main` is held by
+the advisor's clone, and the command exits non-zero after the merge already succeeded, which looks like a failure to
+retry. Delete the branch with `git push origin --delete <branch>`, then `git fetch --prune` and
+`git checkout --detach origin/main`. The single-tree rules still hold within a tree: stage only in the same breath as
+committing, check `git diff --cached --name-only` before every commit, commit by explicit pathspec and never `git add .`
+or `commit -a`. Keep captures and bundles out of `/tmp`; see
 [`docs/agent-tooling.md`](docs/agent-tooling.md#machine-gotchas).
 
 ---
