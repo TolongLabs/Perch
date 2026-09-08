@@ -1,10 +1,10 @@
 :root {
-  --foot-h: 196px;
+  --foot-h: calc(196px + var(--foot-extra, 0px));
 }
 
 @media (min-width: 720px) {
   :root {
-    --foot-h: 184px;
+    --foot-h: calc(184px + var(--foot-extra, 0px));
   }
 }
 
@@ -14,6 +14,28 @@
   z-index: 1;
   min-height: 100dvh;
   background: var(--paper);
+}
+
+/* The page reserves the collapsed rail's gutter and never gives it back: the rail expands over the page, so
+   content that reflowed on hover would make every owner screen jump whenever the pointer crossed the left edge. */
+@media (min-width: 900px) {
+  .shell[data-islands="true"] {
+    padding-left: var(--rail-gutter);
+  }
+}
+
+/* The cluster is fixed at the top right, and a surface with its own right-aligned controls collides with it: on
+   the Desk, Dates and Apply sat underneath it. The page reserves the cluster's height for the same reason it
+   reserves the rail's width, rather than each surface learning to dodge a piece of chrome it does not own. */
+.shell[data-islands="true"] {
+  padding-top: var(--cluster-clear);
+}
+
+/* The dock sits on the floor below the breakpoint, so the page ends above it rather than behind it. */
+@media (max-width: 899px) {
+  .shell[data-islands="true"] {
+    padding-bottom: var(--dock-clear);
+  }
 }
 
 .shell[data-footer="true"] {
@@ -48,6 +70,19 @@
     justify-items: end;
     text-align: right;
     padding-inline: var(--s7);
+  }
+}
+
+/* The footer is fixed to the floor and revealed from behind the page, and below the breakpoint the dock is fixed to
+   that same floor, so the footer's four links sat underneath it. Padding on the page cannot reach this: the footer
+   is not in the page's flow. The footer grows by the dock's clearance instead and its centred content rides up. */
+@media (max-width: 899px) {
+  :root:has(.island-dock) {
+    --foot-extra: var(--dock-clear);
+  }
+
+  :has(.island-dock) .foot-inner {
+    padding-bottom: var(--dock-clear);
   }
 }
 

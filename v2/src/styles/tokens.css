@@ -44,6 +44,39 @@
   --motion-fade: 120ms;
   --motion-step: 320ms;
   --ease: cubic-bezier(0.2, 0.7, 0.3, 1);
+
+  /* The island's own motion. Kept separate from the two above because it is the one movement in the product that
+     plays even when the reader has asked the OS for less: the width change is the affordance, not an ornament. */
+  --island-motion: 220ms;
+  --island-label: 150ms;
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The dark theme, from the table in docs/DESIGN.md. Same token names, a second set of values.
+   Every hue was lifted in OKLab so only perceptual lightness moves and the bird stays its own colour, and each was
+   targeted at the plate rather than the paper, because the plate is the stricter of the two surfaces: a value that
+   clears 4.5:1 on the ground still fails at about 4.07:1 on a card.
+   The grounds below need no dark set. They are mixed from --paper and the hue tokens, so they re-derive here. */
+[data-theme="dark"] {
+  --ink: #f4efe6;
+  --paper: #1b1714;
+  --plate: #26201b;
+  --ink-muted: #918679;
+
+  --open: #38949b;
+  --decided: #599654;
+  --at-risk: #e6584f;
+  /* Gold and day-3 keep their light values. A saturated yellow that is barely legible on paper, at about 1.9:1,
+     is naturally strong on ink at 8.2:1, which is what retires the gold chip's recorded contrast limitation. */
+  --gold: #e8a317;
+
+  --day-1: #ce6d3a;
+  --day-2: #5f86da;
+  --day-3: #e0a32c;
+  --day-4: #9d78bf;
+  --day-5: #c66a92;
+
+  color-scheme: dark;
 }
 
 /* Section grounds. A specimen hue mixed most of the way to the paper, so the shift is felt rather than seen. */

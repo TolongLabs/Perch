@@ -191,4 +191,14 @@ textarea {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  /* The one deliberate exception, recorded in DESIGN.md. The sidebar island's width, its labels and the scrim are
+     not decoration: the movement is what tells you the rail is expanding rather than the page reflowing, and with
+     it collapsed to 0.01ms the island appears to teleport and the labels flash in. A class beats the universal
+     selector on specificity, so these keep their authored durations without needing to be re-declared. */
+  .island,
+  .island *,
+  .island-scrim {
+    transition-duration: var(--island-motion) !important;
+  }
 }

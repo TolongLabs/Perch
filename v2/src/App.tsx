@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { Shell } from './chrome/Shell'
+import { isJoiner } from './lib/joiner'
 import { TripProvider } from './state'
 import { BeforeWeGo } from './surfaces/BeforeWeGo'
 import { Book } from './surfaces/Book'
@@ -50,7 +51,7 @@ export const App = () => (
         <Route
           path="/trips"
           element={
-            <Shell>
+            <Shell islands>
               <Dashboard />
             </Shell>
           }
@@ -58,7 +59,7 @@ export const App = () => (
         <Route
           path="/new"
           element={
-            <Shell>
+            <Shell islands>
               <Onboarding />
             </Shell>
           }
@@ -66,7 +67,7 @@ export const App = () => (
         <Route
           path="/desk"
           element={
-            <Shell>
+            <Shell islands>
               <Desk />
             </Shell>
           }
@@ -75,7 +76,7 @@ export const App = () => (
         <Route
           path="/desk/before-we-go"
           element={
-            <Shell>
+            <Shell islands>
               <BeforeWeGo />
             </Shell>
           }
@@ -84,7 +85,7 @@ export const App = () => (
         <Route
           path="/t/:tripId/swipe"
           element={
-            <Shell>
+            <Shell islands={!isJoiner()}>
               <Deck />
             </Shell>
           }
@@ -93,7 +94,7 @@ export const App = () => (
         <Route
           path="/t/:tripId/votes"
           element={
-            <Shell>
+            <Shell islands>
               <Tally />
             </Shell>
           }
@@ -102,7 +103,7 @@ export const App = () => (
         <Route
           path="/t/:tripId"
           element={
-            <Shell>
+            <Shell islands>
               <Book />
             </Shell>
           }
