@@ -314,6 +314,31 @@ pass, and wait for the leaving animation before the next swipe.
 
 ---
 
+## The Gold Trap
+
+**`shot-7` has broken three times, each time on a different assumption about a beat that is only two drags long.** All
+three were avoidable by reading the board instead of predicting it.
+
+**A card dropped on an occupied slot evicts the occupant to the sidebar. It does not trade places with it.** So swapping
+two stops within a day is two gestures, not one: move the second stop up, then bring the evicted one back down into the
+hole. Code that hardcodes the evicted card's name breaks the moment the fixture changes; read the name off the slot
+before the drag.
+
+**The day cannot be gold between the two gestures.** Halfway through the swap it holds two stops, not three, and two
+stops in either order are the scheduler's own order, so it is correctly green. Gold is a property of the finished swap.
+Assert it after the hole is closed.
+
+**Nothing in the beat may name a place or a day index.** Which day a given stop lands on depends on the order the pool
+was dragged in, and which stops share that day depends on how the deck was swiped. Find the day by its contents.
+
+**Enumerate the reorderings offline before opening a browser.** `evaluateDay` in `v2/src/lib/schedule.ts` is pure, so
+all six orderings of a three-stop day can be scored in a second against the real fixture. That is how the current swap
+was chosen: it takes the day from 20 to 35 transit minutes, clearing the `GOLD_SLACK` of 1.25, and it is the only single
+swap that goes gold without pushing a stop outside its opening hours. Trial and error in a live take costs ten minutes
+per attempt and tells you less.
+
+---
+
 ## The Music Bed
 
 **Opt-in and off by default.** With no `DEMO_MUSIC` the film is voice-only, exactly as version 1 shipped.
