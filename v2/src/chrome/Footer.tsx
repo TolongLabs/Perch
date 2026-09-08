@@ -24,12 +24,7 @@ export const Footer = () => (
       <a className="foot-link t-label" href="/v1/" target="_blank" rel="noreferrer">
         v1, The Mockup
       </a>
-      <a
-        className="foot-link t-label"
-        href="https://github.com/TolongLabs/codenection-dev"
-        target="_blank"
-        rel="noreferrer"
-      >
+      <a className="foot-link t-label" href="https://github.com/TolongLabs/Perch" target="_blank" rel="noreferrer">
         TolongLabs
       </a>
     </div>
