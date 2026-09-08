@@ -120,3 +120,16 @@ export type Trip = {
   pins: Pin[]
   checklist: ChecklistItem[]
 }
+
+/** travelMatrix[fromId][toId] is transit minutes. Symmetric, zero diagonal, no empty cell. */
+export type TravelMatrix = Record<string, Record<string, number>>
+
+export type TallyEntry = {
+  placeId: string
+  name: string
+  percentage: number
+  /** True when every member, owner included, said yes. */
+  unanimous: boolean
+  /** True when the weighted yes score is zero. */
+  eliminated: boolean
+}

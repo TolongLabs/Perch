@@ -1,0 +1,57 @@
+import type { Day, Person, Place, Slot, TallyEntry, Trip, Votes } from '../data/types'
+
+export const OWNER_WEIGHT = 1.5
+export const INCLUSION_PERCENT = 50
+
+const weightOf = (memberId: string, ownerId: string): number => (memberId === ownerId ? OWNER_WEIGHT : 1)
+
+/**
+ * Weighted yes over the total possible weight. The owner's yes is 1.5, everyone else's is 1, and a swipe not yet cast
+ * counts as nothing, so the percentages are partial until the owner finishes. Sorted by weighted score descending,
+ * ties broken by fixture order, which is the order of `options`.
+ */
+export const computeTally = (
+  votes: Votes,
+  options: Record<string, Place>,
+  party: Person[],
+  ownerId: string
+): TallyEntry[] => {
+  const total = party.reduce((sum, p) => sum + weightOf(p.id, ownerId), 0)
+  const scored = Object.values(options).map((place, index) => {
+    const score = party.reduce((sum, p) => sum + (votes[p.id]?.[place.id] === 'yes' ? weightOf(p.id, ownerId) : 0), 0)
+    return {
+      index,
+      score,
+      entry: {
+        placeId: place.id,
+        name: place.name,
+        percentage: Math.round((score / total) * 100),
+        unanimous: party.every((p) => votes[p.id]?.[place.id] === 'yes'),
+        eliminated: score === 0
+      }
+    }
+  })
+  return scored.sort((a, b) => b.score - a.score || a.index - b.index).map((s) => s.entry)
+}
+
+/** The ranked voted-in list: at or above the threshold, in tally order. This is the scheduler's whole pool. */
+export const votedIn = (tally: TallyEntry[]): TallyEntry[] =>
+  tally.filter((t) => !t.eliminated && t.percentage >= INCLUSION_PERCENT)
+
+export const tallyFor = (trip: Trip): TallyEntry[] => computeTally(trip.votes, trip.options, trip.party, trip.ownerId)
+
+/**
+ * The Perch drawer's answer: the next-ranked voted-in place not already on this day, open on this weekday, that
+ * belongs in this slot's period. Null when nothing fits, in which case the slot may stay empty.
+ */
+export const nextReplacement = (slot: Slot, day: Day, trip: Trip, tally: TallyEntry[]): Place | null => {
+  const onDay = new Set(day.slots.map((s) => s.placeId).filter((id): id is string => id !== null))
+  const weekday = day.weekday.toLowerCase()
+  const fits = (place: Place): boolean =>
+    !onDay.has(place.id) && !place.closedOn.includes(weekday) && place.bestPeriod.includes(slot.period)
+  for (const entry of votedIn(tally)) {
+    const place = trip.options[entry.placeId]
+    if (place && fits(place)) return place
+  }
+  return null
+}
