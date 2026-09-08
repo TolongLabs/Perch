@@ -4,7 +4,6 @@ import { TripProvider } from './state'
 import { Book } from './surfaces/Book'
 import { Dashboard } from './surfaces/Dashboard'
 import { Desk } from './surfaces/Desk'
-import { Interview } from './surfaces/Interview'
 import { Landing } from './surfaces/Landing'
 import { NewPlan } from './surfaces/NewPlan'
 import { SignIn } from './surfaces/SignIn'
@@ -39,14 +38,6 @@ export const App = () => (
           element={
             <Shell>
               <NewPlan />
-            </Shell>
-          }
-        />
-        <Route
-          path="/interview"
-          element={
-            <Shell>
-              <Interview />
             </Shell>
           }
         />

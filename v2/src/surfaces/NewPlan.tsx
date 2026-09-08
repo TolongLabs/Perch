@@ -80,7 +80,7 @@ export const NewPlan = () => {
         </p>
       )}
 
-      <button type="button" className="np-go t-label" disabled={stub} onClick={() => navigate('/interview')}>
+      <button type="button" className="np-go t-label" disabled={stub} onClick={() => navigate('/desk')}>
         {stub ? 'Pick Yogyakarta To Continue' : 'Ask Me The Three Questions'}
       </button>
 

@@ -1,36 +1,19 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Perch } from '../components/Perch'
-import { StateChip } from '../components/StateChip'
-import { WhatChanged } from '../components/WhatChanged'
-import type { Day, Slot } from '../data/types'
-import { dayLabel, duration, money, travel } from '../lib/format'
-import { dayCostRM, tripCostRM } from '../lib/repair'
+import type { Slot } from '../data/types'
+import { dayCostRM, tripCostRM } from '../lib/cost'
+import { dayLabel, duration, money, price } from '../lib/format'
 import { useTrip } from '../state'
 import './Desk.css'
 
-const PERIOD: Record<Slot['period'], string> = {
-  morning: 'Morning',
-  midday: 'Midday',
-  afternoon: 'Afternoon',
-  evening: 'Evening'
-}
+const PERIOD: Record<Slot['period'], string> = { morning: 'Morning', afternoon: 'Afternoon', evening: 'Evening' }
 
-const mapsUrl = (names: string[], destination: string): string =>
-  `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${names.at(-1)}, ${destination}`)}&waypoints=${encodeURIComponent(
-    names
-      .slice(0, -1)
-      .map((n) => `${n}, ${destination}`)
-      .join('|')
-  )}`
-
+/**
+ * A holding render of the calendar against the new model, so the route stays live while the Desk is rebuilt as the
+ * three-slot drag calendar in issue #64. Nothing here is the design.
+ */
 export const Desk = () => {
-  const { trip, disrupt, restart } = useTrip()
-  const [openDay, setOpenDay] = useState(3)
-  const [perch, setPerch] = useState<{ day: Day; slot: Slot } | null>(null)
-
+  const { trip, restart } = useTrip()
   const spent = tripCostRM(trip)
-  const tapped = trip.party.filter((p) => p.wants.length > 0 || p.availableDays.length > 0)
 
   return (
     <main className="desk">
@@ -54,137 +37,57 @@ export const Desk = () => {
         </div>
       </header>
 
-      <WhatChanged />
-
-      <section className="together" aria-label="Plan It Together">
-        <p className="t-label together-kicker">Plan It Together</p>
-        <p className="together-copy">
-          The link is the trip. Nobody installs anything, and if nobody taps at all this plan is still the plan.
-        </p>
-
-        <ul className="together-party">
-          {trip.party.map((p) => (
-            <li key={p.id} className="together-person" data-tapped={p.wants.length > 0 || p.availableDays.length > 0}>
-              <span className="together-initials t-label">{p.initials}</span>
-              <span className="t-specimen">
-                {p.availableDays.length > 0 ? `${p.wants.length} pick${p.wants.length === 1 ? '' : 's'}` : 'Not opened'}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <div className="together-actions">
-          <Link className="together-open t-label" to={`/t/${trip.id}`}>
-            Open The Book
-          </Link>
-          <button type="button" className="together-nudge t-label" disabled={tapped.length === trip.party.length}>
-            Nudge{' '}
-            {trip.party
-              .filter((p) => p.availableDays.length === 0)
-              .map((p) => p.name)
-              .join(' And ') || 'Nobody'}
-          </button>
-        </div>
-      </section>
-
       <ol className="days">
-        {trip.days.map((day) => {
-          const expanded = openDay === day.index
-          const risky = day.slots.some((s) => s.state === 'at-risk')
-          const openCount = day.slots.filter((s) => s.state === 'open').length
-          const names = day.slots.map((s) => (s.chosenId ? trip.options[s.chosenId]?.name : null)).filter(Boolean)
-
-          return (
-            <li key={day.index} className="day" data-day={day.tint} data-expanded={expanded}>
-              <button type="button" className="day-row" onClick={() => setOpenDay(expanded ? 0 : day.index)}>
-                <span className="day-dot" aria-hidden="true" />
-                <span className="day-body">
-                  <span className="t-label day-index">
-                    Day {day.index} &middot; {dayLabel(day.date)}
-                  </span>
-                  <span className="t-name">{day.title}</span>
+        {trip.days.map((day) => (
+          <li key={day.index} className="day" data-day={day.tint} data-expanded="true">
+            <div className="day-row">
+              <span className="day-dot" aria-hidden="true" />
+              <span className="day-body">
+                <span className="t-label day-index">
+                  Day {day.index} &middot; {day.weekday} {dayLabel(day.date)}
                 </span>
-                <span className="day-meta">
-                  {risky && <StateChip state="at-risk" />}
-                  {!risky && openCount > 0 && <StateChip state="open" />}
-                  <span className="t-label">{money(dayCostRM(day, trip.options))}</span>
-                </span>
-              </button>
+                <span className="t-name">{day.title}</span>
+              </span>
+              <span className="day-meta">
+                <span className="t-label">{money(dayCostRM(day, trip.options))}</span>
+              </span>
+            </div>
 
-              {expanded && (
-                <div className="day-open">
-                  <ul className="slots">
-                    {day.slots.map((slot) => {
-                      const option = slot.chosenId ? trip.options[slot.chosenId] : undefined
-                      return (
-                        <li key={slot.id} className="slot" data-state={slot.state}>
-                          <p className="t-label slot-period">{PERIOD[slot.period]}</p>
-
-                          {option ? (
-                            <>
-                              <p className="t-name">{option.name}</p>
-                              <p className="t-specimen">
-                                {travel(option.travelMin)} &middot; {duration(option.dwellMin)} &middot;{' '}
-                                {money(option.costRM)}
-                              </p>
-                            </>
-                          ) : (
-                            <p className="t-name slot-empty">Nothing that fits</p>
-                          )}
-
-                          <div className="slot-foot">
-                            {slot.state !== 'decided' && <StateChip state={slot.state} />}
-                            <button
-                              type="button"
-                              className="slot-perch t-label"
-                              onClick={() => setPerch({ day, slot })}
-                            >
-                              {slot.benchIds.length} On The Perch
-                            </button>
-                          </div>
-                        </li>
-                      )
-                    })}
-                  </ul>
-
-                  <a
-                    className="day-maps t-label"
-                    href={mapsUrl(names as string[], trip.destination)}
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Open Day {day.index} In Maps
-                  </a>
-                </div>
-              )}
-            </li>
-          )
-        })}
+            <div className="day-open">
+              <ul className="slots">
+                {day.slots.map((slot) => {
+                  const option = slot.placeId ? trip.options[slot.placeId] : undefined
+                  return (
+                    <li key={slot.id} className="slot" data-pinned={slot.pinned}>
+                      <p className="t-label slot-period">{PERIOD[slot.period]}</p>
+                      {option ? (
+                        <>
+                          <p className="t-name">{option.name}</p>
+                          <p className="t-specimen">
+                            {duration(option.dwellMin)} &middot; {price(option)}
+                          </p>
+                        </>
+                      ) : (
+                        <p className="t-name slot-empty">Empty until you apply</p>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          </li>
+        ))}
       </ol>
 
       <footer className="proto">
         <p className="t-label proto-kicker">Prototype Controls</p>
-        <p className="t-specimen">
-          Not part of the product. These stand in for the feeds a live build would listen to.
-        </p>
+        <p className="t-specimen">Not part of the product.</p>
         <div className="proto-actions">
-          <button
-            type="button"
-            className="proto-fire t-label"
-            onClick={() => {
-              setOpenDay(3)
-              disrupt(3, 'd3-morning', 'Jeep tours cancelled for haze')
-            }}
-          >
-            Cancel The Merapi Jeeps
-          </button>
           <button type="button" className="proto-reset t-label" onClick={restart}>
             Start Over
           </button>
         </div>
       </footer>
-
-      {perch && <Perch day={perch.day} slot={perch.slot} onClose={() => setPerch(null)} />}
     </main>
   )
 }

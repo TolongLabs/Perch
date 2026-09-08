@@ -1,142 +1,70 @@
-import { rankingWithTaps } from '../lib/ranking'
-import { byId, places } from './places'
-import type { Day, Slot, Trip } from './types'
+import { byId } from './places'
+import type { ChecklistItem, Day, Period, Slot, Trip } from './types'
+import { votes } from './votes'
+
+const PERIODS: Period[] = ['morning', 'afternoon', 'evening']
+
+const slot = (dayIndex: number, period: Period): Slot => ({
+  id: `d${dayIndex}-${period}`,
+  period,
+  placeId: null,
+  pinned: false
+})
 
 /**
- * A slot always has a chosen option, because the trip is valid with zero group input: Perch has already chosen.
- * `open` does not mean empty, it means still movable, and that is what The Book draws as a blank.
+ * A day in November, four in a row from a Friday so one day of leave covers the trip, with Monday inside it because
+ * Monday is the day the museums and gardens close. The calendar is empty until Apply.
  */
-const slot = (id: string, period: Slot['period'], chosenId: string, bench: string[], state: Slot['state']): Slot => ({
-  id,
-  period,
-  chosenId,
-  benchIds: bench,
-  blockedIds: [],
-  state,
-  cause: null
+const day = (index: number, date: string, weekday: string, tint: Day['tint'], title: string): Day => ({
+  index,
+  date,
+  weekday,
+  tint,
+  title,
+  slots: PERIODS.map((period) => slot(index, period)),
+  feasibility: null
 })
 
 const days: Day[] = [
-  {
-    index: 1,
-    date: '2026-11-21',
-    weekday: 'Saturday',
-    tint: 1,
-    title: 'Landing, And The Street',
-    slots: [
-      slot('d1-midday', 'midday', 'gudeg-yu-djum', ['bakmi-mbah-gito', 'sonobudoyo', 'kotagede'], 'decided'),
-      slot('d1-afternoon', 'afternoon', 'malioboro', ['beringharjo', 'kotagede', 'affandi'], 'decided'),
-      slot(
-        'd1-evening',
-        'evening',
-        'angkringan-lik-man',
-        ['alun-alun-kidul', 'oseng-mercon', 'sate-klathak'],
-        'decided'
-      )
-    ]
-  },
-  {
-    index: 2,
-    date: '2026-11-22',
-    weekday: 'Sunday',
-    tint: 2,
-    title: 'The Temple Day',
-    slots: [
-      slot('d2-morning', 'morning', 'borobudur', ['prambanan', 'jomblang', 'kalibiru', 'bukit-panguk'], 'decided'),
-      slot('d2-afternoon', 'afternoon', 'ullen-sentalu', ['ratu-boko', 'kalibiru', 'parangtritis'], 'open'),
-      slot(
-        'd2-evening',
-        'evening',
-        'sate-klathak',
-        ['bakmi-mbah-gito', 'oseng-mercon', 'angkringan-lik-man'],
-        'decided'
-      )
-    ]
-  },
-  {
-    index: 3,
-    date: '2026-11-23',
-    weekday: 'Monday',
-    tint: 3,
-    title: 'The Mountain',
-    slots: [
-      slot(
-        'd3-morning',
-        'morning',
-        'merapi-jeep',
-        ['prambanan', 'ullen-sentalu', 'jomblang', 'timang', 'bukit-panguk', 'kalibiru'],
-        'decided'
-      ),
-      slot('d3-afternoon', 'afternoon', 'tebing-breksi', ['ratu-boko', 'parangtritis', 'kalibiru'], 'decided'),
-      slot(
-        'd3-evening',
-        'evening',
-        'oseng-mercon',
-        ['angkringan-lik-man', 'alun-alun-kidul', 'sate-klathak'],
-        'decided'
-      )
-    ]
-  },
-  {
-    index: 4,
-    date: '2026-11-24',
-    weekday: 'Tuesday',
-    tint: 4,
-    title: 'Inside The Walls',
-    slots: [
-      slot('d4-morning', 'morning', 'kraton', ['sonobudoyo', 'vredeburg', 'affandi', 'batik-workshop'], 'decided'),
-      slot('d4-midday', 'midday', 'taman-sari', ['vredeburg', 'kotagede', 'sonobudoyo'], 'decided'),
-      slot('d4-afternoon', 'afternoon', 'beringharjo', ['malioboro', 'kotagede', 'parangtritis'], 'open')
-    ]
-  }
+  day(1, '2026-11-20', 'Friday', 1, 'Asakusa And Ueno'),
+  day(2, '2026-11-21', 'Saturday', 2, 'Shibuya, Harajuku And Shinjuku'),
+  day(3, '2026-11-22', 'Sunday', 3, 'Tsukiji, Ginza And The Station'),
+  day(4, '2026-11-23', 'Monday', 4, 'Odaiba, Toyosu And teamLab')
 ]
 
-/** The ten cards question 3 deals, and the three Aisyah kept. The other seven settle onto the perch. */
-export const interviewPool = [
-  'borobudur',
-  'prambanan',
-  'merapi-jeep',
-  'jomblang',
-  'timang',
-  'taman-sari',
-  'malioboro',
-  'kotagede',
-  'sate-klathak',
-  'parangtritis'
+/** Six things a Tokyo trip in November needs, each traced to the fact that produced it. JR Pass is pre-ticked: not needed. */
+export const checklist: ChecklistItem[] = [
+  { id: 'passport', label: 'Passport valid for the whole trip', ticked: false, derivedFrom: 'destination:japan' },
+  { id: 'suica', label: 'Suica or Welcome Suica card', ticked: false, derivedFrom: 'destination:japan' },
+  {
+    id: 'teamlab',
+    label: 'teamLab ticket booked in advance',
+    ticked: false,
+    derivedFrom: 'cluster:odaiba-toyosu-teamlab'
+  },
+  { id: 'yen', label: 'Yen cash for the smaller shops', ticked: false, derivedFrom: 'destination:japan' },
+  { id: 'insurance', label: 'Travel insurance', ticked: false, derivedFrom: 'duration:4days' },
+  { id: 'jrpass', label: 'JR Pass, not needed for Tokyo only', ticked: true, derivedFrom: 'destination:tokyo' }
 ]
 
-export const interviewPicks = ['borobudur', 'prambanan', 'merapi-jeep']
-
-const ranking = [
-  ...interviewPicks,
-  ...interviewPool.filter((id) => !interviewPicks.includes(id)),
-  ...places.map((p) => p.id).filter((id) => !interviewPool.includes(id))
-]
-
-const seed: Trip = {
-  id: 'yogya-nov-2026',
-  destination: 'Yogyakarta',
-  country: 'Indonesia',
-  startDate: '2026-11-21',
+export const trip: Trip = {
+  id: 'tokyo-nov-2026',
+  destination: 'Tokyo',
+  country: 'Japan',
+  startDate: '2026-11-20',
   nights: 3,
-  budgetRM: 400,
+  budgetRM: 600,
+  ownerId: 'aisyah',
   party: [
-    { id: 'aisyah', name: 'Aisyah', initials: 'AI', availableDays: [1, 2, 3, 4], wants: [] },
-    {
-      id: 'farah',
-      name: 'Farah',
-      initials: 'FA',
-      availableDays: [1, 2, 3, 4],
-      wants: ['prambanan', 'parangtritis']
-    },
-    { id: 'hana', name: 'Hana', initials: 'HA', availableDays: [2, 3, 4], wants: ['sate-klathak'] },
-    { id: 'iman', name: 'Iman', initials: 'IM', availableDays: [], wants: [] }
+    { id: 'aisyah', name: 'Aisyah', initials: 'AI' },
+    { id: 'farah', name: 'Farah', initials: 'FA' },
+    { id: 'hana', name: 'Hana', initials: 'HA' },
+    { id: 'iman', name: 'Iman', initials: 'IM' }
   ],
   days,
   options: byId,
-  ranking,
-  changes: []
+  legs: [{ city: 'Tokyo', startDay: 1, endDay: 4, transferMin: 0 }],
+  votes,
+  pins: [],
+  checklist
 }
-
-/** The taps the fixture ships with are real taps, so the order they produce is the order the trip starts in. */
-export const trip: Trip = { ...seed, ranking: rankingWithTaps(seed) }
