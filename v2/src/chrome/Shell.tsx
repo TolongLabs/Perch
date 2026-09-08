@@ -18,13 +18,3 @@ export const Shell = ({ children, footer = true }: { children: ReactNode; footer
     )}
   </>
 )
-
-/** The landing stands the same footer on the floor, because a page with no scroll can never uncover a fixed one. */
-export const FlatShell = ({ children }: { children: ReactNode }) => (
-  <div className="flat-shell">
-    <div className="flat-shell-body">{children}</div>
-    <footer className="flat-foot">
-      <Footer />
-    </footer>
-  </div>
-)

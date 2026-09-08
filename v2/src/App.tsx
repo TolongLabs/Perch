@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
-import { FlatShell, Shell } from './chrome/Shell'
+import { Shell } from './chrome/Shell'
 import { TripProvider } from './state'
 import { BeforeWeGo } from './surfaces/BeforeWeGo'
 import { Book } from './surfaces/Book'
@@ -33,13 +33,14 @@ export const App = () => (
     <BrowserRouter>
       <ScrollToTop />
       <Routes>
-        {/* The landing does not scroll, so it stands the footer on the floor rather than being uncovered by one. */}
+        {/* The landing folds over the footer like every other surface, so nothing of it shows until the reader
+            scrolls to the end. */}
         <Route
           path="/"
           element={
-            <FlatShell>
+            <Shell>
               <Landing />
-            </FlatShell>
+            </Shell>
           }
         />
 
@@ -110,9 +111,9 @@ export const App = () => (
         <Route
           path="*"
           element={
-            <FlatShell>
+            <Shell>
               <Landing />
-            </FlatShell>
+            </Shell>
           }
         />
       </Routes>
