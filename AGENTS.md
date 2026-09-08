@@ -362,7 +362,8 @@ The review folder's link is held by the team leader and is never written into th
 
 ### The Three Sessions
 
-Three Claude Code sessions share this one checkout, each with a role, a heartbeat and the same working-tree rules.
+Three Claude Code sessions share this one repository, each in its own worktree, with a role, a heartbeat and the same
+working-tree rules.
 
 | Session      | Model            | Owns                                                                                              |
 | ------------ | ---------------- | ------------------------------------------------------------------------------------------------- |
@@ -377,10 +378,22 @@ paused by a session or usage limit, resume the task you were on; run `git status
 "heartbeat: idle". The advisor also arms a persistent `Monitor` that polls `gh api notifications` every minute for
 mentions on this repo only, and marks them read.
 
-**Working-tree rules, because the three sessions share one index and one HEAD.** Send the other two a one-line heads-up
-before any branch switch. Stage only in the same breath as committing, and check `git diff --cached --name-only` before
-every commit; a staged deletion of someone else's rode into a commit once. Commit by explicit pathspec, never
-`git add .` or `commit -a`. Keep captures and bundles out of `/tmp`; see
+**One worktree per session, because a shared HEAD moves under a session between `git checkout -b` and `git commit`.**
+Sharing one checkout put three commits on the wrong branch in one afternoon, one of them onto another session's branch
+minutes before that branch was squash-merged and deleted; nothing errors, the commit is simply elsewhere. Since 8
+September the advisor keeps the clone at `Perch/`, and the other two work in sibling worktrees of the same repository:
+
+```bash
+git worktree add --detach ../Perch-designer origin/main   # then bun install at the root and in v2/
+git worktree add --detach ../Perch-pitcher  origin/main
+git worktree list                                         # every checkout, its HEAD and its branch
+```
+
+One remote, one set of branches, the same hooks and the same PR gate; only the path differs. Every session starts in its
+own directory and never runs git in another's. A branch can be checked out in one worktree at a time, so branch from
+`origin/main` inside your own tree and run `git pull` there after a merge. The single-tree rules still hold within a
+tree: stage only in the same breath as committing, check `git diff --cached --name-only` before every commit, commit by
+explicit pathspec and never `git add .` or `commit -a`. Keep captures and bundles out of `/tmp`; see
 [`docs/agent-tooling.md`](docs/agent-tooling.md#machine-gotchas).
 
 ---
