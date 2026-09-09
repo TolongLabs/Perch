@@ -7,7 +7,7 @@ import {
   ListChecks,
   Map as MapIcon,
   PanelLeft,
-  Plus
+  Pencil
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
@@ -16,11 +16,19 @@ import { useTrip } from '../state'
 const OPEN_AFTER = 120
 const CLOSE_AFTER = 200
 
-type Item = { to: string; label: string; Icon: typeof MapIcon }
+/**
+ * `to` is what the rail matches the current path against; `href` is where the row actually goes when it differs.
+ * Only one row needs the split, and it needs it because a query string is not part of `pathname`: matching on
+ * `/new?edit` would never light the row that leads to it.
+ */
+type Item = { to: string; href?: string; label: string; Icon: typeof MapIcon }
 
 export const navItems = (tripId: string): Item[] => [
   { to: '/trips', label: 'Your Trips', Icon: MapIcon },
-  { to: '/new', label: 'New Plan', Icon: Plus },
+  // Not New Plan. The prototype holds one trip and this form has no create path: `start()` sets the dates on the
+  // trip that already exists, so the row said one thing and did another. It is the dashboard's Edit Trip control
+  // and it goes where that control goes.
+  { to: '/new', href: '/new?edit', label: 'Edit Trip', Icon: Pencil },
   { to: `/t/${tripId}/swipe`, label: 'The Deck', Icon: Layers },
   { to: `/t/${tripId}/votes`, label: 'The Tally', Icon: BarChart3 },
   { to: '/desk', label: 'The Desk', Icon: CalendarDays },
@@ -101,10 +109,10 @@ export const SidebarIsland = ({ expandedChanged }: { expandedChanged: (open: boo
       </div>
 
       <ul className="rail-list">
-        {items.map(({ to, label, Icon }) => (
+        {items.map(({ to, href, label, Icon }) => (
           <li key={to}>
             <NavLink
-              to={to}
+              to={href ?? to}
               className="rail-item"
               data-current={to === current?.to}
               aria-current={to === current?.to ? 'page' : undefined}
@@ -141,10 +149,10 @@ export const BottomDock = () => {
   return (
     <nav className="island island-dock" aria-label="Perch">
       <ul className="dock-list">
-        {items.map(({ to, label, Icon }) => (
+        {items.map(({ to, href, label, Icon }) => (
           <li key={to}>
             <NavLink
-              to={to}
+              to={href ?? to}
               className="dock-item"
               data-action={to === '/new'}
               data-current={to === current?.to}
