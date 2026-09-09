@@ -9,6 +9,8 @@ type Ctx = {
   swipe: (memberId: string, placeId: string, answer: boolean | 'must') => void
   /** Renames the party. Ids are kept where a row keeps its position, so votes keyed by member id survive. */
   setParty: (names: string[]) => void
+  /** Who this browser votes as. Ignored for an id that is not in the party. */
+  setCurrentMember: (memberId: string) => void
   /** Renames one member. Same id, so their votes stay theirs. */
   renameMember: (memberId: string, name: string) => void
   /** A new member with a fresh id and no votes. Refused past MAX_PARTY. */
@@ -159,6 +161,12 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     })
   }, [])
 
+  const setCurrentMember = useCallback((memberId: string) => {
+    setTrip((current) =>
+      current.party.some((p) => p.id === memberId) ? { ...current, currentMemberId: memberId } : current
+    )
+  }, [])
+
   const renameMember = useCallback((memberId: string, name: string) => {
     setTrip((current) => renamed(current, memberId, name))
   }, [])
@@ -272,6 +280,7 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
       trip,
       swipe,
       setParty,
+      setCurrentMember,
       renameMember,
       addMember,
       removeMember,
@@ -290,6 +299,7 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
       trip,
       swipe,
       setParty,
+      setCurrentMember,
       renameMember,
       addMember,
       removeMember,

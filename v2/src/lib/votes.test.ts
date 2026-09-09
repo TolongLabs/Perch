@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import { places } from '../data/places'
 import { trip } from '../data/trip'
 import type { Votes } from '../data/types'
-import { computeTally, nextReplacement, tallyFor, votedIn } from './votes'
+import { computeTally, finishedMembers, hasFinished, nextReplacement, tallyFor, votedIn } from './votes'
 
 const all = (answer: 'yes' | 'no'): Record<string, 'yes' | 'no'> =>
   Object.fromEntries(places.map((p) => [p.id, answer]))
@@ -116,5 +116,12 @@ describe('nextReplacement', () => {
       )
     }
     expect(nextReplacement(day.slots[0], day, held, tally)?.id).not.toBe(offer.id)
+  })
+})
+
+describe('finished members', () => {
+  test('the three friends have answered every place; the owner has not', () => {
+    expect(finishedMembers(trip)).toEqual(['farah', 'hana', 'iman'])
+    expect(hasFinished(trip, 'aisyah')).toBe(false)
   })
 })
