@@ -9,7 +9,7 @@ import './Ui.css'
 export const Info = ({ children, label = 'What this is' }: { children: ReactNode; label?: string }) => {
   const id = useId()
   const dot = useRef<HTMLButtonElement>(null)
-  const [at, setAt] = useState<{ left: number; top: number } | null>(null)
+  const [at, setAt] = useState<{ left: number; top: number; below: boolean } | null>(null)
 
   // Positioned against the viewport rather than the dot, and clamped to it. A tooltip anchored to its trigger runs off
   // a 390px screen the moment the trigger sits anywhere but the left margin, and every one of ours sits beside a
@@ -19,7 +19,11 @@ export const Info = ({ children, label = 'What this is' }: { children: ReactNode
     if (!r) return
     const width = Math.min(280, window.innerWidth - 32)
     const left = Math.min(Math.max(16, r.left + r.width / 2 - width / 2), window.innerWidth - width - 16)
-    setAt({ left, top: r.top })
+    // Below the trigger by default, and above only when there is no room below. Every one of these dots sits inside
+    // the label it explains, so opening upward put the sentence over the heading a reader had just pressed - on a day
+    // column, over the day's own number and date. 140 is a conservative three-line bubble.
+    const below = window.innerHeight - r.bottom >= 140
+    setAt({ left, top: below ? r.bottom : r.top, below })
   }
 
   const close = () => setAt(null)
@@ -42,7 +46,13 @@ export const Info = ({ children, label = 'What this is' }: { children: ReactNode
         i
       </button>
       {at && (
-        <span className="info-bubble" id={id} role="tooltip" style={{ left: at.left, top: at.top }}>
+        <span
+          className="info-bubble"
+          id={id}
+          role="tooltip"
+          data-below={at.below}
+          style={{ left: at.left, top: at.top }}
+        >
           {children}
         </span>
       )}
