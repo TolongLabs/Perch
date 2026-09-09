@@ -163,9 +163,9 @@ export async function runShotChecks(options = {}) {
     // is not a gate, and the narration says this button's name out loud.
     await check(
       7,
-      'Plan The Days control',
+      'Optimize Plan control',
       '.desk-apply',
-      page.locator('.desk-apply', { hasText: exactText('Plan The Days') })
+      page.locator('.desk-apply', { hasText: exactText('Optimize Plan') })
     )
     await check(
       8,
@@ -174,7 +174,7 @@ export async function runShotChecks(options = {}) {
       page.locator('.desk-poollist .card-pool', { hasText: 'Sensoji' })
     )
 
-    // Plan the days before going on. The Book draws a route and a Transit Route link per day only once that day holds
+    // Optimize the plan before going on. The Book draws a route and a Transit Route link per day only once that day holds
     // stops, so a gate that walks straight from a cold Desk to The Book can only ever check the frame around empty
     // plates. That is the hole the 0.1.0 film went through, and it is closed by planning here rather than by
     // weakening what The Book is asked to prove. The fixture clear is guarded, so this state survives the
@@ -185,11 +185,11 @@ export async function runShotChecks(options = {}) {
       .first()
       .waitFor({ timeout })
       .catch(() => {})
-    // Reported against shot 8 rather than 7 because it has to run after shot 8's sidebar check: planning moves
+    // Reported against shot 8 rather than 7 because it has to run after shot 8's sidebar check: optimizing moves
     // Sensoji out of the sidebar and onto the board, which is the card shot 8 then pins.
     await check(
       8,
-      'Plan The Days fills every slot',
+      'Optimize Plan fills every slot',
       '.card-placed',
       page.locator('.card-placed'),
       async (locator) => (await locator.count()) === 12
