@@ -1,8 +1,11 @@
 import {
+  type Announcements,
   DndContext,
   type DragEndEvent,
   DragOverlay,
   type DragStartEvent,
+  type KeyboardCoordinateGetter,
+  KeyboardSensor,
   PointerSensor,
   useDroppable,
   useSensor,
@@ -57,6 +60,48 @@ const FEASIBILITY: Record<DayFeasibility['status'], { label: string; state: Chip
   red: { label: 'Overruns', state: 'at-risk' }
 }
 
+const ARROW: Record<string, { x: number; y: number }> = {
+  ArrowRight: { x: 1, y: 0 },
+  ArrowLeft: { x: -1, y: 0 },
+  ArrowDown: { x: 0, y: 1 },
+  ArrowUp: { x: 0, y: -1 }
+}
+
+/**
+ * One arrow press moves the card one slot, not 25 pixels. dnd-kit's default getter translates by a fixed distance,
+ * which on a four-column calendar took fourteen presses to cross two days; the drag worked and nobody would use it.
+ * The nearest slot in the pressed direction is what an arrow key means on a grid.
+ *
+ * Distance is measured along the pressed axis first and across it at triple weight, so a column reads as a column:
+ * pressing down inside Day 2 walks Day 2's slots rather than drifting into Day 3 because it happens to be nearer.
+ */
+const bySlot: KeyboardCoordinateGetter = (
+  event,
+  { currentCoordinates, context: { collisionRect, droppableRects, droppableContainers } }
+) => {
+  const dir = ARROW[event.code]
+  if (!dir || !collisionRect) return undefined
+  event.preventDefault()
+
+  const from = { x: collisionRect.left + collisionRect.width / 2, y: collisionRect.top + collisionRect.height / 2 }
+  let best: { score: number; x: number; y: number } | null = null
+
+  for (const container of droppableContainers.getEnabled()) {
+    const rect = droppableRects.get(container.id)
+    if (!rect) continue
+    const dx = rect.left + rect.width / 2 - from.x
+    const dy = rect.top + rect.height / 2 - from.y
+    const along = dx * dir.x + dy * dir.y
+    // A slot the card already covers is not somewhere to move to.
+    if (along < 24) continue
+    const across = Math.abs(dx * dir.y + dy * dir.x)
+    const score = along + across * 3
+    if (!best || score < best.score) best = { score, x: currentCoordinates.x + dx, y: currentCoordinates.y + dy }
+  }
+
+  return best ? { x: best.x, y: best.y } : undefined
+}
+
 const SlotCell = ({ dayIndex, slotIndex, children }: { dayIndex: number; slotIndex: number; children: ReactNode }) => {
   const { setNodeRef, isOver } = useDroppable({ id: `drop:${dayIndex}:${slotIndex}`, data: { dayIndex, slotIndex } })
   return (
@@ -78,7 +123,47 @@ export const Desk = () => {
     end: addDays(trip.startDate, trip.nights)
   }))
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }))
+  /**
+   * The keyboard sensor is not an extra, it is what makes the grip's own words true. dnd-kit puts `role="button"`,
+   * `tabindex="0"`, `aria-roledescription="draggable"` and "press the space bar to pick up" on every grip whether or
+   * not anything listens, so with a pointer sensor alone twelve cards told a screen reader to press a key that did
+   * nothing and there was no other way to place a card without a mouse.
+   */
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: bySlot })
+  )
+
+  /**
+   * dnd-kit's own announcements name the ids: "Draggable item slot:1:0 was dropped over droppable area drop:3:0".
+   * A person listening needs the place and the slot, which is what the surface already shows everyone else.
+   */
+  const announcements: Announcements = useMemo(() => {
+    const named = (data: Record<string, unknown> | null | undefined) => {
+      const id = data?.placeId
+      return (typeof id === 'string' && trip.options[id]?.name) || 'the card'
+    }
+    const slot = (data: Record<string, unknown> | null | undefined) => {
+      const dayIndex = data?.dayIndex
+      const slotIndex = data?.slotIndex
+      if (typeof dayIndex !== 'number' || typeof slotIndex !== 'number') return null
+      const period = trip.days.find((d) => d.index === dayIndex)?.slots[slotIndex]?.period
+      return period ? `day ${dayIndex}, ${PERIOD[period].toLowerCase()}` : `day ${dayIndex}`
+    }
+    return {
+      onDragStart: ({ active }) => `Picked up ${named(active.data.current)}.`,
+      onDragOver: ({ active, over }) => {
+        const where = slot(over?.data.current)
+        return where ? `${named(active.data.current)} is over ${where}.` : undefined
+      },
+      onDragEnd: ({ active, over }) => {
+        const where = slot(over?.data.current)
+        const name = named(active.data.current)
+        return where ? `${name} is now in ${where}.` : `${name} stayed where it was.`
+      },
+      onDragCancel: ({ active }) => `Nothing moved. ${named(active.data.current)} is where it was.`
+    }
+  }, [trip])
 
   const tally = useMemo(() => tallyFor(trip), [trip])
   const placed = new Set(trip.days.flatMap((d) => d.slots.map((s) => s.placeId).filter((id): id is string => !!id)))
@@ -124,6 +209,7 @@ export const Desk = () => {
   return (
     <DndContext
       sensors={sensors}
+      accessibility={{ announcements }}
       onDragStart={(e: DragStartEvent) =>
         setDragging((e.active.data.current as { placeId: string } | undefined)?.placeId ?? null)
       }
