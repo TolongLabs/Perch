@@ -1,4 +1,4 @@
-import { Bell, Moon, Sun, User } from 'lucide-react'
+import { Bell, LogOut, Moon, Sun, User } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { noticesFor } from '../lib/notices'
@@ -61,7 +61,7 @@ export const TopbarIsland = () => {
           onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
           aria-label={theme === 'dark' ? 'Switch to the light theme' : 'Switch to the dark theme'}
         >
-          {theme === 'dark' ? <Sun size={18} strokeWidth={1.75} /> : <Moon size={18} strokeWidth={1.75} />}
+          {theme === 'dark' ? <Sun size={20} strokeWidth={1.75} /> : <Moon size={20} strokeWidth={1.75} />}
         </button>
 
         <button
@@ -71,7 +71,7 @@ export const TopbarIsland = () => {
           aria-expanded={panel === 'notices'}
           aria-label={unread > 0 ? `Notifications, ${unread} unread` : 'Notifications'}
         >
-          <Bell size={18} strokeWidth={1.75} />
+          <Bell size={20} strokeWidth={1.75} />
           {unread > 0 && <span className="top-badge">{unread}</span>}
         </button>
 
@@ -82,7 +82,7 @@ export const TopbarIsland = () => {
           aria-expanded={panel === 'account'}
           aria-label="Account"
         >
-          <User size={18} strokeWidth={1.75} />
+          <User size={20} strokeWidth={1.75} />
         </button>
       </div>
 
@@ -108,6 +108,7 @@ export const TopbarIsland = () => {
           <p className="top-who">{owner?.name ?? 'Owner'}</p>
           <p className="t-specimen top-role">Owner</p>
           <button type="button" className="top-out t-label" onClick={() => navigate('/sign-in')}>
+            <LogOut className="top-out-icon" size={20} strokeWidth={1.75} aria-hidden="true" />
             Sign Out
           </button>
         </div>

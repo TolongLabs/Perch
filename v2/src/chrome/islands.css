@@ -7,13 +7,43 @@
   --rail-expanded: 176px;
   /* What the page reserves. The rail expands over this, never through it, so nothing reflows. */
   --rail-gutter: calc(var(--rail-inset) * 2 + var(--rail-collapsed));
-  /* 44px is the touch target, not 40: the dock is the only navigation on a phone and it is hit with a thumb. */
-  --dock-item: 44px;
-  --dock-h: calc(var(--s2) * 2 + var(--dock-item));
+  /* One row height for every island, because a rail row, a dock item and a cluster button are the same object in
+     three places. 44px is the touch target, not 40: the dock is the only navigation on a phone and it is hit
+     with a thumb, and a trackpad has no reason to be held to a looser target than that. */
+  --island-row: 44px;
+  --dock-h: calc(var(--s2) * 2 + var(--island-row));
   /* Everything that has to stay clear of the dock measures it from here: the page's own padding, the footer's,
      and the scroll padding. Three numbers that must agree are one number. */
   --dock-clear: calc(var(--rail-inset) * 2 + var(--dock-h));
-  --cluster-clear: calc(12px + 48px + var(--s3));
+  /* What the page reserves for the cluster, measured rather than guessed: the island's height plus the inset it
+     floats at and a gap under it. The old literal 48 was the button height of a shorter cluster, and was already
+     4px short of the object it was clearing. */
+  --cluster-h: calc(var(--s2) * 2 + var(--island-row));
+  --cluster-clear: calc(var(--rail-inset) + var(--cluster-h) + var(--s3));
+
+  /* The island line. `--outline` is 3px and belongs to content: a card is a drawn object and says so. An island
+     is not drawn on the page, it hovers over it, and the same 3px keyline around eight icons stamps it into a box.
+     The edge here is a hairline the ground can be seen through. */
+  --island-line: 1px;
+  --island-edge: color-mix(in oklab, var(--ink) 12%, transparent);
+
+  /* The only shadow in the product, and the reason it is allowed: an island is the one surface that floats over
+     scrolling content, so depth here is information rather than ornament. Two layers, because one is either a
+     hard edge or a cloud: a 1px contact shadow that sets the island on the page, and a soft 24px lift under it. */
+  --island-lift:
+    0 1px 2px color-mix(in oklab, var(--ink) 4%, transparent),
+    0 10px 24px color-mix(in oklab, var(--ink) 12%, transparent);
+}
+
+/* In dark the ink is the cream, so every recipe above inverts on its own except the two that must stay dark. The
+   edge lightens with the ink, which is what an illuminated glass rim does. The shade cannot: an ink-tinted shadow
+   in dark is a halo. It takes the theme's own near-black instead, and more of it, because a shadow only shows
+   where it falls on something lighter than the desk. */
+:root[data-theme="dark"] {
+  --island-edge: color-mix(in oklab, var(--ink) 10%, transparent);
+  --island-lift:
+    0 1px 2px color-mix(in oklab, var(--paper) 55%, transparent),
+    0 10px 24px color-mix(in oklab, var(--paper) 45%, transparent);
 }
 
 /* A browser scrolling a focused element into view stops as soon as it is barely inside the viewport, which puts it
@@ -30,12 +60,38 @@
   }
 }
 
+/* The ground is paper you can see through, not paper. An opaque plate over a scrolling page reads as pasted on;
+   at 78% the page moves underneath it, and the blur is what keeps that movement from competing with the icons on
+   top. Saturate, because blurring alone drains the day tints it passes over and the island goes grey.
+
+   The prefixed declaration is first on purpose: a minifier that keeps only the last of two identical properties
+   keeps the standard one, and Safari is the browser that needs the other. */
 .island {
   position: fixed;
   z-index: 40;
-  background: var(--paper);
-  border: var(--outline) solid var(--ink);
+  background: color-mix(in oklab, var(--paper) 78%, transparent);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: var(--island-line) solid var(--island-edge);
   border-radius: var(--r-desk);
+  box-shadow: var(--island-lift);
+}
+
+/* Two ways to arrive at a ground that cannot be seen through, and both need the paper back: a browser with no
+   backdrop filter would leave the page raw behind the labels, and a reader who has asked the system for less
+   transparency has asked for exactly that. The shadow and the hairline still carry the float. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .island {
+    background: var(--paper);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .island {
+    background: var(--paper);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
 }
 
 /* The rail */
@@ -59,9 +115,55 @@
   width: var(--rail-expanded);
 }
 
+/* The rail's head, and not an eighth destination: it does not go anywhere, so it is not a link and takes no tab
+   stop ahead of the seven places that are. The mark is 24px against the rows' 20px icons, which is the only way a
+   solid ink plate reads as larger than a 1.75px stroke rather than merely heavier. Its plate inverts by theme,
+   which is two files and one geometry, as `DESIGN.md` states. */
+.rail-head {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  /* The same box as a row, and 8px rather than the row's 10 because the mark is 24px against the icons' 20: the
+     inset is what puts both on the rail's centre line, and a mark 2px off that line is visible down a column of
+     eight glyphs in a way 2px on the wordmark is not. */
+  width: calc(var(--rail-expanded) - var(--s3) * 2);
+  height: var(--island-row);
+  padding: 0 var(--s2);
+  flex: none;
+}
+
+.rail-mark {
+  flex: none;
+  display: block;
+}
+
+.rail-mark[data-theme="dark"],
+:root[data-theme="dark"] .rail-mark[data-theme="light"] {
+  display: none;
+}
+
+:root[data-theme="dark"] .rail-mark[data-theme="dark"] {
+  display: block;
+}
+
+/* The footer's lockup at rail scale. One wordmark recipe in the product, stated twice because the two live in
+   different files, never two recipes. */
+.rail-name {
+  white-space: nowrap;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  opacity: 0;
+  transition: opacity var(--island-label) var(--ease);
+}
+
+.island-rail[data-open="true"] .rail-name {
+  opacity: 1;
+}
+
 /* The pin is not an eighth destination, it changes how the rail behaves, so it is set off from the places you can
    go. By the gap and nothing else: `DESIGN.md` allows no horizontal dividers anywhere in the product, and a rule
-   here would be redundant besides, since the 60px pitch to the pin already reads against the 40px between rows. */
+   here would be redundant besides, since the 68px pitch to the pin already reads against the 48px between rows. */
 .rail-list {
   display: flex;
   flex-direction: column;
@@ -71,6 +173,8 @@
   padding: 0;
 }
 
+/* The 10px inset is what centres a 20px icon in the 40px chip a 64px rail leaves, so the glyphs sit on the rail's
+   own axis rather than 2px left of it, which is where 8px of padding had put them. */
 .rail-item,
 .rail-pin {
   position: relative;
@@ -80,7 +184,8 @@
   /* The row is as wide as the expanded rail even while the rail is narrow, so the icon never shifts sideways as
      the width animates: only the clipped edge moves. */
   width: calc(var(--rail-expanded) - var(--s3) * 2);
-  padding: var(--s2);
+  height: var(--island-row);
+  padding: 0 10px;
   border: 0;
   border-radius: var(--r-pill);
   background: transparent;
@@ -113,11 +218,13 @@
 }
 
 /* The current page. A tinted ground with the label mixed toward ink, which is the chip's device from DESIGN.md:
-   the state colour as text on its own tint measures 4.39:1 at best and falls as the tint deepens. This reads
-   8.69:1 in light and 9.63:1 in dark, and the icon stays pure --open at 4.26:1, well past the 3:1 a non-text
-   element is held to. */
+   the state colour as text on its own tint measures 4.39:1 at best and falls as the tint deepens.
+
+   Mixed to transparent rather than to paper. An opaque tint was right on an opaque island; on glass it would be
+   the one patch the page cannot be seen through, and the island would stop reading as one material. Over the 78%
+   ground it composites to what the paper mix used to be, which is why the percentage moved 12 to 14. */
 .rail-item[data-current="true"]::before {
-  background: color-mix(in oklab, var(--open) 12%, var(--paper));
+  background: color-mix(in oklab, var(--open) 14%, transparent);
 }
 
 .rail-item[data-current="true"] {
@@ -153,25 +260,38 @@
 }
 
 /* The scrim. One fixed layer under the islands and over the page, never a filter on the content tree: filtering
-   the page would create a containing block for every fixed child inside it and drag the islands down with it. */
+   the page would create a containing block for every fixed child inside it and drag the islands down with it.
+
+   It blurs as well as dims. Dimming alone leaves the page sharp while the rail expands over it, and two sharp
+   things at different brightnesses compete; a page that is out of focus has stopped asking to be read.
+
+   The veil is `background-color`, not `opacity`. Group opacity is applied to the filtered backdrop too, so a
+   scrim faded to 0.22 would also be showing 22% of its own blur, which is no blur at all. */
 .island-scrim {
   position: fixed;
   inset: 0;
   z-index: 30;
-  background: var(--ink);
-  opacity: 0;
+  background: transparent;
   pointer-events: none;
-  transition: opacity var(--island-motion) var(--ease-expo);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition:
+    background-color var(--island-motion) var(--ease-expo),
+    -webkit-backdrop-filter var(--island-motion) var(--ease-expo),
+    backdrop-filter var(--island-motion) var(--ease-expo);
 }
 
 .island-scrim[data-on="true"] {
-  opacity: 0.28;
+  background: color-mix(in oklab, var(--ink) 22%, transparent);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
 /* In dark the ink is the cream, so the same veil lightens instead of darkening, and lightening a near-black page
-   compresses the day tints it is sitting on: day 2's separation from the ground fell 36% against 20% in light. */
+   compresses the day tints it is sitting on: day 2's separation from the ground fell 36% against 20% in light.
+   The blur is unchanged; it is the dimming that had to give. */
 :root[data-theme="dark"] .island-scrim[data-on="true"] {
-  opacity: 0.2;
+  background: color-mix(in oklab, var(--ink) 16%, transparent);
 }
 
 /* The cluster */
@@ -181,17 +301,11 @@
 .island-top {
   top: var(--rail-inset);
   right: var(--rail-inset);
-  padding: 6px;
+  padding: var(--s2);
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: var(--s1);
-}
-
-/* The cluster is chrome, not content, so it goes under the veil with the page. Above it, an unread badge at full
-   saturation was the brightest thing on a screen that had just dimmed everything but the rail. */
-body:has(.island-scrim[data-on="true"]) .island-top {
-  z-index: 20;
+  gap: var(--s2);
 }
 
 .top-cluster {
@@ -199,12 +313,14 @@ body:has(.island-scrim[data-on="true"]) .island-top {
   gap: var(--s1);
 }
 
+/* Three 36px glyphs inside a heavy frame was the whole of the cluster: the frame carried it and the controls did
+   not. At the island's row height the controls are the object. */
 .top-control {
   position: relative;
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 36px;
+  width: var(--island-row);
+  height: var(--island-row);
   border: 0;
   border-radius: var(--r-pill);
   background: transparent;
@@ -220,7 +336,7 @@ body:has(.island-scrim[data-on="true"]) .island-top {
 /* The rail's chip, not a second neutral tint that exists in no token. Two recipes for the same idea, 100px apart
    on one screen, is the kind of thing that reads as generated. */
 .top-control[aria-expanded="true"] {
-  background: color-mix(in oklab, var(--open) 12%, var(--paper));
+  background: color-mix(in oklab, var(--open) 14%, transparent);
   color: color-mix(in oklab, var(--open) 34%, var(--ink));
 }
 
@@ -237,22 +353,45 @@ body:has(.island-scrim[data-on="true"]) .island-top {
   font: 700 10px / 16px var(--face-sans);
 }
 
+/* The cluster used to drop under the veil with the page, so that an unread badge at full saturation was not the
+   brightest thing on a screen that had just dimmed everything but the rail. It cannot now: the veil blurs, and an
+   island smeared behind it reads as a rendering fault rather than as chrome standing back. The badge stands back
+   instead, which is the one saturated thing on the cluster and the only part that was ever the problem. */
+body:has(.island-scrim[data-on="true"]) .top-badge {
+  background: color-mix(in oklab, var(--at-risk) 45%, var(--paper));
+  color: var(--ink);
+}
+
 /* Both panels hang off the cluster, not off the control that opened them, so they share one right edge and one
    gap below the bar however wide their contents are.
 
-   No border. The panel sits inside the island's own outline, so its own drew a second 3px keyline 6px inside the
-   first with identical ground between them, which reads as a panel that failed to clip rather than as depth. It
-   is the plate ground that separates it, per DESIGN.md: sections are separated by the ground under them, never by
-   a line. The radius is the island's less the padding it sits inside, so the two curves are concentric. */
+   No ground and no edge of its own. The panel is not a card inside the island, it is more of the island: the
+   cluster and the panel are one piece of glass that grows when a control is pressed. A plate ground here stacked
+   a second surface inside the first with a keyline round both, and the account dropover reached three nested
+   outlines. What separates the panel from the controls is the 8px gap above it, which is `DESIGN.md`'s own rule:
+   sections are separated by the ground under them, never by a line. */
 .top-panel {
   width: min(288px, calc(100vw - var(--s6)));
-  padding: var(--s4);
-  border-radius: calc(var(--r-desk) - 6px);
-  background: var(--plate);
+  padding: var(--s2) 0 var(--s1);
 }
 
+/* Everything in the panel sits on the row's inset, so the name and the role line up with the icon in the row
+   under them. The row keeps its own padding rather than taking the panel's, because a hover chip that starts
+   exactly where its label starts has no room to be a chip. */
+.top-panel-head,
+.top-notice,
+.top-empty,
+.top-who,
+.top-role {
+  padding-inline: 10px;
+}
+
+/* Full ink, not `--ink-muted`, and the same for the role line below. Measured in dark with the panel open over a
+   playing reel, the island's ground composites to #484543 and the muted ink reads 2.71:1 on it: a translucent
+   ground eats a low-contrast ink first, and holding 4.5:1 there would need the ground at 94%, which is opaque.
+   Nothing is lost. Both lines were saying "secondary" twice, once in colour and once in the type role, and the
+   role is the half that survives a backdrop: this one is 12px uppercase at 700, the other is a serif italic. */
 .top-panel-head {
-  color: var(--ink-muted);
   margin: 0 0 var(--s3);
 }
 
@@ -278,19 +417,39 @@ body:has(.island-scrim[data-on="true"]) .island-top {
   font-weight: 700;
 }
 
-.top-role {
-  margin: var(--s1) 0 var(--s4);
-  color: var(--ink-muted);
+/* Specific enough to beat `.t-specimen`, which carries the muted ink and is bundled after this file. The face and
+   the italic are what is wanted from that role here; the colour is not, for the reason above. */
+.top-panel .top-role {
+  margin: var(--s1) 0 0;
+  color: var(--ink);
 }
 
+/* A quiet row, not a pill button. Sign Out is the only thing you can do from this panel, so it needs no outline
+   to be found; an outlined pill inside an outlined card inside an outlined island was three frames around one
+   verb. The rail's row, at the rail's height, with the rail's hover chip. */
 .top-out {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
   width: 100%;
-  padding: var(--s3) var(--s4);
-  border: var(--outline) solid var(--ink);
+  height: var(--island-row);
+  padding: 0 10px;
+  margin-top: var(--s2);
+  border: 0;
   border-radius: var(--r-pill);
   background: transparent;
   color: var(--ink);
+  text-align: left;
   cursor: pointer;
+  transition: background var(--motion-fade) var(--ease);
+}
+
+.top-out:hover {
+  background: color-mix(in oklab, var(--ink) 7%, transparent);
+}
+
+.top-out-icon {
+  flex: none;
 }
 
 /* Below the tablet breakpoint the rail is replaced rather than shrunk: a 64px rail down the side of a 390px
@@ -320,8 +479,8 @@ body:has(.island-scrim[data-on="true"]) .island-top {
   .dock-item {
     display: grid;
     place-items: center;
-    width: var(--dock-item);
-    height: var(--dock-item);
+    width: var(--island-row);
+    height: var(--island-row);
     border-radius: var(--r-pill);
     color: var(--ink);
     text-decoration: none;
@@ -335,7 +494,7 @@ body:has(.island-scrim[data-on="true"]) .island-top {
   }
 
   .dock-item[data-current="true"] {
-    background: color-mix(in oklab, var(--open) 12%, var(--paper));
+    background: color-mix(in oklab, var(--open) 14%, transparent);
     color: var(--open);
   }
 }
