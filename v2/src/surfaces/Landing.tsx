@@ -34,24 +34,29 @@ export const Landing = () => (
     </header>
 
     <div className="land-body">
-      <p className="t-label land-eyebrow">A Trip Planner The Group Actually Answers</p>
+      {/* A label mounted on the page rather than text laid over a picture. It is what lets the veil come off the
+          clip: the type carries its own ground, so its contrast is a property of the plate and not of whichever
+          frame happens to be playing. */}
+      <div className="land-plate">
+        <p className="t-label land-eyebrow">A Trip Planner The Group Actually Answers</p>
 
-      <h1 className="t-display land-title">
-        Everyone swipes on reels. What wins lands on the calendar, and the day tells you when it stops working.
-      </h1>
+        <h1 className="t-display land-title">
+          Everyone swipes on reels. What wins lands on the calendar, and the day tells you when it stops working.
+        </h1>
 
-      <div className="land-actions">
-        <Link className="land-go t-label" to="/sign-in">
-          Start Planning
-        </Link>
-        <Link className="land-alt t-label" to="/t/tokyo-nov-2026">
-          Open A Shared Book
-        </Link>
+        <div className="land-actions">
+          <Link className="land-go t-label" to="/sign-in">
+            Start Planning
+          </Link>
+          <Link className="land-alt t-label" to="/t/tokyo-nov-2026">
+            Open A Shared Book
+          </Link>
+        </div>
       </div>
 
       {/* Three because the product is three surfaces, not because three sits nicely. `PRODUCT.md`: one interaction,
           three surfaces, and the feature list is deliberately this short. */}
-      <dl className="land-facts">
+      <dl className="land-facts land-band">
         <div>
           <dt className="t-label">The Deck</dt>
           <dd className="t-specimen">Reels of real places, one thumb, and a tally the whole group can see</dd>

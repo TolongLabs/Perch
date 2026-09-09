@@ -17,11 +17,15 @@
   }
 }
 
-/* The clip covers the screen rather than sitting in a box on it: the landing is one screen with no scroll, so a
-   hero with its own aspect ratio would either letterbox or crop unpredictably between 390x844 and 1440x900. Fixed
-   rather than absolute so a phone's address bar coming and going cannot slide the picture under the title. */
+/* The clip covers the screen rather than sitting in a box on it: a hero with its own aspect ratio would either
+   letterbox or crop unpredictably between 390x844 and 1440x900.
+ *
+ * Absolute rather than fixed, because the page's only scroll is the footer's reveal and a layer fixed to the
+ * viewport sits over the footer for the whole of it. It resolves against the shell rather than this page, which is
+ * deliberate and is why `.land` is not a containing block: the page is a 1040px column and the clip is the ground
+ * under the whole width of it. */
 .land-film {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: -1;
   overflow: hidden;
@@ -36,22 +40,43 @@
   object-position: center;
 }
 
-/* Paper, not black. A dark scrim would make the page a dark hero with light text, which is a different product from
-   the one every other surface draws; this keeps ink on paper and lets the clip through underneath it.
- *
- * It is a gradient because the page is not evenly loaded: the display line at the top has ink to spare over any
- * frame, and the three specimen lines at the foot are muted italic over the darkest part of the picture, which is
- * where a flat veil measured 4.51:1 against a 4.5 floor. Every stop is measured against every second of the clip. */
+/* A tint, not a wash. At the weight the type needed the clip had stopped reading as a moving picture at all, which
+   is the whole reason it is there. The type carries its own ground now, so this only has to warm the picture to the
+   page's palette and hold the edges the plates do not cover. */
 .land-veil {
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in oklab, var(--paper) 80%, transparent) 0%,
-    color-mix(in oklab, var(--paper) 84%, transparent) 40%,
-    color-mix(in oklab, var(--paper) 93%, transparent) 72%,
-    color-mix(in oklab, var(--paper) 96%, transparent) 100%
-  );
+  background: color-mix(in oklab, var(--paper) 25%, transparent);
+}
+
+/* The mounted label. Paper, a hairline edge and no shadow: `DESIGN.md` gives the only shadow in the product to the
+   islands, and this is content. Opaque on purpose, so every line on it measures against paper rather than against
+   whichever frame is playing behind it. */
+.land-plate {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  align-self: flex-start;
+  max-width: 100%;
+  padding: var(--s5);
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  background: var(--paper);
+}
+
+@media (min-width: 720px) {
+  .land-plate {
+    gap: var(--s5);
+    padding: var(--s6) var(--s7) var(--s7);
+  }
+}
+
+/* A band rather than a plate, because the three lines are a caption to the page and not a second announcement. */
+.land-band {
+  align-self: flex-start;
+  max-width: 100%;
+  padding: var(--s4) var(--s5);
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+  background: var(--paper);
 }
 
 .land-head {
