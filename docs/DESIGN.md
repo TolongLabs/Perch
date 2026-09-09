@@ -345,9 +345,12 @@ Deck, in the perch drawer and on the Tally. The mechanic itself is untouched.
 3. **The Tally** - a place that falls to zero leaves the running order and the rows below step up
 4. **The calendar drag, on Apply** - a card flies into its slot, staggered 40ms, on the same easing as the perch
 
-**Everything else is a 120ms opacity cross-fade.** The Book's spreads cross-fade and scroll-snap; **there is no 3D page
-turn**, which answers open question 3 in the resume note — a real flip fights the in-app browser, costs days, and breaks
-first at demo scale.
+**Everything else is a 120ms opacity cross-fade.** The Book's spreads cross-fade and scroll-snap. **Revised 9
+September:** the leader overrode the earlier no-page-turn line, and the Book now turns one leaf at a time, hinged on the
+gutter and scrubbed by the reader's own scroll through `animation-timeline: view()`, with no library and no JavaScript;
+the technique follows create-photo-flipbook-ui, MIT, credited in the README. Under reduced motion the leaf is flat and
+the cross-fade runs instead, which is why the earlier objection, that a flip breaks first at demo scale, no longer
+holds.
 
 `prefers-reduced-motion` removes the step-forward and the calendar drag, and leaves the cross-fade.
 
