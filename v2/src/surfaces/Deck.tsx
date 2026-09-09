@@ -101,9 +101,8 @@ const Swiping = ({ me }: { me: string }) => {
         </p>
       </header>
 
-      {/* The other three, on the deck at the same time. It is the one thing on this surface that is not read from
-          the trip: there is no server in the prototype, so the friends' activity runs on a fixture clock. */}
-      <Presence party={trip.party} ownerId={trip.ownerId} reels={queue.length} />
+      {/* The other three, on the deck at the same time and as far through it as their votes say they are. */}
+      <Presence trip={trip} reels={queue.length} />
 
       {/* Only where it is in doubt. Someone who came in through the invite link chose a name a moment ago and the
           rest of the screen never says it back to them; the owner opened her own trip and does not need telling. */}

@@ -37,15 +37,21 @@
     border-color var(--motion-step) var(--ease);
 }
 
-/* Away is drawn by weight, not by dimming: an opacity that reads as "absent" also reads as unreadable, and these
-   are two letters at 11px. Muted ink holds 4.5:1 on paper and the boundary holds 3:1. */
-.presence-one[data-state="away"] .presence-disc {
-  border-color: var(--ink-muted);
-  /* Dashed rather than merely lighter. Weight alone is the difference between two states at 32px that a reader has
-     to compare against each other to read; a broken ring is the same difference whatever the ink is doing. */
-  border-style: dashed;
-  color: var(--ink-muted);
-  background: transparent;
+/* Finished is a mark, not a dimming: the member is still here, and drawing her at half strength would say she had
+   left. The tick sits on the disc's corner where the live dot sits on the other state, so the two read as the same
+   slot answering the same question. */
+.presence-one[data-state="finished"] .presence-disc {
+  border-color: var(--decided);
+}
+
+.presence-done {
+  position: absolute;
+  right: -3px;
+  bottom: -3px;
+  padding: 1px;
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  color: var(--decided);
 }
 
 .presence-one[data-state="swiping"] .presence-disc {
