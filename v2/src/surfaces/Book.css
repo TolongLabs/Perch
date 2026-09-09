@@ -340,6 +340,51 @@
   }
 }
 
+/* The page turn. `DESIGN.md` line 348 rules out a 3D page turn and the leader has overridden it by name for 0.3.1;
+   this is that override and not an oversight.
+ *
+ * Following the approach of https://github.com/HaichaoLihc/create-photo-flipbook-ui (MIT), which builds the effect
+ * out of a perspective on the book, a transform-origin on the fold and a rotateY on the leaf. Its own readers are
+ * WebGL and Three.js, which is a dependency the Book does not need to turn a page, so the technique is borrowed and
+ * the code is not.
+ *
+ * One leaf at a time, hinged on the gutter: the right-hand page turns and the left stays put, which is what a book
+ * does. It is scrubbed by the scroll rather than played on arrival, so the reader turns the page rather than
+ * watching it turn. Where `animation-timeline` is unsupported the declaration is dropped and the leaf simply
+ * arrives flat, which is the state it ends in anyway. */
+.spread-pages {
+  perspective: 1600px;
+}
+
+.spread-pages > .page:last-child {
+  transform-origin: left center;
+  backface-visibility: hidden;
+  animation: leaf-turn linear both;
+  animation-timeline: view();
+  animation-range: cover 4% cover 34%;
+}
+
+@keyframes leaf-turn {
+  from {
+    transform: rotateY(-74deg);
+    opacity: 0.35;
+  }
+  to {
+    transform: rotateY(0deg);
+    opacity: 1;
+  }
+}
+
+/* The cross-fade is the fallback, which is what `DESIGN.md` line 348 allows for everything that is not one of the
+   four sanctioned motions. The leaf is removed rather than slowed: a page turn is the motion being objected to. */
+@media (prefers-reduced-motion: reduce) {
+  .spread-pages > .page:last-child {
+    animation: spread-in var(--motion-fade) var(--ease);
+    animation-timeline: auto;
+    transform: none;
+  }
+}
+
 @media (min-width: 1024px) {
   /* 1440 rather than 1280, with 80px outer margins. At 1280 the content box measured 1120 against 1280 of columns,
      the outer margin resolved to 0 and anything narrower scrolled sideways. */

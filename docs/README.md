@@ -286,6 +286,12 @@ is replaced by the poster frame alone when the reader's system asks for reduced 
 different matter and are credited individually in the manifest at [`v2/src/data/reels.json`](../v2/src/data/reels.json),
 each with its platform, creator and source link.
 
+**The Book's page turn follows an MIT-licensed reference and copies none of its code.** The approach — a perspective on
+the book, a transform-origin on the fold and a `rotateY` on the leaf — is taken from
+[`create-photo-flipbook-ui`](https://github.com/HaichaoLihc/create-photo-flipbook-ui), MIT. Its own readers are built on
+WebGL and Three.js, which is a dependency the Book does not need in order to turn a page, so the technique is borrowed
+and the implementation is ours, in CSS, with no library added.
+
 **Onboarding's free text and activity chips are captured on the screen and inform nothing downstream.** Turning them
 into tag weights is specified in [`TRD.md`](TRD.md) under Specified, Not Yet Built, and is build-phase work.
 
