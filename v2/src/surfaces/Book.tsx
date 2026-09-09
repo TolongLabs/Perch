@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Plate } from '../components/Plate'
+import { DayMap } from '../components/DayMap'
 import { transitMin } from '../data/travel'
 import type { Day, Place, Slot } from '../data/types'
 import { dayCostRM, tripCostRM } from '../lib/cost'
@@ -172,11 +172,11 @@ export const Book = () => {
                   {/* Pinned rather than printed: the route is the reader's own note about the day, laid on the plate
                     it describes. The tilt is what pinning means; there is no shadow, per `DESIGN.md`. It is anchored
                     to the picture rather than to the spread so it lands on the same corner whatever the band wraps
-                    to, and the note is opaque paper so the drawing is never read through a photograph. */}
+                    to, and the note is opaque paper so the map is never read through a photograph. */}
                   {entries.length > 1 && (
                     <figure className="spread-pin">
                       <span className="pin-head" aria-hidden="true" />
-                      <Plate day={day.index} title={day.title} stops={entries.map((e) => e.place)} />
+                      <DayMap day={day.index} title={day.title} stops={entries.map((e) => e.place)} />
                     </figure>
                   )}
                 </div>
