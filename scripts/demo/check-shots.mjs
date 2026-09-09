@@ -306,15 +306,38 @@ export async function runShotChecks(options = {}) {
     // on placeholder plates.
     await check(
       10,
-      'A drawn route and a Transit Route link per day',
-      'a.day-route[href*="google.com/maps"] (4) + .day-spread:has(.spread-pin svg path) (4)',
+      'A drawn route, a painted map and a Transit Route link per day',
+      'a.day-route (4) + .day-spread:has(.daymap-under path) (4) + tiles loaded',
       page.locator('.day-spread'),
       async () => {
+        // Tiles arrive from OpenStreetMap after the spread does, so the count has to be taken once Leaflet has caught
+        // up rather than the moment .day-spread turns visible. Swallowed rather than thrown: a timeout here is a
+        // finding to report as ABSENT, not a crash.
+        await page
+          .waitForFunction(
+            () =>
+              [...document.querySelectorAll('.day-spread .leaflet-container')].every((map) => {
+                const asked = map.querySelectorAll('.leaflet-tile').length
+                return asked > 0 && map.querySelectorAll('.leaflet-tile-loaded').length === asked
+              }),
+            undefined,
+            { timeout }
+          )
+          .catch(() => {})
         const maps = await page.locator('a.day-route[href*="google.com/maps"]').count()
         // Per day, not a total: four paths spread across fewer than four days would satisfy a global count while
-        // some plate on screen drew nothing.
-        const drawing = await page.locator('.day-spread:has(.spread-pin svg path)').count()
-        return maps === 4 && drawing === 4
+        // some plate on screen drew nothing. The route lives under the tiles, so it survives a tile that never came.
+        const drawing = await page.locator('.day-spread:has(.daymap-under path)').count()
+        // The tiles come from OpenStreetMap at view time. Asking Leaflet whether what it requested has painted is
+        // the only reading that separates a working map from a plate of bare tint.
+        const painted = await page.locator('.day-spread').evaluateAll(
+          (spreads) =>
+            spreads.filter((spread) => {
+              const asked = spread.querySelectorAll('.leaflet-tile').length
+              return asked > 0 && spread.querySelectorAll('.leaflet-tile-loaded').length === asked
+            }).length
+        )
+        return maps === 4 && drawing === 4 && painted === 4
       }
     )
     await check(
