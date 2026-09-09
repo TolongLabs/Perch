@@ -533,6 +533,10 @@ export async function recordDemo(options = {}) {
     // Read the shape off the board rather than asserting twelve. Since #136 a day's period can hold a second slot,
     // so twelve is the opening state, not a property of the calendar. What the narration actually claims is that
     // every day starts empty with a slot per period and the sidebar holds what won.
+    // Since #217 a period can open a second slot, so this equality is a choice rather than a fact about the Desk. The
+    // 0.3.0 film shows the plus controls in frame and never presses one, because a press reseats the day and rewrites
+    // the gold board that shot 7 depends on. Loosening this to a floor would let an unscripted press through silently,
+    // which is the whole thing it is here to stop. A plus beat comes with a script change, and this changes with it.
     await claim('shot-5', 'a slot for every period of every day, all empty, beside a sidebar of what won', async () => {
       const days = await countOf('.desk-day')
       const slots = await countOf('.slot-drop')
