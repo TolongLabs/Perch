@@ -45,10 +45,14 @@
   color: var(--ink-muted);
 }
 
-/* The hero. No caption under it, per DESIGN.md - the line is the argument. */
+/* The hero. No caption under it, per DESIGN.md - the line is the argument.
+ *
+ * The floor is 40, not 30, because `DESIGN.md` states 40 for the Display role and this rule now wins: it used to lose
+ * to `.t-display` on stylesheet order, which was hiding a 30px phone hero behind a 40px one nobody had authored. The
+ * ceiling stays at 58 rather than the role's 56, which is what this class was written for. */
 .land-title {
   max-width: 20ch;
-  font-size: clamp(30px, 5.2vw, 58px);
+  font-size: clamp(40px, 10.5vw, 58px);
 }
 
 @media (min-width: 1024px) {
