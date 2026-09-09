@@ -42,8 +42,9 @@
   margin-bottom: var(--foot-h);
 }
 
-/* The Book paints its own plate ground and must not be given the paper one underneath it. */
-.shell:has(.book) {
+/* The Book and the Handbook paint their own plate ground and must not be given the paper one underneath it. */
+.shell:has(.book),
+.shell:has(.handbook) {
   background: var(--plate);
 }
 

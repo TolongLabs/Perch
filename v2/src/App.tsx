@@ -8,6 +8,7 @@ import { Book } from './surfaces/Book'
 import { Dashboard } from './surfaces/Dashboard'
 import { Deck } from './surfaces/Deck'
 import { Desk } from './surfaces/Desk'
+import { Handbook } from './surfaces/Handbook'
 import { Landing } from './surfaces/Landing'
 import { Onboarding } from './surfaces/Onboarding'
 import { SignIn } from './surfaces/SignIn'
@@ -96,6 +97,17 @@ export const App = () => (
           element={
             <Shell islands>
               <Tally />
+            </Shell>
+          }
+        />
+
+        {/* Beside the Book, and the second thing the checklist unlocks. Longer than `/t/:tripId`, so the rail's
+            longest-prefix rule lights this row rather than the Book's. */}
+        <Route
+          path="/t/:tripId/handbook"
+          element={
+            <Shell islands>
+              <Handbook />
             </Shell>
           }
         />

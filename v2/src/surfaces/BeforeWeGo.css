@@ -58,6 +58,32 @@
   cursor: not-allowed;
 }
 
+/* Outline, because Print The Book is the screen's one solid button. Same size and same gate, so the two read as a
+   pair of things the checklist unlocks rather than as a primary and an afterthought. */
+.bwg-handbook {
+  padding: var(--s4) var(--s6);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  transition:
+    background var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease),
+    border-color var(--motion-fade) var(--ease);
+}
+
+.bwg-handbook:hover:not(:disabled),
+.bwg-handbook:focus-visible:not(:disabled) {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.bwg-handbook:disabled {
+  border-color: color-mix(in oklab, var(--ink) 22%, transparent);
+  color: color-mix(in oklab, var(--ink) 46%, transparent);
+  cursor: not-allowed;
+}
+
 .bwg-back {
   align-self: flex-start;
   padding: var(--s3) var(--s5);
