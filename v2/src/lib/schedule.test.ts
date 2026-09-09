@@ -3,7 +3,7 @@ import { places } from '../data/places'
 import { travelMatrix } from '../data/travel'
 import { trip } from '../data/trip'
 import type { Day } from '../data/types'
-import { CLUSTER_LABEL, evaluateDay, scheduleTrip } from './schedule'
+import { backupFor, CLUSTER_LABEL, evaluateDay, scheduleTrip } from './schedule'
 
 const ids = places.map((p) => p.id)
 
@@ -133,5 +133,21 @@ describe('evaluateDay', () => {
     expect(result?.status).toBe('red')
     expect(result?.reason).toBe('overrun')
     expect(result?.rationale).toContain('past 21:00')
+  })
+})
+
+describe('backupFor', () => {
+  test('names an unplaced voted-in place from the same cluster within reach, and nothing for an empty day', () => {
+    const days = scheduleTrip(trip)
+    const planned = { ...trip, days }
+    for (const day of days) {
+      const backup = backupFor(day, planned)
+      if (!backup) continue
+      const first = day.slots.map((s) => s.placeId).find((id): id is string => !!id)
+      expect(trip.options[first ?? '']?.cluster).toBe(backup.cluster)
+      expect(days.some((d) => d.slots.some((s) => s.placeId === backup.id))).toBe(false)
+    }
+    expect(days.map((d) => backupFor(d, planned)).some((b) => b !== null)).toBe(true)
+    expect(backupFor(trip.days[0] as (typeof days)[number], trip)).toBeNull()
   })
 })

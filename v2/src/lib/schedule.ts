@@ -132,6 +132,27 @@ export const evaluateDay = (day: Day, options: Record<string, Place>): DayFeasib
   }
 }
 
+/** How far a reserve may sit from the day it backs up, in transit minutes to its nearest stop. */
+export const BACKUP_REACH_MIN = 30
+
+/**
+ * One reserve for a day: the highest-ranked voted-in place in the day's cluster that is on no day at all and
+ * within reach of one of the day's stops. Null when the day has no stops, the cluster is exhausted, or nothing
+ * unplaced is near enough; a far reserve is worse than none, because it would be a second plan, not a backup.
+ */
+export const backupFor = (day: Day, trip: Trip): Place | null => {
+  const stops = day.slots.map((s) => (s.placeId ? trip.options[s.placeId] : undefined)).filter((p): p is Place => !!p)
+  const first = stops[0]
+  if (!first) return null
+  const placed = new Set(trip.days.flatMap((d) => d.slots.map((s) => s.placeId)))
+  return (
+    votedIn(tallyFor(trip))
+      .map((t) => trip.options[t.placeId])
+      .filter((p): p is Place => !!p && p.cluster === first.cluster && !placed.has(p.id))
+      .find((p) => stops.some((stop) => transitMin(stop.id, p.id) <= BACKUP_REACH_MIN)) ?? null
+  )
+}
+
 export const withFeasibility = (days: Day[], options: Record<string, Place>): Day[] =>
   days.map((day) => ({ ...day, feasibility: evaluateDay(day, options) }))
 
