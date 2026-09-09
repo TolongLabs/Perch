@@ -78,11 +78,15 @@
 
 /* Day spreads */
 
+/* Everything in the head packs to the left. Pushed to the right edge the route button sat under the cluster island,
+   which is fixed at the top right of the viewport: the shell reserves the cluster's height for the first thing on a
+   page, but the Book scrolls, so every spread's head passes through that corner on its way up. Measured at 1440x900,
+   the cluster occupies 1266 to 1424 and covered the button for the whole of a spread's arrival. */
 .spread-head {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: var(--s3) var(--s5);
   margin-bottom: var(--s5);
 }
