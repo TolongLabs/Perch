@@ -99,6 +99,13 @@
 
 /* A day owns its tint, and everything inside it reads that. This is the wayfinding device, not decoration. */
 .desk-day {
+  /* Muted ink on the day's own tinted ground. `--ink-muted` is mixed toward paper, which is the right answer on
+     paper and the wrong one here: measured against the four day grounds it lands between 3.16:1 and 4.91:1, and
+     fails 4.5:1 on seven of the eight day-and-theme combinations. Mixing the tint into full ink instead keeps the
+     day's hue and holds 5.48:1 at worst. `DESIGN.md` names this failure by name and its own table only ever
+     checked muted against paper and plate. */
+  --ink-on-tint: color-mix(in oklab, var(--tint) 40%, var(--ink));
+
   display: flex;
   flex-direction: column;
   gap: var(--s3);
@@ -123,7 +130,7 @@
 }
 
 .desk-daydate {
-  color: var(--ink-muted);
+  color: var(--ink-on-tint);
   font-variant-numeric: tabular-nums;
 }
 
@@ -180,7 +187,7 @@
 }
 
 .desk-period {
-  color: var(--ink-muted);
+  color: var(--ink-on-tint);
   font-size: 10px;
 }
 
@@ -213,7 +220,7 @@
     linear-gradient(var(--slot-rule), var(--slot-rule)) no-repeat bottom var(--s3) left var(--s4) /
     calc(100% - var(--s4) * 2) var(--outline),
     color-mix(in oklab, var(--ink) 5%, transparent);
-  color: var(--ink-muted);
+  color: var(--ink-on-tint);
   text-align: left;
 }
 
