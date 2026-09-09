@@ -1,12 +1,23 @@
 /* The Deck runs on The Desk register: paper ground, Quicksand, left aligned, one solid button. */
 
 .deck {
+  /* The gutter either side of the reel that the chevrons and their labels sit in. Wide enough for the longer of
+     the two labels with room off the screen edge, measured, so neither can reach the video. The reel gives up
+     124px of width for it on a phone and gets back the two glyphs that used to sit on top of it. */
+  --deck-gutter: 62px;
+  position: relative;
+  /* The glow is a fixed layer at z-index -1, so this has to be the stacking context it sits inside: above the
+     shell's paper ground and below everything the page draws. */
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   gap: var(--s5);
   max-width: 420px;
   margin: 0 auto;
-  padding: var(--s6) var(--s5) var(--s7);
+  /* 16 at the top, not 32: the shell already reserves 88px above this for the cluster, and the two together were
+     pushing the three buttons under the dock on a 390x844 phone. What the reader must see without scrolling is the
+     reel and the three answers to it. */
+  padding: var(--s3) var(--s5) var(--s7);
 }
 
 .deck-head {
@@ -30,10 +41,23 @@
   isolation: isolate;
 }
 
+/* The affordances hang outside the column, and above 496px there is page either side to hang them in: the reel
+   keeps every pixel it has today. Below that the viewport runs out, and the reel is what pays, because a chevron
+   half off the screen is worse than a reel 76px narrower. 496 is where the two meet: the column stops growing at
+   420, its padding takes 48, and the gutter needs 62 a side. */
+@media (max-width: 495px) {
+  .deck-stack {
+    margin-inline: calc(var(--deck-gutter) - var(--s5));
+  }
+}
+
 .deck-card {
   position: relative;
   z-index: 3;
-  touch-action: pan-y;
+  /* Not `pan-y`. That hands every vertical gesture to the browser, so on a phone a swipe up scrolled the page and
+     the Must Go was never delivered: the pointermove events stop arriving the moment the browser claims the axis.
+     The card owns both axes, which is what the placed card on the Desk already does. */
+  touch-action: none;
   cursor: grab;
   user-select: none;
   /* Its own layer. The stack holds two decoding videos and a still, and the front card's opacity moves on every
@@ -186,60 +210,100 @@
 
 /* The three gestures, and the answer to each */
 
-/* At the top of the reel, in the direction it names, on the same translucent black the reel's own marks use. */
+/* The third affordance, and the same object as the other two: a glyph pointing the way the gesture goes, its label
+   under it, on the page rather than on the video. The gap the column already sets is what separates it from the
+   reel, so it needs no margin of its own. */
 .deck-up {
-  position: absolute;
-  top: var(--s3);
-  left: 50%;
-  z-index: 4;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: var(--s2);
-  margin: 0;
-  padding: var(--s2) var(--s3);
-  border-radius: var(--r-pill);
-  background: rgb(0 0 0 / 42%);
-  color: var(--paper);
+  gap: var(--s1);
+  /* Half the column's gap above it and half below: the marker belongs to the reel under it, not to the heading
+     over it, and on a phone every pixel between them is one the buttons need. */
+  margin: calc(var(--s5) * -1) 0 calc(var(--s4) * -1);
+  color: var(--ink-muted);
   pointer-events: none;
-  transform: translateX(-50%);
   white-space: nowrap;
 }
 
-/* Over the reel, so they take the scrim treatment the reel's own marks take: a translucent black disc and a paper
-   glyph, which holds on any frame of any video rather than on one theme's ground. */
+/* Outside the reel and on the page's own ground, so they take the page's ink rather than the scrim disc they wore
+   when they sat on the video. The label under the chevron rather than beside it: at 390 the gutter is 52px, and a
+   chevron and a label in a row need 60 even before a gap, which would have to come out of the reel. */
 .deck-hint {
   position: absolute;
   top: 50%;
   z-index: 4;
-  display: grid;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--r-pill);
-  background: rgb(0 0 0 / 42%);
-  color: var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s1);
+  width: var(--deck-gutter);
+  color: var(--ink-muted);
   pointer-events: none;
   transform: translateY(-50%);
 }
 
+.deck-hint-label {
+  font-size: 11px;
+}
+
+/* Shifted 6px in from the gutter's outer edge. Centred in a 62px gutter the labels sat 15px from the screen, and
+   `DESIGN.md` puts the phone margin at 24; this reads 21, with 9px still clear of the video. */
 .deck-hint[data-side="pass"] {
-  left: var(--s3);
+  left: calc(var(--deck-gutter) * -1 + 6px);
 }
 
 .deck-hint[data-side="keep"] {
-  right: var(--s3);
+  right: calc(var(--deck-gutter) * -1 + 6px);
 }
 
-.deck-flash {
+/* The mark that rises. `DESIGN.md`'s plumage dot is the field guide's device for "this is the specimen", which is
+   the sentence a Keep makes; two of them in gold is the sentence a Must Go makes. The team asked for a heart, and
+   the product has no emoji register to put one in. */
+.deck-rise {
   position: absolute;
-  inset: -36px;
-  z-index: -2;
-  border-radius: calc(var(--r-desk) + 36px);
+  top: 34%;
+  left: 50%;
+  z-index: 5;
+  display: flex;
+  gap: var(--s4);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+/* A ring as well as the colour, because the dot travels over a photograph and a chip's worth of colour disappears
+   into a brown building. The ring is a fixed light value for the same reason `--reel-ink` is: read from `--paper`
+   it would be the near-black ground in dark and vanish on the two night reels in the set. */
+.rise-dot {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgb(251 248 242 / 88%);
+  border-radius: var(--r-pill);
+  background: var(--decided);
+  box-shadow: 0 0 18px color-mix(in oklab, var(--decided) 80%, transparent);
+}
+
+.deck-rise[data-rise="must"] .rise-dot {
+  background: var(--gold);
+  box-shadow: 0 0 18px color-mix(in oklab, var(--gold) 80%, transparent);
+}
+
+/* Fixed to the viewport, not to the reel. A 36px halo on the card's own edge is the same size as the card's radius
+   and reads as a rim rather than as light; the answer to a gesture that threw something off the screen should come
+   from the screen's edge. Behind everything the page draws and above the shell's ground, which is what -1 inside
+   `.deck`'s stacking context buys. */
+.deck-flash {
+  position: fixed;
+  /* Past the viewport on every side, because `filter` fades an element's own edge: blurred at inset 0, the glow was
+     weakest exactly where it is supposed to be strongest, measured 9 levels darker 40px inboard than at the edge
+     itself. The falloff now happens off screen. */
+  inset: -72px;
+  z-index: -1;
   opacity: 0;
   pointer-events: none;
-  /* Blurred, because an unblurred gradient behind an opaque card is a coloured plate showing at the edges rather
-     than light coming off one. The falloff does the shape; the blur is what makes it read as a glow. */
-  filter: blur(18px);
+  /* Blurred, because an unblurred gradient is a coloured plate with a visible end rather than light coming off an
+     edge. The falloff does the shape; the blur is what makes it read as a glow. */
+  filter: blur(24px);
 }
 
 /* Held by the attribute, not by the animation, so the answer is still on screen under reduced motion where the
@@ -248,21 +312,31 @@
   opacity: 1;
 }
 
+/* The falloff is capped in pixels as well as set as a fraction, so the light has the same weight on any screen: at
+   62% of a 1440 viewport the gradient is 893px long and reads as a faint wash, where the same rule on a 390px phone
+   is 242px and reads as an edge. The cap is what a 1440 gets instead.
+
+   A mid step of the decided ramp, not the full colour. `--decided` at full strength behind a blur is a dark green
+   wall on a paper page, which is what read as heavy; mixed halfway to the plate it is light coming off the edge.
+   The ramp is `DESIGN.md`'s five steps toward `--plate`, and this is the middle one. */
 .deck-flash[data-flash="keep"] {
-  background: linear-gradient(to left, var(--decided), transparent 46%);
+  background: linear-gradient(
+    to left,
+    color-mix(in oklab, var(--decided) 55%, var(--plate)),
+    transparent min(62%, 420px)
+  );
 }
 
 /* Dull, per the issue: a pass is the answer you give most often and it should not celebrate. */
 .deck-flash[data-flash="pass"] {
-  background: linear-gradient(to right, var(--ink-muted), transparent 40%);
-  opacity: 0.66;
+  background: linear-gradient(to right, var(--ink-muted), transparent min(52%, 400px));
+  opacity: 0.82;
 }
 
-/* Held closer to the card than the other two. Gold reaching the page heading read as the whole screen flashing
-   rather than as light off the edge the card left by. */
+/* Gold is the one colour the product celebrates with, and a Must Go is the one thing worth celebrating, so this
+   reaches further down the screen than the other two reach across it. */
 .deck-flash[data-flash="must"] {
-  top: -14px;
-  background: linear-gradient(to bottom, var(--gold), transparent 44%);
+  background: linear-gradient(to bottom, var(--gold), transparent 58%);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -276,12 +350,46 @@
       opacity: 0;
     }
 
-    35% {
+    28% {
       opacity: 1;
     }
 
     to {
       opacity: 0;
+    }
+  }
+
+  /* The rise is the whole of this mark, so it is the one part that has nothing to show when motion is suppressed.
+     The dots still appear and still hold for the flash window there; they simply do not travel. */
+  /* Not `--ease-expo`. The island's curve puts 85% of the travel in the first third, which threw the mark off the
+     top of the screen before it could be seen; the product's ordinary ease keeps it moving through the middle.
+
+     Gold on the gold wash its own answer paints is 1.38:1, so the mark is spent by the time it would reach the
+     label above the reel: it is gone at the top edge rather than drifting over the page beyond it. */
+  .rise-dot {
+    animation: dot-rise var(--flash) var(--ease) forwards;
+  }
+
+  /* Far enough to leave the reel rather than to drift inside it, which is what "rises off the reel" means, and no
+     further: from 34% of a 473px card the mark fades out level with its top edge. */
+  @keyframes dot-rise {
+    from {
+      opacity: 0;
+      transform: translateY(36px) scale(0.4);
+    }
+
+    22% {
+      opacity: 1;
+      transform: translateY(-10px) scale(1);
+    }
+
+    54% {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+      transform: translateY(-165px) scale(0.85);
     }
   }
 }

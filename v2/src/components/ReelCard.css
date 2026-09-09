@@ -1,6 +1,11 @@
 /* The one component that carries moving photography. It keeps the Desk register: radius 24, no shadow. */
 
 .reel {
+  /* Photography has no theme, so neither does type sitting on it. Every line on this card was reading its colour
+     from `--paper`, which is the cream in light and the near-black ground in dark: measured over six reels and
+     thirty-six frames, the dark theme put every caption at 1.00:1, ink on ink. The scrim under them is black in
+     both themes and does not invert, so the type does not either. */
+  --reel-ink: #fbf8f2;
   position: relative;
   aspect-ratio: 9 / 16;
   width: 100%;
@@ -16,7 +21,12 @@
 }
 
 /* Not a shadow: a scrim. Type over photography needs a ground or it is unreadable on a bright frame, and there is no
-   ground to tint here. It reads as part of the image rather than as a raised surface. */
+   ground to tint here. It reads as part of the image rather than as a raised surface.
+
+   The band is flat behind the type and fades only across the top padding, rather than fading the whole way up. A
+   soft gradient put the credit line where the scrim was 42%, which on a bright frame is 2.26:1. 82% is what holds
+   4.5:1 against a white frame, with the falloff measured in the padding's own length so it does not move as the
+   card's content changes height. */
 .reel-foot {
   position: absolute;
   right: 0;
@@ -25,9 +35,9 @@
   display: flex;
   flex-direction: column;
   gap: var(--s1);
-  padding: var(--s6) var(--s4) var(--s4);
-  background: linear-gradient(to top, rgb(0 0 0 / 78%), rgb(0 0 0 / 42%) 46%, transparent);
-  color: var(--paper);
+  padding: var(--s7) var(--s4) var(--s4);
+  background: linear-gradient(to top, rgb(0 0 0 / 82%) calc(100% - var(--s7)), transparent);
+  color: var(--reel-ink);
 }
 
 .reel-top {
@@ -38,13 +48,13 @@
 }
 
 .reel-name {
-  color: var(--paper);
+  color: var(--reel-ink);
 }
 
 /* The specimen line is muted ink on paper everywhere else. Over a photograph it has to be near-white to stay legible.
    Scoped to the foot so it beats `.t-specimen` on specificity rather than on which stylesheet happens to load last. */
 .reel-foot .reel-line {
-  color: color-mix(in oklab, var(--paper) 92%, transparent);
+  color: color-mix(in oklab, var(--reel-ink) 92%, transparent);
 }
 
 .reel-credit {
@@ -65,5 +75,5 @@
 }
 
 .reel-platform {
-  color: color-mix(in oklab, var(--paper) 76%, transparent);
+  color: color-mix(in oklab, var(--reel-ink) 84%, transparent);
 }
