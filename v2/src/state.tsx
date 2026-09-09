@@ -9,6 +9,12 @@ type Ctx = {
   swipe: (memberId: string, placeId: string, answer: boolean | 'must') => void
   /** Renames the party. Ids are kept where a row keeps its position, so votes keyed by member id survive. */
   setParty: (names: string[]) => void
+  /** Renames one member. Same id, so their votes stay theirs. */
+  renameMember: (memberId: string, name: string) => void
+  /** A new member with a fresh id and no votes. Refused past MAX_PARTY. */
+  addMember: (name: string) => void
+  /** Drops a member and their votes from the tally. The owner cannot be removed. */
+  removeMember: (memberId: string) => void
   /** Puts a place into a day and slot on the calendar, taking it out of any other slot it held. */
   place: (placeId: string, dayIndex: number, slotIndex: number) => void
   remove: (dayIndex: number, slotIndex: number) => void
@@ -56,6 +62,43 @@ const setSlot = (days: Day[], dayIndex: number, slotIndex: number, patch: Partia
   )
 
 export const SLOTS_PER_PERIOD = 2
+/** The owner plus five friends. */
+export const MAX_PARTY = 6
+
+const slug = (name: string): string =>
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+
+const person = (id: string, name: string): Person => ({
+  id,
+  name: name.trim(),
+  initials: name.trim().slice(0, 2).toUpperCase()
+})
+
+/** Adds a member unless the party is full or the name is blank; the id is unique against the current party. */
+export const withMember = (trip: Trip, name: string): Trip => {
+  const clean = name.trim()
+  if (clean.length === 0 || trip.party.length >= MAX_PARTY) return trip
+  const base = slug(clean) || 'member'
+  let id = base
+  for (let n = 2; trip.party.some((p) => p.id === id); n += 1) id = `${base}-${n}`
+  return { ...trip, party: [...trip.party, person(id, clean)] }
+}
+
+/** Removes a member and their votes. The owner stays; a missing id is a no-op. */
+export const withoutMember = (trip: Trip, memberId: string): Trip => {
+  if (memberId === trip.ownerId || !trip.party.some((p) => p.id === memberId)) return trip
+  const { [memberId]: _dropped, ...votes } = trip.votes
+  return { ...trip, party: trip.party.filter((p) => p.id !== memberId), votes }
+}
+
+export const renamed = (trip: Trip, memberId: string, name: string): Trip => {
+  const clean = name.trim()
+  if (clean.length === 0) return trip
+  return { ...trip, party: trip.party.map((p) => (p.id === memberId ? person(p.id, clean) : p)) }
+}
 
 /** The new slot sits after the last slot of its period, so the day stays in morning, afternoon, evening order. */
 export const withSlot = (day: Day, period: Period): Day => {
@@ -114,6 +157,18 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
       const owner = party.some((p) => p.id === current.ownerId) ? current.ownerId : (party[0]?.id ?? current.ownerId)
       return { ...current, party, ownerId: owner }
     })
+  }, [])
+
+  const renameMember = useCallback((memberId: string, name: string) => {
+    setTrip((current) => renamed(current, memberId, name))
+  }, [])
+
+  const addMember = useCallback((name: string) => {
+    setTrip((current) => withMember(current, name))
+  }, [])
+
+  const removeMember = useCallback((memberId: string) => {
+    setTrip((current) => withoutMember(current, memberId))
   }, [])
 
   const place = useCallback((placeId: string, dayIndex: number, slotIndex: number) => {
@@ -209,8 +264,42 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const value = useMemo(
-    () => ({ trip, swipe, setParty, place, remove, apply, pin, unpin, tick, setDates, addSlot, removeSlot, restart }),
-    [trip, swipe, setParty, place, remove, apply, pin, unpin, tick, setDates, addSlot, removeSlot, restart]
+    () => ({
+      trip,
+      swipe,
+      setParty,
+      renameMember,
+      addMember,
+      removeMember,
+      place,
+      remove,
+      apply,
+      pin,
+      unpin,
+      tick,
+      setDates,
+      addSlot,
+      removeSlot,
+      restart
+    }),
+    [
+      trip,
+      swipe,
+      setParty,
+      renameMember,
+      addMember,
+      removeMember,
+      place,
+      remove,
+      apply,
+      pin,
+      unpin,
+      tick,
+      setDates,
+      addSlot,
+      removeSlot,
+      restart
+    ]
   )
   return <TripContext.Provider value={value}>{children}</TripContext.Provider>
 }
