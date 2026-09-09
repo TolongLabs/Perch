@@ -261,6 +261,7 @@ rather than assumed away.
 | **Backend**   | **None, by design, for the prototype**           | Nothing in the Must tier writes to a server       |
 | **APIs**      | **None. No key exists**                          | The demo cannot fail on someone else's rate limit |
 | **Reels**     | Small muted MP4s from a public GCS bucket        | The one network call on stage                     |
+| **Hero Clip** | One 10-second loop from the same bucket          | The landing's ground, AI-generated. See below     |
 | **Hosting**   | Google Cloud Run, `asia-southeast1`              | Scales to zero, so free at our traffic            |
 | **CI/CD**     | GitHub Actions on every merge to `main`          | Workload Identity Federation, no stored key       |
 | **Container** | Two-stage `Dockerfile`: Bun builds, nginx serves | The build happens inside the image                |
@@ -268,15 +269,22 @@ rather than assumed away.
 **Why not Vercel**, since it is the obvious choice: its Hobby tier only builds commits authored by the account owner, so
 a teammate's merge would not ship. Cloud Run has no such rule, and no one person holds the keys.
 
-**The constraints on stage.** The prototype has no backend, no auth, no API key and no network call other than reel MP4s
-from a public GCS bucket. The demo is one city, Tokyo; the data model carries legs, so multi-area Japan is a README
-claim backed by a type rather than a screen. Place data is hand-authored for now: 24 places across four clusters and a
-24 x 24 travel matrix, both committed.
+**The constraints on stage.** The prototype has no backend, no auth, no API key and no network call other than the reel
+and hero MP4s from a public GCS bucket. The demo is one city, Tokyo; the data model carries legs, so multi-area Japan is
+a README claim backed by a type rather than a screen. Place data is hand-authored for now: 24 places across four
+clusters and a 24 x 24 travel matrix, both committed.
 
 **One piece of prior work is in the repo, and it ships nothing to a user.** `scripts/demo/` is the recorder that films
 the deployed site, dubs it and burns in subtitles for the submission video. It was written for `TolongLabs/MakanLah` on
 28-30 August 2026, ported into `MUBA-M1KU/Cekgu` on 5 September 2026 by the same author, Hee Zi Jie, hardened there, and
 carried in here on 8 September 2026. Its README declares the same. Nothing else predates 30 August.
+
+**The landing's hero clip is AI-generated and contains no third-party footage.** It is a 10-second aerial drift over
+Tokyo at dawn, generated with **Google Gemini Videos** on 9 September 2026 from a prompt written by the team, and served
+from the same bucket as the reels as `hero.webm`, `hero.mp4` and a poster frame. It carries no audio, loops muted, and
+is replaced by the poster frame alone when the reader's system asks for reduced motion. The reels themselves are a
+different matter and are credited individually in the manifest at [`v2/src/data/reels.json`](../v2/src/data/reels.json),
+each with its platform, creator and source link.
 
 **Onboarding's free text and activity chips are captured on the screen and inform nothing downstream.** Turning them
 into tag weights is specified in [`TRD.md`](TRD.md) under Specified, Not Yet Built, and is build-phase work.

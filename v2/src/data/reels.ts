@@ -6,7 +6,8 @@ type ManifestEntry = { place: string; src: string; poster: string; platform: str
 const isPlatform = (value: string): value is Reel['platform'] => value === 'instagram' || value === 'xhs'
 
 const entries: ManifestEntry[] = manifest.reels
-const base: string = manifest.base
+/** The reels bucket. The hero clip is hosted beside the reels and is addressed the same way. */
+export const base: string = manifest.base
 
 /** The manifest is a JSON boundary, so the platform string is narrowed here rather than cast. */
 export const reels: Record<string, Reel> = Object.fromEntries(

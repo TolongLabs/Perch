@@ -17,6 +17,43 @@
   }
 }
 
+/* The clip covers the screen rather than sitting in a box on it: the landing is one screen with no scroll, so a
+   hero with its own aspect ratio would either letterbox or crop unpredictably between 390x844 and 1440x900. Fixed
+   rather than absolute so a phone's address bar coming and going cannot slide the picture under the title. */
+.land-film {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.land-frame {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* The clip is 1280x720 and the landing is portrait on a phone, so cover crops the sides; the drift is centred on
+     the river and the roofs, which is what survives the crop. */
+  object-position: center;
+}
+
+/* Paper, not black. A dark scrim would make the page a dark hero with light text, which is a different product from
+   the one every other surface draws; this keeps ink on paper and lets the clip through underneath it.
+ *
+ * It is a gradient because the page is not evenly loaded: the display line at the top has ink to spare over any
+ * frame, and the three specimen lines at the foot are muted italic over the darkest part of the picture, which is
+ * where a flat veil measured 4.51:1 against a 4.5 floor. Every stop is measured against every second of the clip. */
+.land-veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in oklab, var(--paper) 80%, transparent) 0%,
+    color-mix(in oklab, var(--paper) 84%, transparent) 40%,
+    color-mix(in oklab, var(--paper) 93%, transparent) 72%,
+    color-mix(in oklab, var(--paper) 96%, transparent) 100%
+  );
+}
+
 .land-head {
   display: flex;
   align-items: center;
