@@ -362,8 +362,14 @@ body:has(.island-scrim[data-on="true"]) .top-badge {
   color: var(--ink);
 }
 
-/* Both panels hang off the cluster, not off the control that opened them, so they share one right edge and one
-   gap below the bar however wide their contents are.
+/* Both panels hang off the cluster, not off the control that opened them, and both are the same width, so the
+   island's right edge and the gap below the controls are where they are whichever panel is open. A panel sized to
+   its own contents would move that edge every time the reader switched between them.
+
+   It animates on mount rather than transitioning, because the panel is mounted by the click and a transition has
+   no start state to run from. `DESIGN.md`'s motion exception names this element: the demo is recorded on a machine
+   with reduced motion on, and a chrome that snaps open reads as broken on camera. The rail honoured that clause
+   and the dropover never had.
 
    No ground and no edge of its own. The panel is not a card inside the island, it is more of the island: the
    cluster and the panel are one piece of glass that grows when a control is pressed. A plate ground here stacked
@@ -373,6 +379,14 @@ body:has(.island-scrim[data-on="true"]) .top-badge {
 .top-panel {
   width: min(288px, calc(100vw - var(--s6)));
   padding: var(--s2) 0 var(--s1);
+  animation: dropover-in var(--island-motion) var(--ease-expo);
+}
+
+@keyframes dropover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
 }
 
 /* Everything in the panel sits on the row's inset, so the name and the role line up with the icon in the row

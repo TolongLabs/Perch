@@ -192,13 +192,19 @@ textarea {
     transition-duration: 0.01ms !important;
   }
 
-  /* The one deliberate exception, recorded in DESIGN.md. The sidebar island's width, its labels and the scrim are
-     not decoration: the movement is what tells you the rail is expanding rather than the page reflowing, and with
-     it collapsed to 0.01ms the island appears to teleport and the labels flash in. A class beats the universal
-     selector on specificity, so these keep their authored durations without needing to be re-declared. */
+  /* The one deliberate exception, recorded in DESIGN.md. The sidebar island's width, its labels, the scrim and the
+     topbar's dropovers are not decoration: the movement is what tells you the rail is expanding rather than the
+     page reflowing, and with it collapsed to 0.01ms the island appears to teleport and the labels flash in.
+
+     One duration for all of them, not the authored ones. A class beats the universal selector, so this wins, but
+     it is a single value rather than a per-element restoration: the label's 150ms and the row tint's 120ms both
+     run at the island's 220ms here. That is the movement being visible on camera, which is what the exception is
+     for. `animation-duration` is restored alongside it because the dropover animates on mount rather than
+     transitioning, and the rule above would otherwise collapse it to nothing. */
   .island,
   .island *,
   .island-scrim {
     transition-duration: var(--island-motion) !important;
+    animation-duration: var(--island-motion) !important;
   }
 }
