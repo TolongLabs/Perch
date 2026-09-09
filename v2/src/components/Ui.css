@@ -27,11 +27,13 @@
   flex: none;
 }
 
+/* 24, not 18. WCAG 2.5.8 sets 24 by 24 as the floor for a pointer target and there are twelve of these on a
+   scheduled Desk, each one the only route to the sentence that says why a day overruns. */
 .info-dot {
   display: grid;
   place-items: center;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: 2px solid color-mix(in oklab, var(--ink) 34%, transparent);
   border-radius: var(--r-pill);

@@ -116,10 +116,12 @@
   }
 }
 
+/* The two pixels are the difference between 22 tall and the 24 WCAG 2.5.8 asks of a target. */
 .foot-link {
   color: var(--ink-muted);
   text-decoration: none;
-  padding-bottom: 2px;
+  padding-top: 2px;
+  padding-bottom: 4px;
   border-bottom: 2px solid color-mix(in oklab, var(--ink) 18%, transparent);
   transition:
     color var(--motion-fade) var(--ease),
