@@ -7,6 +7,13 @@
   background: var(--plate);
   min-height: 100vh;
   scroll-snap-type: y proximity;
+  counter-reset: page;
+
+  /* A deckle edge, 90 by 12, flat along the top and ragged along the bottom, with both ends at the same height so it
+     tiles seamlessly. Repeated at its own size rather than stretched, so the tear is the same coarseness on a
+     342px picture and on a 1280px one; a single stretched mask reads as a smooth wave at spread width. */
+  --tear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='12'%3E%3Cpath d='M0 0H90V6L86 9.5L82 5.5L78 10.5L74 7L70 11L66 6.5L62 9.5L58 5L54 10L50 6L46 11L42 7.5L38 9L34 5L30 10.5L26 6.5L22 9L18 5.5L14 10L10 7L6 9.5L2 5.5L0 6Z' fill='black'/%3E%3C/svg%3E");
+  --tear-h: 12px;
 }
 
 .spread {
@@ -16,31 +23,6 @@
   margin: 0 auto;
   border-radius: var(--r-plate);
   animation: spread-in var(--motion-fade) var(--ease);
-}
-
-@media (min-width: 1024px) {
-  /* 80 + 640 + 64 + 576 + 80 is 1440, so the spread is 1440 wide, not 1280. At 1280 the content box was 1120 against
-     1280 of columns, and the text column ran straight through the right margin: 80px of margin measured as 0, and
-     anything narrower than 1440 scrolled sideways. */
-  .spread {
-    max-width: 1440px;
-    padding: var(--s7) 80px var(--s8);
-  }
-
-  /* The stops run two across once there is room. The spread is no longer split between a drawing and a list: the
-     pictures are the spread, and the drawing sits at its foot. */
-  .spread-stops {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--s7) var(--s8);
-  }
-
-  /* The picture takes the whole column and the words sit under it. Beside the text at 200px it was a thumbnail
-     illustrating a paragraph; the ask was to show the trip's pictures, so the picture leads and the paragraph
-     follows it, which is also the order the issue names. */
-  .entry-shot {
-    margin-bottom: var(--s4);
-  }
 }
 
 /* Cover */
@@ -76,6 +58,45 @@
 
 /* Day spreads */
 
+.spread-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s3) var(--s5);
+  margin-bottom: var(--s5);
+}
+
+.spread-band {
+  color: var(--tint);
+  padding-bottom: var(--s3);
+}
+
+/* Pinned rather than printed. The tilt is the whole device: a note laid on the picture reads as the reader's own
+   mark about the day, where the same drawing set square beside it reads as a second illustration competing with it.
+   Paper, not glass: opaque, or the drawing is read through a photograph. */
+.spread-pin {
+  position: absolute;
+  bottom: var(--s5);
+  right: var(--s5);
+  width: 116px;
+  margin: 0;
+  padding: var(--s3);
+  background: var(--plate);
+  transform: rotate(-1.5deg);
+}
+
+.pin-head {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 34% 30%, var(--plate) 0 2px, var(--tint) 3px 100%);
+}
+
 .plate-figure {
   margin: 0;
 }
@@ -87,32 +108,87 @@
 }
 
 .plate-caption {
-  margin-top: var(--s3);
+  margin-top: var(--s2);
+  color: var(--ink-muted);
 }
 
-.spread-band {
-  color: var(--tint);
-  padding-bottom: var(--s3);
+/* The caption repeats the day title verbatim, and the title is already set over this very picture. The drawing's
+   `aria-label` still names the stops in order, so nothing is lost but the duplicate. */
+.spread-pin .plate-caption {
+  display: none;
 }
 
-.spread-text > .t-plate-title {
+/* The day's first stop, promoted out of its page onto a plate that runs the whole spread and crosses the gutter.
+   Photography has no theme, so everything set over it is a fixed light ink over a real scrim rather than a token. */
+.spread-lead {
+  position: relative;
   margin-bottom: var(--s6);
+  --lead-ink: #fbf8f2;
 }
 
-/* The drawing keeps its place in the Book, at a size that says it is a reference rather than the subject. */
-/* The drawing and the link are one thing, the day's geography: the drawing says its shape and the link opens the
-   only real map. Pushed to opposite ends of the spread they read as two unrelated marks. */
-.day-foot {
+.lead-shot {
+  display: block;
+  width: 100%;
+  height: clamp(240px, 34vw, 420px);
+  object-fit: cover;
+  /* Above centre. A reel burns its caption into the lower third of the frame, and a centred crop of a 9:16 still
+     puts that band across the middle of the picture; the subject is above it. */
+  object-position: 50% 34%;
+  background: var(--ground);
+  mask-image: linear-gradient(black 0 0), var(--tear);
+  mask-size:
+    100% calc(100% - var(--tear-h)),
+    90px var(--tear-h);
+  mask-position:
+    top left,
+    bottom left;
+  mask-repeat: no-repeat, repeat-x;
+}
+
+/* Set over the image and never centred, per `DESIGN.md`. Top left rather than bottom: the first stop's own name sits
+   directly under this picture, and a title along the bottom edge would be read as that name.
+ *
+ * The scrim belongs to the title, not to the picture. A percentage-height scrim on the picture measured 1.22:1 at
+ * 1440 and 1.00:1 at 390, because the fade reached transparent above the last line and a bright sky or a pale wall
+ * was left carrying light ink. Sized to the text block instead, the band holds at least 62 percent black wherever a
+ * glyph sits, which is 5.3:1 over pure white, and only then fades. */
+.lead-title {
+  position: absolute;
+  inset: 0 0 auto;
+  margin: 0;
+  padding: var(--s5) 25% var(--s7) var(--s5);
+  color: var(--lead-ink);
+  background: linear-gradient(to bottom, rgb(0 0 0 / 72%) 0, rgb(0 0 0 / 62%) calc(100% - var(--s7)), transparent);
+}
+
+/* Pages */
+
+.spread-pages {
+  display: grid;
+  gap: var(--s7);
+}
+
+.page {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--s6);
-  margin-top: var(--s7);
-  padding-top: var(--s5);
+  flex-direction: column;
+  gap: var(--s7);
+  counter-increment: page;
 }
 
-.day-foot-plate {
-  flex: 0 1 260px;
+/* Pushed to the foot of the page rather than trailing the last entry, so facing pages carry their numbers on one
+   line however unequal their contents are. That is what makes a number readable as a page number. */
+.page-num {
+  margin-top: auto;
+  padding-top: var(--s5);
+  color: var(--ink-muted);
+}
+
+.page-num::before {
+  content: counter(page);
+}
+
+.entry {
+  margin-bottom: 0;
 }
 
 /* Square-cornered, like everything on the plate. A 9:16 reel still is far too tall for a page you read across, so
@@ -122,21 +198,17 @@
   width: 100%;
   aspect-ratio: 4 / 3;
   object-fit: cover;
-  /* Above centre. A reel burns its caption into the lower third of the frame, and a centred crop of a 9:16 still
-     puts that band across the middle of the picture; the subject is above it. */
   object-position: 50% 34%;
   margin-bottom: var(--s3);
   background: var(--ground);
-}
-
-.spread-stops {
-  display: grid;
-  gap: var(--s7);
-  margin-top: var(--s6);
-}
-
-.entry {
-  margin-bottom: 0;
+  mask-image: linear-gradient(black 0 0), var(--tear);
+  mask-size:
+    100% calc(100% - var(--tear-h)),
+    90px var(--tear-h);
+  mask-position:
+    top left,
+    bottom left;
+  mask-repeat: no-repeat, repeat-x;
 }
 
 .entry-text > .t-name {
@@ -151,6 +223,19 @@
 .entry-prose {
   margin: var(--s2) 0;
   max-width: 46ch;
+}
+
+/* The one outbound link in the Book. Underlined rather than a pill, because the plate register has no pills. */
+.day-route {
+  display: inline-block;
+  padding-bottom: 2px;
+  border-bottom: 2px solid var(--tint);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.day-route:hover {
+  border-bottom-color: var(--ink);
 }
 
 /* Colophon */
@@ -190,16 +275,64 @@
   }
 }
 
-/* The one outbound link in the Book. Underlined rather than a pill, because the plate register has no pills. */
-.day-route {
-  display: inline-block;
-  margin-top: var(--s5);
-  padding-bottom: 2px;
-  border-bottom: 2px solid var(--tint);
-  color: var(--ink);
-  text-decoration: none;
+@media (min-width: 1024px) {
+  /* 1440 rather than 1280, with 80px outer margins. At 1280 the content box measured 1120 against 1280 of columns,
+     the outer margin resolved to 0 and anything narrower scrolled sideways. */
+  .spread {
+    max-width: 1440px;
+    padding: var(--s7) 80px var(--s8);
+  }
+
+  /* Top right on a spread, foot of the picture on a phone. There is no spread in one column, so "top right of the
+     spread" has nowhere to be; at the foot it clears the title without cramping it into four lines. */
+  .spread-pin {
+    top: var(--s6);
+    right: var(--s6);
+    bottom: auto;
+    width: 200px;
+    padding: var(--s4);
+  }
+
+  /* Two pages across, and the gutter between them is the 64px the spread geometry already names. The lead plate
+     above spans the whole width, so it crosses this gutter rather than sitting inside one page. */
+  .spread-pages {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s7) 64px;
+  }
+
+  /* Facing pages: the left page numbers on the left, the right page on the right. */
+  .page:nth-child(even) .page-num {
+    text-align: right;
+  }
 }
 
-.day-route:hover {
-  border-bottom-color: var(--ink);
+/* The Book is the thing that prints, so a day is a printed page and nothing inside an entry may split across two.
+   Without `print-color-adjust` the day tint drops out, and the tint is the one colour on the page carrying
+   information: it says which day you are holding. */
+@media print {
+  .book {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    min-height: 0;
+  }
+
+  .spread {
+    break-after: page;
+    animation: none;
+  }
+
+  .spread:last-child {
+    break-after: auto;
+  }
+
+  .spread-lead,
+  .entry {
+    break-inside: avoid;
+  }
+}
+
+/* Paper size and orientation are deliberately not set here. Chrome's own print dialog and #194's export both choose
+   the sheet, and a `size` declared in CSS overrides the reader without telling them. */
+@page {
+  margin: 14mm;
 }
