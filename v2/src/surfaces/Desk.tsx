@@ -132,7 +132,7 @@ export const Desk = () => {
     >
       <main className="desk">
         <header className="desk-head">
-          <Heading as="h1" info="Drag a card into a slot, then Plan The Days to let the scheduler order each day.">
+          <Heading as="h1" info="Drag a card into a slot, then Optimize Plan to let the scheduler order each day.">
             <span className="t-display">The Desk</span>
           </Heading>
 
@@ -146,7 +146,7 @@ export const Desk = () => {
               Dates
             </button>
             <button type="button" className="desk-apply t-label" onClick={onApply}>
-              Plan The Days
+              Optimize Plan
             </button>
           </div>
         </header>
@@ -182,7 +182,7 @@ export const Desk = () => {
               Voted In
               <Info>
                 Everything the group put at or above half the weighted vote, in tally order. Drag one into a slot, or
-                let Plan The Days place them.
+                let Optimize Plan place them.
               </Info>
             </p>
             <p className="t-specimen desk-poolcount">{pool.length} waiting</p>
