@@ -111,8 +111,12 @@
   gap: var(--s3);
 }
 
+/* Ink, like the rail's and the footer's. `DESIGN.md` states one wordmark recipe in the product and this was the
+   second one: teal measures 4.97:1 on bare paper, which is no headroom at all, and over a bright sky it fell to
+   4.25 against a 4.5 floor. Buying it back with paper would have meant an opaque patch behind the lockup, which is
+   the card this page just stopped being. */
 .land-mark {
-  color: var(--open);
+  color: var(--ink);
 }
 
 .land-body {
