@@ -82,10 +82,23 @@ export const PlacedCard = ({
         <Line place={place} />
       </div>
       <div className="card-acts">
-        <button type="button" className="card-act t-label" onClick={onPin} aria-pressed={pinned}>
+        <button
+          type="button"
+          className="card-act t-label"
+          onClick={onPin}
+          aria-pressed={pinned}
+          title="A pinned stop keeps its slot the next time you Optimize Plan"
+        >
           {pinned ? 'Unpin' : 'Pin'}
         </button>
-        <button type="button" className="card-act t-label" onClick={onRemove}>
+        {/* Drawn apart from Pin rather than beside it. The two were pixel-identical outline pills on twelve cards,
+            one protecting a stop and one destroying it, on a surface with no undo. */}
+        <button
+          type="button"
+          className="card-act card-act-risk t-label"
+          onClick={onRemove}
+          title="Take this stop off the day. The perch offers a replacement first"
+        >
           Remove
         </button>
       </div>

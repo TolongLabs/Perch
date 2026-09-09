@@ -97,6 +97,45 @@
   gap: var(--s3);
 }
 
+/* Across the calendar rather than beside it, because the calendar is the thing it is telling you how to fill. */
+.desk-firstmove {
+  grid-column: 1 / -1;
+  margin: 0 0 var(--s2);
+  max-width: 54ch;
+  color: var(--ink);
+}
+
+.desk-pinnote {
+  flex-basis: 100%;
+  margin: var(--s3) 0 0;
+  color: var(--ink-muted);
+}
+
+.desk-resetask {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  align-items: flex-start;
+}
+
+.desk-resetacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+}
+
+.desk-reset-go {
+  border-color: var(--at-risk);
+  color: var(--at-risk);
+}
+
+.desk-reset-go:hover,
+.desk-reset-go:focus-visible {
+  border-color: var(--at-risk);
+  background: var(--at-risk);
+  color: var(--paper);
+}
+
 /* A day owns its tint, and everything inside it reads that. This is the wayfinding device, not decoration. */
 .desk-day {
   /* Muted ink on the day's own tinted ground. `--ink-muted` is mixed toward paper, which is the right answer on
