@@ -174,6 +174,27 @@ export async function runShotChecks(options = {}) {
       page.locator('.desk-poollist .card-pool', { hasText: 'Sensoji' })
     )
 
+    // Plan the days before going on. The Book draws a route and a Transit Route link per day only once that day holds
+    // stops, so a gate that walks straight from a cold Desk to The Book can only ever check the frame around empty
+    // plates. That is the hole the 0.1.0 film went through, and it is closed by planning here rather than by
+    // weakening what The Book is asked to prove. The fixture clear is guarded, so this state survives the
+    // navigations below.
+    await page.locator('.desk-apply').click()
+    await page
+      .locator('.card-placed')
+      .first()
+      .waitFor({ timeout })
+      .catch(() => {})
+    // Reported against shot 8 rather than 7 because it has to run after shot 8's sidebar check: planning moves
+    // Sensoji out of the sidebar and onto the board, which is the card shot 8 then pins.
+    await check(
+      8,
+      'Plan The Days fills every slot',
+      '.card-placed',
+      page.locator('.card-placed'),
+      async (locator) => (await locator.count()) === 12
+    )
+
     await go('/desk/before-we-go')
     await check(
       9,
@@ -190,11 +211,23 @@ export async function runShotChecks(options = {}) {
     )
 
     await go(`/t/${TRIP_ID}`)
-    // The cold fixture has no placed stops, so The Book cannot yet render a Transit Route link per day. This checks
-    // the surface frame instead: the destination title and the four day sections.
+    // The days were planned above, so The Book is asked to prove it prints a real trip rather than an empty frame:
+    // a drawn route and a Transit Route link for each of the four days. Counting the four day sections alone passed
+    // on placeholder plates.
     await check(
       10,
-      'Book page heading and four day sections (cold fixture)',
+      'A drawn route and a Transit Route link per day',
+      'a[href*="google.com/maps"] (4) + .day-spread svg path (4+)',
+      page.locator('.day-spread'),
+      async () => {
+        const maps = await page.locator('a[href*="google.com/maps"]').count()
+        const drawn = await page.locator('.day-spread svg path').count()
+        return maps === 4 && drawn >= 4
+      }
+    )
+    await check(
+      10,
+      'Book page heading and four day sections',
       '.cover-title (Tokyo) + .day-spread (4)',
       page.locator('.cover-title'),
       async (locator) => {
