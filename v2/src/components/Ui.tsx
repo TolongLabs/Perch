@@ -64,10 +64,12 @@ export const Heading = ({
 }) => (
   <div className="head-row">
     {kicker && <p className="t-label head-kicker">{kicker}</p>}
-    <As className="head-title">
-      {children}
+    {/* The bubble sits beside the heading, not inside it. A button inside a heading is part of that heading's
+        accessible name, so every titled surface announced its own name with the bubble's on the end of it. */}
+    <div className="head-title">
+      <As className="head-text">{children}</As>
       {info && <Info>{info}</Info>}
-    </As>
+    </div>
   </div>
 )
 
