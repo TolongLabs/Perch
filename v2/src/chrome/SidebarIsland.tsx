@@ -77,6 +77,17 @@ export const SidebarIsland = ({ expandedChanged }: { expandedChanged: (open: boo
         if (!e.currentTarget.contains(e.relatedTarget)) setFocused(false)
       }}
     >
+      {/* Not a link. Every other row in the rail is somewhere you can go, and a mark that navigated to the landing
+          page would take a signed-in reader out of the product to read marketing copy. It is the rail's head, so
+          it takes no tab stop ahead of the seven destinations under it. */}
+      <div className="rail-head">
+        <img className="rail-mark" data-theme="light" src="/assets/mark.svg" alt="" width="24" height="24" />
+        <img className="rail-mark" data-theme="dark" src="/assets/mark-dark.svg" alt="" width="24" height="24" />
+        <span className="rail-name" aria-hidden="true">
+          Perch
+        </span>
+      </div>
+
       <ul className="rail-list">
         {items.map(({ to, label, Icon }) => (
           <li key={to}>
