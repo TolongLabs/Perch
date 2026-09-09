@@ -154,7 +154,7 @@ export const Dashboard = () => {
 
       {/* Not New Plan. The prototype holds one trip, so there is nothing to start; this reopens the one that
           exists, with everything it already knows filled in. */}
-      <button type="button" className="dash-new t-label" onClick={() => navigate('/new')}>
+      <button type="button" className="dash-new t-label" onClick={() => navigate('/new?edit')}>
         Edit Trip
       </button>
     </main>
