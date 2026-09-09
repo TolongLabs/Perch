@@ -5,6 +5,7 @@ import type { Day, Place, Slot } from '../data/types'
 import { dayCostRM, tripCostRM } from '../lib/cost'
 import { clock, dayLabel, duration, money, price } from '../lib/format'
 import { transitRoute } from '../lib/mapsLink'
+import { saveAsPdf } from '../lib/print'
 import { backupFor } from '../lib/schedule'
 import { useTrip } from '../state'
 import './Book.css'
@@ -65,6 +66,18 @@ export const Book = () => {
           {(WORDS[trip.nights] ?? String(trip.nights)).toLowerCase()} nights, put together by {owner} and voted on by{' '}
           {trip.party.length - 1} others.
         </p>
+
+        {/* On the cover, because a reader who wants the file should not have to read the whole book to find the
+            control. It prints nothing of itself: the sheet is the Book. */}
+        <button
+          type="button"
+          className="cover-save t-label"
+          onClick={() =>
+            saveAsPdf(`${trip.destination} Book, ${dayLabel(trip.startDate)} ${trip.startDate.slice(0, 4)}`)
+          }
+        >
+          Save As PDF
+        </button>
 
         <dl className="cover-facts">
           <div>

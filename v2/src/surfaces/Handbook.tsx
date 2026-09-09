@@ -3,6 +3,7 @@ import { Heading } from '../components/Ui'
 import { handbookFor } from '../data/handbook'
 import type { NewsItem } from '../data/types'
 import { dayLabel } from '../lib/format'
+import { saveAsPdf } from '../lib/print'
 import { useTrip } from '../state'
 import './Handbook.css'
 
@@ -129,9 +130,20 @@ export const Handbook = () => {
         </div>
       </div>
 
-      <button type="button" className="hb-back t-label" onClick={() => navigate('/desk/before-we-go')}>
-        Back To Before We Go
-      </button>
+      <div className="hb-foot">
+        <button
+          type="button"
+          className="hb-save t-label"
+          onClick={() =>
+            saveAsPdf(`${trip.destination} Handbook, ${dayLabel(trip.startDate)} ${trip.startDate.slice(0, 4)}`)
+          }
+        >
+          Save As PDF
+        </button>
+        <button type="button" className="hb-back t-label" onClick={() => navigate('/desk/before-we-go')}>
+          Back To Before We Go
+        </button>
+      </div>
     </main>
   )
 }

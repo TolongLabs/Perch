@@ -84,9 +84,36 @@
   max-width: 52ch;
 }
 
-.hb-back {
-  display: inline-block;
+.hb-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s4);
   margin-top: var(--s8);
+}
+
+/* The Handbook's one solid button, matching the Book's cover control so the two read as the same action. */
+.hb-save {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-plate);
+  background: var(--ink);
+  color: var(--plate);
+  cursor: pointer;
+  transition: background-color var(--motion-fade) var(--ease);
+}
+
+.hb-save:hover,
+.hb-save:focus-visible {
+  background: color-mix(in oklab, var(--tint) 34%, var(--ink));
+}
+
+.hb-back {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   padding: var(--s3) var(--s5);
   border: var(--outline) solid var(--ink);
   border-radius: var(--r-plate);
@@ -116,9 +143,18 @@
 }
 
 @media print {
+  /* Same reason as the Book: an A4 landscape sheet is 1016px of content against a 1024 breakpoint, so the columns
+     are declared for paper rather than inherited from a screen size the sheet never reaches. */
   .handbook {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    max-width: none;
+    padding: 0;
+  }
+
+  .hb-body {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s7) 32px;
   }
 
   .hb-item,
@@ -126,7 +162,7 @@
     break-inside: avoid;
   }
 
-  .hb-back {
+  .hb-foot {
     display: none;
   }
 }
