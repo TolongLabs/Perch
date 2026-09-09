@@ -81,6 +81,15 @@ export async function runShotChecks(options = {}) {
 
   try {
     await go('/new')
+    // The recorder waits on this heading before it touches anything on the page, so the gate has to read the same
+    // string. It did not, which is why #226 turning /new into an edit surface reached a run rather than a check:
+    // every anchor here stayed PRESENT while the take died on the first thing it looked for.
+    await check(
+      1,
+      'The onboarding heading the recorder waits on',
+      'heading matching Plan A New Trip',
+      page.getByRole('heading', { name: /Plan A New Trip/ })
+    )
     await check(1, 'November 2026 month grid', '.dr', page.locator('.dr'), async (locator) => {
       const month = await locator.locator('.dr-month').textContent()
       return typeof month === 'string' && month.includes('November 2026')
@@ -137,7 +146,16 @@ export async function runShotChecks(options = {}) {
       async (locator) => (await locator.count()) >= 4
     )
 
-    await go(`/t/${TRIP_ID}/swipe`)
+    // The film reaches the Deck the owner's way, by pressing Open The Deck on the dashboard, so the gate does too.
+    // A tab that lands directly on the swipe link is an invited joiner: it renders no chrome and, since #189, opens
+    // a Who Are You? step. A gate that navigates straight to the link passes on a route the film never takes.
+    await go('/trips')
+    const openDeck = page.locator('button.dash-go', { hasText: exactText('Open The Deck') })
+    await check(3, 'Open The Deck control', 'button.dash-go', openDeck)
+    await openDeck.click()
+    await page.waitForURL(new RegExp(`/t/${TRIP_ID}/swipe`)).catch(() => {})
+    // The rail is what separates the two routes, and the reel card renders on both, so pin it.
+    await check(3, 'The owner chrome, not the joiner view', '.island-rail', page.locator('.island-rail'))
     await check(3, 'Top reel card', '.deck-card[data-depth="0"]', page.locator('.deck-card[data-depth="0"]'))
     await check(3, 'Reel counter', '.deck-count', page.locator('.deck-count'), async (locator) => {
       const text = await locator.textContent()

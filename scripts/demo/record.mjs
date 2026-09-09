@@ -306,6 +306,9 @@ export async function recordDemo(options = {}) {
     if (start === undefined) throw new Error(`cannot pace missing beat ${name}`)
     const remaining = start + durationMs - elapsed()
     if (remaining > 0) await pause(remaining)
+    // Verifying one beat's entry should not cost a full take. The throw lands in the same catch as any other failure,
+    // so the segment still closes, the capture is still tightened and beats.json is still written for what was filmed.
+    if (process.env.DEMO_STOP_AFTER === name) throw new Error(`stopped after ${name}: DEMO_STOP_AFTER is set`)
   }
   const moveTo = async (locator, duration = 480) => {
     const target = await centerOf(locator)
@@ -467,17 +470,41 @@ export async function recordDemo(options = {}) {
 
     await nextSegment()
 
-    await page.goto(new URL('/t/tokyo-nov-2026/swipe', baseUrl).href, { waitUntil: 'domcontentloaded' })
+    // The Deck is entered the owner's way, by pressing Open The Deck on her own dashboard. A tab that lands directly
+    // on the swipe link is an invited joiner, and since #189 that route opens a Who Are You? step the owner never
+    // sees; it also renders no chrome, so the old take filmed a Deck with no rail while the voice called her the
+    // owner. The label is pinned because it reads Open The Deck only while her deck is unfinished and becomes See
+    // The Tally once she has swiped through: a wrong state then trips here instead of clicking whatever is there.
+    await page.goto(new URL('/trips', baseUrl).href, { waitUntil: 'domcontentloaded' })
+    const openDeck = page.locator('button.dash-go', { hasText: exactText('Open The Deck') })
+    await must(openDeck, 'shot 3 Open The Deck control')
+    await click(openDeck, 600)
+    await page.waitForURL(/\/t\/tokyo-nov-2026\/swipe/)
+    // The rail holds open on focus and on a 120ms pointer dwell, and the press that got here leaves both behind, so
+    // without releasing them the beat opens on an expanded rail over a scrim. That reads as a render bug in the film
+    // and sends you looking at the app rather than at the recorder.
+    await page.evaluate(() => {
+      if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+    })
+    const railClear = { x: 720, y: 450 }
+    await page.mouse.move(railClear.x, railClear.y)
+    pointer = railClear
+    await pause(900)
+
     const counter = page.locator('.deck-count')
     await must(counter, 'shot 3 deck counter')
+    await must(page.locator('.island-rail'), 'shot 3 owner chrome')
     await page.getByText(exactText('Reel 1 Of 20')).waitFor()
     await mark('shot-3')
-    await claim(
-      'shot-3',
-      'the deck opens on the first of twenty reels',
-      async () =>
-        ((await counter.textContent()) ?? '').trim() === 'Reel 1 Of 20' || `counter read ${await counter.textContent()}`
-    )
+    await claim('shot-3', "the deck opens on the first of twenty reels, on the owner's own screen", async () => {
+      const read = ((await counter.textContent()) ?? '').trim()
+      if (read !== 'Reel 1 Of 20') return `counter read ${read}`
+      // Counting the reel is not enough. The joiner route renders the same deck with no rail and, since #189, a
+      // Who Are You? step in front of it, so the route has to be asserted rather than assumed from the counter.
+      if ((await countOf('.island-rail')) === 0)
+        return 'the deck rendered without the rail, so this is the joiner route'
+      return true
+    })
 
     // The deck decodes reel video, and on a memory-tight machine the in-renderer recorder crashes the tab around the
     // fifth card. The counter tells the viewer the rest, so the take is tunable rather than fixed.
