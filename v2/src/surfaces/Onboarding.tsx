@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { addDays, DateRangePicker, nightsBetween, type Range } from '../components/DateRangePicker'
 import { ChipGroup, Field, Heading } from '../components/Ui'
 import { isJoiner } from '../lib/joiner'
-import { useTrip } from '../state'
+import { MAX_PARTY, useTrip } from '../state'
 import './Onboarding.css'
 
 /** Mirrors the tag vocabulary the Tokyo fixture authors on its places. Tapping one is a hint, never a filter. */
@@ -18,9 +18,6 @@ const ACTIVITIES = [
   { id: 'museums', label: 'Museums' }
 ]
 
-/** Four rows, fixed, so a key is a row rather than a name that is being typed over. */
-const PARTY_ROWS = ['owner', 'friend-1', 'friend-2', 'friend-3']
-
 const DESTINATIONS = [
   { id: 'tokyo', label: 'Tokyo' },
   { id: 'kyoto', label: 'Kyoto', disabled: true },
@@ -30,20 +27,33 @@ const DESTINATIONS = [
 
 export const Onboarding = () => {
   const navigate = useNavigate()
-  const { trip, setDates, setParty } = useTrip()
+  const { trip, setDates, addMember, removeMember, renameMember } = useTrip()
   // Seeded from the trip rather than left blank: onboarding configures a fixture that already has dates, and
   // `PRODUCT.md`'s rule is that no question is asked which Perch can already answer.
   const [range, setRange] = useState<Range>(() => ({
     start: trip.startDate,
     end: addDays(trip.startDate, trip.nights)
   }))
-  // Prefilled from the fixture, because PRODUCT.md's rule is that no question is asked which Perch can already
-  // answer. The owner is row one and cannot leave; a friend's row left blank drops them.
-  const [names, setNames] = useState<string[]>(() => PARTY_ROWS.map((_, i) => trip.party[i]?.name ?? ''))
+  // What each row shows while it is being typed in. The trip is the record of who is coming, and a rename is
+  // refused while the field is blank, so a half-cleared field would otherwise snap back to the old name under the
+  // cursor. The draft holds what was typed; the party holds the last name that was actually given.
+  const [drafts, setDrafts] = useState<Record<string, string>>({})
+  const [focusLast, setFocusLast] = useState(false)
+  const rows = useRef<HTMLUListElement>(null)
   const [intent, setIntent] = useState('')
   const [city, setCity] = useState('')
   const [activities, setActivities] = useState<string[]>([])
   const [destination, setDestination] = useState<string[]>(['tokyo'])
+
+  // The row that was just added takes the cursor, so the placeholder name is typed over rather than kept.
+  useEffect(() => {
+    if (!focusLast) return
+    const inputs = rows.current?.querySelectorAll('input')
+    const last = inputs?.[inputs.length - 1]
+    last?.focus()
+    last?.select()
+    setFocusLast(false)
+  }, [focusLast])
 
   // The invite link is the swipe link, so anyone who came in through it already has a trip and is never asked to set
   // one up. They go straight back to the deck.
@@ -51,8 +61,24 @@ export const Onboarding = () => {
 
   const nights = range.start && range.end ? nightsBetween(range.start, range.end) : 0
   const datesSet = nights > 0
-  const named = (names[0]?.trim().length ?? 0) > 0
+  const owner = trip.party.find((p) => p.id === trip.ownerId)
+  const shown = (id: string, name: string) => drafts[id] ?? name
+  // Read off the row rather than out of the trip: a blank field is refused as a rename, so the party still holds a
+  // name the screen is not showing, and a button that says you are ready while the field reads empty is a lie.
+  const named = owner ? shown(owner.id, owner.name).trim().length > 0 : false
   const ready = datesSet && named && destination.includes('tokyo')
+
+  const rename = (memberId: string, value: string) => {
+    setDrafts((current) => ({ ...current, [memberId]: value }))
+    renameMember(memberId, value)
+  }
+
+  // A row is a member, so adding one adds a member; the party has no blank people in it. The name is a placeholder
+  // and the field is selected, so the first keystroke replaces it.
+  const addFriend = () => {
+    addMember(`Friend ${trip.party.length}`)
+    setFocusLast(true)
+  }
 
   const toggle = (list: string[], set: (v: string[]) => void, id: string) =>
     set(list.includes(id) ? list.filter((v) => v !== id) : [...list, id])
@@ -60,7 +86,6 @@ export const Onboarding = () => {
   const start = () => {
     if (!ready || !range.start) return
     setDates(range.start, nights)
-    setParty(names)
     navigate(`/t/${trip.id}/swipe`)
   }
 
@@ -85,24 +110,42 @@ export const Onboarding = () => {
 
       <section className="ob-section" data-state={named ? 'decided' : 'open'}>
         <p className="t-label ob-legend">Who Is Coming</p>
-        <ul className="ob-party">
-          {PARTY_ROWS.map((row, i) => (
-            <li key={row} className="ob-party-row">
+        <ul className="ob-party" ref={rows}>
+          {trip.party.map((member, i) => (
+            <li key={member.id} className="ob-party-row">
               <span className="t-label ob-party-role">{i === 0 ? 'You' : 'Friend'}</span>
               <input
                 className="field-input"
                 type="text"
-                value={names[i] ?? ''}
-                aria-label={i === 0 ? 'Your name' : `Friend ${i}`}
-                placeholder={i === 0 ? 'Your name' : 'Leave blank to drop'}
-                onChange={(e) => setNames((current) => current.map((n, j) => (j === i ? e.target.value : n)))}
+                value={shown(member.id, member.name)}
+                aria-label={i === 0 ? 'Your name' : `Name of friend ${i}`}
+                placeholder={i === 0 ? 'Your name' : 'Their name'}
+                onChange={(e) => rename(member.id, e.target.value)}
               />
+              {/* The owner has no remove control. Everyone else's takes them and their votes out of the trip,
+                  which is why it is a button rather than a cleared field: the two mean different things now. */}
+              {i > 0 && (
+                <button
+                  type="button"
+                  className="ob-party-drop"
+                  onClick={() => removeMember(member.id)}
+                  aria-label={`Remove ${member.name} from the trip`}
+                  title={`Remove ${member.name} and their votes`}
+                >
+                  &minus;
+                </button>
+              )}
             </li>
           ))}
         </ul>
+        {trip.party.length < MAX_PARTY && (
+          <button type="button" className="ob-party-add t-label" onClick={addFriend}>
+            Add Someone
+          </button>
+        )}
         <p className="t-specimen ob-party-help">
-          Four at most in the prototype. Clear a friend's name and they leave the trip; a row keeps its votes when it is
-          renamed, so you can make this yours without losing anything.
+          Six at most, you and five others. Renaming a row keeps that person&rsquo;s votes, removing one takes their
+          votes with them, and adding one starts them with none.
         </p>
       </section>
 
