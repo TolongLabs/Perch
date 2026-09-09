@@ -359,6 +359,30 @@ content: the perch, the drag and the cross-fade still honour it.
 
 ---
 
+## The Islands
+
+**Added 8 September with #120, refined 9 September with #180.** The rail on the left, the cluster top right and the
+account dropover are the one thing in the product that floats over scrolling content, so they are the one surface where
+depth is earned. Everything here is scoped to `.island` and its scrim; cards, plates and buttons in the page keep their
+3px outlines and stay shadowless.
+
+| Property | Value                                                                                  | Why                                                                         |
+| -------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| Border   | 1px hairline, ink at 12 percent in light, paper at 10 percent in dark                  | The 3px outline is the seal's device for content, and chrome is not content |
+| Ground   | `--paper` at 78 percent behind `blur(20px) saturate(150%)`, prefixed declaration first | Content shows through, so the island reads as hovering, not pasted on       |
+| Shadow   | `0 1px 2px` ink 4 percent and `0 10px 24px` ink 12 percent; paper-tinted in dark       | The only shadow in the product                                              |
+| Scrim    | Ink at 22 percent in light, 16 in dark, plus `blur(8px)` on the scrim itself           | The page recedes as the rail expands, rather than competing with it         |
+| Rows     | 44px, the Perch mark as the rail's head, inner rows stay pills                         | The system has two radii and a third would carry nothing                    |
+| Outline  | Full ink in dark, never muted                                                          | The scrim already separates an expanded island                              |
+
+**Measured on #180, 46 text samples over the Desk's day tints and a playing reel in both themes:** worst text 4.98:1,
+the unread count in dark at rest; worst icon 3.73:1. Two rules fell out of the measurements. **`--ink-muted` is not used
+on island text**, because with the panel open over a bright reel the ground composites to about `#484543` in dark and
+muted ink reads 2.71:1 there; the type role already says secondary. **The cluster stays above the scrim**, because an
+island blurred behind another island's blur reads as a rendering fault. The scrim transitions its background rather than
+its opacity, since group opacity would fade the blur with it. Two fallbacks ship: `@supports not` for a browser without
+`backdrop-filter`, and `prefers-reduced-transparency: reduce`, which returns an opaque paper ground.
+
 ## Components, Briefly
 
 **Only the ones where the rules above are not obvious.**
@@ -427,7 +451,7 @@ cannot rebuild honestly:
 | A coloured rail down a rounded card       | Cards are used only where they are the best affordance, never nested, and never railed or shadowed                                                                                                                                                                                                            |
 | Numbered markers on non-sequences         | Numerals appear only on the perch and on the day numerals of a four-day calendar, both real sequences                                                                                                                                                                                                         |
 | Three items because three feels balanced  | Four states because the product has four; nine chromatic palette entries because there are nine                                                                                                                                                                                                               |
-| Unmotivated glassmorphism                 | None                                                                                                                                                                                                                                                                                                          |
+| Unmotivated glassmorphism                 | The islands only, the one surface that floats over content, see The Islands                                                                                                                                                                                                                                   |
 | Dark dashboard, neon lines, no data       | Light, printed, and every number on screen is derived from a vote                                                                                                                                                                                                                                             |
 
 ---
