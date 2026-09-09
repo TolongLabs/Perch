@@ -784,6 +784,19 @@ export async function recordDemo(options = {}) {
     await releaseRail()
     const spreads = page.locator('.day-spread')
     await must(spreads.first(), 'shot 10 book day plates')
+    // Since #281 each plate is a Leaflet map pulling OpenStreetMap tiles at record time, which is the first thing in
+    // this film that depends on somebody else's server. A tile still in flight paints as nothing, and nothing is
+    // invisible to every rect this beat asserts -- the same blind spot as the scrim. Wait for Leaflet's own
+    // leaflet-tile-loaded to catch up with the tiles it asked for, on every plate, before the camera moves.
+    await page.waitForFunction(
+      () =>
+        [...document.querySelectorAll('.day-spread .leaflet-container')].every((map) => {
+          const asked = map.querySelectorAll('.leaflet-tile').length
+          return asked > 0 && map.querySelectorAll('.leaflet-tile-loaded').length === asked
+        }),
+      undefined,
+      { timeout }
+    )
     await mark('shot-10')
     // One framing per spread, at its top. This beat used to take two, because #164 put the drawn route and the link
     // at the foot of a spread far taller than the viewport, and framing only the top left both below the fold while
@@ -805,10 +818,13 @@ export async function recordDemo(options = {}) {
       if (rail !== true) return rail
       const maps = await countOf('a.day-route[href*="google.com/maps"]')
       // Per day rather than a total, because the narration says each plate draws its own day. A global count of four
-      // is also satisfied by one day drawing four lines and three drawing none.
-      const drawing = await countOf('.day-spread:has(.spread-pin svg path)')
+      // is also satisfied by one day drawing four lines and three drawing none. The route is the layer under the
+      // tiles, so this still reads true on a plate whose tiles never arrived -- which is the point of it being there.
+      const drawing = await countOf('.day-spread:has(.daymap-under path)')
+      const painted = await countOf('.day-spread:has(.leaflet-tile-loaded)')
       if (maps !== 4) return `${maps} Transit Route links, expected 4`
       if (drawing !== 4) return `${drawing} days draw a route, expected 4 -- the rest are placeholders`
+      if (painted !== 4) return `${painted} plates have a painted tile, expected 4 -- the map filmed as bare tint`
       // Counting the DOM is not enough here and never was: the first cut of this beat passed every count while the
       // camera sat on the posters and never framed a plate. Both things the narration names are asserted against
       // their own rects, never against a span that merely reaches them -- the link is 172px at the right end of an
