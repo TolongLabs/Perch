@@ -68,16 +68,16 @@ each day and colours it by how well the route holds, and the finished trip print
 makes in swipes survives intact to a printed keepsake, and the only hands it passes through are the organiser's,
 dragging. One chain, and the feature list below is that chain in order.
 
-| Feature          | What It Does                                                                                                                   |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| **Onboarding**   | Free text first, chips as shortcuts under it, and a drawn month tapped twice for the dates                                     |
-| **The Deck**     | The invite link. Each place is a reel; friends swipe yes or no with no account and no install                                  |
-| **The Tally**    | A percentage per place. The owner's swipe weighs 1.5; unanimous places go gold, places nobody wanted are greyed                |
-| **The Desk**     | Four days by three slots. She drags what won into slots, pins what must not move, and Plan The Days orders every day around it |
-| **Feasibility**  | Each day is green, gold or red with a stated reason: it holds, it holds but the order is slow, or a stop is outside hours      |
-| **The Perch**    | Remove a card and the drawer offers the next-ranked voted-in place for that slot, so the trip cannot empty                     |
-| **Before We Go** | A checklist derived from the trip itself, and all of it ticked is what unlocks the print                                       |
-| **The Book**     | The shared link and the keepsake. One plate per day drawing that day's real route, with a transit deep link under each         |
+| Feature          | What It Does                                                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Onboarding**   | Free text first, chips as shortcuts under it, and a drawn month tapped twice for the dates                                                        |
+| **The Deck**     | The invite link. Each place is a reel; friends swipe yes or no with no account and no install                                                     |
+| **The Tally**    | A percentage per place. The owner's swipe weighs 1.5; unanimous places go gold, places nobody wanted are greyed                                   |
+| **The Desk**     | Four days, three to six slots each. She drags what won into slots, pins what must not move, and Plan The Days orders every day around it          |
+| **Feasibility**  | Each day is green, gold or red with a stated reason: it holds, it holds but the order is slow, or a stop is outside hours                         |
+| **The Perch**    | Remove a card and the drawer offers the next-ranked voted-in place for that slot, so the trip cannot empty                                        |
+| **Before We Go** | A checklist derived from the trip itself, and all of it ticked is what unlocks the print                                                          |
+| **The Book**     | The shared link and the keepsake. One plate per day leading with its stops as pictures, the day's drawn route and a transit deep link at its foot |
 
 **The scheduler is a heuristic and the copy never calls it AI**: cluster by area per day, order by best period and
 opening hours, nearest neighbour within the day. Its colours are the explanation, and every red carries the reason.
