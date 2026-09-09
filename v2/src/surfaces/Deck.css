@@ -260,26 +260,30 @@
    the product has no emoji register to put one in. */
 .deck-rise {
   position: absolute;
-  top: 42%;
+  top: 34%;
   left: 50%;
   z-index: 5;
   display: flex;
-  gap: var(--s3);
+  gap: var(--s4);
   pointer-events: none;
   transform: translateX(-50%);
 }
 
+/* A ring in the paper as well as the colour, because the dot travels over a photograph and a 6px chip's worth of
+   colour disappears into a brown building. The ring is what holds it on any frame; the glow is what makes it a
+   mark rising rather than a sticker sitting there. */
 .rise-dot {
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid color-mix(in oklab, var(--paper) 88%, transparent);
   border-radius: var(--r-pill);
   background: var(--decided);
-  box-shadow: 0 0 12px color-mix(in oklab, var(--decided) 70%, transparent);
+  box-shadow: 0 0 18px color-mix(in oklab, var(--decided) 80%, transparent);
 }
 
 .deck-rise[data-rise="must"] .rise-dot {
   background: var(--gold);
-  box-shadow: 0 0 12px color-mix(in oklab, var(--gold) 70%, transparent);
+  box-shadow: 0 0 18px color-mix(in oklab, var(--gold) 80%, transparent);
 }
 
 /* Fixed to the viewport, not to the reel. A 36px halo on the card's own edge is the same size as the card's radius
@@ -344,28 +348,36 @@
 
   /* The rise is the whole of this mark, so it is the one part that has nothing to show when motion is suppressed.
      The dots still appear and still hold for the flash window there; they simply do not travel. */
+  /* Not `--ease-expo`. The island's curve puts 85% of the travel in the first third, which threw the mark off the
+     top of the screen before it could be seen; the product's ordinary ease keeps it moving through the middle. */
   .rise-dot {
-    animation: dot-rise var(--flash) var(--ease-expo) forwards;
+    animation: dot-rise var(--flash) var(--ease) forwards;
   }
 
   .rise-dot:nth-child(2) {
     animation-delay: 90ms;
   }
 
+  /* Far enough to leave the reel rather than to drift inside it, which is what "rises off the reel" means: from
+     34% of a 473px card the last frame is 39px above its top edge. */
   @keyframes dot-rise {
     from {
       opacity: 0;
-      transform: translateY(28px) scale(0.4);
+      transform: translateY(36px) scale(0.4);
     }
 
-    30% {
+    22% {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: translateY(-10px) scale(1);
+    }
+
+    58% {
+      opacity: 1;
     }
 
     to {
       opacity: 0;
-      transform: translateY(-96px) scale(0.9);
+      transform: translateY(-200px) scale(0.85);
     }
   }
 }
