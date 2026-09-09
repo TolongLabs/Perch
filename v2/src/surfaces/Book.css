@@ -442,3 +442,38 @@
 @page {
   margin: 14mm;
 }
+
+/* The cold visit. Not a card and not centred: it is a spread like any other, set in the same plate register, so the
+   reader is looking at the Book rather than at an error the Book put in front of them. */
+.book-cold {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s5);
+}
+
+.book-cold-line {
+  margin: 0;
+}
+
+.book-cold-note {
+  margin: 0;
+  max-width: 46ch;
+}
+
+.book-cold-go {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-plate);
+  background: var(--ink);
+  color: var(--plate);
+  text-decoration: none;
+}
+
+.book-cold-go:hover,
+.book-cold-go:focus-visible {
+  background: color-mix(in oklab, var(--tint, var(--open)) 34%, var(--ink));
+}
