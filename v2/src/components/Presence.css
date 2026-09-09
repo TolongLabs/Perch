@@ -1,0 +1,133 @@
+/* Presence sits beside the deck rather than in it. The reel is the thing being answered and nothing may crowd it,
+   so on a wide screen the strip hangs in the page the centred column leaves either side, and on a phone, where
+   there is no such page, it collapses to a row above the reel and gives up its width by overlapping. */
+
+.presence {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+}
+
+.presence-list {
+  display: flex;
+  gap: var(--s2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.presence-one {
+  display: flex;
+}
+
+.presence-disc {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid var(--ink);
+  border-radius: var(--r-pill);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  transition:
+    background var(--motion-step) var(--ease),
+    border-color var(--motion-step) var(--ease);
+}
+
+/* Away is drawn by weight, not by dimming: an opacity that reads as "absent" also reads as unreadable, and these
+   are two letters at 11px. Muted ink holds 4.5:1 on paper and the boundary holds 3:1. */
+.presence-one[data-state="away"] .presence-disc {
+  border-color: var(--ink-muted);
+  /* Dashed rather than merely lighter. Weight alone is the difference between two states at 32px that a reader has
+     to compare against each other to read; a broken ring is the same difference whatever the ink is doing. */
+  border-style: dashed;
+  color: var(--ink-muted);
+  background: transparent;
+}
+
+.presence-one[data-state="swiping"] .presence-disc {
+  border-color: var(--open);
+  background: var(--ground-open);
+}
+
+/* The live dot, and the only thing on the strip that moves. It is a mark on the disc rather than a colour change
+   to it, because the state it reports is momentary and the disc's own colour already says who is here. */
+.presence-one[data-state="swiping"] .presence-disc::after {
+  content: "";
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 9px;
+  height: 9px;
+  border: 2px solid var(--paper);
+  border-radius: var(--r-pill);
+  background: var(--open);
+  animation: presence-live 2s var(--ease) infinite;
+}
+
+@keyframes presence-live {
+  0%,
+  70%,
+  100% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.28);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .presence-one[data-state="swiping"] .presence-disc::after {
+    animation: none;
+  }
+
+  .presence-disc {
+    transition: none;
+  }
+}
+
+.presence-line {
+  color: var(--ink-muted);
+  margin: 0;
+}
+
+/* Above the breakpoint the column has page either side, so the strip goes vertical against the deck's right edge
+   with its sentence under it, which is where the leader asked for it and where it reads as belonging to the deck
+   rather than floating in the margin. */
+@media (min-width: 900px) {
+  .presence {
+    position: absolute;
+    top: 0;
+    left: 100%;
+    margin-left: var(--s5);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s4);
+  }
+
+  .presence-list {
+    flex-direction: column;
+    gap: var(--s3);
+  }
+
+  /* Wide enough for the sentence to set on three lines rather than one word to a line, and narrow enough that it
+     stays a caption on the strip rather than a column of its own beside the reel. */
+  .presence {
+    width: 152px;
+  }
+}
+
+/* On a phone the circles overlap, which is what a row of four avatars does when it has no room, and the sentence
+   sits beside them rather than under them so the strip costs the reel no height at all. */
+@media (max-width: 899px) {
+  .presence-one + .presence-one .presence-disc {
+    margin-left: -10px;
+  }
+
+  .presence-line {
+    flex: 1;
+  }
+}
