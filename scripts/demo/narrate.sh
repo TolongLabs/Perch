@@ -22,6 +22,11 @@ music_duck="${DEMO_MUSIC_DUCK:-20}"
 music_fade_in="${DEMO_MUSIC_FADE_IN:-4}"
 music_fade_out="${DEMO_MUSIC_FADE_OUT:-7}"
 music_credit="${DEMO_MUSIC_CREDIT:-}"
+# A finished film can be run faster than it was shot. Picture and voice move together, so what is on screen still
+# matches what is being said, and the burned subtitles ride the same setpts rather than needing a second pass over
+# the SRT. The bed is deliberately not sped up: it is music rather than performance, and a lofi loop at 1.5x is a
+# different piece of music. atempo covers 0.5 to 2.0 in one pass, which is the range this accepts.
+speed="${DEMO_SPEED:-1}"
 
 require_command() {
   command -v "$1" >/dev/null 2>&1 || [ -x "$1" ] || { echo "missing command: $1" >&2; exit 1; }
@@ -34,6 +39,12 @@ for input in "$source" "$demo_dir/beats.json" "$script" "$speak"; do
   [ -f "$input" ] || { echo "missing: $input" >&2; exit 1; }
 done
 [ "$source" != "$output" ] || { echo "DEMO_OUT must differ from DEMO_SOURCE" >&2; exit 1; }
+python3 - "$speed" <<'PY' || { echo "DEMO_SPEED must be between 0.5 and 2.0" >&2; exit 1; }
+import sys
+
+value = float(sys.argv[1])
+raise SystemExit(0 if 0.5 <= value <= 2.0 else 1)
+PY
 if [ -n "$music" ]; then
   [ -f "$music" ] || { echo "missing music: $music" >&2; exit 1; }
   # Checked here rather than at the mux, because the failure it guards against is a film that ships with an uncredited
@@ -127,28 +138,47 @@ output_path="$(cd -- "$(dirname -- "$output")" && pwd)/$(basename -- "$output")"
 # The level is derived rather than guessed: both the narration and the chosen slice of the bed are measured, and the
 # bed is placed DEMO_MUSIC_DUCK decibels under the narration's mean. A fixed offset beats a guessed gain, because a
 # quiet mix and a loud one need different numbers to sit in the same place.
+video_seconds="$("$ffprobe" -v error -show_entries format=duration -of csv=p=0 "$source_path")"
+out_seconds="$(python3 -c "print(round($video_seconds / $speed, 3))")"
+speed_video=''
+voice_tempo=''
+speed_audio_map='1:a'
+speed_audio_filter=''
+if [ "$speed" != "1" ]; then
+  # fps is re-applied after setpts because setpts compresses timestamps rather than dropping frames, so without it
+  # the output carries the source rate multiplied by the speed.
+  speed_video=",setpts=PTS/$speed,fps=$fps"
+  voice_tempo="atempo=$speed,"
+  speed_audio_map='[audio]'
+  speed_audio_filter=";[1:a]${voice_tempo}apad=whole_dur=${out_seconds}[audio]"
+  printf 'speed: %sx, %.1fs of picture becomes %.1fs\n' "$speed" "$video_seconds" "$out_seconds"
+fi
+
 audio_inputs=()
-audio_map='1:a'
-audio_filter=''
+audio_map="$speed_audio_map"
+audio_filter="$speed_audio_filter"
 metadata=()
 if [ -n "$music" ]; then
   metadata=(-metadata "comment=Music: $music_credit")
   music_path="$(realpath "$music")"
-  video_seconds="$("$ffprobe" -v error -show_entries format=duration -of csv=p=0 "$source_path")"
   mean_of() {
-    "$ffmpeg" -hide_banner -nostats -i "$1" ${2:+-ss "$2"} -t "$3" -af volumedetect -f null /dev/null 2>&1 |
+    "$ffmpeg" -hide_banner -nostats -i "$1" ${2:+-ss "$2"} -t "$3" -af "${4:-}volumedetect" -f null /dev/null 2>&1 |
       sed -n 's/.*mean_volume: \(-\?[0-9.]*\) dB.*/\1/p' | tail -1
   }
-  narration_mean="$(mean_of "$audio_path" "" "$video_seconds")"
-  music_mean="$(mean_of "$music_path" "$music_start" "$video_seconds")"
+  # Measured through the same tempo the voice will be mixed at. Speeding a recording up puts the same energy into less
+  # time, so the raw file reads about 1.8dB quieter than what actually lands in the mix at 1.5x, and a bed placed
+  # against the raw figure sits that much too low -- far enough under to stop filling the gaps between lines, which
+  # shows up as the film's loudness range widening rather than as anything audible being wrong.
+  narration_mean="$(mean_of "$audio_path" "" "$out_seconds" "$voice_tempo")"
+  music_mean="$(mean_of "$music_path" "$music_start" "$out_seconds")"
   music_gain="$(python3 -c "print(round(($narration_mean - $music_duck) - ($music_mean), 2))")"
-  fade_out_at="$(python3 -c "print(max(0, round($video_seconds - $music_fade_out, 3)))")"
+  fade_out_at="$(python3 -c "print(max(0, round($out_seconds - $music_fade_out, 3)))")"
   echo "music: bed ${music_duck}dB under narration (${narration_mean}dB), applying ${music_gain}dB from ${music_start}s"
   audio_inputs=(-ss "$music_start" -i "$music_path")
   audio_map='[audio]'
   # The narration ends before the picture does, and amix takes its first input's duration, so without padding the
   # voice out to the full video the mix stops early and the bed's fade-out is cut off partway through.
-  audio_filter=";[1:a]apad=whole_dur=${video_seconds}[voice];[2:a]volume=${music_gain}dB,afade=t=in:st=0:d=${music_fade_in},afade=t=out:st=${fade_out_at}:d=${music_fade_out}[bed];[voice][bed]amix=inputs=2:duration=first:normalize=0[audio]"
+  audio_filter=";[1:a]${voice_tempo}apad=whole_dur=${out_seconds}[voice];[2:a]volume=${music_gain}dB,afade=t=in:st=0:d=${music_fade_in},afade=t=out:st=${fade_out_at}:d=${music_fade_out}[bed];[voice][bed]amix=inputs=2:duration=first:normalize=0[audio]"
 fi
 
 # The two maps are ordered video first on purpose. ffmpeg lays the output streams down in the order it is given them,
@@ -165,7 +195,7 @@ mux() {
   )
 }
 
-mux "$output_path" "[0:v]$fit,$subtitle_filter[video]$audio_filter" "$audio_map" \
+mux "$output_path" "[0:v]$fit,$subtitle_filter$speed_video[video]$audio_filter" "$audio_map" \
   "${audio_inputs[@]}" "${metadata[@]}"
 
 # A voice-only twin of every film that carries a bed, kept beside the take rather than next to the deliverable. The
@@ -174,7 +204,7 @@ mux "$output_path" "[0:v]$fit,$subtitle_filter[video]$audio_filter" "$audio_map"
 silent_path=''
 if [ -n "$music" ]; then
   silent_path="$demo_dir/$(basename -- "${output_path%.mp4}")-silent.mp4"
-  mux "$silent_path" "[0:v]$fit,$subtitle_filter[video]" '1:a'
+  mux "$silent_path" "[0:v]$fit,$subtitle_filter$speed_video[video]$speed_audio_filter" "$speed_audio_map"
 fi
 
 final_seconds="$("$ffprobe" -v error -show_entries format=duration -of csv=p=0 "$output_path")"

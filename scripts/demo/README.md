@@ -528,6 +528,37 @@ have it removed, rather than each transition needing its own special case.
 
 ---
 
+## Running The Film Faster Than It Was Shot
+
+`DEMO_SPEED` re-times the finished film. `1` is off and byte-identical to no knob at all; atempo covers `0.5` to `2.0`
+in one pass, which is the range it accepts.
+
+**Picture and voice move together and the subtitles come along for free.** The speed is applied inside the mux, after
+the subtitles are burned, so `setpts` compresses the cards with the frames they belong to -- there is no second pass
+over the SRT and the file on disk keeps its original timings, which looks wrong and is not. `fps` is re-applied after
+`setpts`, or the output carries the source rate multiplied by the speed.
+
+**The bed is deliberately not sped up.** It is music rather than performance, and a lofi loop at 1.5x is a different
+piece of music. Only the voice gets `atempo`; the bed is laid against the new, shorter length.
+
+**Measure the narration through the tempo it will be mixed at, not the file on disk.** Speeding a recording up puts the
+same energy into less time, so the raw file reads about 1.8 dB quieter at 1.5x than what lands in the mix. A bed placed
+against the raw figure sits that far too low, stops filling the gaps between lines, and the film's loudness range
+widens: 20.5 LU measured that way against 8.0 LU once corrected. Nothing sounds broken, which is why it needs measuring
+rather than listening for.
+
+| Speed  | 4:59.6 becomes | Speech  |
+| ------ | -------------- | ------- |
+| `1`    | 5:00.6         | 175 wpm |
+| `1.25` | 4:00.5         | 219 wpm |
+| `1.5`  | 3:20.4         | 262 wpm |
+
+**Speech rate is the thing to argue about, not runtime.** Kokoro speaks at a measured 175 wpm; the multiplier applies to
+that directly. Audiobooks sit near 150 and a fast podcast near 180, so 1.5x is past the point where a listener hearing
+product names for the first time can follow them.
+
+---
+
 ## Check It At Film Scale, Not At 1440
 
 **A screen judged in a browser at 1440 has not been judged.** The capture is 1440x900, the film is 1920x1080, so the
