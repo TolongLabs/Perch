@@ -804,14 +804,24 @@ export async function recordDemo(options = {}) {
     // head and pinned the plate on the photograph, so band, link, title, picture and plate now sit between 48 and
     // 522 of a spread 1470 tall. A second scroll is no longer merely unnecessary, it is wrong: it pushes both off
     // the top and points the camera at the stops.
-    // scrollIntoViewIfNeeded is wrong for this one and quietly so. It scrolls the minimum that puts the element in
-    // view, and a spread is 1470 tall against a 900 viewport, so for every day but the first it satisfies itself by
-    // leaving the top 193px above the fold -- link and plate both off-screen, every count still passing. Measured
-    // against the deploy: block start lands all four days identically at link 136..158 and plate 219..366.
+    // The camera scrolls rather than jumps, because since #284 the leaves turn on a scroll-driven `view()` timeline:
+    // the turn IS the scroll position, so an instant jump lands on the finished state and the film never sees a page
+    // move. It also cannot use scrollIntoViewIfNeeded, which scrolls the minimum that puts an element in view and,
+    // for a spread taller than the viewport, satisfies itself by leaving the top 193px above the fold -- link and
+    // plate off-screen with every count still passing. So: glide to each spread's own top, then hold on the plate.
+    const glideTo = async (locator, travelMs = 2_000, holdMs = 900) => {
+      const to = await locator.evaluate((el) => el.getBoundingClientRect().top + window.scrollY)
+      const from = await page.evaluate(() => window.scrollY)
+      const steps = Math.max(1, Math.round(travelMs / 40))
+      for (let step = 1; step <= steps; step += 1) {
+        await page.evaluate((y) => window.scrollTo(0, y), from + (to - from) * (step / steps))
+        await pause(40)
+      }
+      await pause(holdMs)
+    }
     const count = await spreads.count()
     for (let i = 0; i < count; i += 1) {
-      await spreads.nth(i).evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'instant' }))
-      await pause(2_900)
+      await glideTo(spreads.nth(i))
     }
     await claim('shot-10', 'four plates, each drawing its route, each with a Transit Route link', async () => {
       const rail = await railCollapsed()
