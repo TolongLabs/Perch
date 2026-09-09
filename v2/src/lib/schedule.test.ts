@@ -86,6 +86,8 @@ describe('evaluateDay', () => {
   test('a day inside hours that ends before 21:00 is green', () => {
     const result = evaluateDay(dayWith(['sensoji', 'nakamise', 'ameyoko']), trip.options)
     expect(result?.status).toBe('green')
+    expect(result?.reason).toBeNull()
+    expect(result?.endMin).toBe(9 * 60 + result!.daySpanMin)
     expect(result?.transitMin).toBeGreaterThan(0)
     expect(result?.dwellMin).toBe(60 + 45 + 60)
     expect(result?.daySpanMin).toBeGreaterThan(0)
@@ -97,6 +99,7 @@ describe('evaluateDay', () => {
     expect(result?.status).toBe('red')
     expect(result?.stopsOutsideHours).toEqual(['tokyo-national-museum'])
     expect(result?.rationale).toBe('Tokyo National Museum is closed on Mondays.')
+    expect(result?.reason).toBe('closed')
   })
 
   test('the closed-day sentence names the weekday, not a generic hours line', () => {
@@ -113,6 +116,7 @@ describe('evaluateDay', () => {
     expect(result?.status).toBe('red')
     expect(result?.stopsOutsideHours).toContain('tsukiji-outer-market')
     expect(result?.rationale).toMatch(/Tsukiji Outer Market would be reached at \d+:\d\d, after it closes at 14:00/)
+    expect(result?.reason).toBe('hours')
   })
 
   test('an order far slower than the heuristic order is gold', () => {
@@ -127,6 +131,7 @@ describe('evaluateDay', () => {
       late as typeof trip.options
     )
     expect(result?.status).toBe('red')
+    expect(result?.reason).toBe('overrun')
     expect(result?.rationale).toContain('past 21:00')
   })
 })

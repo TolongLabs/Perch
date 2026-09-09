@@ -81,6 +81,7 @@ export const evaluateDay = (day: Day, options: Record<string, Place>): DayFeasib
   let dwell = 0
   const outside: string[] = []
   const reasons: string[] = []
+  let reason: DayFeasibility['reason'] = null
   const hhmm = (m: number): string => `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}`
   stops.forEach((place, i) => {
     const previous = stops[i - 1]
@@ -90,12 +91,15 @@ export const evaluateDay = (day: Day, options: Record<string, Place>): DayFeasib
     const leave = arrive + place.dwellMin
     if (!openOn(place, day)) {
       outside.push(place.id)
+      reason ??= 'closed'
       reasons.push(`${place.name} is closed on ${day.weekday}s`)
     } else if (arrive >= minutes(place.closes)) {
       outside.push(place.id)
+      reason ??= 'hours'
       reasons.push(`${place.name} would be reached at ${hhmm(arrive)}, after it closes at ${place.closes}`)
     } else if (leave > minutes(place.closes)) {
       outside.push(place.id)
+      reason ??= 'hours'
       reasons.push(`${place.name} closes at ${place.closes}, before its ${place.dwellMin} minutes are done`)
     }
     dwell += place.dwellMin
@@ -104,24 +108,26 @@ export const evaluateDay = (day: Day, options: Record<string, Place>): DayFeasib
   const daySpanMin = clock - DAY_START
   const overrun = clock - DAY_END
 
-  const base = { transitMin: transit, dwellMin: dwell, daySpanMin, stopsOutsideHours: outside }
+  const base = { transitMin: transit, dwellMin: dwell, daySpanMin, endMin: clock, stopsOutsideHours: outside }
   if (outside.length > 0) {
-    return { ...base, status: 'red', rationale: `${reasons.join(', and ')}.` }
+    return { ...base, status: 'red', reason, rationale: `${reasons.join(', and ')}.` }
   }
   if (overrun > 0) {
-    return { ...base, status: 'red', rationale: `The day runs ${overrun} minutes past 21:00.` }
+    return { ...base, status: 'red', reason: 'overrun', rationale: `The day runs ${overrun} minutes past 21:00.` }
   }
   const own = routeMin(scheduleOrder(stops))
   if (own > 0 && transit > own * GOLD_SLACK) {
     return {
       ...base,
       status: 'gold',
+      reason: null,
       rationale: `This order spends ${transit - own} more minutes in transit than the heuristic order.`
     }
   }
   return {
     ...base,
     status: 'green',
+    reason: null,
     rationale: `Every stop fits its hours and the day ends by ${hhmm(clock)}.`
   }
 }

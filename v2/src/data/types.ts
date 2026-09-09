@@ -55,9 +55,13 @@ export type Slot = {
 
 export type DayFeasibility = {
   status: 'green' | 'gold' | 'red'
+  /** Why a red day is red: a stop closed that weekday, a stop reached outside its hours, or the day past 21:00. */
+  reason: 'closed' | 'hours' | 'overrun' | null
   transitMin: number
   dwellMin: number
   daySpanMin: number
+  /** Minutes after midnight when the last stop is left, from a 09:00 start. */
+  endMin: number
   stopsOutsideHours: string[]
   rationale: string
 }
