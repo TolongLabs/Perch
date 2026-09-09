@@ -1,4 +1,5 @@
 import { useDraggable } from '@dnd-kit/core'
+import { X } from 'lucide-react'
 import type { CSSProperties } from 'react'
 import type { Place } from '../data/types'
 import { duration, price } from '../lib/format'
@@ -91,14 +92,17 @@ export const PlacedCard = ({
         >
           {pinned ? 'Unpin' : 'Pin'}
         </button>
-        {/* Drawn apart from Pin rather than beside it. The two were pixel-identical outline pills on twelve cards,
-            one protecting a stop and one destroying it, on a surface with no undo. */}
+        {/* Drawn apart from Pin, but by its glyph rather than by its colour. The two were pixel-identical outline
+            pills on twelve cards, one protecting a stop and one destroying it, on a surface with no undo; twelve
+            crimson pills at rest fixed that and cost the calendar its colour balance, on the surface the film
+            watches longest. The at-risk role means something changed, so it belongs to the moment of intent. */}
         <button
           type="button"
           className="card-act card-act-risk t-label"
           onClick={onRemove}
           title="Take this stop off the day. The perch offers a replacement first"
         >
+          <X size={11} strokeWidth={2.25} aria-hidden="true" />
           Remove
         </button>
       </div>

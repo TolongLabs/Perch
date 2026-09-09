@@ -87,7 +87,10 @@
 }
 
 .card-act {
-  padding: 2px var(--s3);
+  /* 4, not 2. #232 restored the 10px step these were authored at, which shrank the box from 24 to 21 tall and put
+     twelve controls under the 24px WCAG 2.5.8 floor that #235 had just cleared elsewhere. The type is the smaller
+     one it was always meant to be; the target is not. */
+  padding: 4px var(--s3);
   border: 1px solid color-mix(in oklab, var(--ink) 22%, transparent);
   border-radius: var(--r-pill);
   background: transparent;
@@ -103,16 +106,18 @@
   color: var(--ink);
 }
 
-/* The destructive one, told apart at rest and not only on hover: the critique's point was that a person choosing
-   between them sees no difference until they have already committed the pointer. The border also carries the
-   boundary, which the neutral 22% ink mix did not - it measured 1.55:1 against 3:1. */
+/* Told apart at rest by its glyph, not by its colour: a person choosing between the two sees a mark that means
+   removal before the pointer has committed, and the calendar keeps its palette. The at-risk role arrives at the
+   moment of intent - hover, focus, and while the pointer is down - which is what that colour is for. */
 .card-act-risk {
-  border-color: var(--at-risk);
-  color: var(--at-risk);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .card-act-risk:hover,
-.card-act-risk:focus-visible {
+.card-act-risk:focus-visible,
+.card-act-risk:active {
   border-color: var(--at-risk);
   background: var(--at-risk);
   color: var(--paper);
