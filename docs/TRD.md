@@ -892,6 +892,20 @@ Six items derived from a Tokyo trip in November. All must be ticked to enable Pr
 | Travel insurance  | No     | duration:4days                |
 | JR Pass           | Yes    | destination:tokyo             |
 
+### Handbook Fixture
+
+`data/handbook.ts` holds every line the Handbook can say, and `handbookFor(trip)` returns only the lines the trip earns:
+Take Care entries whose `derivedFrom` is a fact of the trip, news rows dated inside the trip, and packing entries whose
+derivation is the destination, a place kind on the calendar or a news trigger such as `weather:rain`. Every entry
+carries a `source`; the weather rows are climate normals from the Japan Meteorological Agency and say so in their text,
+because a forecast for a date fourteen months out is not a forecast.
+
+| Section   | Entries | Derived From                                                                        |
+| --------- | ------- | ----------------------------------------------------------------------------------- |
+| Take Care | 9       | `destination:japan`, `kind:shrine`, `kind:temple`, `kind:museum`, `tag:street-food` |
+| News      | 5       | The trip's dates: weather normals, sunset, autumn colour, the 23 November holiday   |
+| Packing   | 7       | `destination:japan`, `kind:temple`, `weather:rain`, `weather:cool`                  |
+
 ### The Prototype Controls
 
 **The Desk carries a labelled block called `Prototype Controls`, inside the product surface, saying it is not part of
@@ -935,7 +949,9 @@ The LLM call is one per new plan. The model choice, key and cost ceiling are und
 ### Real Data Sources
 
 The places, hours and prices that are hand-authored today would come from OpenStreetMap, Wikidata and Wikimedia Commons.
-See [The Real Place Data Gap](#the-real-place-data-gap).
+See [The Real Place Data Gap](#the-real-place-data-gap). The Handbook's news rows would come from a weather API keyed to
+the trip's dates and city, and its disruption lines from the transit operators' service notices; the etiquette and
+packing lines stay authored per destination, since no API writes advice.
 
 ## The Real Place Data Gap
 
