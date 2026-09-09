@@ -228,6 +228,71 @@
   color: var(--paper);
 }
 
+/* Under the heading, in the specimen line's own register: it is metadata about the screen rather than a thing to
+   act on, which is exactly what a specimen line is for. */
+.deck-as {
+  margin: calc(var(--s5) * -1) 0 0;
+}
+
+/* Who Are You? A list of names, one per row, on the register the Deck's own answers use. */
+.deck-who {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--s4);
+  padding: var(--s7) var(--s5);
+  border-radius: var(--r-desk);
+  background: var(--ground-open);
+}
+
+.deck-wholist {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.deck-whopick {
+  display: flex;
+  align-items: center;
+  gap: var(--s3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease);
+}
+
+.deck-whopick:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* The same mark the Voters list uses for the owner, so the one name that is not yours reads the same in both. */
+.deck-whoowner {
+  margin-left: auto;
+  padding: 2px var(--s2);
+  border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--ink) 10%, transparent);
+  color: var(--ink-muted);
+  font-size: 10px;
+}
+
+.deck-whopick:hover .deck-whoowner {
+  background: color-mix(in oklab, var(--paper) 22%, transparent);
+  color: var(--paper);
+}
+
 .deck-done {
   display: flex;
   flex-direction: column;

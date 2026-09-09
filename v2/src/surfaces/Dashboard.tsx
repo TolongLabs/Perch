@@ -3,6 +3,7 @@ import { CopyLink } from '../components/CopyLink'
 import { Heading, Info } from '../components/Ui'
 import { Voters } from '../components/Voters'
 import { dayLabel } from '../lib/format'
+import { finishedMembers } from '../lib/votes'
 import { useTrip } from '../state'
 import './Dashboard.css'
 
@@ -17,6 +18,9 @@ export const Dashboard = () => {
   const places = Object.keys(trip.options).length
   const swiped = Object.values(trip.votes[trip.ownerId] ?? {}).filter((v) => v !== null).length
   const done = swiped === places
+  // The owner being finished is not the group being finished, and the button should not say it is: an order read
+  // while three of four have answered is a running total, not a result.
+  const allIn = finishedMembers(trip).length === trip.party.length
   const last = trip.days[trip.days.length - 1]
   const inviteUrl = `${window.location.origin}/t/${trip.id}/swipe`
 
@@ -76,7 +80,7 @@ export const Dashboard = () => {
           className="dash-go t-label"
           onClick={() => navigate(done ? `/t/${trip.id}/votes` : `/t/${trip.id}/swipe`)}
         >
-          {done ? 'See The Tally' : 'Open The Deck'}
+          {done ? (allIn ? 'See The Tally' : 'View Current Tally') : 'Open The Deck'}
         </button>
       </section>
 

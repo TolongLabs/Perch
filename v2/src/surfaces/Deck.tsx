@@ -3,7 +3,9 @@ import { type AnimationEvent, useCallback, useEffect, useRef, useState } from 'r
 import { useNavigate } from 'react-router-dom'
 import { ReelCard } from '../components/ReelCard'
 import { Heading } from '../components/Ui'
+import { isJoiner } from '../lib/joiner'
 import { type Swipe, useSwipeGesture } from '../lib/useSwipeGesture'
+import { finishedMembers } from '../lib/votes'
 import { useTrip } from '../state'
 import './Deck.css'
 
@@ -15,12 +17,14 @@ const VISIBLE = 3
  *  match. Kept in step with --flash in Deck.css. */
 const FLASH_MS = 760
 
-export const Deck = () => {
+/**
+ * The swiping itself, for one member. It takes `me` as a prop rather than reading it, because the queue is fixed at
+ * mount and a member who is chosen after that would be handed the previous one's remaining reels; mounting this
+ * fresh per voter is what makes "each member sees their own" true rather than merely intended.
+ */
+const Swiping = ({ me }: { me: string }) => {
   const navigate = useNavigate()
   const { trip, swipe } = useTrip()
-
-  // The prototype has one identity and it is the owner's, so her swipe is the one the tally weights at 1.5.
-  const me = trip.ownerId
 
   // Fixed at mount. Recomputing as votes land would shrink the queue under the swiper's finger and make the count lie.
   const [queue] = useState(() => Object.values(trip.options).filter((p) => trip.votes[me]?.[p.id] == null))
@@ -69,13 +73,18 @@ export const Deck = () => {
   const { dx, dy, dragging, heading, progress, handlers } = useSwipeGesture(commit, leaving === null, !spent)
 
   if (rest.length === 0) {
+    // Two facts, and the second is the one that decides whether the order on the next screen can be trusted yet.
+    const finished = finishedMembers(trip).length
+    const all = finished === trip.party.length
     return (
       <main className="deck">
         <section className="deck-done">
           <Heading as="h1">Every Reel Is Swiped</Heading>
-          <p className="t-specimen">Your votes are in. See how the group is leaning.</p>
+          <p className="t-specimen">
+            You have finished &middot; {finished} of {trip.party.length} have finished
+          </p>
           <button type="button" className="deck-go t-label" onClick={() => navigate(`/t/${trip.id}/votes`)}>
-            See The Tally
+            {all ? 'See The Tally' : 'View Current Tally'}
           </button>
         </section>
       </main>
@@ -90,6 +99,10 @@ export const Deck = () => {
           Reel {index + 1} Of {queue.length}
         </p>
       </header>
+
+      {/* Only where it is in doubt. Someone who came in through the invite link chose a name a moment ago and the
+          rest of the screen never says it back to them; the owner opened her own trip and does not need telling. */}
+      {isJoiner() && <p className="t-specimen deck-as">Voting as {trip.party.find((m) => m.id === me)?.name}</p>}
 
       {/* Outside the stack and fixed to the viewport, because the answer is light entering from the edge of the
           screen the card was thrown at. Inside the stack it was a 36px halo on the reel's own edge, which is what
@@ -179,4 +192,73 @@ export const Deck = () => {
       </div>
     </main>
   )
+}
+
+/** Remembered for the session and not for the trip: a browser that comes back tomorrow is asked again. */
+const VOTER_KEY = 'perch.voter.v1'
+
+const storedVoter = (party: { id: string }[]): string | null => {
+  try {
+    const id = sessionStorage.getItem(VOTER_KEY)
+    return id && party.some((p) => p.id === id) ? id : null
+  } catch {
+    /* A machine with storage disabled is asked once per visit rather than once per session. */
+    return null
+  }
+}
+
+/**
+ * Who is swiping. The invite link is the same link for everyone, so a tab that opened it has no idea which member
+ * it belongs to and used to vote as the owner: a friend following the link cast their answers into her column and
+ * could never start their own. The owner never sees this, because she opened her own trip.
+ */
+export const Deck = () => {
+  const { trip, setCurrentMember } = useTrip()
+  const joiner = isJoiner()
+  const [voter, setVoter] = useState<string | null>(() => (joiner ? storedVoter(trip.party) : null))
+  const me = joiner ? voter : trip.ownerId
+
+  // The choice is the trip's as well as the tab's, because the Tally and the dashboard read who is voting from the
+  // trip. The owner's tab puts it back to her, so a friend's pick in another tab cannot follow her into her own
+  // walkthrough through the store they share.
+  useEffect(() => {
+    if (me && me !== trip.currentMemberId) setCurrentMember(me)
+  }, [me, trip.currentMemberId, setCurrentMember])
+
+  const pick = (id: string) => {
+    try {
+      sessionStorage.setItem(VOTER_KEY, id)
+    } catch {
+      /* The choice still holds for this mount; it is only the memory of it that is lost. */
+    }
+    setCurrentMember(id)
+    setVoter(id)
+  }
+
+  if (!me) {
+    return (
+      <main className="deck">
+        <section className="deck-who">
+          <Heading as="h1">Who Are You?</Heading>
+          <p className="t-specimen">
+            Everyone gets the same link, so Perch cannot tell you apart until you say. Your answers are counted under
+            the name you pick.
+          </p>
+          <ul className="deck-wholist">
+            {trip.party.map((member) => (
+              <li key={member.id}>
+                <button type="button" className="deck-whopick t-label" onClick={() => pick(member.id)}>
+                  {member.name}
+                  {member.id === trip.ownerId && <span className="deck-whoowner">Owner</span>}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </main>
+    )
+  }
+
+  // Keyed, so choosing a name mounts a queue built from that member's own unanswered places.
+  return <Swiping key={me} me={me} />
 }
