@@ -31,9 +31,14 @@
 }
 
 .deck-card {
+  position: relative;
+  z-index: 3;
   touch-action: pan-y;
   cursor: grab;
   user-select: none;
+  /* Its own layer. The stack holds two decoding videos and a still, and the front card's opacity moves on every
+     frame of a drag; without this the cards behind it are repainted each frame, which is the flicker. */
+  backface-visibility: hidden;
 }
 
 .deck-card:active {
@@ -45,15 +50,20 @@
 .deck-card[data-depth="2"] {
   position: absolute;
   inset: 0;
-  z-index: -1;
   pointer-events: none;
 }
 
+/* Explicit, and in depth order. Both sat at -1, so with equal z-index their paint order fell to DOM order and the
+   furthest card drew on top of the nearer one: a still image over a decoding video, each claiming the same layer
+   under a sibling that repaints continuously. Depth 2's box is wholly inside depth 1's, so the deck was stacked
+   back to front and the only thing separating the two was which one Chrome happened to paint last. */
 .deck-card[data-depth="1"] {
+  z-index: 2;
   transform: translateY(10px) scale(0.96);
 }
 
 .deck-card[data-depth="2"] {
+  z-index: 1;
   transform: translateY(20px) scale(0.92);
 }
 
@@ -181,7 +191,7 @@
   position: absolute;
   top: var(--s3);
   left: 50%;
-  z-index: 1;
+  z-index: 4;
   display: flex;
   align-items: center;
   gap: var(--s2);
@@ -200,7 +210,7 @@
 .deck-hint {
   position: absolute;
   top: 50%;
-  z-index: 1;
+  z-index: 4;
   display: grid;
   place-items: center;
   width: 32px;
