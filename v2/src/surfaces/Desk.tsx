@@ -19,7 +19,7 @@ import type { Day, DayFeasibility, Period, Slot } from '../data/types'
 import { dayLabel, duration, price } from '../lib/format'
 import { CLUSTER_AREA } from '../lib/schedule'
 import { nextReplacement, tallyFor, votedIn } from '../lib/votes'
-import { useTrip } from '../state'
+import { SLOTS_PER_PERIOD, useTrip } from '../state'
 import './Desk.css'
 
 const PERIOD: Record<Slot['period'], string> = { morning: 'Morning', afternoon: 'Afternoon', evening: 'Evening' }
@@ -37,18 +37,17 @@ const byPeriod = (day: Day) =>
     cells: day.slots.map((slot, index) => ({ slot, index })).filter(({ slot }) => slot.period === period)
   })).filter(({ cells }) => cells.length > 0)
 
-/** The next period that can take a second slot, in the order the day runs. Null once all three hold two. */
-const nextOpen = (day: Day): Period | null =>
-  PERIODS.find((period) => day.slots.filter((s) => s.period === period).length < 2) ?? null
+/**
+ * What a period's heading can offer, which is one thing at a time: grow while it holds one stop, shrink while its
+ * second is empty, and neither once both are filled. The day-level pair this replaces opened periods in order, so
+ * a person who wanted a second afternoon had to open a second morning first.
+ */
+type SlotAct = { kind: 'add' } | { kind: 'remove'; slot: Slot } | { kind: 'full' }
 
-/** The last second slot that is empty, which is the only one that may close. Null when none can. */
-const lastClosable = (day: Day): Slot | null => {
-  for (const period of [...PERIODS].reverse()) {
-    const held = day.slots.filter((s) => s.period === period)
-    const second = held[1]
-    if (held.length === 2 && second && second.placeId === null) return second
-  }
-  return null
+const slotAct = (cells: { slot: Slot }[]): SlotAct => {
+  if (cells.length < SLOTS_PER_PERIOD) return { kind: 'add' }
+  const second = cells[1]?.slot
+  return second && second.placeId === null ? { kind: 'remove', slot: second } : { kind: 'full' }
 }
 
 /** The three feasibility outcomes, in the words rule 5 uses. The copy never calls the scheduler AI. */
@@ -202,43 +201,6 @@ export const Desk = () => {
                     Day {day.index}
                     <span className="desk-daydate">{dayLabel(day.date)}</span>
                   </p>
-                  <span className="desk-slotacts">
-                    <button
-                      type="button"
-                      className="desk-slotact"
-                      disabled={nextOpen(day) === null}
-                      title={
-                        nextOpen(day)
-                          ? `Add a second ${PERIOD[nextOpen(day) as Period].toLowerCase()} stop to day ${day.index}`
-                          : 'Six stops is the most a day holds'
-                      }
-                      aria-label={`Add a slot to day ${day.index}`}
-                      onClick={() => {
-                        const period = nextOpen(day)
-                        if (period) addSlot(day.index, period)
-                      }}
-                    >
-                      +
-                    </button>
-                    <button
-                      type="button"
-                      className="desk-slotact"
-                      disabled={lastClosable(day) === null}
-                      title={
-                        lastClosable(day)
-                          ? `Close the empty second stop on day ${day.index}`
-                          : 'Only an empty second stop can close'
-                      }
-                      aria-label={`Remove a slot from day ${day.index}`}
-                      onClick={() => {
-                        const slot = lastClosable(day)
-                        if (slot) removeSlot(day.index, slot.id)
-                      }}
-                    >
-                      &minus;
-                    </button>
-                  </span>
-
                   {day.feasibility ? (
                     <span className="desk-fit">
                       <StateChip state={FEASIBILITY[day.feasibility.status].state}>
@@ -252,32 +214,65 @@ export const Desk = () => {
                 </header>
 
                 {/* One period, one heading, holding the one or two stops it owns. */}
-                {byPeriod(day).map(({ period, cells }) => (
-                  <div key={period} className="desk-slot">
-                    <p className="t-label desk-period">{PERIOD[period]}</p>
-                    {cells.map(({ slot, index }) => {
-                      const held = slot.placeId ? trip.options[slot.placeId] : undefined
-                      return (
-                        <SlotCell key={slot.id} dayIndex={day.index} slotIndex={index}>
-                          {held ? (
-                            <PlacedCard
-                              place={held}
-                              dayIndex={day.index}
-                              slotIndex={index}
-                              pinned={slot.pinned}
-                              flying={flight > 0}
-                              order={slotsBefore(dayPos) + index}
-                              onPin={() => (slot.pinned ? unpin(held.id) : pin(held.id, day.index, index))}
-                              onRemove={() => setDrawer({ dayIndex: day.index, slotIndex: index })}
-                            />
-                          ) : (
-                            <p className="desk-empty">Empty</p>
-                          )}
-                        </SlotCell>
-                      )
-                    })}
-                  </div>
-                ))}
+                {byPeriod(day).map(({ period, cells }) => {
+                  const act = slotAct(cells)
+                  return (
+                    <div key={period} className="desk-slot">
+                      <div className="desk-periodhead">
+                        <p className="t-label desk-period">{PERIOD[period]}</p>
+                        {/* One control, never two: a period can only ever grow or shrink, and at the ceiling it is
+                          the spent + that says why rather than nothing at all. */}
+                        {act.kind === 'remove' ? (
+                          <button
+                            type="button"
+                            className="desk-slotact"
+                            title={`Close the empty second ${PERIOD[period].toLowerCase()} stop on day ${day.index}`}
+                            aria-label={`Remove the second ${PERIOD[period].toLowerCase()} slot from day ${day.index}`}
+                            onClick={() => removeSlot(day.index, act.slot.id)}
+                          >
+                            &minus;
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            className="desk-slotact"
+                            disabled={act.kind === 'full'}
+                            title={
+                              act.kind === 'add'
+                                ? `Add a second ${PERIOD[period].toLowerCase()} stop to day ${day.index}`
+                                : 'Two stops is the most a period holds'
+                            }
+                            aria-label={`Add a second ${PERIOD[period].toLowerCase()} slot to day ${day.index}`}
+                            onClick={() => addSlot(day.index, period)}
+                          >
+                            +
+                          </button>
+                        )}
+                      </div>
+                      {cells.map(({ slot, index }) => {
+                        const held = slot.placeId ? trip.options[slot.placeId] : undefined
+                        return (
+                          <SlotCell key={slot.id} dayIndex={day.index} slotIndex={index}>
+                            {held ? (
+                              <PlacedCard
+                                place={held}
+                                dayIndex={day.index}
+                                slotIndex={index}
+                                pinned={slot.pinned}
+                                flying={flight > 0}
+                                order={slotsBefore(dayPos) + index}
+                                onPin={() => (slot.pinned ? unpin(held.id) : pin(held.id, day.index, index))}
+                                onRemove={() => setDrawer({ dayIndex: day.index, slotIndex: index })}
+                              />
+                            ) : (
+                              <p className="desk-empty">Empty</p>
+                            )}
+                          </SlotCell>
+                        )
+                      })}
+                    </div>
+                  )
+                })}
               </section>
             ))}
           </section>
