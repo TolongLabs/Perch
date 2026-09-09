@@ -3,7 +3,7 @@ import { Plate } from '../components/Plate'
 import { transitMin } from '../data/travel'
 import type { Day, Place, Slot } from '../data/types'
 import { dayCostRM, tripCostRM } from '../lib/cost'
-import { dayLabel, duration, money, price } from '../lib/format'
+import { clock, dayLabel, duration, money, price } from '../lib/format'
 import { transitRoute } from '../lib/mapsLink'
 import { useTrip } from '../state'
 import './Book.css'
@@ -92,10 +92,20 @@ export const Book = () => {
         return (
           <article key={day.index} className="spread day-spread" data-day={day.tint}>
             <header className="spread-head">
-              <p className="t-label spread-band">
-                Day {day.index} &middot; {day.weekday} {dayLabel(day.date)} &middot;{' '}
-                {money(dayCostRM(day, trip.options))}
-              </p>
+              <div className="spread-when">
+                <p className="t-label spread-band">
+                  Day {day.index} &middot; {day.weekday} {dayLabel(day.date)} &middot;{' '}
+                  {money(dayCostRM(day, trip.options))}
+                </p>
+
+                {/* How long the day runs and when it ends, read from the same feasibility walk the Desk's chip is
+                    read from, so the two can never disagree. A day the scheduler has not walked has no span. */}
+                {day.feasibility && (
+                  <p className="t-specimen spread-span">
+                    {duration(day.feasibility.daySpanMin)} &middot; ends {clock(day.feasibility.endMin)}
+                  </p>
+                )}
+              </div>
 
               {/* Day-level, like the band beside it, so the page number stays the last mark on the page. Below the
                   pages it read as a footnote arriving after the book had already finished the spread. */}

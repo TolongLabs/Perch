@@ -230,8 +230,21 @@
   background: none;
 }
 
-.desk-unset {
+/* Both of these carry `.t-specimen`, and `base.css` is imported after the surfaces, so `.t-specimen`'s own
+   `--ink-muted` beats a single class here at equal specificity and later position - the day summary measured
+   3.16:1 on day 3 dark before the day class was added in front. That import order is #232; one extra class is the
+   surgical answer until it lands, and it stays correct afterwards either way. */
+.desk-day .desk-unset {
   margin: 0;
+  color: var(--ink-on-tint);
+}
+
+/* Under the day's heading rather than inside it: the heading says which day, this says what the day costs in time
+   and in money, and squeezing both onto one line made the heading a specimen list. */
+.desk-day .desk-daysum {
+  margin: 0;
+  color: var(--ink-on-tint);
+  font-variant-numeric: tabular-nums;
 }
 
 /* The sidebar */

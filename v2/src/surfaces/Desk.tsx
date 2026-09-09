@@ -19,7 +19,8 @@ import { PlacedCard, PoolCard } from '../components/PlacedCard'
 import { type ChipState, StateChip } from '../components/StateChip'
 import { Heading, Info } from '../components/Ui'
 import type { Day, DayFeasibility, Period, Slot } from '../data/types'
-import { dayLabel, duration, price } from '../lib/format'
+import { dayCostRM } from '../lib/cost'
+import { clock, dayLabel, duration, money, price } from '../lib/format'
 import { CLUSTER_AREA } from '../lib/schedule'
 import { nextReplacement, tallyFor, votedIn } from '../lib/votes'
 import { SLOTS_PER_PERIOD, useTrip } from '../state'
@@ -298,6 +299,16 @@ export const Desk = () => {
                     <p className="t-specimen desk-unset">Not scheduled yet</p>
                   )}
                 </header>
+
+                {/* The two numbers a person decides on. Both were computed already and neither was shown: the walk
+                    knows when the day ends and `dayCostRM` was imported only by the Book, so the Desk asked for a
+                    decision while the Book kept the figures it needed. Read from the same walk as the chip. */}
+                {day.feasibility && (
+                  <p className="t-specimen desk-daysum">
+                    {duration(day.feasibility.daySpanMin)} &middot; ends {clock(day.feasibility.endMin)} &middot;{' '}
+                    {money(dayCostRM(day, trip.options))}
+                  </p>
+                )}
 
                 {/* One period, one heading, holding the one or two stops it owns. */}
                 {byPeriod(day).map(({ period, cells }) => {
