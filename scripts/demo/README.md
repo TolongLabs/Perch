@@ -351,23 +351,26 @@ per attempt and tells you less.
 
 **Opt-in and off by default.** With no `DEMO_MUSIC` the film is voice-only, exactly as version 1 shipped.
 
-| Variable              | Default | Is                                               |
-| --------------------- | ------- | ------------------------------------------------ |
-| `DEMO_MUSIC`          | none    | Path to the bed. Absent means no music at all    |
-| `DEMO_MUSIC_START`    | `0`     | Seconds into the mix, for choosing a section     |
-| `DEMO_MUSIC_DUCK`     | `20`    | Decibels below the narration's **measured** mean |
-| `DEMO_MUSIC_FADE_IN`  | `4`     | Fade in, landing over the open card              |
-| `DEMO_MUSIC_FADE_OUT` | `7`     | Fade out, landing over the close card            |
+| Variable              | Default | Is                                                           |
+| --------------------- | ------- | ------------------------------------------------------------ |
+| `DEMO_MUSIC`          | none    | Path to the bed. Absent means no music at all                |
+| `DEMO_MUSIC_START`    | `0`     | Seconds into the mix, for choosing a section                 |
+| `DEMO_MUSIC_DUCK`     | `20`    | Decibels below the narration's **measured** mean             |
+| `DEMO_MUSIC_FADE_IN`  | `4`     | Fade in, landing over the open card                          |
+| `DEMO_MUSIC_FADE_OUT` | `7`     | Fade out, landing over the close card                        |
+| `DEMO_MUSIC_CREDIT`   | none    | Who the bed is by. **Required** whenever `DEMO_MUSIC` is set |
 
 **The level is derived, not set.** `narrate.sh` measures the narration and the exact slice of music it is about to use,
 then applies whatever gain puts the bed `DEMO_MUSIC_DUCK` below the voice. A hard-coded gain only holds for the mix it
 was chosen on; this holds when the track changes. At 20 dB under, adding the bed moves the finished film's overall mean
 by about 0.1 dB, which is the check that the voice still carries it.
 
-**The path has been run end to end against the 0.2.0 capture.** Rendered with no music it reproduces the shipped film
-byte for byte, so an A/B isolates the bed and nothing else. Adding a bed at the default duck moved the mean from -22.8
-dB to -22.7 dB and the integrated loudness not at all, at -22.1 LUFS either way; loudness range widened from 3.8 LU to
-4.1 LU and true peak did not move.
+**The path has been run end to end against the 0.2.0 capture.** Rendered with no music, and with the narration of the
+day, it reproduced the shipped 0.2.0 film byte for byte, which is what makes an A/B isolate the bed and nothing else.
+Adding a bed at the default duck moved the mean from -22.8 dB to -22.7 dB and the integrated loudness not at all, at
+-22.1 LUFS either way; loudness range widened from 3.8 LU to 4.1 LU and true peak did not move. **Any later edit to
+`narration.txt` re-synthesises the speech**, so that byte equality holds against the film of its own moment, not
+forever.
 
 **The narration is padded to the picture before mixing.** It ends a few seconds before the video does, and `amix` takes
 its first input's duration, so without the pad the audio stops early and the fade-out is cut off partway through -- the
@@ -392,15 +395,25 @@ mid-track, and prefer the head whose next boundary lands latest.
 
 **What none of this can do is detect a vocal**, so a person still has to listen to the chosen section before it ships.
 
-### No Track Is Cleared Yet
+### Provenance
 
-**Nothing here names a cleared track on purpose.** A submitted video is a public artifact, and the competition rules
-list _"plagiarism or uncredited reproduction of existing IP"_ among the grounds for immediate disqualification, so the
-bed needs a source with terms that can be written down, not an assurance. **When a track is cleared, its source, its
-licence and any required credit line go in this section**, and the submission README repeats them.
+**The bed is track 2 of a LoFi Tokyo compilation, at offset 161 seconds, with no licence stated anywhere in or with the
+file, used on the team leader's decision of 9 September 2026 and credited to LoFi Tokyo in the film's own metadata.**
+That sentence is the whole record, and it is deliberately not a licence line, because there is no licence to cite.
 
-**One suite has been offered and it does not clear that bar**, so the knobs still ship unused. Every tag the file
-carries, read out of its ID3v2.3 header:
+```bash
+DEMO_MUSIC="$SUITE/lofi-bgm.mp3" DEMO_MUSIC_START=161 DEMO_MUSIC_CREDIT='LoFi Tokyo' ./narrate.sh
+```
+
+The suite is not in the repo and its path is per-machine, so it is named here as a variable rather than written down.
+Offset 161 was picked by the scan above: it is the steadiest 300-second window of the 32, at 2.5 LU of loudness range
+and a -22.5 dB short-term floor, against 3.4 LU and -32.4 dB for the runner-up.
+
+**What that decision is weighed against.** A submitted video is a public artifact, and the competition rules list
+_"plagiarism or uncredited reproduction of existing IP"_ among the grounds for immediate disqualification. The credit is
+not a substitute for terms; it is the most the file supports.
+
+**Every tag the source carries**, read out of its ID3v2.3 header:
 
 | Frame          | Holds                                                                      |
 | -------------- | -------------------------------------------------------------------------- |
@@ -412,8 +425,17 @@ carries, read out of its ID3v2.3 header:
 
 **There is no `TCOP`, no `WCOP` and no `WXXX`**: no copyright frame, no licence URL, no rights holder beyond a channel
 name. The file is a three-hour compilation of 32 named tracks played through twice, and a compilation credit is not a
-grant. **A licence line cannot be written from this metadata, because the metadata does not contain one**, and writing
-one anyway is the failure this gate exists to catch.
+grant. **A licence line cannot be written from this metadata, because the metadata does not contain one**, and one has
+not been written.
+
+**Two mechanics follow from that, and both are in `narrate.sh`.** `DEMO_MUSIC` without `DEMO_MUSIC_CREDIT` is a hard
+error, so a film cannot ship with an uncredited bed; the credit lands in the MP4's `comment` tag as `Music: <credit>`.
+And every film with a bed is rendered twice, the second time voice-only, to `<name>-silent.mp4` beside the take. If a
+platform mutes the upload during judging, the answer is a re-upload of a film that already exists rather than a
+re-render against a deadline.
+
+**The listen still gates the upload.** No measurement here detects a vocal, so the leader hears the full film before it
+goes anywhere.
 
 ---
 
