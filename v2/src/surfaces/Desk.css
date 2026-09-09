@@ -135,12 +135,6 @@
 
 /* The day's own controls, on the day's own heading. Small and quiet: they change the shape of the day, which is a
    thing an owner does once and then forgets, not a thing the eye should land on before the stops do. */
-.desk-slotacts {
-  display: inline-flex;
-  gap: var(--s1);
-  order: 1;
-}
-
 .desk-slotact {
   display: grid;
   place-items: center;
@@ -164,7 +158,7 @@
 }
 
 /* Dimmed rather than hidden. A control that vanishes at the ceiling leaves the owner wondering whether they broke
-   it; one that is visibly spent says the day is full, and the title says why. */
+   it; one that is visibly spent says the period is full, and the title says why. */
 .desk-slotact:disabled {
   opacity: 0.34;
   cursor: not-allowed;
@@ -174,6 +168,15 @@
   display: flex;
   flex-direction: column;
   gap: var(--s1);
+}
+
+/* The heading and the one control the period offers, on one line. The pair used to sit on the day, where it opened
+   periods in order and a second afternoon cost a second morning first. */
+.desk-periodhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s2);
 }
 
 .desk-period {
