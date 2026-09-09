@@ -7,7 +7,7 @@ import { Voters } from '../components/Voters'
 import { duration, price } from '../lib/format'
 import { isJoiner } from '../lib/joiner'
 import { CLUSTER_AREA } from '../lib/schedule'
-import { tallyFor } from '../lib/votes'
+import { finishedMembers, tallyFor } from '../lib/votes'
 import { useTrip } from '../state'
 import './Tally.css'
 
@@ -18,6 +18,7 @@ export const Tally = () => {
   const joiner = isJoiner()
 
   const places = Object.keys(trip.options).length
+  const waiting = trip.party.length - finishedMembers(trip).length
 
   // Counted as well as named, once there is more than one. The count is what the percentage cannot say: a Must Go
   // carries a rank bonus, so two of them seat a place above another on the same percentage, and the chip is where
@@ -40,7 +41,13 @@ export const Tally = () => {
       <section className="tally-block" data-state="open">
         <p className="t-label tally-legend">Who Has Voted</p>
         <Voters party={trip.party} votes={trip.votes} places={places} ownerId={trip.ownerId} />
-        <p className="t-specimen">Someone who has not finished is not a no. Their unswiped places count as nothing.</p>
+        {/* Three things a reader has to know before they act on this order, and only while they are true: that it
+            can still move, that silence is not absence, and that they need not wait to start. */}
+        <p className="t-specimen">
+          {waiting > 0
+            ? `This order is provisional while ${waiting === 1 ? 'one person is' : `${waiting} people are`} still swiping. Someone who has not finished is not a no, and they still count in the total, so their silence holds a place down rather than leaving it out. Plan the days now if you like; Perch rebuilds them when the last answer lands.`
+            : 'Everyone has answered, so this order is final until someone changes their mind.'}
+        </p>
       </section>
 
       <section className="tally-block" data-state="open">
