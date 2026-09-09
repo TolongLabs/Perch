@@ -10,14 +10,15 @@
 
 .presence-list {
   display: flex;
-  gap: var(--s2);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+/* Each disc paints over the one after it, so a tick at the seam is never half covered by the next ring. */
 .presence-one {
   display: flex;
+  position: relative;
 }
 
 .presence-disc {
@@ -26,15 +27,13 @@
   place-items: center;
   width: 32px;
   height: 32px;
-  border: 1.5px solid var(--ink);
+  /* `DESIGN.md`: outlines are 3px, and the 1px hairline belongs to chrome. This is content on the Deck. */
+  border: var(--outline) solid var(--ink);
   border-radius: var(--r-pill);
   background: var(--paper);
   color: var(--ink);
-  font-size: 11px;
-  letter-spacing: 0.04em;
-  transition:
-    background var(--motion-step) var(--ease),
-    border-color var(--motion-step) var(--ease);
+  /* The Label role's own size and tracking, off `t-label`. A monogram is a label, not a size of its own. */
+  transition: background var(--motion-fade) var(--ease);
 }
 
 /* Finished is a mark, not a dimming: the member is still here, and drawing her at half strength would say she had
@@ -44,14 +43,21 @@
   border-color: var(--decided);
 }
 
+/* A filled badge, not a glyph on a paper patch. Backed with paper it erased the arc of ring behind it, and a 3px
+   ring with a bite out of it reads as a rendering fault rather than as a mark. Filled, it is an object in front of
+   the ring, which is what the live dot already was and why that one never had the problem.
+ *
+ * It is larger than the dot because it has to carry a glyph: shrunk to the dot's size the tick stopped reading and
+ * the two states were telling each other apart by colour alone, which is not a difference a reader can rely on. */
 .presence-done {
   position: absolute;
-  right: -3px;
-  bottom: -3px;
+  right: -4px;
+  bottom: -4px;
   padding: 1px;
+  border: 2px solid var(--paper);
   border-radius: var(--r-pill);
-  background: var(--paper);
-  color: var(--decided);
+  background: var(--decided);
+  color: var(--paper);
 }
 
 .presence-one[data-state="swiping"] .presence-disc {
@@ -59,40 +65,18 @@
   background: var(--ground-open);
 }
 
-/* The live dot, and the only thing on the strip that moves. It is a mark on the disc rather than a colour change
-   to it, because the state it reports is momentary and the disc's own colour already says who is here. */
+/* The live dot. Static, not pulsing: `DESIGN.md` sanctions four motions and a 120ms cross-fade, and a second
+   heartbeat on a surface whose whole point is a reel playing would be a fifth. */
 .presence-one[data-state="swiping"] .presence-disc::after {
   content: "";
   position: absolute;
-  right: -1px;
-  bottom: -1px;
-  width: 9px;
-  height: 9px;
+  right: -4px;
+  bottom: -4px;
+  width: 12px;
+  height: 12px;
   border: 2px solid var(--paper);
   border-radius: var(--r-pill);
   background: var(--open);
-  animation: presence-live 2s var(--ease) infinite;
-}
-
-@keyframes presence-live {
-  0%,
-  70%,
-  100% {
-    transform: scale(1);
-  }
-  35% {
-    transform: scale(1.28);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .presence-one[data-state="swiping"] .presence-disc::after {
-    animation: none;
-  }
-
-  .presence-disc {
-    transition: none;
-  }
 }
 
 .presence-line {
@@ -102,7 +86,8 @@
 
 /* Above the breakpoint the column has page either side, so the strip goes vertical against the deck's right edge
    with its sentence under it, which is where the leader asked for it and where it reads as belonging to the deck
-   rather than floating in the margin. */
+   rather than floating in the margin. The gap to the sentence is twice the gap between discs, per the grouping
+   rule: the four of them are one object and the line is the next. */
 @media (min-width: 900px) {
   .presence {
     position: absolute;
@@ -111,26 +96,26 @@
     margin-left: var(--s5);
     flex-direction: column;
     align-items: flex-start;
-    gap: var(--s4);
+    gap: var(--s5);
+    width: 190px;
   }
 
   .presence-list {
     flex-direction: column;
     gap: var(--s3);
   }
-
-  /* Wide enough for the sentence to set on three lines rather than one word to a line, and narrow enough that it
-     stays a caption on the strip rather than a column of its own beside the reel. */
-  .presence {
-    width: 152px;
-  }
 }
 
 /* On a phone the circles overlap, which is what a row of four avatars does when it has no room, and the sentence
-   sits beside them rather than under them so the strip costs the reel no height at all. */
+   sits beside them rather than under them so the strip costs the reel no height at all. The overlap is a real one:
+   a flex gap left in place turns a negative margin into a two-pixel kiss. */
 @media (max-width: 899px) {
-  .presence-one + .presence-one .presence-disc {
-    margin-left: -10px;
+  .presence-list {
+    gap: 0;
+  }
+
+  .presence-one + .presence-one {
+    margin-left: -9px;
   }
 
   .presence-line {

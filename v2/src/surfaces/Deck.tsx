@@ -102,7 +102,7 @@ const Swiping = ({ me }: { me: string }) => {
       </header>
 
       {/* The other three, on the deck at the same time and as far through it as their votes say they are. */}
-      <Presence trip={trip} reels={queue.length} />
+      <Presence trip={trip} />
 
       {/* Only where it is in doubt. Someone who came in through the invite link chose a name a moment ago and the
           rest of the screen never says it back to them; the owner opened her own trip and does not need telling. */}

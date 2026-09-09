@@ -4,10 +4,11 @@ import { nameList, standingLine, standings } from './presence'
 
 describe('standings', () => {
   test('reads the friends from their votes and leaves the owner out', () => {
-    const rest = standings(trip, 20)
+    const rest = standings(trip)
     expect(rest.map((s) => s.member.id)).toEqual(['farah', 'hana', 'iman'])
-    // The fixture's three friends have answered every place, which is what the Tally reads.
-    expect(rest.every((s) => s.reel === null)).toBe(true)
+    // Farah is two places short in the fixture; Hana and Iman have answered everything. The Tally reads the same
+    // votes and says the same thing, which is the only reason this strip is allowed to say anything at all.
+    expect(rest.map((s) => s.reel)).toEqual([23, null, null])
   })
 
   test('a member with places left is on the reel after the last one she answered', () => {
@@ -18,13 +19,18 @@ describe('standings', () => {
         .map((id) => [id, answers[id] ?? 'yes'])
     )
     const partial = { ...trip, votes: { ...trip.votes, farah: half } }
-    expect(standings(partial, 20).find((s) => s.member.id === 'farah')?.reel).toBe(9)
+    expect(standings(partial).find((s) => s.member.id === 'farah')?.reel).toBe(9)
   })
 })
 
 describe('standingLine', () => {
+  test('names whoever the votes say is still going', () => {
+    expect(standingLine(standings(trip))).toBe('Farah is on reel 23 · 2 of 3 finished')
+  })
+
   test('says everyone is here when nobody has reels left, and never invents a reel', () => {
-    expect(standingLine(standings(trip, 20))).toBe('Farah, Hana and Iman are here · all three finished')
+    const done = standings(trip).map((s) => ({ ...s, reel: null }))
+    expect(standingLine(done)).toBe('Farah, Hana and Iman are here · all three finished')
   })
 
   test('names whoever is still going', () => {

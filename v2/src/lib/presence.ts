@@ -13,15 +13,18 @@ export type Standing = {
  *
  * The owner is left out because she is the one reading; her own position is the header's Reel N Of M.
  */
-export const standings = (trip: Trip, reels: number): Standing[] =>
-  trip.party
+export const standings = (trip: Trip): Standing[] => {
+  // The places, not the owner's remaining queue: a joiner's deck is a different length from hers, and clamping a
+  // friend's position to it reported her as further back than she is.
+  const places = Object.keys(trip.options)
+  return trip.party
     .filter((member) => member.id !== trip.ownerId)
     .map((member) => {
       const answers = trip.votes[member.id] ?? {}
-      const answered = Object.keys(trip.options).filter((placeId) => answers[placeId] != null).length
-      const done = answered >= Object.keys(trip.options).length
-      return { member, reel: done ? null : Math.min(answered + 1, reels) }
+      const answered = places.filter((placeId) => answers[placeId] != null).length
+      return { member, reel: answered >= places.length ? null : answered + 1 }
     })
+}
 
 const WORD: Record<number, string> = { 1: 'one', 2: 'two', 3: 'three', 4: 'four', 5: 'five' }
 
