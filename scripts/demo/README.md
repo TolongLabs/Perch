@@ -526,6 +526,29 @@ have it removed, rather than each transition needing its own special case.
 
 ---
 
+## Check It At Film Scale, Not At 1440
+
+**A screen judged in a browser at 1440 has not been judged.** The capture is 1440x900, the film is 1920x1080, so the
+picture is scaled to 1728x1080 and pillarboxed: everything is 1.2x larger than it looked, and then h264 at CRF 20 takes
+some of the fine detail back. Small type can pass in the browser and fail on the upload, or the reverse -- a 10px label
+is 12px in the frame, which is the difference between a design decision and a guess.
+
+```bash
+./film-scale.sh shot.png          # writes shot-film.png and shot-film-encoded.png
+```
+
+The first is the scale alone, the second goes through the film's own encoder settings and back out. **Judge type and
+fine detail on the encoded one**; the scaled one is only useful for composition.
+
+**Its two filter strings are copied from `narrate.sh` and have to stay identical to it.** If the fit or the encode
+settings change there, change them here in the same breath, or this stops answering the question it exists for.
+
+**Composition is worth checking at this size too, not only legibility.** A still of the planned Desk at film scale is
+what showed that twelve crimson `Remove` buttons were the loudest thing in a frame whose narration is about one day chip
+turning gold -- visible at 1728 across, easy to miss at 1440 in a pane.
+
+---
+
 ## Why It Looks The Way It Does
 
 Inherited reasoning, all of it learned by watching a bad render rather than by reasoning about it in advance.
