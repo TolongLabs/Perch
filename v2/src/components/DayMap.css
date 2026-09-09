@@ -1,0 +1,117 @@
+/* The map keeps the pinned note's framing: it is still the reader's own mark on the day rather than a panel the
+   product put there. What changed is what is inside it, from a drawing of the route to the city the route crosses. */
+
+.daymap-thumb {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.daymap-canvas {
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 128px;
+  overflow: hidden;
+  background: var(--plate);
+}
+
+.daymap-canvas-full {
+  height: min(72dvh, 620px);
+}
+
+/* The drawn plate, underneath, and the tiles over it. */
+.daymap-under,
+.daymap-tiles {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.daymap-under svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Leaflet paints its own grey ground behind the tiles, which would hide the plate exactly when the plate is needed.
+   Transparent, the fallback shows through wherever a tile has not arrived. The class lands on this element itself
+   rather than on a child, which is why it is not a descendant selector. */
+.daymap-tiles.leaflet-container {
+  background: transparent;
+}
+
+/* The stop's number, in the day's own colour. The ring is paper so a marker landing on a dark tile still reads. */
+.daymap-pin span {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--paper);
+  border-radius: var(--r-pill);
+  background: var(--pin);
+  color: var(--paper);
+  font-family: var(--face-sans);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* OpenStreetMap asks that the credit stays on the tile, so it is set to be read rather than hidden: paper ground,
+   muted ink, and the same specimen size the rest of the plate uses. */
+.daymap-canvas .leaflet-control-attribution {
+  background: color-mix(in oklab, var(--paper) 88%, transparent);
+  color: var(--ink-muted);
+  font-family: var(--face-sans);
+  font-size: 9px;
+}
+
+.daymap-canvas .leaflet-control-attribution a {
+  color: var(--ink-muted);
+}
+
+.daymap-open {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: var(--s5);
+  background: color-mix(in oklab, var(--ink) 62%, transparent);
+}
+
+.daymap-sheet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  width: min(100%, 900px);
+  padding: var(--s4);
+  background: var(--plate);
+}
+
+.daymap-close {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-plate);
+  background: var(--ink);
+  color: var(--plate);
+  cursor: pointer;
+}
+
+@media print {
+  /* The overlay is a screen control and has no page of its own. */
+  .daymap-open {
+    display: none;
+  }
+
+  /* OpenStreetMap's terms want the credit wherever the tiles go, and the Book goes onto paper. Tiles are images and
+     print like any other, so the credit prints with them rather than being a screen-only nicety. */
+  .daymap-canvas,
+  .daymap-canvas .leaflet-control-attribution {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
