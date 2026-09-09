@@ -250,6 +250,36 @@ export async function runShotChecks(options = {}) {
       'button.bwg-print',
       page.locator('button.bwg-print', { hasText: exactText('Print The Book') })
     )
+    // Shot 9 ends by pressing this, and shot 10 starts from where it lands, so a rename costs both beats.
+    await check(
+      9,
+      'The Handbook button',
+      'button named The Handbook',
+      page.getByRole('button', { name: exactText('The Handbook') })
+    )
+    // Five rows are ticked by title. The sixth, JR Pass, starts ticked and is never clicked, so it is not listed.
+    for (const title of [
+      'Passport valid for the whole trip',
+      'Suica or Welcome Suica card',
+      'teamLab ticket booked in advance',
+      'Yen cash for the smaller shops',
+      'Travel insurance'
+    ]) {
+      await check(
+        9,
+        `Checklist row: ${title}`,
+        `.bwg-row holding ${title}`,
+        page.locator('.bwg-row').filter({ has: page.locator('.check-name', { hasText: exactText(title) }) })
+      )
+    }
+
+    // Shot 10 enters through the rail rather than by URL, so the item it presses is an anchor like any other.
+    await check(
+      10,
+      'The Book rail item',
+      '.rail-item holding The Book',
+      page.locator('.rail-item', { hasText: exactText('The Book') })
+    )
 
     await go(`/t/${TRIP_ID}`)
     // The days were planned above, so The Book is asked to prove it prints a real trip rather than an empty frame:
