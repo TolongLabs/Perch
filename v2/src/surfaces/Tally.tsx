@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { CopyLink } from '../components/CopyLink'
+import { PlateThumb } from '../components/PlateThumb'
 import { StateChip } from '../components/StateChip'
 import { Heading } from '../components/Ui'
 import { Voters } from '../components/Voters'
@@ -18,7 +19,9 @@ export const Tally = () => {
 
   const places = Object.keys(trip.options).length
 
-  // Named, not counted. A Must Go says who wants this, and "2 Must Gos" says nothing a percentage does not.
+  // Counted as well as named, once there is more than one. The count is what the percentage cannot say: a Must Go
+  // carries a rank bonus, so two of them seat a place above another on the same percentage, and the chip is where
+  // that becomes visible. One is still just the name, because "1 Must Go" is a count of nothing.
   const mustNames = (ids: string[]) =>
     ids.map((id) => trip.party.find((p) => p.id === id)?.name).filter((n): n is string => !!n)
 
@@ -62,22 +65,28 @@ export const Tally = () => {
                 data-state={entry.unanimous ? 'gold' : undefined}
                 data-out={entry.eliminated}
               >
-                <div className="tally-top">
-                  <p className="t-name tally-name">{place.name}</p>
-                  <div className="tally-verdict">
-                    <p className="tally-pct">{entry.percentage}%</p>
-                    {entry.unanimous && <StateChip state="gold">Unanimous</StateChip>}
-                    {mustNames(entry.mustBy).length > 0 && (
-                      <StateChip state="decided">Must Go · {mustNames(entry.mustBy).join(', ')}</StateChip>
-                    )}
-                    {entry.eliminated && <StateChip state="at-risk">Eliminated</StateChip>}
+                <PlateThumb place={place} />
+                <div className="tally-body">
+                  <div className="tally-top">
+                    <p className="t-name tally-name">{place.name}</p>
+                    <div className="tally-verdict">
+                      <p className="tally-pct">{entry.percentage}%</p>
+                      {entry.unanimous && <StateChip state="gold">Unanimous</StateChip>}
+                      {mustNames(entry.mustBy).length > 0 && (
+                        <StateChip state="decided">
+                          {mustNames(entry.mustBy).length > 1 && `${mustNames(entry.mustBy).length} `}
+                          Must Go · {mustNames(entry.mustBy).join(', ')}
+                        </StateChip>
+                      )}
+                      {entry.eliminated && <StateChip state="at-risk">Eliminated</StateChip>}
+                    </div>
                   </div>
+                  {/* Full width under the name, where a specimen line belongs, rather than sharing the row with a
+                      percentage and a chip that squeeze it into a column. */}
+                  <p className="t-specimen tally-line">
+                    {CLUSTER_AREA[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
+                  </p>
                 </div>
-                {/* Full width under the name, where a specimen line belongs, rather than sharing the row with a
-                    percentage and a chip that squeeze it into a column. */}
-                <p className="t-specimen tally-line">
-                  {CLUSTER_AREA[place.cluster]} · {duration(place.dwellMin)} · {price(place)}
-                </p>
               </li>
             )
           })}

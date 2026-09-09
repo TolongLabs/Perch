@@ -1,0 +1,9 @@
+.plate-thumb {
+  flex: none;
+  width: var(--thumb, 40px);
+  height: var(--thumb, 40px);
+  object-fit: cover;
+  object-position: 50% 34%;
+  border-radius: var(--r-plate);
+  background: var(--plate);
+}

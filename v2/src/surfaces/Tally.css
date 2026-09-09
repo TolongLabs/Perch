@@ -63,14 +63,37 @@
   gap: var(--s2);
 }
 
+/* The plate leads and the words sit beside it, which is the order the Book uses and the order a reader who has just
+   swiped twenty videos needs: the picture is what they recognise, the name is what they are being asked to rank. */
+/* The plate leads and the words sit beside it, which is the order the Book uses and the order a reader who has just
+   swiped twenty videos needs: the picture is what they recognise, the name is what they are being asked to rank.
+   The plate spans the row rather than only its first line, so the specimen line under the name sits alongside it
+   and the row is no taller than the words in it. */
 .tally-row {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: var(--s4) var(--s5);
+  align-items: flex-start;
+  gap: var(--s3);
+  padding: var(--s4);
   border-radius: var(--r-desk);
   background: var(--plate);
   transition: background var(--motion-fade) var(--ease);
+}
+
+.tally-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Smaller and closer on a phone. 52px of a 342px row is width the names were wrapping for, and at this size the
+   plate is a reminder of a picture rather than the picture itself. */
+@media (max-width: 480px) {
+  .tally-row {
+    --thumb: 32px;
+    gap: var(--s2);
+  }
 }
 
 /* The verdict wraps to its own line rather than squeezing the name. A row can now carry a percentage, Unanimous

@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react'
 import type { Place } from '../data/types'
 import { duration, price } from '../lib/format'
 import { CLUSTER_AREA } from '../lib/schedule'
+import { PlateThumb } from './PlateThumb'
 import './PlacedCard.css'
 
 const Line = ({ place }: { place: Place }) => (
@@ -27,9 +28,12 @@ export const PoolCard = ({ place, unanimous }: { place: Place; unanimous: boolea
       {...listeners}
       {...attributes}
     >
-      <p className="t-name card-name">{place.name}</p>
-      <p className="t-label card-kind">{place.kind}</p>
-      <Line place={place} />
+      <PlateThumb place={place} />
+      <div className="card-body">
+        <p className="t-name card-name">{place.name}</p>
+        <p className="t-label card-kind">{place.kind}</p>
+        <Line place={place} />
+      </div>
     </article>
   )
 }
