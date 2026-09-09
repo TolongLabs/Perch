@@ -598,35 +598,46 @@ rejected; the drawer offers the next-ranked voted-in card from the tally.
 
 ## State And Persistence
 
-**One context, one `useState`, nine operations.** `state.tsx` is the only place a `Trip` is written, and every write is
-a whole-object replacement.
+**One context, one `useState`, one operation per write.** `state.tsx` is the only place a `Trip` is written, and every
+write is a whole-object replacement. The list grew through the release cycle; this table is the contract.
 
-```ts
-type Ctx = {
-  trip: Trip
-  swipe: (memberId: string, placeId: string, answer: boolean) => void
-  place: (placeId: string, dayIndex: number, slotIndex: number) => void
-  remove: (dayIndex: number, slotIndex: number) => void
-  apply: () => void
-  pin: (placeId: string, dayIndex: number, slotIndex: number) => void
-  unpin: (placeId: string) => void
-  tick: (itemId: string) => void
-  setDates: (startDate: string, nights: number) => void
-  restart: () => void
-}
-```
+| Operation          | Writes                                                                                      |
+| ------------------ | ------------------------------------------------------------------------------------------- |
+| `swipe`            | A member's yes, no or Must Go for a place. A second Must Go demotes the first to yes        |
+| `setCurrentMember` | Who this browser votes as, any party member. The owner by default                           |
+| `setParty`         | Renames by row position. Kept until onboarding moves to the three calls below, then removed |
+| `renameMember`     | A new name on the same id, so the votes stay                                                |
+| `addMember`        | A new member with a fresh id and no votes. Refused past six                                 |
+| `removeMember`     | Drops the member and their votes. The owner cannot be removed                               |
+| `place`            | Puts a place into a day and slot, taking it out of any slot it held                         |
+| `remove`           | Empties a day and slot                                                                      |
+| `apply`            | Runs the scheduler over every day around the pins                                           |
+| `pin` / `unpin`    | Fixes a card to a day and slot, or frees it. The scheduler never moves a pinned card        |
+| `tick`             | Toggles a checklist item                                                                    |
+| `setDates`         | New start and nights regenerate the days and drop the pins; unchanged dates are a no-op     |
+| `addSlot`          | Opens a second slot in a period of a day. Two per period, six per day                       |
+| `removeSlot`       | Closes a period's empty second slot. The first slot of a period never goes                  |
+| `restart`          | Clears the storage key and reloads the seed                                                 |
 
-| Operation  | Writes                                                                  |
-| ---------- | ----------------------------------------------------------------------- |
-| `swipe`    | Records a member's yes or no for a place in the votes record            |
-| `place`    | Puts a place into a specific day and slot on the calendar               |
-| `remove`   | Removes a place from a day and slot                                     |
-| `apply`    | Runs the heuristic scheduler to order each day, returns ordered days    |
-| `pin`      | Marks a card as pinned at a specific day and slot index                 |
-| `unpin`    | Removes the pin from a card. The card stays in its slot until scheduled |
-| `tick`     | Toggles a checklist item's completed state                              |
-| `setDates` | Changes the trip's start date and nights, regenerates the calendar      |
-| `restart`  | Clears the storage key and reloads the seed                             |
+### Trip States
+
+**Five states, derived from the trip rather than stored, so a surface cannot disagree with the data it shows.** The
+dashboard reads them to decide which controls appear; the copy on each surface says which state the reader is in and
+what personal completion does and does not mean.
+
+| State             | Derived From                                                         | Dashboard Shows                                                                 |
+| ----------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| **Setup**         | No dates, or the owner has no name                                   | Finish Setup only                                                               |
+| **Voting, mine**  | The current member has unanswered places                             | Open The Deck, the invite link, who has finished                                |
+| **Voting, group** | I have finished; someone in the party has not                        | View Current Tally, the invite link, _You have finished · 3 of 4 have finished_ |
+| **Planned**       | Every day has feasibility, and no vote or member changed since Apply | Open The Desk, Before We Go, The Book                                           |
+| **Needs review**  | Days are planned, and a vote or member changed after the last Apply  | Open The Desk with a _votes changed since the days were planned_ line           |
+
+**Planning is allowed while the group is still voting.** The Tally is provisional until everyone has answered: an
+unanswered member still counts in the total weight, so their answers can move percentages and change who qualifies. The
+helper on the Tally says so in one sentence, and the Desk rebuilds the days on the next Apply. Editing the trip through
+onboarding is _Edit Trip_, not _New Plan_: the prototype holds one trip, and the calendar survives an edit that leaves
+the dates alone.
 
 **One `useEffect` mirrors the trip to `localStorage` on every change**, including the first render, so a cold visit
 writes the seed immediately and the surfaces share one object from the first paint.
