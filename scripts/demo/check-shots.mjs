@@ -258,12 +258,14 @@ export async function runShotChecks(options = {}) {
     await check(
       10,
       'A drawn route and a Transit Route link per day',
-      'a[href*="google.com/maps"] (4) + .day-spread svg path (4+)',
+      'a.day-route[href*="google.com/maps"] (4) + .day-spread:has(.spread-pin svg path) (4)',
       page.locator('.day-spread'),
       async () => {
-        const maps = await page.locator('a[href*="google.com/maps"]').count()
-        const drawn = await page.locator('.day-spread svg path').count()
-        return maps === 4 && drawn >= 4
+        const maps = await page.locator('a.day-route[href*="google.com/maps"]').count()
+        // Per day, not a total: four paths spread across fewer than four days would satisfy a global count while
+        // some plate on screen drew nothing.
+        const drawing = await page.locator('.day-spread:has(.spread-pin svg path)').count()
+        return maps === 4 && drawing === 4
       }
     )
     await check(

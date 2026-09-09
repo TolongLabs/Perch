@@ -729,28 +729,40 @@ export async function recordDemo(options = {}) {
     const spreads = page.locator('.day-spread')
     await must(spreads.first(), 'shot 10 book day plates')
     await mark('shot-10')
-    // Each spread gets two framings: its stops, then its foot, where the drawn route and the Transit Route link live.
-    // #164 rebuilt the spreads around the reel posters and made them far taller than the viewport, so scrolling only
-    // their tops into view left the foot below the fold for the whole beat. The narration says every plate draws the
-    // day's route and carries a link into Google Maps while the picture showed neither, which is the film asserting
-    // something the viewer cannot see.
+    // One framing per spread, at its top. This beat used to take two, because #164 put the drawn route and the link
+    // at the foot of a spread far taller than the viewport, and framing only the top left both below the fold while
+    // the narration named them -- the film asserting something the viewer cannot see. #230 moved the link into the
+    // head and pinned the plate on the photograph, so band, link, title, picture and plate now sit between 48 and
+    // 522 of a spread 1470 tall. A second scroll is no longer merely unnecessary, it is wrong: it pushes both off
+    // the top and points the camera at the stops.
+    // scrollIntoViewIfNeeded is wrong for this one and quietly so. It scrolls the minimum that puts the element in
+    // view, and a spread is 1470 tall against a 900 viewport, so for every day but the first it satisfies itself by
+    // leaving the top 193px above the fold -- link and plate both off-screen, every count still passing. Measured
+    // against the deploy: block start lands all four days identically at link 136..158 and plate 219..366.
     const count = await spreads.count()
     for (let i = 0; i < count; i += 1) {
-      await spreads.nth(i).scrollIntoViewIfNeeded()
-      await pause(1_500)
-      await spreads.nth(i).locator('.day-foot').scrollIntoViewIfNeeded()
-      await pause(1_400)
+      await spreads.nth(i).evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'instant' }))
+      await pause(2_900)
     }
     await claim('shot-10', 'four plates, each drawing its route, each with a Transit Route link', async () => {
-      const maps = await countOf('a[href*="google.com/maps"]')
-      const drawn = await countOf('.day-spread svg path')
+      const maps = await countOf('a.day-route[href*="google.com/maps"]')
+      // Per day rather than a total, because the narration says each plate draws its own day. A global count of four
+      // is also satisfied by one day drawing four lines and three drawing none.
+      const drawing = await countOf('.day-spread:has(.spread-pin svg path)')
       if (maps !== 4) return `${maps} Transit Route links, expected 4`
-      if (drawn < 4) return `${drawn} drawn routes, expected at least 4 -- plates are placeholders`
+      if (drawing !== 4) return `${drawing} days draw a route, expected 4 -- the rest are placeholders`
       // Counting the DOM is not enough here and never was: the first cut of this beat passed every count while the
-      // camera sat on the posters and never framed a plate. Assert the last one is actually inside the viewport.
-      const box = await page.locator('a[href*="google.com/maps"]').last().boundingBox()
-      if (!box) return 'the Transit Route link has no box'
-      if (box.y < 0 || box.y + box.height > 900) return 'the Transit Route link is on the page but not in frame'
+      // camera sat on the posters and never framed a plate. Both things the narration names are asserted against
+      // their own rects, never against a span that merely reaches them -- the link is 172px at the right end of an
+      // 1184px head, so a box taken from the spread would sit in frame whatever the link itself did.
+      for (const [what, locator] of [
+        ['Transit Route link', page.locator('a.day-route').last()],
+        ['plate', page.locator('.spread-pin').last()]
+      ]) {
+        const box = await locator.boundingBox()
+        if (!box) return `the ${what} has no box`
+        if (box.y < 0 || box.y + box.height > 900) return `the ${what} is on the page but not in frame`
+      }
       return true
     })
     await finishShot('shot-10', 21_000)
