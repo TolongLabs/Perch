@@ -342,6 +342,41 @@ export async function recordDemo(options = {}) {
     await locator.first().scrollIntoViewIfNeeded()
     await pause(settleMs)
   }
+  // The rail holds open on focus and on a 120ms pointer dwell, so any press that arrives through it leaves both
+  // behind and the next beat opens on an expanded rail with a scrim over the page. Releasing is not enough on its
+  // own: the scrim is paint, not layout, so every rect assertion in this file passes over a film nobody can watch.
+  // Release, then check the width, which is the one reading that can see it.
+  const RAIL_COLLAPSED_MAX = 96
+  const releaseRail = async () => {
+    await page.evaluate(() => {
+      if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
+    })
+    const clear = { x: 720, y: 450 }
+    await page.mouse.move(clear.x, clear.y)
+    pointer = clear
+    await pause(900)
+  }
+  // Pressing a rail item is not a plain click. The rail is clipped to a 64px strip until the pointer is inside it, and
+  // Playwright reports the item's expanded box the whole time, so the box is honest about layout and unreachable in
+  // practice: a press aimed straight at it lands on the page behind the rail, nothing happens, and it surfaces thirty
+  // seconds later as a navigation timeout that names no cause. Approach through the strip, let it open, then press.
+  const clickRailItem = async (locator) => {
+    const strip = await page.locator('.island-rail').first().boundingBox()
+    if (!strip) throw new Error('required recording anchor is absent: the navigation rail')
+    const target = await centerOf(locator)
+    const entry = { x: strip.x + Math.min(strip.width, RAIL_COLLAPSED_MAX) / 2, y: target.y }
+    await page.mouse.move(entry.x, entry.y)
+    pointer = entry
+    await pause(700)
+    await click(locator, 600)
+  }
+  const railCollapsed = async () => {
+    const box = await page.locator('.island-rail').first().boundingBox()
+    if (!box) return 'the rail is not on the page, so this is the joiner route'
+    if (box.width > RAIL_COLLAPSED_MAX)
+      return `the rail is open at ${Math.round(box.width)}px, so the beat is behind a scrim`
+    return true
+  }
 
   // Cards are injected as an overlay on the live page rather than replacing the document. `setContent` detaches the
   // frame, and the next navigation then fails with ERR_ABORTED; an overlay also keeps the already-loaded Quicksand and
@@ -480,16 +515,7 @@ export async function recordDemo(options = {}) {
     await must(openDeck, 'shot 3 Open The Deck control')
     await click(openDeck, 600)
     await page.waitForURL(/\/t\/tokyo-nov-2026\/swipe/)
-    // The rail holds open on focus and on a 120ms pointer dwell, and the press that got here leaves both behind, so
-    // without releasing them the beat opens on an expanded rail over a scrim. That reads as a render bug in the film
-    // and sends you looking at the app rather than at the recorder.
-    await page.evaluate(() => {
-      if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
-    })
-    const railClear = { x: 720, y: 450 }
-    await page.mouse.move(railClear.x, railClear.y)
-    pointer = railClear
-    await pause(900)
+    await releaseRail()
 
     const counter = page.locator('.deck-count')
     await must(counter, 'shot 3 deck counter')
@@ -501,9 +527,7 @@ export async function recordDemo(options = {}) {
       if (read !== 'Reel 1 Of 20') return `counter read ${read}`
       // Counting the reel is not enough. The joiner route renders the same deck with no rail and, since #189, a
       // Who Are You? step in front of it, so the route has to be asserted rather than assumed from the counter.
-      if ((await countOf('.island-rail')) === 0)
-        return 'the deck rendered without the rail, so this is the joiner route'
-      return true
+      return railCollapsed()
     })
 
     // The deck decodes reel video, and on a memory-tight machine the in-renderer recorder crashes the tab around the
@@ -714,18 +738,50 @@ export async function recordDemo(options = {}) {
     await click(onward, 600)
     await page.waitForURL(/\/desk\/before-we-go/)
     await must(page.locator('.bwg-row'), 'shot 9 checklist rows')
-    await click(page.locator('.bwg-row').nth(0).locator('.check-label'), 500)
-    await click(page.locator('.bwg-row').nth(1).locator('.check-label'), 500)
-    await click(page.locator('.bwg-row').nth(2).locator('.check-label'), 500)
-    await claim('shot-9', 'the checklist is derived from a calendar that has stops on it', async () => {
-      const text = await page.locator('.bwg-list').innerText()
-      return /not on the calendar yet|nothing on the calendar yet/i.test(text)
-        ? 'the checklist is reading an empty calendar'
-        : true
-    })
+    // Five, by title, in the order the page lists them. JR Pass is deliberately absent: it starts ticked, so clicking
+    // it turns it off and both foot buttons stay locked while the narration says they unlock. Titles rather than
+    // indices because the checklist is derived from the trip, and because .check-label's first child is the empty
+    // box span -- a locator reaching for it matches every row on an empty string and ticks one row five times.
+    const openRows = [
+      'Passport valid for the whole trip',
+      'Suica or Welcome Suica card',
+      'teamLab ticket booked in advance',
+      'Yen cash for the smaller shops',
+      'Travel insurance'
+    ]
+    for (const title of openRows) {
+      const row = page.locator('.bwg-row').filter({ has: page.locator('.check-name', { hasText: exactText(title) }) })
+      await must(row, `shot 9 checklist row: ${title}`)
+      await click(row.locator('.check-label'), 500)
+    }
+
+    const handbookButton = page.getByRole('button', { name: exactText('The Handbook') })
+    await must(handbookButton, 'shot 9 Handbook button')
+    await click(handbookButton, 600)
+    await page.waitForURL(/\/t\/tokyo-nov-2026\/handbook/)
+    await must(page.locator('.hb-list .hb-item'), 'shot 9 handbook entries')
+    await pause(2_000)
+
+    await claim(
+      'shot-9',
+      'the checklist is derived from a real calendar, and ticking it opens the handbook',
+      async () => {
+        if (!/handbook$/.test(new URL(page.url()).pathname)) return `the handbook did not open, still on ${page.url()}`
+        const entries = await countOf('.hb-list .hb-item')
+        if (entries < 1) return 'the handbook opened empty'
+        return true
+      }
+    )
     await finishShot('shot-9', 18_000)
 
-    await page.goto(new URL('/t/tokyo-nov-2026', baseUrl).href, { waitUntil: 'domcontentloaded' })
+    // Into the Book through the rail, the way a reader would, rather than by URL. The press leaves the rail open over
+    // the page, so it is released and then checked -- an open rail blurs the whole spread behind a scrim, and every
+    // rect this beat asserts is still exactly in frame while that happens.
+    const railBook = page.locator('.rail-item', { hasText: exactText('The Book') })
+    await must(railBook, 'shot 10 The Book rail item')
+    await clickRailItem(railBook)
+    await page.waitForURL(/\/t\/tokyo-nov-2026$/)
+    await releaseRail()
     const spreads = page.locator('.day-spread')
     await must(spreads.first(), 'shot 10 book day plates')
     await mark('shot-10')
@@ -745,6 +801,8 @@ export async function recordDemo(options = {}) {
       await pause(2_900)
     }
     await claim('shot-10', 'four plates, each drawing its route, each with a Transit Route link', async () => {
+      const rail = await railCollapsed()
+      if (rail !== true) return rail
       const maps = await countOf('a.day-route[href*="google.com/maps"]')
       // Per day rather than a total, because the narration says each plate draws its own day. A global count of four
       // is also satisfied by one day drawing four lines and three drawing none.
