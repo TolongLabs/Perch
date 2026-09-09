@@ -99,6 +99,29 @@ export async function runShotChecks(options = {}) {
       'button.ob-go',
       page.locator('button.ob-go', { hasText: exactText('Start Swiping') })
     )
+    // Shot 1 is framed by scrolling to these four headings by name, and nothing else in this gate reads them, so a
+    // rename would cost a take rather than a check. Pinned to .ob-legend rather than to the text alone: the chip
+    // fieldsets nested inside carry their own <legend>, so a bare text match finds an element on this page whichever
+    // string it is given and passes no matter what.
+    await check(
+      1,
+      'The four onboarding headings, in order',
+      '.ob-section .ob-legend',
+      page.locator('.ob-legend'),
+      async (locator) => {
+        const found = (await locator.allTextContents()).map((text) => text.trim())
+        return JSON.stringify(found) === JSON.stringify(['When', 'Who Is Coming', 'What You Are After', 'Where'])
+      }
+    )
+    // Start Swiping waits on the owner's name and the take never types one, so it rides on the fixture's prefill.
+    // Without this the failure is a click that times out and says nothing about why.
+    await check(
+      1,
+      'The owner row is prefilled',
+      'input labelled Your name',
+      page.getByLabel('Your name'),
+      async (l) => ((await l.inputValue()) ?? '').trim().length > 0
+    )
 
     await go('/trips')
     await check(2, 'Tokyo trip card', 'section.dash-trip', page.locator('section.dash-trip', { hasText: 'Tokyo' }))
