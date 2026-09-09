@@ -52,9 +52,10 @@
   background:
     linear-gradient(
       to bottom,
-      color-mix(in oklab, var(--paper) 88%, transparent) 0%,
-      color-mix(in oklab, var(--paper) 70%, transparent) 22%,
-      transparent 62%
+      color-mix(in oklab, var(--paper) 92%, transparent) 0%,
+      color-mix(in oklab, var(--paper) 82%, transparent) 30%,
+      color-mix(in oklab, var(--paper) 58%, transparent) 56%,
+      transparent 76%
     ),
     linear-gradient(to top, color-mix(in oklab, var(--paper) 92%, transparent) 0%, transparent 34%);
 }
@@ -67,9 +68,9 @@
     background:
       linear-gradient(
         to right,
-        color-mix(in oklab, var(--paper) 85%, transparent) 0%,
-        color-mix(in oklab, var(--paper) 62%, transparent) 28%,
-        transparent 52%
+        color-mix(in oklab, var(--paper) 90%, transparent) 0%,
+        color-mix(in oklab, var(--paper) 70%, transparent) 28%,
+        transparent 54%
       ),
       linear-gradient(
         to top,
@@ -103,6 +104,7 @@
   max-width: 100%;
 }
 
+/* Mark, wordmark, and the way in pushed to the far edge. One row, so the door is found without reading. */
 .land-head {
   display: flex;
   align-items: center;
@@ -127,8 +129,11 @@
   }
 }
 
+/* Full ink, not the muted specimen colour. The lines sit on a picture rather than on paper, and muted ink only
+   holds against a ground the fade is strong enough to guarantee; strong enough for that, the fade stops being a
+   fade. The contrast comes from the ink instead, which costs one step of hierarchy and keeps the picture. */
 .land-eyebrow {
-  color: var(--ink-muted);
+  color: var(--ink);
 }
 
 /* The hero. No caption under it, per DESIGN.md - the line is the argument.
@@ -147,53 +152,58 @@
   }
 }
 
-.land-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s3);
-}
-
-.land-go,
-.land-alt {
-  border-radius: var(--r-pill);
-  padding: var(--s4) var(--s6);
-  text-decoration: none;
-}
-
 .land-go {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--s3) var(--s5);
+  border-radius: var(--r-pill);
   background: var(--ink);
   color: var(--paper);
+  text-decoration: none;
+  transition: background-color var(--motion-fade) var(--ease);
 }
 
-.land-alt {
-  border: var(--outline) solid var(--ink);
-  color: var(--ink);
+/* Pushed to the far edge of the top row. */
+.land-head .land-go {
+  margin-left: auto;
+}
+
+.land-go:hover,
+.land-go:focus-visible {
+  background: color-mix(in oklab, var(--open) 34%, var(--ink));
 }
 
 /* The requirement on this page is that it does not scroll, and on a phone the three supporting facts are what does
-   not fit. They are supporting rather than load-bearing: the hero line is the argument and the two buttons are the
-   way in. Below 720px they come off rather than the page growing a scrollbar. */
+   not fit. They are supporting rather than load-bearing: the hero line is the argument and the top row is the way
+   in. Below 720px they come off rather than the page growing a scrollbar. */
 .land-facts {
   display: none;
   margin: 0;
 }
 
 @media (min-width: 720px) {
+  /* At the foot, not under the title. The bottom fade is what carries them, and it is strongest at the floor; when
+     the display line was five lines long they happened to sit low enough, and shortening it to two moved them up
+     into clear picture where a bird's back is as dark as the ink. Pushed down, the composition is the one the fade
+     was drawn for. */
   .land-facts {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: var(--s6);
+    margin-top: auto;
   }
 }
 
 .land-facts dt {
-  color: var(--ink-muted);
+  color: var(--ink);
   margin-bottom: var(--s2);
 }
 
 .land-facts dd {
   margin: 0;
   max-width: 34ch;
+  color: var(--ink);
 }
 
 /* The five day tints, doing on the first screen exactly what they do on every screen after it. */

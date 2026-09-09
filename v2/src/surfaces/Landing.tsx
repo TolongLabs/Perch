@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { base } from '../data/reels'
+import { HeroFilm } from '../components/HeroFilm'
 import './Landing.css'
 
 /* Reduced motion is answered by not fetching the clip at all rather than by pausing it: a 1.4 MB video downloaded
@@ -13,24 +13,21 @@ const still = typeof window !== 'undefined' && window.matchMedia('(prefers-reduc
  */
 export const Landing = () => (
   <main className="land">
-    {/* The ground, not a banner: the clip runs behind the whole screen with a paper veil over it, so the page still
-        reads as paper and the title still holds its contrast over any frame. WebM first because it is a third
-        smaller and every browser that can play it prefers it; the MP4 is what Safari takes. */}
+    {/* The ground, not a banner: the clips run behind the whole screen with paper fading in off its edges, so the
+        page still reads as paper and every line still holds its contrast over any frame. */}
     <div className="land-film" aria-hidden="true">
-      {still ? (
-        <img className="land-frame" src={`${base}hero-2.jpg`} alt="" />
-      ) : (
-        <video className="land-frame" poster={`${base}hero-2.jpg`} autoPlay loop muted playsInline preload="metadata">
-          <source src={`${base}hero-2.webm`} type="video/webm" />
-          <source src={`${base}hero-2.mp4`} type="video/mp4" />
-        </video>
-      )}
+      <HeroFilm still={still} />
       <div className="land-veil" />
     </div>
 
+    {/* The way in sits in the top row rather than under the argument: a reader who already knows what this is should
+        not have to read the line again to find the door. It is still the page's one solid button. */}
     <header className="land-head">
       <img src="/assets/mark.svg" alt="" width="36" height="36" />
       <span className="land-mark t-label">Perch</span>
+      <Link className="land-go t-label" to="/sign-in">
+        Start Planning
+      </Link>
     </header>
 
     <div className="land-body">
@@ -39,18 +36,7 @@ export const Landing = () => (
       <div className="land-plate">
         <p className="t-label land-eyebrow">A Trip Planner The Group Actually Answers</p>
 
-        <h1 className="t-display land-title">
-          Everyone swipes on reels. What wins lands on the calendar, and the day tells you when it stops working.
-        </h1>
-
-        <div className="land-actions">
-          <Link className="land-go t-label" to="/sign-in">
-            Start Planning
-          </Link>
-          <Link className="land-alt t-label" to="/t/tokyo-nov-2026">
-            Open A Shared Book
-          </Link>
-        </div>
+        <h1 className="t-display land-title">Swipe together. Land the trip.</h1>
       </div>
 
       {/* Three because the product is three surfaces, not because three sits nicely. `PRODUCT.md`: one interaction,

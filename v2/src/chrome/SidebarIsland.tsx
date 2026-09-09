@@ -10,7 +10,7 @@ import {
   Pencil
 } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useTrip } from '../state'
 
 const OPEN_AFTER = 120
@@ -100,13 +100,15 @@ export const SidebarIsland = ({ expandedChanged }: { expandedChanged: (open: boo
       {/* Not a link. Every other row in the rail is somewhere you can go, and a mark that navigated to the landing
           page would take a signed-in reader out of the product to read marketing copy. It is the rail's head, so
           it takes no tab stop ahead of the seven destinations under it. */}
-      <div className="rail-head">
+      {/* The brand row goes home, which is what a wordmark in a top-left corner has meant since the web had corners.
+          It was the one mark on the rail that looked like a control and was not one. */}
+      <Link className="rail-head" to="/" aria-label="Perch, the landing page">
         <img className="rail-mark" data-theme="light" src="/assets/mark.svg" alt="" width="24" height="24" />
         <img className="rail-mark" data-theme="dark" src="/assets/mark-dark.svg" alt="" width="24" height="24" />
         <span className="rail-name" aria-hidden="true">
           Perch
         </span>
-      </div>
+      </Link>
 
       <ul className="rail-list">
         {items.map(({ to, href, label, Icon }) => (

@@ -115,14 +115,18 @@
   width: var(--rail-expanded);
 }
 
-/* The rail's head, and not an eighth destination: it does not go anywhere, so it is not a link and takes no tab
-   stop ahead of the seven places that are. The mark is 24px against the rows' 20px icons, which is the only way a
-   solid ink plate reads as larger than a 1.75px stroke rather than merely heavier. Its plate inverts by theme,
-   which is two files and one geometry, as `DESIGN.md` states. */
+/* The rail's head, which goes home. It behaves like a row because it is one: the same chip on hover and focus, the
+   same 44px target, the same box. The mark is 24px against the rows' 20px icons, which is the only way a solid ink
+   plate reads as larger than a 1.75px stroke rather than merely heavier. Its plate inverts by theme, which is two
+   files and one geometry, as `DESIGN.md` states. */
 .rail-head {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--s3);
+  color: var(--ink);
+  text-decoration: none;
+  border-radius: var(--r-pill);
   /* The same box as a row, and 8px rather than the row's 10 because the mark is 24px against the icons' 20: the
      inset is what puts both on the rail's centre line, and a mark 2px off that line is visible down a column of
      eight glyphs in a way 2px on the wordmark is not. */
@@ -201,6 +205,7 @@
    icon never moves, which means a background painted on it is cut flat by the collapsed rail's clip: the
    current-page mark was a pill when open and a squared-off block butted against the border when closed. The layer
    is a disc around the icon and grows with the rail, so the mark is the same shape in both states. */
+.rail-head::before,
 .rail-item::before,
 .rail-pin::before {
   content: "";
@@ -214,6 +219,8 @@
     background var(--motion-fade) var(--ease);
 }
 
+.rail-head:hover::before,
+.rail-head:focus-visible::before,
 .rail-item:hover::before,
 .rail-pin:hover::before {
   background: color-mix(in oklab, var(--ink) 7%, transparent);
@@ -233,6 +240,7 @@
   color: color-mix(in oklab, var(--open) 34%, var(--ink));
 }
 
+.island-rail[data-open="true"] .rail-head::before,
 .island-rail[data-open="true"] .rail-item::before,
 .island-rail[data-open="true"] .rail-pin::before {
   width: calc(var(--rail-expanded) - var(--s3) * 2);
