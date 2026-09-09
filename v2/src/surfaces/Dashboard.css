@@ -126,3 +126,43 @@
 .dash-new:hover {
   background: var(--plate);
 }
+
+/* The state's own line, under the card's lead. At risk it takes the state ground, because a plan that disagrees
+   with the votes is the one thing on this card a reader has to act on. */
+.dash-progress {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+.dash-progress[data-state="at-risk"] {
+  padding: var(--s3) var(--s4);
+  border-radius: var(--r-desk);
+  background: var(--ground-at-risk);
+  color: var(--ink);
+}
+
+/* Three ways on rather than one, so the solid button keeps its meaning and the other two are plainly the same
+   weight as each other. */
+.dash-ways {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+}
+
+.dash-way {
+  flex: 1 1 auto;
+  padding: var(--s4) var(--s5);
+  border: var(--outline) solid var(--ink-muted);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fade) var(--ease),
+    background var(--motion-fade) var(--ease);
+}
+
+.dash-way:hover {
+  border-color: var(--ink);
+  background: color-mix(in oklab, var(--ink) 5%, transparent);
+}

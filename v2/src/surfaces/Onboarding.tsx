@@ -61,6 +61,7 @@ export const Onboarding = () => {
 
   const nights = range.start && range.end ? nightsBetween(range.start, range.end) : 0
   const datesSet = nights > 0
+  const datesMoved = datesSet && (range.start !== trip.startDate || nights !== trip.nights)
   const owner = trip.party.find((p) => p.id === trip.ownerId)
   const shown = (id: string, name: string) => drafts[id] ?? name
   // Read off the row rather than out of the trip: a blank field is refused as a rename, so the party still holds a
@@ -95,8 +96,15 @@ export const Onboarding = () => {
         as="h1"
         info="Perch fills in what it can and asks for the rest. The dates and the city shape the calendar; the activities and the free text only tip which reels come up first."
       >
-        <span className="t-display">Plan A New Trip</span>
+        <span className="t-display">Edit This Trip</span>
       </Heading>
+
+      {/* The prototype holds one trip, so this screen is never a blank one. Saying so at the top is what stops a
+          reader treating a prefilled form as a new plan they are about to start. */}
+      <p className="t-specimen ob-intro">
+        This is the trip you already have, with everything Perch knows filled in. Changing anything here changes that
+        trip; nothing starts over.
+      </p>
 
       <section className="ob-section" data-state={datesSet ? 'decided' : 'open'}>
         <p className="t-label ob-legend">When</p>
@@ -105,6 +113,13 @@ export const Onboarding = () => {
           {datesSet
             ? `${nights + 1} days, ${nights} ${nights === 1 ? 'night' : 'nights'}`
             : 'Tap the first day, then the last.'}
+        </p>
+        {/* Before the press, not after it. Moving the dates rebuilds the calendar, and a reader who has spent time
+            arranging days and pinning stops should know that from the form rather than from losing them. */}
+        <p className="t-specimen ob-dates-note" data-state={datesMoved ? 'at-risk' : 'decided'}>
+          {datesMoved
+            ? 'These are new dates, so the days are rebuilt and the stops you have pinned are cleared.'
+            : 'Unchanged, so the days you have planned and the stops you have pinned stay as they are.'}
         </p>
       </section>
 

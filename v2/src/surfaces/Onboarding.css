@@ -136,3 +136,18 @@
 .ob-party-help {
   margin-top: var(--s3);
 }
+
+.ob-intro {
+  margin: calc(var(--s5) * -1) 0 0;
+  max-width: 56ch;
+}
+
+/* The consequence of the dates, in the state colour of the consequence. Green while nothing is lost, at risk once
+   the calendar is going to be rebuilt. */
+.ob-dates-note[data-state="decided"] {
+  color: color-mix(in oklab, var(--decided) 30%, var(--ink));
+}
+
+.ob-dates-note[data-state="at-risk"] {
+  color: color-mix(in oklab, var(--at-risk) 30%, var(--ink));
+}
