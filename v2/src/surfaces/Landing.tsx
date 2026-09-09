@@ -18,11 +18,11 @@ export const Landing = () => (
         smaller and every browser that can play it prefers it; the MP4 is what Safari takes. */}
     <div className="land-film" aria-hidden="true">
       {still ? (
-        <img className="land-frame" src={`${base}hero.jpg`} alt="" />
+        <img className="land-frame" src={`${base}hero-2.jpg`} alt="" />
       ) : (
-        <video className="land-frame" poster={`${base}hero.jpg`} autoPlay loop muted playsInline preload="metadata">
-          <source src={`${base}hero.webm`} type="video/webm" />
-          <source src={`${base}hero.mp4`} type="video/mp4" />
+        <video className="land-frame" poster={`${base}hero-2.jpg`} autoPlay loop muted playsInline preload="metadata">
+          <source src={`${base}hero-2.webm`} type="video/webm" />
+          <source src={`${base}hero-2.mp4`} type="video/mp4" />
         </video>
       )}
       <div className="land-veil" />
@@ -34,9 +34,8 @@ export const Landing = () => (
     </header>
 
     <div className="land-body">
-      {/* A label mounted on the page rather than text laid over a picture. It is what lets the veil come off the
-          clip: the type carries its own ground, so its contrast is a property of the plate and not of whichever
-          frame happens to be playing. */}
+      {/* No plate. Set on a paper ground the type read as a card laid on a photograph; the ground is a fade off the
+          page's own edge instead, so the picture is one surface with the paper rather than two stacked ones. */}
       <div className="land-plate">
         <p className="t-label land-eyebrow">A Trip Planner The Group Actually Answers</p>
 

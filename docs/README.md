@@ -281,10 +281,12 @@ carried in here on 8 September 2026. Its README declares the same. Nothing else 
 
 **The landing's hero clip is AI-generated and contains no third-party footage.** It is a 10-second aerial drift over
 Tokyo at dawn, generated with **Google Gemini Videos** on 9 September 2026 from a prompt written by the team, and served
-from the same bucket as the reels as `hero.webm`, `hero.mp4` and a poster frame. It carries no audio, loops muted, and
-is replaced by the poster frame alone when the reader's system asks for reduced motion. The reels themselves are a
-different matter and are credited individually in the manifest at [`v2/src/data/reels.json`](../v2/src/data/reels.json),
-each with its platform, creator and source link.
+from the same bucket as the reels as `hero-2.webm`, `hero-2.mp4` and a poster frame. It is cropped from the generated
+frame: the original carried the generator's four-pointed sparkle on the riverbank in the lower right, and the crop
+removes it rather than painting over it. It carries no audio, loops muted, and is replaced by the poster frame alone
+when the reader's system asks for reduced motion. The reels themselves are a different matter and are credited
+individually in the manifest at [`v2/src/data/reels.json`](../v2/src/data/reels.json), each with its platform, creator
+and source link.
 
 **The Book's page turn follows an MIT-licensed reference and copies none of its code.** The approach — a perspective on
 the book, a transform-origin on the fold and a `rotateY` on the leaf — is taken from
