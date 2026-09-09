@@ -115,6 +115,34 @@ export type ChecklistItem = {
   derivedFrom: string
 }
 
+/**
+ * One line of the Handbook. `derivedFrom` names the trip fact that puts it on the page: the destination, a place
+ * kind on the calendar, a tag on a placed card, or a news item. `source` says where the advice comes from, because a
+ * handbook that cannot say is a guess dressed as a guide.
+ */
+export type HandbookEntry = {
+  id: string
+  text: string
+  derivedFrom: string
+  source: string
+}
+
+/** A dated forecast or disruption line for the trip. The prototype's rows come from climate normals, and say so. */
+export type NewsItem = {
+  id: string
+  date: string
+  text: string
+  /** The packing derivation this item triggers, for example weather:rain, or null when it triggers none. */
+  triggers: string | null
+  source: string
+}
+
+export type Handbook = {
+  takeCare: HandbookEntry[]
+  news: NewsItem[]
+  packing: HandbookEntry[]
+}
+
 export type Trip = {
   id: string
   destination: string
