@@ -103,6 +103,21 @@
   color: var(--ink);
 }
 
+/* The destructive one, told apart at rest and not only on hover: the critique's point was that a person choosing
+   between them sees no difference until they have already committed the pointer. The border also carries the
+   boundary, which the neutral 22% ink mix did not - it measured 1.55:1 against 3:1. */
+.card-act-risk {
+  border-color: var(--at-risk);
+  color: var(--at-risk);
+}
+
+.card-act-risk:hover,
+.card-act-risk:focus-visible {
+  border-color: var(--at-risk);
+  background: var(--at-risk);
+  color: var(--paper);
+}
+
 .card-act[aria-pressed="true"] {
   border-color: var(--tint);
   background: color-mix(in oklab, var(--tint) 12%, transparent);

@@ -119,6 +119,7 @@ export const Desk = () => {
   const [dragging, setDragging] = useState<string | null>(null)
   const [drawer, setDrawer] = useState<{ dayIndex: number; slotIndex: number } | null>(null)
   const [datesOpen, setDatesOpen] = useState(false)
+  const [confirmReset, setConfirmReset] = useState(false)
   const [range, setRange] = useState<Range>(() => ({
     start: trip.startDate,
     end: addDays(trip.startDate, trip.nights)
@@ -235,6 +236,12 @@ export const Desk = () => {
               Optimize Plan
             </button>
           </div>
+
+          {/* Said out loud rather than left in a code comment. Optimizing rewrites every unpinned placement, and
+              until now nothing on the surface told anyone that pinning is what survives it. */}
+          {placed.size > 0 && (
+            <p className="t-specimen desk-pinnote">Optimizing reorders every day. Pinned stops keep their slot.</p>
+          )}
         </header>
 
         {datesOpen && (
@@ -281,6 +288,13 @@ export const Desk = () => {
           </aside>
 
           <section className="desk-grid" aria-label="The calendar">
+            {/* The first frame used to be twelve wells labelled Empty and no instruction anywhere but inside a
+                hover tooltip on the page title. It goes the moment anything is placed. */}
+            {placed.size === 0 && (
+              <p className="desk-firstmove">
+                Drag a card from Voted In into any slot, or press Optimize Plan to fill every day at once.
+              </p>
+            )}
             {trip.days.map((day, dayPos) => (
               <section key={day.index} className="desk-day" data-day={day.tint}>
                 <header className="desk-dayhead">
@@ -379,9 +393,25 @@ export const Desk = () => {
           <div className="desk-proto">
             <p className="t-label desk-protolegend">Prototype Controls</p>
             <p className="t-specimen">Not part of the product. Clears this browser and reloads the fixture.</p>
-            <button type="button" className="desk-reset t-label" onClick={restart}>
-              Start Over
-            </button>
+            {/* Two presses, not a browser dialog: a native confirm blocks the page and reads as a bug on camera.
+                On a phone this button sits in the scroll path directly above Before We Go. */}
+            {confirmReset ? (
+              <div className="desk-resetask">
+                <p className="t-specimen">This clears the whole trip. There is no undo.</p>
+                <div className="desk-resetacts">
+                  <button type="button" className="desk-reset desk-reset-go t-label" onClick={restart}>
+                    Yes, Start Over
+                  </button>
+                  <button type="button" className="desk-reset t-label" onClick={() => setConfirmReset(false)}>
+                    Keep This Trip
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button type="button" className="desk-reset t-label" onClick={() => setConfirmReset(true)}>
+                Start Over
+              </button>
+            )}
           </div>
         </div>
         {/* The way forward, on the Desk itself. It was reachable only through the sidebar island, and the person
