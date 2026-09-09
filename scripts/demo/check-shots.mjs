@@ -80,6 +80,25 @@ export async function runShotChecks(options = {}) {
   const go = (path) => page.goto(`${baseUrl}${path}`, { waitUntil: 'domcontentloaded' })
 
   try {
+    // The landing beat films this surface for sixteen seconds, and since #276 its hero is a video pulled from the
+    // reels bucket. Nothing here read the landing at all, so a hero that 404s or fails to autoplay would have been
+    // filmed as an empty page: record.mjs only waits for `main`, which is there either way. Playing rather than
+    // present, because a poster frame on a stalled video looks fine in a screenshot and is sixteen seconds of stillness
+    // in the film.
+    await go('/')
+    await check(
+      'landing',
+      'The hero clip is playing, not merely present',
+      'video.land-frame',
+      page.locator('video.land-frame'),
+      async (locator) => {
+        await page.waitForTimeout(3_000)
+        return locator
+          .first()
+          .evaluate((video) => !video.paused && video.readyState >= 3 && video.videoWidth > 0 && video.currentTime > 0)
+      }
+    )
+
     await go('/new')
     // The recorder waits on this heading before it touches anything on the page, so the gate has to read the same
     // string. It did not, which is why #226 turning /new into an edit surface reached a run rather than a check:
