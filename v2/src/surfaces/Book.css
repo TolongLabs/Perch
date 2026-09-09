@@ -39,6 +39,26 @@
   max-width: 44ch;
 }
 
+/* Solid, because it is the cover's one action and the Book has no other. Square, like everything on the plate. */
+.cover-save {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  margin: var(--s6) 0 0;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-plate);
+  background: var(--ink);
+  color: var(--plate);
+  cursor: pointer;
+  transition: background-color var(--motion-fade) var(--ease);
+}
+
+.cover-save:hover,
+.cover-save:focus-visible {
+  background: color-mix(in oklab, var(--tint) 34%, var(--ink));
+}
+
 .cover-facts {
   display: flex;
   flex-wrap: wrap;
@@ -361,9 +381,24 @@
     min-height: 0;
   }
 
+  /* The spread is declared here rather than left to the 1024 breakpoint. An A4 landscape sheet with 14mm margins is
+     1016px of content, eight pixels short of it, so a day printed as one narrow column with a third of the sheet
+     empty on either side - a spread by name and a list on paper. Paper is not a viewport and should not be asked
+     to behave like one. */
   .spread {
     break-after: page;
     animation: none;
+    max-width: none;
+    padding: 0;
+  }
+
+  .spread-pages {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s6) 32px;
+  }
+
+  .page:nth-child(even) .page-num {
+    text-align: right;
   }
 
   .spread:last-child {
@@ -373,6 +408,22 @@
   .spread-lead,
   .entry {
     break-inside: avoid;
+  }
+
+  /* A sheet is 687px of content against a screen that scrolls, so the pictures come down to fit rather than pushing
+     every second entry onto a page of its own. The crop changes, not the frame: they stay landscape windows on a
+     9:16 still, cropped above centre. */
+  .lead-shot {
+    height: 260px;
+  }
+
+  .entry-shot {
+    aspect-ratio: 16 / 9;
+  }
+
+  /* The control that made the sheet has no business on it. */
+  .cover-save {
+    display: none;
   }
 
   /* On paper a slab of solid ink is the heaviest thing on the page, and it is a link nobody can follow. The words
