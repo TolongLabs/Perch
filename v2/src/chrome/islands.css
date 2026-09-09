@@ -163,13 +163,15 @@
 
 /* The pin is not an eighth destination, it changes how the rail behaves, so it is set off from the places you can
    go. By the gap and nothing else: `DESIGN.md` allows no horizontal dividers anywhere in the product, and a rule
-   here would be redundant besides, since the 68px pitch to the pin already reads against the 48px between rows. */
+   here would be redundant besides, since the 76px pitch to the pin already reads against the 56px between rows.
+   Both grew together: at a 48px pitch eight rows read as one ruled block, and separating the pin from a block by
+   20px is a different signal than separating it from a column of discrete rows by the same 20px. */
 .rail-list {
   display: flex;
   flex-direction: column;
-  gap: var(--s1);
+  gap: var(--s3);
   list-style: none;
-  margin: 0 0 var(--s4);
+  margin: 0 0 var(--s5);
   padding: 0;
 }
 
