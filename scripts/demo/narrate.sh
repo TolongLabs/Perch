@@ -26,7 +26,12 @@ music_credit="${DEMO_MUSIC_CREDIT:-}"
 # matches what is being said, and the burned subtitles ride the same setpts rather than needing a second pass over
 # the SRT. The bed is deliberately not sped up: it is music rather than performance, and a lofi loop at 1.5x is a
 # different piece of music. atempo covers 0.5 to 2.0 in one pass, which is the range this accepts.
-speed="${DEMO_SPEED:-1}"
+#
+# NOT DEMO_SPEED. That name was already taken by speak.py, where it is Kokoro's own speaking rate, and this script
+# hands its whole environment to speak.py -- so a single DEMO_SPEED=1.5 made the voice synthesise 1.5x fast and then
+# atempo it 1.5x again, about 2.3x on the speech against 1.5x on the picture. Measured: one line runs 3.33s at
+# DEMO_SPEED=1 and 2.15s at 1.5, before this script touches it.
+speed="${DEMO_FILM_SPEED:-1}"
 
 require_command() {
   command -v "$1" >/dev/null 2>&1 || [ -x "$1" ] || { echo "missing command: $1" >&2; exit 1; }
@@ -39,7 +44,7 @@ for input in "$source" "$demo_dir/beats.json" "$script" "$speak"; do
   [ -f "$input" ] || { echo "missing: $input" >&2; exit 1; }
 done
 [ "$source" != "$output" ] || { echo "DEMO_OUT must differ from DEMO_SOURCE" >&2; exit 1; }
-python3 - "$speed" <<'PY' || { echo "DEMO_SPEED must be between 0.5 and 2.0" >&2; exit 1; }
+python3 - "$speed" <<'PY' || { echo "DEMO_FILM_SPEED must be between 0.5 and 2.0" >&2; exit 1; }
 import sys
 
 value = float(sys.argv[1])
@@ -162,14 +167,10 @@ if [ -n "$music" ]; then
   metadata=(-metadata "comment=Music: $music_credit")
   music_path="$(realpath "$music")"
   mean_of() {
-    "$ffmpeg" -hide_banner -nostats -i "$1" ${2:+-ss "$2"} -t "$3" -af "${4:-}volumedetect" -f null /dev/null 2>&1 |
+    "$ffmpeg" -hide_banner -nostats -i "$1" ${2:+-ss "$2"} -t "$3" -af volumedetect -f null /dev/null 2>&1 |
       sed -n 's/.*mean_volume: \(-\?[0-9.]*\) dB.*/\1/p' | tail -1
   }
-  # Measured through the same tempo the voice will be mixed at. Speeding a recording up puts the same energy into less
-  # time, so the raw file reads about 1.8dB quieter than what actually lands in the mix at 1.5x, and a bed placed
-  # against the raw figure sits that much too low -- far enough under to stop filling the gaps between lines, which
-  # shows up as the film's loudness range widening rather than as anything audible being wrong.
-  narration_mean="$(mean_of "$audio_path" "" "$out_seconds" "$voice_tempo")"
+  narration_mean="$(mean_of "$audio_path" "" "$out_seconds")"
   music_mean="$(mean_of "$music_path" "$music_start" "$out_seconds")"
   music_gain="$(python3 -c "print(round(($narration_mean - $music_duck) - ($music_mean), 2))")"
   fade_out_at="$(python3 -c "print(max(0, round($out_seconds - $music_fade_out, 3)))")"
