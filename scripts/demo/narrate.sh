@@ -16,6 +16,12 @@ ffprobe="${DEMO_FFPROBE:-$(command -v ffprobe || true)}"
 fps="${DEMO_FPS:-25}"
 preset="${DEMO_PRESET:-veryfast}"
 segments="$demo_dir/narration-segments"
+music="${DEMO_MUSIC:-}"
+music_start="${DEMO_MUSIC_START:-0}"
+music_duck="${DEMO_MUSIC_DUCK:-20}"
+music_fade_in="${DEMO_MUSIC_FADE_IN:-4}"
+music_fade_out="${DEMO_MUSIC_FADE_OUT:-7}"
+music_credit="${DEMO_MUSIC_CREDIT:-}"
 
 require_command() {
   command -v "$1" >/dev/null 2>&1 || [ -x "$1" ] || { echo "missing command: $1" >&2; exit 1; }
@@ -28,6 +34,13 @@ for input in "$source" "$demo_dir/beats.json" "$script" "$speak"; do
   [ -f "$input" ] || { echo "missing: $input" >&2; exit 1; }
 done
 [ "$source" != "$output" ] || { echo "DEMO_OUT must differ from DEMO_SOURCE" >&2; exit 1; }
+if [ -n "$music" ]; then
+  [ -f "$music" ] || { echo "missing music: $music" >&2; exit 1; }
+  # Checked here rather than at the mux, because the failure it guards against is a film that ships with an uncredited
+  # bed and no way to tell from the file itself, and finding that out after the speech has been synthesised wastes the
+  # expensive half of the run.
+  [ -n "$music_credit" ] || { echo "DEMO_MUSIC needs DEMO_MUSIC_CREDIT: the bed has to be credited in the file" >&2; exit 1; }
+fi
 
 mkdir -p "$demo_dir" "$segments" "$(dirname -- "$output")"
 python3 "$script_dir/schedule.py" resolve "$demo_dir" "$script"
@@ -114,17 +127,12 @@ output_path="$(cd -- "$(dirname -- "$output")" && pwd)/$(basename -- "$output")"
 # The level is derived rather than guessed: both the narration and the chosen slice of the bed are measured, and the
 # bed is placed DEMO_MUSIC_DUCK decibels under the narration's mean. A fixed offset beats a guessed gain, because a
 # quiet mix and a loud one need different numbers to sit in the same place.
-music="${DEMO_MUSIC:-}"
-music_start="${DEMO_MUSIC_START:-0}"
-music_duck="${DEMO_MUSIC_DUCK:-20}"
-music_fade_in="${DEMO_MUSIC_FADE_IN:-4}"
-music_fade_out="${DEMO_MUSIC_FADE_OUT:-7}"
-
 audio_inputs=()
 audio_map='1:a'
 audio_filter=''
+metadata=()
 if [ -n "$music" ]; then
-  [ -f "$music" ] || { echo "missing music: $music" >&2; exit 1; }
+  metadata=(-metadata "comment=Music: $music_credit")
   music_path="$(realpath "$music")"
   video_seconds="$("$ffprobe" -v error -show_entries format=duration -of csv=p=0 "$source_path")"
   mean_of() {
@@ -143,14 +151,35 @@ if [ -n "$music" ]; then
   audio_filter=";[1:a]apad=whole_dur=${video_seconds}[voice];[2:a]volume=${music_gain}dB,afade=t=in:st=0:d=${music_fade_in},afade=t=out:st=${fade_out_at}:d=${music_fade_out}[bed];[voice][bed]amix=inputs=2:duration=first:normalize=0[audio]"
 fi
 
-(
-  cd "$demo_dir"
-  "$ffmpeg" -y -loglevel error -i "$source_path" -i "$audio_path" "${audio_inputs[@]}" \
-    -filter_complex "[0:v]$fit,$subtitle_filter[video]$audio_filter" \
-    -map '[video]' -map "$audio_map" -c:v libx264 -preset "$preset" -crf 20 -pix_fmt yuv420p \
-    -c:a aac -b:a 160k -movflags +faststart "$output_path"
-)
+# The two maps are ordered video first on purpose. ffmpeg lays the output streams down in the order it is given them,
+# and a film whose stream 0 is audio is a gratuitous difference from every take before it.
+mux() {
+  local target="$1" filter="$2" amap="$3"
+  shift 3
+  (
+    cd "$demo_dir"
+    "$ffmpeg" -y -loglevel error -i "$source_path" -i "$audio_path" "$@" \
+      -filter_complex "$filter" -map '[video]' -map "$amap" \
+      -c:v libx264 -preset "$preset" -crf 20 -pix_fmt yuv420p \
+      -c:a aac -b:a 160k -movflags +faststart "$target"
+  )
+}
+
+mux "$output_path" "[0:v]$fit,$subtitle_filter[video]$audio_filter" "$audio_map" \
+  "${audio_inputs[@]}" "${metadata[@]}"
+
+# A voice-only twin of every film that carries a bed, kept beside the take rather than next to the deliverable. The
+# music is a judgement call made without a licence to point at, so if a platform mutes the upload the answer is a
+# re-upload of a film that already exists, not a re-render against a deadline.
+silent_path=''
+if [ -n "$music" ]; then
+  silent_path="$demo_dir/$(basename -- "${output_path%.mp4}")-silent.mp4"
+  mux "$silent_path" "[0:v]$fit,$subtitle_filter[video]" '1:a'
+fi
 
 final_seconds="$("$ffprobe" -v error -show_entries format=duration -of csv=p=0 "$output_path")"
 printf 'video: %.1fs  narration: %.1fs  tail pad: %.1fs\n' "$final_seconds" "$audio_seconds" "$tail_seconds"
 printf 'output: %s\n' "$output_path"
+if [ -n "$silent_path" ]; then
+  printf 'silent twin: %s\n' "$silent_path"
+fi

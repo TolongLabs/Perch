@@ -514,6 +514,115 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
     expect(streams.stdout).toContain('video,1920,1080')
     expect(streams.stdout).toContain('audio')
   }, 30_000)
+
+  // The bed is used on a decision rather than a licence, so the two things that make that decision legible in the
+  // artifact are the credit inside the file and the voice-only twin beside it. Both are cheap to lose in a refactor
+  // and neither throws when it goes missing, so they are asserted rather than trusted.
+  const stageNarrateFixture = () => {
+    const demoDir = makeScratchDir()
+    const source = join(demoDir, 'capture-joined.mp4')
+    const script = join(demoDir, 'narration.txt')
+    const fakeSpeak = join(demoDir, 'fake-speak.py')
+    expect(
+      run(
+        'ffmpeg',
+        '-y',
+        '-loglevel',
+        'error',
+        '-f',
+        'lavfi',
+        '-i',
+        'color=c=white:s=320x180:r=10',
+        '-t',
+        '5',
+        '-c:v',
+        'libx264',
+        '-pix_fmt',
+        'yuv420p',
+        source
+      ).exitCode
+    ).toBe(0)
+    writeJson(
+      join(demoDir, 'beats.json'),
+      browserBeats.map((beat, index) => ({ ...beat, ms: beat.name === 'end' ? 5_000 : (index + 1) * 100 }))
+    )
+    writeFileSync(script, 'shot-1 | 100 | The credit rides in the file.\n')
+    writeFileSync(
+      fakeSpeak,
+      [
+        'import sys, wave',
+        'sys.stdin.read()',
+        "with wave.open(sys.argv[1], 'wb') as audio:",
+        '    audio.setnchannels(1)',
+        '    audio.setsampwidth(2)',
+        '    audio.setframerate(8000)',
+        "    audio.writeframes(b'\\x00\\x00' * 8000)",
+        ''
+      ].join('\n')
+    )
+    return { demoDir, output: join(demoDir, 'finished.mp4'), script, fakeSpeak }
+  }
+
+  const narrateEnv = (fixture: ReturnType<typeof stageNarrateFixture>, extra: Record<string, string>) => ({
+    ...process.env,
+    DEMO_DIR: fixture.demoDir,
+    DEMO_FPS: '10',
+    DEMO_OUT: fixture.output,
+    DEMO_PRESET: 'ultrafast',
+    DEMO_PYTHON: 'python3',
+    DEMO_SCRIPT: fixture.script,
+    DEMO_SPEAK: fixture.fakeSpeak,
+    ...extra
+  })
+
+  test('refuses a bed that is not credited, before spending the run on speech', () => {
+    const fixture = stageNarrateFixture()
+    const music = join(fixture.demoDir, 'bed.wav')
+    expect(
+      run('ffmpeg', '-y', '-loglevel', 'error', '-f', 'lavfi', '-i', 'sine=frequency=220:duration=20', music).exitCode
+    ).toBe(0)
+
+    const result = Bun.spawnSync(['bash', narrate], { env: narrateEnv(fixture, { DEMO_MUSIC: music }) })
+
+    expect(result.exitCode).not.toBe(0)
+    expect(result.stderr.toString()).toContain('DEMO_MUSIC_CREDIT')
+    expect(existsSync(fixture.output)).toBe(false)
+    // The guard is worth nothing if it fires after the expensive half of the run.
+    expect(existsSync(join(fixture.demoDir, 'narration.wav'))).toBe(false)
+  }, 30_000)
+
+  test('credits the bed in the film and leaves a voice-only twin beside it', () => {
+    const fixture = stageNarrateFixture()
+    const music = join(fixture.demoDir, 'bed.wav')
+    expect(
+      run('ffmpeg', '-y', '-loglevel', 'error', '-f', 'lavfi', '-i', 'sine=frequency=220:duration=20', music).exitCode
+    ).toBe(0)
+
+    const result = Bun.spawnSync(['bash', narrate], {
+      env: narrateEnv(fixture, { DEMO_MUSIC: music, DEMO_MUSIC_CREDIT: 'A Named Source' })
+    })
+
+    expect(result.exitCode, result.stderr.toString()).toBe(0)
+    const silent = join(fixture.demoDir, 'finished-silent.mp4')
+    expect(existsSync(silent)).toBe(true)
+
+    const tagOf = (file: string) =>
+      run('ffprobe', '-v', 'error', '-show_entries', 'format_tags=comment', '-of', 'csv=p=0', file).stdout.trim()
+    expect(tagOf(fixture.output)).toBe('Music: A Named Source')
+    expect(tagOf(silent)).toBe('')
+
+    // Same picture, different audio: the twin is a re-mux of the film, not a second take of it.
+    const videoOf = (file: string) =>
+      run('ffmpeg', '-nostdin', '-v', 'error', '-i', file, '-map', '0:v', '-f', 'md5', '-').stdout
+    expect(videoOf(silent)).toBe(videoOf(fixture.output))
+    expect(readFileSync(fixture.output)).not.toEqual(readFileSync(silent))
+
+    // Video first in both, because every take before the bed existed put it there.
+    for (const file of [fixture.output, silent]) {
+      const order = run('ffprobe', '-v', 'error', '-show_entries', 'stream=index,codec_type', '-of', 'csv=p=0', file)
+      expect(order.stdout.trim().split('\n')).toEqual(['0,video', '1,audio'])
+    }
+  }, 90_000)
 })
 
 // narration.txt holds the spoken lines and record.mjs holds the beat budgets, in two files that must agree. They
