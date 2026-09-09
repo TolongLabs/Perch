@@ -36,9 +36,35 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* The reel was bound by the column's width and never by the viewport's height, so the three answers sat at a fixed
+   distance from the top whatever the screen and fell off the bottom of a short one. Bound by both, and the shorter
+   screen shrinks the reel rather than dropping the controls off it.
+
+   165px is the column above and below the reel, measured. The rest of the chrome is conditional and is read from
+   the token that causes it rather than folded into that number: a joiner lands straight on the swipe link and gets
+   no islands, so `.shell` reserves nothing for the cluster, and the same page sits 88px higher than it does for an
+   owner who navigated in. Two routes, two heights, one rule.
+
+   The floor is what has to stay clear underneath, and on a phone that is the dock's own 76px. Below the tablet
+   breakpoint the width still wins, so nothing about the phone moves and `dvh` never resizes the reel as a mobile
+   browser's chrome comes and goes. */
 .deck-stack {
+  --deck-chrome: 165px;
+  --deck-floor: 24px;
   position: relative;
   isolation: isolate;
+  width: min(100%, max(220px, calc((100dvh - var(--deck-chrome) - var(--deck-floor)) * 9 / 16)));
+  margin-inline: auto;
+}
+
+.shell[data-islands="true"] .deck-stack {
+  --deck-chrome: calc(165px + var(--cluster-clear));
+}
+
+@media (max-width: 899px) {
+  .deck-stack {
+    --deck-floor: 116px;
+  }
 }
 
 /* The affordances hang outside the column, and above 496px there is page either side to hang them in: the reel
@@ -117,12 +143,28 @@
   }
 }
 
-/* What releasing now would do. Only past the point where the drag is clearly going somewhere, so a hand resting on
-   the card does not flicker between three states. */
-.deck-card[data-heading="must"] {
-  outline: var(--outline) solid var(--decided);
+/* What releasing now would do, and only once releasing would do it: the hook returns no heading below the two
+   thresholds the commit uses, so a hand resting on the card names nothing.
+
+   All three, in the colour their own glow answers with, because a preview that shares a colour with another answer
+   is not a directional confirmation. That moves the Must Go outline from `--decided` to `--gold`: its glow was
+   already gold, and green on both it and a Keep meant the two most different answers previewed the same. */
+.deck-card[data-heading] {
+  outline: var(--outline) solid var(--state-line);
   outline-offset: calc(var(--outline) * -1);
   border-radius: var(--r-desk);
+}
+
+.deck-card[data-heading="must"] {
+  --state-line: var(--gold);
+}
+
+.deck-card[data-heading="keep"] {
+  --state-line: var(--decided);
+}
+
+.deck-card[data-heading="pass"] {
+  --state-line: var(--ink-muted);
 }
 
 @keyframes card-out {
@@ -153,8 +195,12 @@
     color var(--motion-fade) var(--ease);
 }
 
+/* The border is `--ink-muted`, not ink at 22%. That mix reads 1.54:1 on paper against the 3:1 WCAG 1.4.11 asks of
+   a control's boundary, so the answer given most often was also the one that looked most disabled, sitting beside
+   a green chip and a solid ink pill. The muted ink is the token for "quieter than ink" and clears the bar in both
+   themes without making Pass the loudest thing in the row. */
 .deck-pass {
-  border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
+  border: var(--outline) solid var(--ink-muted);
   background: var(--paper);
 }
 
