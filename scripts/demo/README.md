@@ -322,6 +322,30 @@ pass, and wait for the leaving animation before the next swipe.
 
 ---
 
+## The Deploy Trap
+
+**Never decide what is live by grepping the bundle.** The film is shot against the deployed prototype, so "has this
+merged change landed yet" is asked constantly, and `curl` piped into `grep` is the tempting way to ask it. It is wrong
+twice over: a string the source spells plainly can be split, folded or renamed by the minifier, and a chunk that is not
+the entry bundle is never fetched at all. Both misses read as a confident zero.
+
+**It has produced two wrong answers here in one afternoon**, both of them the same shape -- a merged change reported as
+absent, once with a passing gate cited as corroboration when the gate was passing because the change genuinely was not
+there yet, and once when the change was live and on screen the whole time.
+
+**Drive the page instead.** Open it, look for the thing, and let the DOM answer:
+
+```js
+const before = await page.getByRole('button', { name: /Start Over/i }).count()
+await page.getByRole('button', { name: /Start Over/i }).first().click()
+console.log(await page.getByText(/There is no undo/i).count())
+```
+
+The bundle hash is still worth reading, but only for what it can tell you: **that the deploy moved**, never what is in
+it. A changed hash means re-measure; an unchanged hash means the last measurement still stands.
+
+---
+
 ## The Gold Trap
 
 **`shot-7` has broken three times, each time on a different assumption about a beat that is only two drags long.** All
