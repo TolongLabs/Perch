@@ -10,8 +10,10 @@ import './Deck.css'
 /** Three is enough for the stack to read as a deck; the fourth would never be seen. */
 const VISIBLE = 3
 
-/** How long the edge glow holds. Long enough to register after the card has gone, short enough not to queue. */
-const FLASH_MS = 520
+/** How long the edge glow holds. Long enough to register after the card has gone, short enough not to queue. Was
+ *  520, which intake 2 read as barely registering: the glow now spans the viewport edge and it is held longer to
+ *  match. Kept in step with --flash in Deck.css. */
+const FLASH_MS = 760
 
 export const Deck = () => {
   const navigate = useNavigate()
@@ -25,6 +27,9 @@ export const Deck = () => {
   const [index, setIndex] = useState(0)
   const [leaving, setLeaving] = useState<Swipe | null>(null)
   const [flash, setFlash] = useState<Swipe | null>(null)
+  // Swiping two keeps in a row sets the same flash value twice, so React would reuse the rising marks and their
+  // animation would never restart. The counter is what makes the second answer a new element.
+  const [flashId, setFlashId] = useState(0)
   const flashTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   /**
@@ -35,6 +40,7 @@ export const Deck = () => {
   const commit = useCallback((s: Swipe) => {
     setLeaving((current) => current ?? s)
     setFlash(s)
+    setFlashId((n) => n + 1)
     clearTimeout(flashTimer.current)
     flashTimer.current = setTimeout(() => setFlash(null), FLASH_MS)
   }, [])
@@ -81,26 +87,40 @@ export const Deck = () => {
         </p>
       </header>
 
+      {/* Outside the stack and fixed to the viewport, because the answer is light entering from the edge of the
+          screen the card was thrown at. Inside the stack it was a 36px halo on the reel's own edge, which is what
+          intake 2 saw as barely registering. */}
+      <div className="deck-flash" data-flash={flash ?? undefined} aria-hidden="true" />
+
+      {/* Above the reel and off it, like the other two. It sat on the video because the gold answer used to glow
+          from the card's own top edge and washed out anything in the page above it; the glow is the whole viewport
+          now, so ink on the page holds. Its text carries the one piece of state the mechanic has, and it stays
+          after the mark is spent, because a Must Go moves rather than being used up. */}
+      <p className="deck-up">
+        <ArrowUp size={20} strokeWidth={2} aria-hidden="true" />
+        <span className="t-label deck-hint-label">Must Go ({mustGo ? 'Move' : '1 Left'})</span>
+      </p>
+
       <div className="deck-stack">
-        {/* Behind the cards, so the answer reads as light off the edge the hand threw the card at rather than as a
-            panel laid over the reel. */}
-        <div className="deck-flash" data-flash={flash ?? undefined} aria-hidden="true" />
-
-        {/* On the reel rather than above it. The gold answer glows from the top, and a label sitting in the page
-            above the card was washed out by it; on the reel it takes the scrim the reel's own marks take and stays
-            legible against anything. Its text carries the one piece of state the mechanic has, and it stays after
-            the mark is spent, because a Must Go moves rather than being used up. */}
-        <p className="deck-up t-label">
-          <ArrowUp size={14} strokeWidth={2} aria-hidden="true" />
-          Must Go ({mustGo ? 'Move' : '1 Left'})
-        </p>
-
+        {/* Outside the reel now, in the gutter the stack leaves either side, so nothing sits on the video. The
+            label is what names the direction; the chevron on its own was a glyph the reader had to guess at. */}
         <span className="deck-hint" data-side="pass" aria-hidden="true">
-          <ChevronLeft size={18} strokeWidth={2} />
+          <ChevronLeft size={20} strokeWidth={2} />
+          <span className="t-label deck-hint-label">Pass</span>
         </span>
         <span className="deck-hint" data-side="keep" aria-hidden="true">
-          <ChevronRight size={18} strokeWidth={2} />
+          <ChevronRight size={20} strokeWidth={2} />
+          <span className="t-label deck-hint-label">Keep</span>
         </span>
+
+        {/* The plumage dot is the product's own mark for "this one counts", and it is what carries the moment the
+            team asked heart emoji for. One rises on a Keep, two in gold on a Must Go. */}
+        {(flash === 'keep' || flash === 'must') && (
+          <span className="deck-rise" key={flashId} data-rise={flash} aria-hidden="true">
+            <span className="rise-dot" />
+            {flash === 'must' && <span className="rise-dot" />}
+          </span>
+        )}
 
         {rest.map((place, depth) => {
           const top = depth === 0
