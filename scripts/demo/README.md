@@ -530,8 +530,15 @@ have it removed, rather than each transition needing its own special case.
 
 ## Running The Film Faster Than It Was Shot
 
-`DEMO_SPEED` re-times the finished film. `1` is off and byte-identical to no knob at all; atempo covers `0.5` to `2.0`
-in one pass, which is the range it accepts.
+`DEMO_FILM_SPEED` re-times the finished film. `1` is off and byte-identical to no knob at all; atempo covers `0.5` to
+`2.0` in one pass, which is the range it accepts.
+
+**It is not `DEMO_SPEED`, and the difference is the whole trap.** `DEMO_SPEED` already belongs to `speak.py`, where it
+is Kokoro's own speaking rate, and `narrate.sh` hands its entire environment to `speak.py`. Naming both the same made a
+single `DEMO_SPEED=1.5` synthesise the voice 1.5x fast and then `atempo` it 1.5x again -- roughly 2.3x on the speech
+against 1.5x on the picture. Measured directly: one line is 3.33 s at `DEMO_SPEED=1` and 2.15 s at `1.5`, before this
+script touches it. Nothing errors, the film still comes out at exactly the right duration because the picture sets that,
+and only the voice is wrong.
 
 **Picture and voice move together and the subtitles come along for free.** The speed is applied inside the mux, after
 the subtitles are burned, so `setpts` compresses the cards with the frames they belong to -- there is no second pass
@@ -541,17 +548,16 @@ over the SRT and the file on disk keeps its original timings, which looks wrong 
 **The bed is deliberately not sped up.** It is music rather than performance, and a lofi loop at 1.5x is a different
 piece of music. Only the voice gets `atempo`; the bed is laid against the new, shorter length.
 
-**Measure the narration through the tempo it will be mixed at, not the file on disk.** Speeding a recording up puts the
-same energy into less time, so the raw file reads about 1.8 dB quieter at 1.5x than what lands in the mix. A bed placed
-against the raw figure sits that far too low, stops filling the gaps between lines, and the film's loudness range
-widens: 20.5 LU measured that way against 8.0 LU once corrected. Nothing sounds broken, which is why it needs measuring
-rather than listening for.
+**`atempo` does not move `volumedetect`'s mean, so the bed's gain needs no correction for speed.** The same file reads
+-24.9 dB with and without `atempo=1.5` in front of the meter, because the mean is taken over sample amplitudes rather
+than over time. A first pass here "fixed" a level problem on that premise and the fix was a no-op: the level problem was
+the doubled speech above, wearing a disguise.
 
-| Speed  | 4:59.6 becomes | Speech  |
-| ------ | -------------- | ------- |
-| `1`    | 5:00.6         | 175 wpm |
-| `1.25` | 4:00.5         | 219 wpm |
-| `1.5`  | 3:20.4         | 262 wpm |
+| `DEMO_FILM_SPEED` | 5:00.6 of picture becomes | Speech  |
+| ----------------- | ------------------------- | ------- |
+| `1`               | 5:00.6                    | 175 wpm |
+| `1.25`            | 4:00.5                    | 219 wpm |
+| `1.5`             | 3:20.4                    | 262 wpm |
 
 **Speech rate is the thing to argue about, not runtime.** Kokoro speaks at a measured 175 wpm; the multiplier applies to
 that directly. Audiobooks sit near 150 and a fast podcast near 180, so 1.5x is past the point where a listener hearing
