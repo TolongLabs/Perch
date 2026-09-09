@@ -4,13 +4,14 @@
   gap: var(--s5);
   max-width: 430px;
   margin: 0 auto;
-  padding: var(--s7) var(--s5) var(--s8);
+  /* Same rule as Onboarding: the shell reserves the cluster, so the page starts one step under that line rather
+     than reserving it a second time. */
+  padding: var(--s4) var(--s5) var(--s8);
 }
 
 @media (min-width: 1024px) {
   .dash {
     max-width: 720px;
-    padding-top: 96px;
   }
 }
 

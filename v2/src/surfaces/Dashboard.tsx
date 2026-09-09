@@ -152,10 +152,11 @@ export const Dashboard = () => {
         )}
       </section>
 
-      {/* Not New Plan. The prototype holds one trip, so there is nothing to start; this reopens the one that
-          exists, with everything it already knows filled in. */}
-      <button type="button" className="dash-new t-label" onClick={() => navigate('/new?edit')}>
-        Edit Trip
+      {/* The card offers a new plan, which is what `/new` is: the same form under the heading Plan A New Trip that
+          the landing and the sign-in path already reach. Editing this trip is the rail's own row, and it keeps the
+          `?edit` path, so both are still one press away from here. */}
+      <button type="button" className="dash-new t-label" onClick={() => navigate('/new')}>
+        New Trip
       </button>
     </main>
   )
