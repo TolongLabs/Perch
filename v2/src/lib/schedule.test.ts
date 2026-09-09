@@ -87,7 +87,7 @@ describe('evaluateDay', () => {
     const result = evaluateDay(dayWith(['sensoji', 'nakamise', 'ameyoko']), trip.options)
     expect(result?.status).toBe('green')
     expect(result?.reason).toBeNull()
-    expect(result?.endMin).toBe(9 * 60 + result!.daySpanMin)
+    expect(result?.endMin).toBe(9 * 60 + (result?.daySpanMin ?? 0))
     expect(result?.transitMin).toBeGreaterThan(0)
     expect(result?.dwellMin).toBe(60 + 45 + 60)
     expect(result?.daySpanMin).toBeGreaterThan(0)
