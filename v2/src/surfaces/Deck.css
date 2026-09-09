@@ -65,6 +65,13 @@
   .deck-stack {
     --deck-floor: 116px;
   }
+
+  /* The presence row costs the reel height only here: 32px of discs and the column's own 24px gap. Above the
+     breakpoint the strip hangs in the page beside the column and the reel keeps every pixel it has. Without this
+     the three answers slid 16px under the dock and the surface started scrolling. */
+  .shell[data-islands="true"] .deck-stack {
+    --deck-chrome: calc(165px + var(--cluster-clear) + 56px);
+  }
 }
 
 /* The affordances hang outside the column, and above 496px there is page either side to hang them in: the reel

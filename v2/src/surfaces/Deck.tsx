@@ -1,6 +1,7 @@
 import { ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react'
 import { type AnimationEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Presence } from '../components/Presence'
 import { ReelCard } from '../components/ReelCard'
 import { Heading } from '../components/Ui'
 import { isJoiner } from '../lib/joiner'
@@ -99,6 +100,9 @@ const Swiping = ({ me }: { me: string }) => {
           Reel {index + 1} Of {queue.length}
         </p>
       </header>
+
+      {/* The other three, on the deck at the same time and as far through it as their votes say they are. */}
+      <Presence trip={trip} />
 
       {/* Only where it is in doubt. Someone who came in through the invite link chose a name a moment ago and the
           rest of the screen never says it back to them; the owner opened her own trip and does not need telling. */}
