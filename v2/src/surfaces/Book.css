@@ -69,7 +69,17 @@
 
 .spread-band {
   color: var(--tint);
-  padding-bottom: var(--s3);
+}
+
+/* The band and the span are one block, so the head stays two things wide however many lines the left one runs to. */
+.spread-when {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.spread-span {
+  color: var(--ink-muted);
 }
 
 /* Pinned rather than printed. The tilt is the whole device: a note laid on the picture reads as the reader's own
