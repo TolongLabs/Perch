@@ -307,16 +307,24 @@
   opacity: 1;
 }
 
-/* A mid step of the decided ramp, not the full colour. `--decided` at full strength behind a blur is a dark green
+/* The falloff is capped in pixels as well as set as a fraction, so the light has the same weight on any screen: at
+   62% of a 1440 viewport the gradient is 893px long and reads as a faint wash, where the same rule on a 390px phone
+   is 242px and reads as an edge. The cap is what a 1440 gets instead.
+
+   A mid step of the decided ramp, not the full colour. `--decided` at full strength behind a blur is a dark green
    wall on a paper page, which is what read as heavy; mixed halfway to the plate it is light coming off the edge.
    The ramp is `DESIGN.md`'s five steps toward `--plate`, and this is the middle one. */
 .deck-flash[data-flash="keep"] {
-  background: linear-gradient(to left, color-mix(in oklab, var(--decided) 55%, var(--plate)), transparent 62%);
+  background: linear-gradient(
+    to left,
+    color-mix(in oklab, var(--decided) 55%, var(--plate)),
+    transparent min(62%, 420px)
+  );
 }
 
 /* Dull, per the issue: a pass is the answer you give most often and it should not celebrate. */
 .deck-flash[data-flash="pass"] {
-  background: linear-gradient(to right, var(--ink-muted), transparent 52%);
+  background: linear-gradient(to right, var(--ink-muted), transparent min(52%, 360px));
   opacity: 0.66;
 }
 
