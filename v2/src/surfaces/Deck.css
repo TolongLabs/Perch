@@ -170,17 +170,6 @@
   background: color-mix(in oklab, var(--decided) 18%, var(--paper));
 }
 
-.deck-must-note {
-  margin: var(--s3) 0 0;
-  color: var(--ink-muted);
-  text-align: center;
-}
-
-.deck-must-note strong {
-  color: var(--ink);
-  font-weight: 700;
-}
-
 .deck-pass:hover {
   border-color: var(--ink);
 }
@@ -223,7 +212,13 @@
   margin: calc(var(--s5) * -1) 0 calc(var(--s4) * -1);
   color: var(--ink-muted);
   pointer-events: none;
-  white-space: nowrap;
+}
+
+/* Not centred, though it sits under a centred glyph: the flex item shrinks to its content, so one line reads as
+   centred and a wrapped one reads left, which is the alignment `DESIGN.md` allows. */
+.deck-up-note {
+  margin: 0;
+  max-width: 34ch;
 }
 
 /* Outside the reel and on the page's own ground, so they take the page's ink rather than the scrim disc they wore

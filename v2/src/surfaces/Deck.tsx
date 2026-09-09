@@ -57,12 +57,16 @@ export const Deck = () => {
     setLeaving(null)
   }
 
-  const { dx, dy, dragging, heading, progress, handlers } = useSwipeGesture(commit, leaving === null)
   const rest = queue.slice(index, index + VISIBLE)
 
-  // Derived, not remembered: a Must Go is whichever place this member currently holds one on, so moving it moves
-  // this line with no second copy of the fact to fall out of step.
+  // Derived, not remembered: a Must Go is whichever place this member holds one on, so there is no second copy of
+  // the fact to fall out of step with the votes.
   const mustGo = Object.values(trip.options).find((p) => trip.votes[me]?.[p.id] === 'must')
+  // One per member per session, spent once. The state still demotes an older Must Go if it is ever asked to, but
+  // nothing on this surface can ask: the button is gone, the arrow is gone, and the gesture no longer commits.
+  const spent = mustGo !== undefined
+
+  const { dx, dy, dragging, heading, progress, handlers } = useSwipeGesture(commit, leaving === null, !spent)
 
   if (rest.length === 0) {
     return (
@@ -92,14 +96,25 @@ export const Deck = () => {
           intake 2 saw as barely registering. */}
       <div className="deck-flash" data-flash={flash ?? undefined} aria-hidden="true" />
 
-      {/* Above the reel and off it, like the other two. It sat on the video because the gold answer used to glow
-          from the card's own top edge and washed out anything in the page above it; the glow is the whole viewport
-          now, so ink on the page holds. Its text carries the one piece of state the mechanic has, and it stays
-          after the mark is spent, because a Must Go moves rather than being used up. */}
-      <p className="deck-up">
-        <ArrowUp size={20} strokeWidth={2} aria-hidden="true" />
-        <span className="t-label deck-hint-label">Must Go ({mustGo ? 'Move' : '1 Left'})</span>
-      </p>
+      {/* The whole Must Go story in one place, above the reel: the direction, the rule, and where the mark went
+          once it is spent. It used to be told twice, here and again in a line under the buttons, and that line
+          was the one a phone's dock covered nine tenths of. One line, not two: the direction is the glyph, the
+          quota is the label, and the button under the reel already says the words "Must Go".
+
+          Spent, the arrow and the label go with the button, because an affordance for something you can no longer
+          do is a control that lies. What is left is the sentence naming the place, which is the question the
+          mechanic actually raises, and it is a sentence rather than a label because it reports rather than
+          instructs. */}
+      <div className="deck-up">
+        {mustGo ? (
+          <p className="deck-up-note">Your Must Go is on {mustGo.name}.</p>
+        ) : (
+          <>
+            <ArrowUp size={20} strokeWidth={2} aria-hidden="true" />
+            <span className="t-label deck-hint-label">Swipe Up &middot; You Get One</span>
+          </>
+        )}
+      </div>
 
       <div className="deck-stack">
         {/* Outside the reel now, in the gutter the stack leaves either side, so nothing sits on the video. The
@@ -153,25 +168,15 @@ export const Deck = () => {
         <button type="button" className="deck-pass t-label" onClick={() => commit('pass')}>
           Pass
         </button>
-        <button type="button" className="deck-must t-label" onClick={() => commit('must')}>
-          Must Go
-        </button>
+        {!spent && (
+          <button type="button" className="deck-must t-label" onClick={() => commit('must')}>
+            Must Go
+          </button>
+        )}
         <button type="button" className="deck-keep t-label" onClick={() => commit('keep')}>
           Keep
         </button>
       </div>
-
-      {/* One line, and it changes once the Must Go is spent, because "where did mine go" is the question the
-          mechanic actually raises. */}
-      <p className="deck-must-note">
-        {mustGo ? (
-          <>
-            Your Must Go is on <strong>{mustGo.name}</strong>. Marking another moves it.
-          </>
-        ) : (
-          'Swipe a reel up to make it your Must Go. You get one.'
-        )}
-      </p>
     </main>
   )
 }
