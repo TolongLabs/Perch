@@ -197,6 +197,30 @@
   content: counter(page);
 }
 
+/* Eighty percent, so the whole block recedes together and reads as a reserve rather than a fourth stop.
+ *
+ * Both lines are set in full ink rather than the muted role they would otherwise take, because opacity over a light
+ * plate always moves the ink toward the plate: muted at 0.8 measured 3.50:1 light and 3.37:1 dark, and a 12px bold
+ * label is not large text, so both failed AA. Full ink under the same fade measures 6.98:1 and 9.37:1. The block is
+ * quiet because it is small, italic, below the folio and faded, not because it is hard to read. */
+.page-backup {
+  margin-top: var(--s6);
+  opacity: 0.8;
+}
+
+.backup-label {
+  color: var(--ink);
+  margin-bottom: var(--s2);
+}
+
+/* Two classes, not one: the sentence carries `.t-specimen`, and `base.css` is imported after the surfaces, so its
+   `--ink-muted` wins a single-class fight on position alone. That is #232; this stays correct after it lands. */
+.page-backup .backup-line {
+  margin: 0;
+  max-width: 46ch;
+  color: var(--ink);
+}
+
 .entry {
   margin-bottom: 0;
 }

@@ -5,6 +5,7 @@ import type { Day, Place, Slot } from '../data/types'
 import { dayCostRM, tripCostRM } from '../lib/cost'
 import { clock, dayLabel, duration, money, price } from '../lib/format'
 import { transitRoute } from '../lib/mapsLink'
+import { backupFor } from '../lib/schedule'
 import { useTrip } from '../state'
 import './Book.css'
 
@@ -89,6 +90,17 @@ export const Book = () => {
         const lead = entries[0]
         const route = transitRoute(entries.map((e) => e.place))
 
+        /* The day's reserve, and how far it is from the stop it is nearest. `backupFor` already guarantees the
+           place is voted in, unplaced anywhere in the trip, in the day's own cluster and within reach; the reader
+           needs the one number that says which stop to swap it for. */
+        const backup = backupFor(day, trip)
+        const nearest = backup
+          ? entries.reduce<{ place: Place; min: number } | null>((best, e) => {
+              const min = transitMin(e.place.id, backup.id)
+              return !best || min < best.min ? { place: e.place, min } : best
+            }, null)
+          : null
+
         return (
           <article key={day.index} className="spread day-spread" data-day={day.tint}>
             <header className="spread-head">
@@ -163,6 +175,21 @@ export const Book = () => {
                 </section>
               ))}
             </div>
+
+            {/* Under the folios rather than inside the last page, and the difference is visible: inside the page it
+                pushed that page's folio 129px above its neighbour's, and two page numbers at different heights read
+                as a layout fault rather than as a book. Below the row it is still the last thing on the day.
+              *
+              * A day whose cluster is exhausted, or whose only unplaced neighbours are too far, says nothing at all:
+              * a reserve across the city is a second plan, not a backup. */}
+            {backup && nearest && (
+              <aside className="page-backup">
+                <p className="t-label backup-label">If Plans Change</p>
+                <p className="t-specimen backup-line">
+                  {backup.name} is {nearest.min} min from {nearest.place.name}, voted in and on no day.
+                </p>
+              </aside>
+            )}
           </article>
         )
       })}
