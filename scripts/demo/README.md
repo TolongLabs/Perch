@@ -124,11 +124,13 @@ mkdir -p "$DEMO_DIR" "$TMPDIR"
 
 node scripts/demo/check-shots.mjs      # every row must read PRESENT
 node scripts/demo/record.mjs           # capture.webm + beats.json
-bash scripts/demo/narrate.sh           # dub, subtitle, mux -> TolongLabs.mp4
+DEMO_SOURCE="$DEMO_DIR/capture.webm" bash scripts/demo/narrate.sh   # dub, subtitle, mux -> TolongLabs.mp4
 ```
 
-`assemble.sh` sits between the last two only when slides are being appended to the capture; a walkthrough-only film
-skips it and points `DEMO_SOURCE` at the normalised capture instead.
+**`DEMO_SOURCE` has to be set for a walkthrough-only film**, because `narrate.sh` defaults to `capture-joined.mp4`,
+which only `assemble.sh` produces and only when slides are being appended. Point it at `capture.webm` and nothing in
+between is needed: the VP9 capture feeds the fit filter directly and comes out 1920x1080 like any other input. There is
+no normalising step to run first, and no script here writes one.
 
 **Read `record.mjs`'s output before narrating.** It prints every beat it recorded. A line in `narration.txt` naming a
 beat that never happened is dropped with a warning - the safe failure, but it means the video is missing something you
