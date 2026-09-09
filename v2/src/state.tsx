@@ -8,7 +8,6 @@ type Ctx = {
   /** A member's yes, no or Must Go on a place. Votes live on places, so they survive a date change. */
   swipe: (memberId: string, placeId: string, answer: boolean | 'must') => void
   /** Renames the party. Ids are kept where a row keeps its position, so votes keyed by member id survive. */
-  setParty: (names: string[]) => void
   /** Who this browser votes as. Ignored for an id that is not in the party. */
   setCurrentMember: (memberId: string) => void
   /** Renames one member. Same id, so their votes stay theirs. */
@@ -146,21 +145,6 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     })
   }, [])
 
-  const setParty = useCallback((names: string[]) => {
-    setTrip((current) => {
-      const party: Person[] = names
-        .map((name, i) => ({ name: name.trim(), previous: current.party[i] }))
-        .filter(({ name }) => name.length > 0)
-        .map(({ name, previous }) => ({
-          id: previous?.id ?? name.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
-          name,
-          initials: name.slice(0, 2).toUpperCase()
-        }))
-      const owner = party.some((p) => p.id === current.ownerId) ? current.ownerId : (party[0]?.id ?? current.ownerId)
-      return { ...current, party, ownerId: owner }
-    })
-  }, [])
-
   const setCurrentMember = useCallback((memberId: string) => {
     setTrip((current) =>
       current.party.some((p) => p.id === memberId) ? { ...current, currentMemberId: memberId } : current
@@ -279,7 +263,6 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       trip,
       swipe,
-      setParty,
       setCurrentMember,
       renameMember,
       addMember,
@@ -298,7 +281,6 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     [
       trip,
       swipe,
-      setParty,
       setCurrentMember,
       renameMember,
       addMember,

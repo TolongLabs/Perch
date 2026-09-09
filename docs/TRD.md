@@ -601,23 +601,22 @@ rejected; the drawer offers the next-ranked voted-in card from the tally.
 **One context, one `useState`, one operation per write.** `state.tsx` is the only place a `Trip` is written, and every
 write is a whole-object replacement. The list grew through the release cycle; this table is the contract.
 
-| Operation          | Writes                                                                                      |
-| ------------------ | ------------------------------------------------------------------------------------------- |
-| `swipe`            | A member's yes, no or Must Go for a place. A second Must Go demotes the first to yes        |
-| `setCurrentMember` | Who this browser votes as, any party member. The owner by default                           |
-| `setParty`         | Renames by row position. Kept until onboarding moves to the three calls below, then removed |
-| `renameMember`     | A new name on the same id, so the votes stay                                                |
-| `addMember`        | A new member with a fresh id and no votes. Refused past six                                 |
-| `removeMember`     | Drops the member and their votes. The owner cannot be removed                               |
-| `place`            | Puts a place into a day and slot, taking it out of any slot it held                         |
-| `remove`           | Empties a day and slot                                                                      |
-| `apply`            | Runs the scheduler over every day around the pins                                           |
-| `pin` / `unpin`    | Fixes a card to a day and slot, or frees it. The scheduler never moves a pinned card        |
-| `tick`             | Toggles a checklist item                                                                    |
-| `setDates`         | New start and nights regenerate the days and drop the pins; unchanged dates are a no-op     |
-| `addSlot`          | Opens a second slot in a period of a day. Two per period, six per day                       |
-| `removeSlot`       | Closes a period's empty second slot. The first slot of a period never goes                  |
-| `restart`          | Clears the storage key and reloads the seed                                                 |
+| Operation          | Writes                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------- |
+| `swipe`            | A member's yes, no or Must Go for a place. A second Must Go demotes the first to yes    |
+| `setCurrentMember` | Who this browser votes as, any party member. The owner by default                       |
+| `renameMember`     | A new name on the same id, so the votes stay                                            |
+| `addMember`        | A new member with a fresh id and no votes. Refused past six                             |
+| `removeMember`     | Drops the member and their votes. The owner cannot be removed                           |
+| `place`            | Puts a place into a day and slot, taking it out of any slot it held                     |
+| `remove`           | Empties a day and slot                                                                  |
+| `apply`            | Runs the scheduler over every day around the pins                                       |
+| `pin` / `unpin`    | Fixes a card to a day and slot, or frees it. The scheduler never moves a pinned card    |
+| `tick`             | Toggles a checklist item                                                                |
+| `setDates`         | New start and nights regenerate the days and drop the pins; unchanged dates are a no-op |
+| `addSlot`          | Opens a second slot in a period of a day. Two per period, six per day                   |
+| `removeSlot`       | Closes a period's empty second slot. The first slot of a period never goes              |
+| `restart`          | Clears the storage key and reloads the seed                                             |
 
 ### Trip States
 
