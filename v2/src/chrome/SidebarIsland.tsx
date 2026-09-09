@@ -1,4 +1,14 @@
-import { BarChart3, BookOpen, CalendarDays, Layers, ListChecks, Map as MapIcon, PanelLeft, Plus } from 'lucide-react'
+import {
+  BarChart3,
+  BookOpen,
+  CalendarDays,
+  Compass,
+  Layers,
+  ListChecks,
+  Map as MapIcon,
+  PanelLeft,
+  Plus
+} from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { useTrip } from '../state'
@@ -15,7 +25,9 @@ export const navItems = (tripId: string): Item[] => [
   { to: `/t/${tripId}/votes`, label: 'The Tally', Icon: BarChart3 },
   { to: '/desk', label: 'The Desk', Icon: CalendarDays },
   { to: '/desk/before-we-go', label: 'Before We Go', Icon: ListChecks },
-  { to: `/t/${tripId}`, label: 'The Book', Icon: BookOpen }
+  { to: `/t/${tripId}`, label: 'The Book', Icon: BookOpen },
+  // Guidance rather than a second book: `BookOpen` is taken, and two open books at 20px are one shape.
+  { to: `/t/${tripId}/handbook`, label: 'The Handbook', Icon: Compass }
 ]
 
 /**

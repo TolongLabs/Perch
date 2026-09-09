@@ -1,0 +1,132 @@
+/* Plate register, like the Book: the ground is plate stock, nothing is rounded, nothing is a pill, and every rule
+   is struck in ink rather than grey. This is a document the group reads, not an instrument one of them operates. */
+
+.handbook {
+  padding: var(--s7) var(--s5) var(--s8);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.hb-head {
+  margin-bottom: var(--s7);
+}
+
+.hb-lede {
+  margin: var(--s3) 0 0;
+  color: var(--ink-muted);
+}
+
+.hb-body {
+  display: grid;
+  gap: var(--s8);
+}
+
+/* Only the right-hand column is a stack of sections; the left one is a single section, and giving it the same
+   flex gap put a section's worth of air between the heading and its own first line. */
+.hb-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s8);
+}
+
+.hb-pack > .t-plate-title,
+.hb-care > .t-plate-title,
+.hb-news > .t-plate-title {
+  margin: 0 0 var(--s3);
+}
+
+.hb-note {
+  margin: 0 0 var(--s5);
+  max-width: 42ch;
+}
+
+.hb-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hb-item > .t-prose {
+  margin: 0;
+  max-width: 46ch;
+}
+
+/* Only on the lines this trip earned rather than every Japan trip. Six "because this is Japan" rows under seven
+   items says nothing; three rows naming rain, cold evenings and a temple on the calendar say what changed. */
+.hb-why {
+  margin: var(--s2) 0 0;
+  color: var(--ink-muted);
+}
+
+.hb-day {
+  margin-bottom: var(--s5);
+}
+
+.hb-date {
+  color: var(--tint);
+  margin: 0 0 var(--s3);
+}
+
+.hb-days > .hb-day:last-child {
+  margin-bottom: 0;
+}
+
+/* One line per section rather than one under every row: two sources carry the whole fixture, so per-row they would
+   print the same two strings a dozen times. A guidebook puts them at the foot of the section and so does this. */
+.hb-sources {
+  margin: var(--s5) 0 0;
+  padding-top: var(--s3);
+  border-top: 1px solid color-mix(in oklab, var(--ink) 20%, transparent);
+  color: var(--ink-muted);
+  max-width: 52ch;
+}
+
+.hb-back {
+  display: inline-block;
+  margin-top: var(--s8);
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-plate);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.hb-back:hover,
+.hb-back:focus-visible {
+  background: var(--ink);
+  color: var(--plate);
+}
+
+@media (min-width: 1024px) {
+  /* The same 1440 spread the Book uses, and the team's own column order: the list on the left, the lines that earned
+     it on the right. The derivation runs right to left, which is why each packing line names its reason in words. */
+  .handbook {
+    max-width: 1440px;
+    padding: var(--s7) 80px var(--s8);
+  }
+
+  .hb-body {
+    grid-template-columns: 1fr 1fr;
+    gap: var(--s8) 64px;
+  }
+}
+
+@media print {
+  .handbook {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .hb-item,
+  .hb-day {
+    break-inside: avoid;
+  }
+
+  .hb-back {
+    display: none;
+  }
+}
