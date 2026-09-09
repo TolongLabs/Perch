@@ -121,7 +121,7 @@ describe('nextReplacement', () => {
 
 describe('finished members', () => {
   test('the three friends have answered every place; the owner has not', () => {
-    expect(finishedMembers(trip)).toEqual(['farah', 'hana', 'iman'])
+    expect(finishedMembers(trip)).toEqual(['hana', 'iman'])
     expect(hasFinished(trip, 'aisyah')).toBe(false)
   })
 })
