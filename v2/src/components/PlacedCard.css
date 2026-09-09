@@ -29,11 +29,24 @@
 
 /* Sidebar */
 
+/* The plate leads here too. The whole card is the drag handle, so the picture is part of the grip rather than
+   something laid over it. */
 .card-pool {
+  --thumb: 36px;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--s2);
   border-color: color-mix(in oklab, var(--ink) 14%, transparent);
   cursor: grab;
   touch-action: none;
   user-select: none;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+  min-width: 0;
 }
 
 .card-pool:active {
