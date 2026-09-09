@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test'
 import { trip } from './data/trip'
-import { SLOTS_PER_PERIOD, withoutSlot, withSlot } from './state'
+import { MAX_PARTY, renamed, SLOTS_PER_PERIOD, withMember, withoutMember, withoutSlot, withSlot } from './state'
 
 const day = () => {
   const d = trip.days[0]
@@ -33,5 +33,31 @@ describe('a period holds up to two slots', () => {
         .slots
     ).toHaveLength(4)
     expect(withoutSlot(d, second).slots).toHaveLength(3)
+  })
+})
+
+describe('the party', () => {
+  test('a new member gets a fresh id and no votes, and the party stops at six', () => {
+    let t = withMember(trip, 'Nadia')
+    expect(t.party.map((p) => p.id)).toContain('nadia')
+    expect(t.votes.nadia).toBeUndefined()
+    t = withMember(t, 'Hana')
+    expect(t.party.map((p) => p.id)).toContain('hana-2')
+    t = withMember(t, 'One more')
+    expect(t.party).toHaveLength(MAX_PARTY)
+    expect(withMember(t, 'Seven').party).toHaveLength(MAX_PARTY)
+  })
+
+  test('removing a member drops their votes; the owner cannot go', () => {
+    const t = withoutMember(trip, 'hana')
+    expect(t.party.some((p) => p.id === 'hana')).toBe(false)
+    expect(t.votes.hana).toBeUndefined()
+    expect(withoutMember(trip, trip.ownerId).party).toHaveLength(trip.party.length)
+  })
+
+  test('renaming keeps the id, so the votes stay', () => {
+    const t = renamed(trip, 'hana', 'Hanabi')
+    expect(t.party.find((p) => p.id === 'hana')?.name).toBe('Hanabi')
+    expect(t.votes.hana).toBe(trip.votes.hana)
   })
 })
