@@ -1,5 +1,11 @@
 import { Link } from 'react-router-dom'
+import { base } from '../data/reels'
 import './Landing.css'
+
+/* Reduced motion is answered by not fetching the clip at all rather than by pausing it: a 1.4 MB video downloaded
+   and held still is the cost without the effect. Read once at render, because this is a client-only app and the
+   setting does not change mid-visit in any way this page needs to follow. */
+const still = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 /**
  * One screen, no scroll. `DESIGN.md`: the hero carries no caption, because the display line either says it or it was
@@ -7,6 +13,21 @@ import './Landing.css'
  */
 export const Landing = () => (
   <main className="land">
+    {/* The ground, not a banner: the clip runs behind the whole screen with a paper veil over it, so the page still
+        reads as paper and the title still holds its contrast over any frame. WebM first because it is a third
+        smaller and every browser that can play it prefers it; the MP4 is what Safari takes. */}
+    <div className="land-film" aria-hidden="true">
+      {still ? (
+        <img className="land-frame" src={`${base}hero.jpg`} alt="" />
+      ) : (
+        <video className="land-frame" poster={`${base}hero.jpg`} autoPlay loop muted playsInline preload="metadata">
+          <source src={`${base}hero.webm`} type="video/webm" />
+          <source src={`${base}hero.mp4`} type="video/mp4" />
+        </video>
+      )}
+      <div className="land-veil" />
+    </div>
+
     <header className="land-head">
       <img src="/assets/mark.svg" alt="" width="36" height="36" />
       <span className="land-mark t-label">Perch</span>
