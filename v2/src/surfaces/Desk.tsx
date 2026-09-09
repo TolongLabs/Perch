@@ -270,14 +270,16 @@ export const Desk = () => {
         )}
 
         <div className="desk-body">
-          <aside className="desk-pool" aria-label="Voted in">
-            <p className="t-label desk-legend">
-              Voted In
+          <aside className="desk-pool" aria-labelledby="desk-pool-head">
+            <div className="desk-legendrow">
+              <h2 className="t-label desk-legend" id="desk-pool-head">
+                Voted In
+              </h2>
               <Info>
                 Everything the group put at or above half the weighted vote, in tally order. Drag one into a slot, or
                 let Optimize Plan place them.
               </Info>
-            </p>
+            </div>
             <p className="t-specimen desk-poolcount">{pool.length} waiting</p>
             <div className="desk-poollist">
               {pool.map((entry) => {
@@ -296,12 +298,12 @@ export const Desk = () => {
               </p>
             )}
             {trip.days.map((day, dayPos) => (
-              <section key={day.index} className="desk-day" data-day={day.tint}>
+              <section key={day.index} className="desk-day" data-day={day.tint} aria-labelledby={`day-${day.index}`}>
                 <header className="desk-dayhead">
-                  <p className="t-label desk-dayindex">
+                  <h2 className="t-label desk-dayindex" id={`day-${day.index}`}>
                     Day {day.index}
                     <span className="desk-daydate">{dayLabel(day.date)}</span>
-                  </p>
+                  </h2>
                   {day.feasibility ? (
                     <span className="desk-fit">
                       <StateChip state={FEASIBILITY[day.feasibility.status].state}>
@@ -330,7 +332,7 @@ export const Desk = () => {
                   return (
                     <div key={period} className="desk-slot">
                       <div className="desk-periodhead">
-                        <p className="t-label desk-period">{PERIOD[period]}</p>
+                        <h3 className="t-label desk-period">{PERIOD[period]}</h3>
                         {/* One control, never two: a period can only ever grow or shrink, and at the ceiling it is
                           the spent + that says why rather than nothing at all. */}
                         {act.kind === 'remove' ? (
@@ -353,7 +355,11 @@ export const Desk = () => {
                                 ? `Add a second ${PERIOD[period].toLowerCase()} stop to day ${day.index}`
                                 : 'Two stops is the most a period holds'
                             }
-                            aria-label={`Add a second ${PERIOD[period].toLowerCase()} slot to day ${day.index}`}
+                            aria-label={
+                              act.kind === 'add'
+                                ? `Add a second ${PERIOD[period].toLowerCase()} stop to day ${day.index}`
+                                : `Two stops is the most a ${PERIOD[period].toLowerCase()} holds`
+                            }
                             onClick={() => addSlot(day.index, period)}
                           >
                             +
@@ -376,7 +382,13 @@ export const Desk = () => {
                                 onRemove={() => setDrawer({ dayIndex: day.index, slotIndex: index })}
                               />
                             ) : (
-                              <p className="desk-empty">Empty</p>
+                              <p className="desk-empty">
+                                Empty
+                                <span className="sr-only">
+                                  {' '}
+                                  &mdash; day {day.index}, {PERIOD[slot.period].toLowerCase()}
+                                </span>
+                              </p>
                             )}
                           </SlotCell>
                         )

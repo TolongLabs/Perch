@@ -43,6 +43,14 @@
   color: var(--paper);
 }
 
+/* The legend and its bubble on one line, because the bubble may not sit inside the heading: a button in an h2 is
+   part of that heading's accessible name, so "Voted In" would announce as "Voted In i". */
+.desk-legendrow {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
 .desk-legend {
   display: flex;
   align-items: center;

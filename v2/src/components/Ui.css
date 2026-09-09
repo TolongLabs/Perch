@@ -10,6 +10,13 @@
   color: var(--ink-muted);
 }
 
+/* The heading element inside carries no type of its own: the row holds the role and the children bring the size. */
+.head-text {
+  margin: 0;
+  font: inherit;
+  letter-spacing: inherit;
+}
+
 .head-title {
   display: flex;
   align-items: center;
