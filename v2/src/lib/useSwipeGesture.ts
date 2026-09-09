@@ -13,14 +13,16 @@ const THRESHOLD = 96
 const UP_THRESHOLD = 112
 
 /**
- * A drag on the top card: right keeps, left passes, up is a Must Go. Pointer events rather than touch or mouse, so one path covers finger, trackpad
+ * A drag on the top card: right keeps, left passes, up is a Must Go while the member still has one. `allowUp` off
+ * takes the third answer out of the gesture entirely rather than letting it be made and refused: the card stops
+ * following the axis, the preview never names it, and the release cannot commit it. Pointer events rather than touch or mouse, so one path covers finger, trackpad
  * and stylus, and pointer capture keeps the drag alive when the finger leaves the card.
  *
  * Whether a drag is live is held in a ref, not in the state below it. A quick flick delivers pointerdown, pointermove
  * and pointerup inside a single frame, and a handler that read `dragging` from state would still see `false` on the
  * way up and drop the swipe. The state exists only to drive the transform; the ref is what decides.
  */
-export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true) => {
+export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true, allowUp = true) => {
   const [dx, setDx] = useState(0)
   const [dy, setDy] = useState(0)
   const [dragging, setDragging] = useState(false)
@@ -38,13 +40,16 @@ export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true
     [enabled]
   )
 
-  const move = useCallback((e: ReactPointerEvent<HTMLElement>) => {
-    if (!live.current) return
-    setDx(e.clientX - from.current.x)
-    // Down does nothing, so the card does not follow a downward drag: an axis the card moves on but never commits
-    // to reads as a swipe the app dropped.
-    setDy(Math.min(0, e.clientY - from.current.y))
-  }, [])
+  const move = useCallback(
+    (e: ReactPointerEvent<HTMLElement>) => {
+      if (!live.current) return
+      setDx(e.clientX - from.current.x)
+      // Down does nothing, so the card does not follow a downward drag: an axis the card moves on but never commits
+      // to reads as a swipe the app dropped. Once the member's one Must Go is spent, up is that axis too.
+      setDy(allowUp ? Math.min(0, e.clientY - from.current.y) : 0)
+    },
+    [allowUp]
+  )
 
   const up = useCallback(
     (e: ReactPointerEvent<HTMLElement>) => {
@@ -56,10 +61,10 @@ export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true
       const up = from.current.y - e.clientY
       setDx(0)
       setDy(0)
-      if (up >= UP_THRESHOLD && up > Math.abs(x)) onCommit('must')
+      if (allowUp && up >= UP_THRESHOLD && up > Math.abs(x)) onCommit('must')
       else if (Math.abs(x) >= THRESHOLD) onCommit(x > 0 ? 'keep' : 'pass')
     },
-    [onCommit]
+    [onCommit, allowUp]
   )
 
   return {
@@ -73,7 +78,7 @@ export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true
      * There is no undo on this surface, so a preview that lies is a vote the member cannot find or take back.
      */
     heading:
-      -dy >= UP_THRESHOLD && -dy > Math.abs(dx)
+      allowUp && -dy >= UP_THRESHOLD && -dy > Math.abs(dx)
         ? ('must' as const)
         : Math.abs(dx) >= THRESHOLD
           ? dx > 0
