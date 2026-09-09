@@ -40,43 +40,67 @@
   object-position: center;
 }
 
-/* A tint, not a wash. At the weight the type needed the clip had stopped reading as a moving picture at all, which
-   is the whole reason it is there. The type carries its own ground now, so this only has to warm the picture to the
-   page's palette and hold the edges the plates do not cover. */
+/* Two fades, not a wash and not a plate. A paper rectangle behind the type read as a card laid on a photograph,
+   which is two surfaces; a fade off the page's own left edge is one surface that becomes the picture.
+ *
+ * The direction is the text's own direction. At 1440 the column is left-aligned in the left third, so the paper
+ * runs off the left edge and is gone by mid-screen, which leaves the right half of the frame untouched. The second
+ * fade comes up from the floor and is what the three specimen lines sit on. */
 .land-veil {
   position: absolute;
   inset: 0;
-  background: color-mix(in oklab, var(--paper) 25%, transparent);
+  background:
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--paper) 88%, transparent) 0%,
+      color-mix(in oklab, var(--paper) 70%, transparent) 22%,
+      transparent 62%
+    ),
+    linear-gradient(to top, color-mix(in oklab, var(--paper) 92%, transparent) 0%, transparent 34%);
 }
 
-/* The mounted label. Paper, a hairline edge and no shadow: `DESIGN.md` gives the only shadow in the product to the
-   islands, and this is content. Opaque on purpose, so every line on it measures against paper rather than against
-   whichever frame is playing behind it. */
+@media (min-width: 720px) {
+  /* Left to right above the breakpoint, because that is where the text column is. Below it the column is the whole
+     width, so a sideways fade would have to cover the whole frame to do anything and the bottom-up one is the one
+     that carries the type. */
+  .land-veil {
+    background:
+      linear-gradient(
+        to right,
+        color-mix(in oklab, var(--paper) 85%, transparent) 0%,
+        color-mix(in oklab, var(--paper) 62%, transparent) 28%,
+        transparent 52%
+      ),
+      linear-gradient(
+        to top,
+        color-mix(in oklab, var(--paper) 92%, transparent) 0%,
+        color-mix(in oklab, var(--paper) 78%, transparent) 24%,
+        transparent 42%
+      );
+  }
+}
+
+/* The text column, held in the left third so the fade behind it is the strongest paper on the page. */
 .land-plate {
   display: flex;
   flex-direction: column;
   gap: var(--s4);
   align-self: flex-start;
   max-width: 100%;
-  padding: var(--s5);
-  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
-  background: var(--paper);
 }
 
 @media (min-width: 720px) {
+  /* Held to the left of centre, which is what the leftward fade is for: a column running to the far edge would need
+     the paper to cover the whole frame and there would be no picture left to see. */
   .land-plate {
     gap: var(--s5);
-    padding: var(--s6) var(--s7) var(--s7);
+    max-width: 32rem;
   }
 }
 
-/* A band rather than a plate, because the three lines are a caption to the page and not a second announcement. */
 .land-band {
   align-self: flex-start;
   max-width: 100%;
-  padding: var(--s4) var(--s5);
-  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
-  background: var(--paper);
 }
 
 .land-head {
