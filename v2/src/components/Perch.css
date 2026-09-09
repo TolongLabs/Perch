@@ -12,6 +12,17 @@
   animation: perch-rise var(--motion-step) var(--ease);
 }
 
+/* The drawer's own z-index cannot reach the dock. `.shell` is `position: relative; z-index: 1`, so it is a stacking
+   context and everything inside it, this drawer included, is sealed under that 1; the dock is a sibling of `.shell`
+   at 40 and paints over the whole column. Measured at 390: both exits ran 743 to 801 under a dock at 766 to 828, and
+   `elementFromPoint` at the centre of each returned the dock. Neither was tappable. Standing the drawer on the dock's
+   clearance puts it where nothing covers it, and leaves the stacking order alone. */
+@media (max-width: 899px) {
+  .perch {
+    bottom: var(--dock-clear);
+  }
+}
+
 @keyframes perch-rise {
   from {
     transform: translateY(100%);
