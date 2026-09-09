@@ -45,6 +45,14 @@ export const computeTally = (
 export const votedIn = (tally: TallyEntry[]): TallyEntry[] =>
   tally.filter((t) => !t.eliminated && t.percentage >= INCLUSION_PERCENT)
 
+/** A member has finished when every place has an answer from them. */
+export const hasFinished = (trip: Trip, memberId: string): boolean =>
+  Object.keys(trip.options).every((placeId) => trip.votes[memberId]?.[placeId] != null)
+
+/** Ids of the members who have finished, in party order. */
+export const finishedMembers = (trip: Trip): string[] =>
+  trip.party.filter((p) => hasFinished(trip, p.id)).map((p) => p.id)
+
 export const tallyFor = (trip: Trip): TallyEntry[] => computeTally(trip.votes, trip.options, trip.party, trip.ownerId)
 
 /**

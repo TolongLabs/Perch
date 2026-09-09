@@ -123,6 +123,8 @@ export type Trip = {
   nights: number
   budgetRM: number
   ownerId: string
+  /** Who this browser is voting as. The owner by default; the invite link lets a friend pick themselves. */
+  currentMemberId: string
   party: Person[]
   days: Day[]
   options: Record<string, Place>

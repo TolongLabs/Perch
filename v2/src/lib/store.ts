@@ -32,7 +32,9 @@ export const load = (): Trip => {
     const raw = localStorage.getItem(KEY)
     if (!raw) return seed
     const parsed: unknown = JSON.parse(raw)
-    return isTrip(parsed) && parsed.id === seed.id ? parsed : seed
+    if (!isTrip(parsed) || parsed.id !== seed.id) return seed
+    // A trip stored before the member switcher existed has no current member; it was always the owner.
+    return { ...parsed, currentMemberId: parsed.currentMemberId ?? parsed.ownerId }
   } catch {
     return seed
   }
