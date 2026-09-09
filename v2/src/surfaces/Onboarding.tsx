@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { addDays, DateRangePicker, nightsBetween, type Range } from '../components/DateRangePicker'
 import { ChipGroup, Field, Heading } from '../components/Ui'
 import { isJoiner } from '../lib/joiner'
@@ -28,6 +28,11 @@ const DESTINATIONS = [
 export const Onboarding = () => {
   const navigate = useNavigate()
   const { trip, setDates, addMember, removeMember, renameMember } = useTrip()
+  // How you arrived, not what is stored. The prototype holds one trip either way, so the form is prefilled from it
+  // in both cases; what changes is whether the reader was told they are starting something or changing something.
+  // `/new` on its own is the new plan, which is what the landing and the sign-in path reach.
+  const [params] = useSearchParams()
+  const editing = params.has('edit')
   // Seeded from the trip rather than left blank: onboarding configures a fixture that already has dates, and
   // `PRODUCT.md`'s rule is that no question is asked which Perch can already answer.
   const [range, setRange] = useState<Range>(() => ({
@@ -96,15 +101,17 @@ export const Onboarding = () => {
         as="h1"
         info="Perch fills in what it can and asks for the rest. The dates and the city shape the calendar; the activities and the free text only tip which reels come up first."
       >
-        <span className="t-display">Edit This Trip</span>
+        <span className="t-display">{editing ? 'Edit This Trip' : 'Plan A New Trip'}</span>
       </Heading>
 
-      {/* The prototype holds one trip, so this screen is never a blank one. Saying so at the top is what stops a
-          reader treating a prefilled form as a new plan they are about to start. */}
-      <p className="t-specimen ob-intro">
-        This is the trip you already have, with everything Perch knows filled in. Changing anything here changes that
-        trip; nothing starts over.
-      </p>
+      {/* Only on the way in from Edit Trip. A reader who pressed Start Planning is starting something and does not
+          need telling that the fields already have answers in them; one who pressed Edit Trip does. */}
+      {editing && (
+        <p className="t-specimen ob-intro">
+          This is the trip you already have, with everything Perch knows filled in. Changing anything here changes that
+          trip; nothing starts over.
+        </p>
+      )}
 
       <section className="ob-section" data-state={datesSet ? 'decided' : 'open'}>
         <p className="t-label ob-legend">When</p>
@@ -116,11 +123,13 @@ export const Onboarding = () => {
         </p>
         {/* Before the press, not after it. Moving the dates rebuilds the calendar, and a reader who has spent time
             arranging days and pinning stops should know that from the form rather than from losing them. */}
-        <p className="t-specimen ob-dates-note" data-state={datesMoved ? 'at-risk' : 'decided'}>
-          {datesMoved
-            ? 'These are new dates, so the days are rebuilt and the stops you have pinned are cleared.'
-            : 'Unchanged, so the days you have planned and the stops you have pinned stay as they are.'}
-        </p>
+        {editing && (
+          <p className="t-specimen ob-dates-note" data-state={datesMoved ? 'at-risk' : 'decided'}>
+            {datesMoved
+              ? 'These are new dates, so the days are rebuilt and the stops you have pinned are cleared.'
+              : 'Unchanged, so the days you have planned and the stops you have pinned stay as they are.'}
+          </p>
+        )}
       </section>
 
       <section className="ob-section" data-state={named ? 'decided' : 'open'}>
