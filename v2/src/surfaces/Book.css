@@ -61,7 +61,7 @@
 .spread-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: var(--s3) var(--s5);
   margin-bottom: var(--s5);
@@ -225,17 +225,28 @@
   max-width: 46ch;
 }
 
-/* The one outbound link in the Book. Underlined rather than a pill, because the plate register has no pills. */
+/* The one outbound link in the Book, and the team asked for a button rather than the underline it used to be: it is
+   the only thing on the page that leaves it, and a rule under some words did not read as somewhere to go.
+ *
+ * A button, but not a pill. `DESIGN.md` gives the Book zero radius as a mechanic rather than a preference - a printed
+ * plate has no rounded corners - so it is square, and squareness is what tells a reader this button belongs to the
+ * Book and not to the Desk. Hovering mixes the day's own tint into the ink, so the one control on a spread is
+ * coloured by the day it belongs to. */
 .day-route {
-  display: inline-block;
-  padding-bottom: 2px;
-  border-bottom: 2px solid var(--tint);
-  color: var(--ink);
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: var(--s3) var(--s5);
+  border-radius: var(--r-plate);
+  background: var(--ink);
+  color: var(--plate);
   text-decoration: none;
+  transition: background-color var(--motion-fade) var(--ease);
 }
 
-.day-route:hover {
-  border-bottom-color: var(--ink);
+.day-route:hover,
+.day-route:focus-visible {
+  background: color-mix(in oklab, var(--tint) 34%, var(--ink));
 }
 
 /* Colophon */
@@ -328,6 +339,16 @@
   .spread-lead,
   .entry {
     break-inside: avoid;
+  }
+
+  /* On paper a slab of solid ink is the heaviest thing on the page, and it is a link nobody can follow. The words
+     stay, because a reader holding the Book should still know the day has a route; the ink does not. */
+  .day-route {
+    min-height: 0;
+    padding: 0;
+    background: none;
+    color: var(--ink);
+    border-bottom: 2px solid var(--tint);
   }
 }
 
