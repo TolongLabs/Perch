@@ -41,7 +41,7 @@ const swipes = (pattern: string): Record<string, Answer> =>
  */
 export const votes: Votes = {
   aisyah: swipes('y.....y..y........y.....'),
-  farah: swipes('yynyyyyyyymnynyyynyyyyny'),
+  farah: swipes('yynyyyyyyymnynyyynyyyy..'),
   hana: swipes('yyyynyyyynyyynyyynmyyynn'),
   iman: swipes('ynnyyyyyymyyynynyyynyynn')
 }
