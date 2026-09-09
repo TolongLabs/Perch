@@ -2,7 +2,7 @@ import { describe, expect, test } from 'bun:test'
 import { places } from '../data/places'
 import { trip } from '../data/trip'
 import type { Votes } from '../data/types'
-import { computeTally, finishedMembers, hasFinished, nextReplacement, tallyFor, votedIn } from './votes'
+import { computeTally, finishedMembers, hasFinished, nextReplacement, tallyFor, votedIn, waitingPlaces } from './votes'
 
 const all = (answer: 'yes' | 'no'): Record<string, 'yes' | 'no'> =>
   Object.fromEntries(places.map((p) => [p.id, answer]))
@@ -123,5 +123,19 @@ describe('finished members', () => {
   test('the three friends have answered every place; the owner has not', () => {
     expect(finishedMembers(trip)).toEqual(['farah', 'hana', 'iman'])
     expect(hasFinished(trip, 'aisyah')).toBe(false)
+  })
+})
+
+describe('waitingPlaces', () => {
+  test('excludes what is already on a day, so an empty drawer knows whether the pool is empty too', () => {
+    const tally = tallyFor(trip)
+    const day = trip.days[0]
+    if (!day) throw new Error('fixture has no day')
+
+    const waiting = waitingPlaces(day, trip, tally)
+    const onADay = new Set(trip.days.flatMap((d) => d.slots.map((s) => s.placeId)))
+    expect(waiting.length).toBeGreaterThan(0)
+    expect(waiting.some((p) => onADay.has(p.id))).toBe(false)
+    expect(waiting.length).toBe(votedIn(tally).length - [...onADay].filter((id) => id !== null).length)
   })
 })

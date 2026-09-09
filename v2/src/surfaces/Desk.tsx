@@ -22,7 +22,7 @@ import type { Day, DayFeasibility, Period, Slot } from '../data/types'
 import { dayCostRM } from '../lib/cost'
 import { clock, dayLabel, duration, money, price } from '../lib/format'
 import { CLUSTER_AREA } from '../lib/schedule'
-import { nextReplacement, tallyFor, votedIn } from '../lib/votes'
+import { nextReplacement, tallyFor, votedIn, waitingPlaces } from '../lib/votes'
 import { SLOTS_PER_PERIOD, useTrip } from '../state'
 import './Desk.css'
 
@@ -194,7 +194,8 @@ export const Desk = () => {
     const stops = day.slots.filter((s) => s.placeId !== null).length
     const candidate = nextReplacement(slot, day, trip, tally)
     const rank = candidate ? tally.findIndex((t) => t.placeId === candidate.id) + 1 : null
-    return { candidate, rank, required: stops <= 2 }
+    const waiting = waitingPlaces(day, trip, tally).length
+    return { candidate, rank, required: stops <= 2, slot: { period: slot.period, weekday: day.weekday, waiting } }
   })()
 
   const nights = range.start && range.end ? nightsBetween(range.start, range.end) : 0
@@ -457,6 +458,7 @@ export const Desk = () => {
           place={offer.candidate}
           rank={offer.rank}
           required={offer.required}
+          slot={offer.slot}
           onSwap={() => {
             if (offer.candidate) place(offer.candidate.id, drawer.dayIndex, drawer.slotIndex)
             setDrawer(null)

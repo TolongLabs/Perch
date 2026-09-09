@@ -56,8 +56,9 @@ export const finishedMembers = (trip: Trip): string[] =>
 export const tallyFor = (trip: Trip): TallyEntry[] => computeTally(trip.votes, trip.options, trip.party, trip.ownerId)
 
 /**
- * The Perch drawer's answer: the next-ranked voted-in place not already placed anywhere in the trip, open on this
- * weekday, that belongs in this slot's period. Null when nothing fits, in which case the slot may stay empty.
+ * The voted-in places sitting on no day at all, in tally order: what the pool is still showing. The drawer needs the
+ * count as well as the pick, because "nothing fits this slot" and "nothing is left" are different sentences and only
+ * one of them is usually true.
  *
  * Anywhere, not just on this day: offering a card that is already sitting in another day steals it from there when it
  * is swapped in, which drops that day's stop count and silently destroys the pin if it had one.
@@ -65,15 +66,20 @@ export const tallyFor = (trip: Trip): TallyEntry[] => computeTally(trip.votes, t
  * `day` is read as well as `trip`, and may be a day the trip does not hold yet, so a caller can ask what would fit a
  * hypothetical arrangement without committing it first.
  */
-export const nextReplacement = (slot: Slot, day: Day, trip: Trip, tally: TallyEntry[]): Place | null => {
+export const waitingPlaces = (day: Day, trip: Trip, tally: TallyEntry[]): Place[] => {
   const held = (slots: Slot[]) => slots.map((s) => s.placeId).filter((id): id is string => id !== null)
   const placed = new Set([...trip.days.flatMap((d) => held(d.slots)), ...held(day.slots)])
+  return votedIn(tally)
+    .map((entry) => trip.options[entry.placeId])
+    .filter((place): place is Place => place !== undefined && !placed.has(place.id))
+}
+
+/**
+ * The Perch drawer's answer: the next-ranked place still waiting that is open on this weekday and belongs in this
+ * slot's period. Null when nothing fits, in which case the slot may stay empty.
+ */
+export const nextReplacement = (slot: Slot, day: Day, trip: Trip, tally: TallyEntry[]): Place | null => {
   const weekday = day.weekday.toLowerCase()
-  const fits = (place: Place): boolean =>
-    !placed.has(place.id) && !place.closedOn.includes(weekday) && place.bestPeriod.includes(slot.period)
-  for (const entry of votedIn(tally)) {
-    const place = trip.options[entry.placeId]
-    if (place && fits(place)) return place
-  }
-  return null
+  const fits = (place: Place): boolean => !place.closedOn.includes(weekday) && place.bestPeriod.includes(slot.period)
+  return waitingPlaces(day, trip, tally).find(fits) ?? null
 }

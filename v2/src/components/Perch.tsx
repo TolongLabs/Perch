@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import type { Place } from '../data/types'
+import type { Place, Slot } from '../data/types'
 import { duration, price } from '../lib/format'
 import { CLUSTER_AREA } from '../lib/schedule'
 import './Perch.css'
@@ -14,6 +14,7 @@ export const Perch = ({
   place,
   rank,
   required,
+  slot,
   onSwap,
   onEmpty,
   onCancel
@@ -23,6 +24,8 @@ export const Perch = ({
   rank: number | null
   /** True when leaving the slot empty would take the day below two stops. */
   required: boolean
+  /** What the slot is and how many cards are still unplaced, so an empty drawer can say why it is empty. */
+  slot: { period: Slot['period']; weekday: string; waiting: number }
   onSwap: () => void
   onEmpty: () => void
   onCancel: () => void
@@ -69,8 +72,14 @@ export const Perch = ({
             </button>
           </div>
         ) : (
+          /* Not "nothing is left": the pool is usually still showing cards while this reads, and a drawer that
+             contradicts the screen behind it is worse than one that says nothing. The predicate the offer is filtered
+             on is a day and a part of it, so that is what the sentence names. Neither does it point at voting, which
+             is a different surface the reader would have to leave the Desk to reach mid-removal. */
           <p className="t-specimen">
-            Nothing left in the tally fits this slot on this day. Vote more places in, or leave it empty.
+            {slot.waiting === 0
+              ? 'Every place voted in is already on a day.'
+              : `Nothing still waiting belongs in a ${slot.weekday} ${slot.period}.`}
           </p>
         )}
 
