@@ -24,7 +24,7 @@ type Ctx = {
   pin: (placeId: string, dayIndex: number, slotIndex: number) => void
   unpin: (placeId: string) => void
   tick: (itemId: string) => void
-  /** Regenerates the calendar for new dates. Votes and pins are on places, so only the days are replaced. */
+  /** Regenerates the calendar when the dates change, and leaves it alone when they do not. */
   setDates: (startDate: string, nights: number) => void
   /** Opens a second slot in a period of a day. Each period holds at most two, so a day tops out at six. */
   addSlot: (dayIndex: number, period: Period) => void
@@ -230,18 +230,22 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const setDates = useCallback((startDate: string, nights: number) => {
-    setTrip((current) => ({
-      ...current,
-      startDate,
-      nights,
-      days: emptyDays(
+    setTrip((current) => {
+      // Editing the trip without moving its dates is not a reason to throw the calendar away.
+      if (current.startDate === startDate && current.nights === nights) return current
+      return {
+        ...current,
         startDate,
         nights,
-        current.days.map((d) => d.title)
-      ),
-      pins: [],
-      legs: [{ city: current.destination, startDay: 1, endDay: nights + 1, transferMin: 0 }]
-    }))
+        days: emptyDays(
+          startDate,
+          nights,
+          current.days.map((d) => d.title)
+        ),
+        pins: [],
+        legs: [{ city: current.destination, startDay: 1, endDay: nights + 1, transferMin: 0 }]
+      }
+    })
   }, [])
 
   const addSlot = useCallback((dayIndex: number, period: Period) => {
