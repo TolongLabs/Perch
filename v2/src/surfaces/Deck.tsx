@@ -130,7 +130,7 @@ export const Deck = () => {
               className="deck-card"
               data-depth={depth}
               data-leaving={top && leaving ? leaving : undefined}
-              data-heading={top && dragging && progress > 0.15 ? heading : undefined}
+              data-heading={top && dragging ? (heading ?? undefined) : undefined}
               style={
                 top && dragging
                   ? {

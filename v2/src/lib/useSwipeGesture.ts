@@ -66,8 +66,20 @@ export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true
     dx,
     dy,
     dragging,
-    /** Which way this drag is currently headed, so the card can show what releasing it would do. */
-    heading: -dy > Math.abs(dx) ? ('must' as const) : dx > 0 ? ('keep' as const) : ('pass' as const),
+    /**
+     * What releasing now would actually do, and null when it would do nothing. The same two thresholds the commit
+     * uses, because anything else is a promise the release breaks: read off the old rule, a drag of 90 right and 95
+     * up showed the Must Go outline and committed nothing, and one of 104 and 108 showed it and recorded a Keep.
+     * There is no undo on this surface, so a preview that lies is a vote the member cannot find or take back.
+     */
+    heading:
+      -dy >= UP_THRESHOLD && -dy > Math.abs(dx)
+        ? ('must' as const)
+        : Math.abs(dx) >= THRESHOLD
+          ? dx > 0
+            ? ('keep' as const)
+            : ('pass' as const)
+          : null,
     /** How committed the drag is, 0 to 1. The card fades as this approaches 1. */
     progress: Math.min(Math.max(Math.abs(dx) / THRESHOLD, -dy / UP_THRESHOLD), 1),
     handlers: { onPointerDown: down, onPointerMove: move, onPointerUp: up, onPointerCancel: up }

@@ -41,7 +41,7 @@
   isolation: isolate;
 }
 
-/* The affordances hang outside the column, and above 476px there is page either side to hang them in: the reel
+/* The affordances hang outside the column, and above 496px there is page either side to hang them in: the reel
    keeps every pixel it has today. Below that the viewport runs out, and the reel is what pays, because a chevron
    half off the screen is worse than a reel 76px narrower. 496 is where the two meet: the column stops growing at
    420, its padding takes 48, and the gutter needs 62 a side. */
@@ -247,12 +247,14 @@
   font-size: 11px;
 }
 
+/* Shifted 6px in from the gutter's outer edge. Centred in a 62px gutter the labels sat 15px from the screen, and
+   `DESIGN.md` puts the phone margin at 24; this reads 21, with 9px still clear of the video. */
 .deck-hint[data-side="pass"] {
-  left: calc(var(--deck-gutter) * -1);
+  left: calc(var(--deck-gutter) * -1 + 6px);
 }
 
 .deck-hint[data-side="keep"] {
-  right: calc(var(--deck-gutter) * -1);
+  right: calc(var(--deck-gutter) * -1 + 6px);
 }
 
 /* The mark that rises. `DESIGN.md`'s plumage dot is the field guide's device for "this is the specimen", which is
@@ -269,13 +271,13 @@
   transform: translateX(-50%);
 }
 
-/* A ring in the paper as well as the colour, because the dot travels over a photograph and a 6px chip's worth of
-   colour disappears into a brown building. The ring is what holds it on any frame; the glow is what makes it a
-   mark rising rather than a sticker sitting there. */
+/* A ring as well as the colour, because the dot travels over a photograph and a chip's worth of colour disappears
+   into a brown building. The ring is a fixed light value for the same reason `--reel-ink` is: read from `--paper`
+   it would be the near-black ground in dark and vanish on the two night reels in the set. */
 .rise-dot {
   width: 16px;
   height: 16px;
-  border: 2px solid color-mix(in oklab, var(--paper) 88%, transparent);
+  border: 2px solid rgb(251 248 242 / 88%);
   border-radius: var(--r-pill);
   background: var(--decided);
   box-shadow: 0 0 18px color-mix(in oklab, var(--decided) 80%, transparent);
@@ -292,7 +294,10 @@
    `.deck`'s stacking context buys. */
 .deck-flash {
   position: fixed;
-  inset: 0;
+  /* Past the viewport on every side, because `filter` fades an element's own edge: blurred at inset 0, the glow was
+     weakest exactly where it is supposed to be strongest, measured 9 levels darker 40px inboard than at the edge
+     itself. The falloff now happens off screen. */
+  inset: -72px;
   z-index: -1;
   opacity: 0;
   pointer-events: none;
@@ -324,8 +329,8 @@
 
 /* Dull, per the issue: a pass is the answer you give most often and it should not celebrate. */
 .deck-flash[data-flash="pass"] {
-  background: linear-gradient(to right, var(--ink-muted), transparent min(52%, 360px));
-  opacity: 0.66;
+  background: linear-gradient(to right, var(--ink-muted), transparent min(52%, 400px));
+  opacity: 0.82;
 }
 
 /* Gold is the one colour the product celebrates with, and a Must Go is the one thing worth celebrating, so this
@@ -357,17 +362,16 @@
   /* The rise is the whole of this mark, so it is the one part that has nothing to show when motion is suppressed.
      The dots still appear and still hold for the flash window there; they simply do not travel. */
   /* Not `--ease-expo`. The island's curve puts 85% of the travel in the first third, which threw the mark off the
-     top of the screen before it could be seen; the product's ordinary ease keeps it moving through the middle. */
+     top of the screen before it could be seen; the product's ordinary ease keeps it moving through the middle.
+
+     Gold on the gold wash its own answer paints is 1.38:1, so the mark is spent by the time it would reach the
+     label above the reel: it is gone at the top edge rather than drifting over the page beyond it. */
   .rise-dot {
     animation: dot-rise var(--flash) var(--ease) forwards;
   }
 
-  .rise-dot:nth-child(2) {
-    animation-delay: 90ms;
-  }
-
-  /* Far enough to leave the reel rather than to drift inside it, which is what "rises off the reel" means: from
-     34% of a 473px card the last frame is 39px above its top edge. */
+  /* Far enough to leave the reel rather than to drift inside it, which is what "rises off the reel" means, and no
+     further: from 34% of a 473px card the mark fades out level with its top edge. */
   @keyframes dot-rise {
     from {
       opacity: 0;
@@ -379,13 +383,13 @@
       transform: translateY(-10px) scale(1);
     }
 
-    58% {
+    54% {
       opacity: 1;
     }
 
     to {
       opacity: 0;
-      transform: translateY(-200px) scale(0.85);
+      transform: translateY(-165px) scale(0.85);
     }
   }
 }
