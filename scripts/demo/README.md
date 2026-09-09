@@ -364,22 +364,56 @@ then applies whatever gain puts the bed `DEMO_MUSIC_DUCK` below the voice. A har
 was chosen on; this holds when the track changes. At 20 dB under, adding the bed moves the finished film's overall mean
 by about 0.1 dB, which is the check that the voice still carries it.
 
+**The path has been run end to end against the 0.2.0 capture.** Rendered with no music it reproduces the shipped film
+byte for byte, so an A/B isolates the bed and nothing else. Adding a bed at the default duck moved the mean from -22.8
+dB to -22.7 dB and the integrated loudness not at all, at -22.1 LUFS either way; loudness range widened from 3.8 LU to
+4.1 LU and true peak did not move.
+
 **The narration is padded to the picture before mixing.** It ends a few seconds before the video does, and `amix` takes
 its first input's duration, so without the pad the audio stops early and the fade-out is cut off partway through -- the
 music stops dead under the close card instead of fading.
 
-**Choosing a start offset is a measurement, not a guess, and only half of it can be measured.** Scan candidate windows
-with `ebur128` and read the minimum: a window whose loudness floor drops below about -60 dB contains a silent track gap,
-which is a hole in the bed mid-beat. Prefer the window with the narrowest dynamic range. **What this cannot do is detect
-a vocal**, so a person still has to listen to the chosen section before it ships.
+**Choosing a start offset is a measurement, not a guess, and only half of it can be measured.** Scan every track head
+with `ebur128` over a window the length of the film, and read three numbers off each.
+
+| Read    | Rejects                                                                                      |
+| ------- | -------------------------------------------------------------------------------------------- |
+| `S` min | A floor below about -60 dB is a silent track gap, which is a hole in the bed mid-beat        |
+| `LRA`   | A wide range pumps under the voice. The narrowest window wins                                |
+| `I`     | Only that the windows are comparable. The duck is derived, so absolute level does not decide |
+
+**Pipe every scan through `ffmpeg -nostdin`.** Without it `ffmpeg` reads the loop's own list of offsets from stdin and
+eats a byte per iteration, so every offset after the first is silently wrong: the scan runs clean, reports plausible
+numbers, and has measured the wrong places.
+
+**No single track is long enough for a film of this length, so the bed crosses at least one track boundary.** The
+longest track in the suite offered so far is 240 seconds against a 297-second film. Start at a track head rather than
+mid-track, and prefer the head whose next boundary lands latest.
+
+**What none of this can do is detect a vocal**, so a person still has to listen to the chosen section before it ships.
 
 ### No Track Is Cleared Yet
 
-**Nothing here names a track on purpose.** A submitted video is a public artifact, and the competition rules list
-_"plagiarism or uncredited reproduction of existing IP"_ among the grounds for immediate disqualification, so the bed
-needs a source with terms that can be written down, not an assurance. **When a track is cleared, its source, its licence
-and any required credit line go in this section**, and the submission README repeats them. Until then the knobs exist
-and no release uses them.
+**Nothing here names a cleared track on purpose.** A submitted video is a public artifact, and the competition rules
+list _"plagiarism or uncredited reproduction of existing IP"_ among the grounds for immediate disqualification, so the
+bed needs a source with terms that can be written down, not an assurance. **When a track is cleared, its source, its
+licence and any required credit line go in this section**, and the submission README repeats them.
+
+**One suite has been offered and it does not clear that bar**, so the knobs still ship unused. Every tag the file
+carries, read out of its ID3v2.3 header:
+
+| Frame          | Holds                                                                      |
+| -------------- | -------------------------------------------------------------------------- |
+| `TPE1`, `TOPE` | `LoFi Tokyo`                                                               |
+| `TIT2`, `TALB` | A playlist title, styled in mathematical-bold unicode, with an emoji in it |
+| `TYER`, `TCON` | `2025`, `Music`                                                            |
+| `COMM`         | Empty                                                                      |
+| `APIC`         | A 500x500 PNG cover                                                        |
+
+**There is no `TCOP`, no `WCOP` and no `WXXX`**: no copyright frame, no licence URL, no rights holder beyond a channel
+name. The file is a three-hour compilation of 32 named tracks played through twice, and a compilation credit is not a
+grant. **A licence line cannot be written from this metadata, because the metadata does not contain one**, and writing
+one anyway is the failure this gate exists to catch.
 
 ---
 
