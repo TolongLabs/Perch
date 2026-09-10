@@ -71,6 +71,25 @@ test('shows the daily start time on each day, defaulting to 09:00', () => {
   expect(html).toContain('aria-label="Start day 4 thirty minutes later"')
 })
 
+test('shows the stored start time when a day has been moved, and disables the spent step', () => {
+  // Day 1 has been stepped to 08:00 and day 2 to first light at 00:00: the clock reads the stored startMin, the
+  // two untouched days keep 09:00, and a day that already starts at 00:00 has spent its earlier step, so only that
+  // button disables. On this empty calendar no other control is disabled, so the count is exact.
+  const html = renderDesk(
+    seeded((trip) => {
+      slotOf(trip, 0, 0).day.startMin = 480
+      slotOf(trip, 1, 0).day.startMin = 0
+    })
+  )
+  expect(html.match(/>08:00</g)).toHaveLength(1)
+  expect(html.match(/>00:00</g)).toHaveLength(1)
+  expect(html.match(/>09:00</g)).toHaveLength(2)
+  // Day 2 starts at 00:00, so its earlier step is the spent one: the disabled attribute sits between the class and
+  // the title in the render, so it is exact to match the pair rather than count a word across the page.
+  expect(html).toContain('disabled="" title="Start the day thirty minutes earlier"')
+  expect(html).not.toContain('disabled="" title="Start the day thirty minutes later"')
+})
+
 test('keeps the unanimous mark on a card once it is placed in a slot', () => {
   // teamLab Planets is unanimous in the fixture; day 1's morning slot holds it.
   const html = renderDesk(
@@ -97,15 +116,20 @@ test('marks in red a card placed on a day the place is closed', () => {
 })
 
 test('a placed card that is both unanimous and closed shows the closed warning', () => {
-  // teamLab Planets is open every day, so the closed test needs a place that is both; the fixture has none.
-  // The card must not double-warn, so assert the unanimous mark alone stays quiet on an open day.
+  // The fixture has no place that is both unanimous and closed, so the test makes one: every member says yes to
+  // Shinjuku Gyoen and the card sits on day 4, the Monday it closes. The closed warning is the state that changes
+  // what happens on that day, so it shows even with the unanimous mark present, and the card carries both.
   const html = renderDesk(
     seeded((trip) => {
-      slotOf(trip, 1, 0).slot.placeId = 'teamlab-planets'
+      for (const member of Object.keys(trip.votes)) {
+        const answers = trip.votes[member] as Record<string, Answer>
+        answers['shinjuku-gyoen'] = 'yes'
+      }
+      slotOf(trip, 3, 0).slot.placeId = 'shinjuku-gyoen'
     })
   )
-  expect(html).toContain('data-unanimous="true" data-closed="false"')
-  expect(html).not.toContain('Closed This Day')
+  expect(html).toContain('data-unanimous="true" data-closed="true"')
+  expect(html).toContain('Closed This Day')
 })
 
 test('shows the day span, end time and cost once the day is scheduled', () => {
@@ -135,6 +159,26 @@ test('says why a plan cannot fill every slot when the content cannot hold it', (
   )
   expect(html).toContain('covers 8 days at most')
   expect(html).toContain('can fill only 1 of its 12 slots')
+})
+
+test('says the days are the limit, not the places, when the content holds the plan but not the days', () => {
+  // The advisor's #313 repro: everyone says yes and every place is closed on Friday, day 1's weekday. The content
+  // is ample - 24 places for 12 slots - but no place is open on day 1, so the scheduler leaves that day's slots
+  // empty. availablePlaces is a count of places that may be used, not of slots that can be filled, so the note must
+  // not claim the plan fills 24 of 12 slots; it names the days instead.
+  const html = renderDesk(
+    seeded((trip) => {
+      for (const member of Object.keys(trip.votes)) {
+        const answers = trip.votes[member] as Record<string, Answer>
+        for (const placeId of Object.keys(answers)) answers[placeId] = 'yes'
+      }
+      for (const place of Object.values(trip.options)) place.closedOn = ['friday']
+    })
+  )
+  expect(html).not.toContain('can fill only')
+  expect(html).toContain('content is enough for every slot')
+  expect(html).toContain('not every slot can be filled on these days')
+  expect(html).toContain('The days already on the Desk stay as they are')
 })
 
 test('says nothing about capacity when the plan can be filled', () => {

@@ -191,6 +191,10 @@ export const Desk = () => {
   // days sees what they are about to lose before they lose it; a plan with nothing unpinned in it needs no warning.
   const hasUnpinnedPlacements = trip.days.some((d) => d.slots.some((s) => s.placeId !== null && !s.pinned))
   const onApply = () => {
+    // A press that would do nothing must not ask about it: when the plan cannot be filled, the store's apply is a
+    // no-op, so the confirmation and the fly-in would both promise what the scheduler will not do. The capnote
+    // above carries the reason.
+    if (!capacity.canFill) return
     if (hasUnpinnedPlacements && !confirmOptimize) {
       setConfirmOptimize(true)
       return
@@ -272,13 +276,14 @@ export const Desk = () => {
             <p className="t-specimen desk-pinnote">Optimizing reorders every day. Pinned stops keep their slot.</p>
           )}
 
-          {/* The scheduler refuses what the content cannot hold. The note names the ceiling rather than leaving the
-              reader to notice that the plan is quietly short. */}
+          {/* Two different refusals, two different sentences: the content may not hold the plan, or the content may
+              hold it and the days may not. availablePlaces counts the places that may be used, not the slots the
+              scheduler can fill, so only the first refusal may say how many slots stay empty. #313 */}
           {!capacity.canFill && (
             <p className="t-specimen desk-capnote">
-              The destination&rsquo;s content covers {capacity.maxDays} days at most, so this plan can fill only{' '}
-              {capacity.availablePlaces} of its {capacity.requiredPlaces} slots. The days already on the Desk stay as
-              they are.
+              {capacity.availablePlaces < capacity.requiredPlaces
+                ? `The destination’s content covers ${capacity.maxDays} days at most, so this plan can fill only ${capacity.availablePlaces} of its ${capacity.requiredPlaces} slots. The days already on the Desk stay as they are.`
+                : 'The destination’s content is enough for every slot, but not every slot can be filled on these days. The days already on the Desk stay as they are.'}
             </p>
           )}
         </header>
