@@ -21,12 +21,16 @@ export const Voters = ({
 }) => (
   <ul className="voters">
     {party.map((p) => {
-      const done = Object.values(votes[p.id] ?? {}).filter((v) => v !== null).length === places
+      const answered = Object.values(votes[p.id] ?? {}).filter((v) => v !== null).length
+      const progress = answered === 0 ? 'not-started' : answered >= places ? 'complete' : 'in-progress'
+      const progressLabel =
+        progress === 'not-started' ? 'Not Started' : progress === 'in-progress' ? 'In Progress' : 'Complete'
       return (
         <li key={p.id}>
-          <span className="voter" data-done={done}>
-            {p.name}
+          <span className="voter" data-done={progress === 'complete'} data-progress={progress}>
+            <span className="voter-name">{p.name}</span>
             {p.id === ownerId && <span className="voter-owner">Owner</span>}
+            <span className="voter-progress">{progressLabel}</span>
           </span>
         </li>
       )

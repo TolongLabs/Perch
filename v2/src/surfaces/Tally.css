@@ -9,6 +9,10 @@
   padding: var(--s6) var(--s5) var(--s8);
 }
 
+.tally .t-label {
+  text-transform: none;
+}
+
 .tally-block {
   display: flex;
   flex-direction: column;
@@ -20,6 +24,26 @@
 
 .tally-legend {
   color: color-mix(in oklab, var(--state, var(--ink)) 76%, var(--ink));
+}
+
+.tally-local {
+  max-width: 65ch;
+}
+
+.tally-end {
+  align-self: flex-start;
+  min-height: 44px;
+  padding: var(--s3) var(--s5);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+}
+
+.tally-end:hover,
+.tally-end:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
 }
 
 /* The invite */
@@ -55,6 +79,15 @@
 
 .tally-rows-legend {
   color: var(--ink-muted);
+}
+
+.tally-rule {
+  display: grid;
+  gap: var(--s2);
+  max-width: 65ch;
+  padding: var(--s4);
+  border-radius: var(--r-desk);
+  background: var(--ground-open);
 }
 
 .tally-rows ul {
@@ -106,9 +139,37 @@
   gap: var(--s2) var(--s4);
 }
 
-.tally-name {
+.tally-destination {
+  display: flex;
   flex: 1 1 auto;
   min-width: 10ch;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.tally-name {
+  min-width: 0;
+}
+
+.tally-line {
+  color: color-mix(in oklab, var(--ink-muted) 80%, var(--ink));
+}
+
+.tally-musts {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+
+.tally-must {
+  display: inline-flex;
+  color: var(--gold);
+  line-height: 0;
+}
+
+.tally-must svg {
+  fill: currentcolor;
 }
 
 .tally-row[data-state="gold"] {
