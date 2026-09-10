@@ -145,8 +145,10 @@ test('shows the day span, end time and cost once the day is scheduled', () => {
   expect(html).toContain('RM')
 })
 
-test('says why a plan cannot fill every slot when the content cannot hold it', () => {
-  // Everyone says no to everything but Sensoji, so one place has to fill twelve slots.
+test('says how many places are eligible when the content cannot hold the plan', () => {
+  // Everyone says no to everything but Sensoji, so one place is the only one that may be used. availablePlaces is
+  // a candidate count, not a fill count - the note says one place is eligible for twelve slots and never says the
+  // plan will fill one of them, because a single place closed on its days would fill none.
   const html = renderDesk(
     seeded((trip) => {
       for (const member of Object.keys(trip.votes)) {
@@ -157,8 +159,30 @@ test('says why a plan cannot fill every slot when the content cannot hold it', (
       }
     })
   )
-  expect(html).toContain('covers 8 days at most')
-  expect(html).toContain('can fill only 1 of its 12 slots')
+  expect(html).toContain('Only 1 distinct place is eligible for 12 slots')
+  expect(html).toContain('The days already on the Desk stay as they are')
+  expect(html).not.toContain('can fill only')
+})
+
+test('counts eligible places, not filled slots, when the one place is closed on every trip day', () => {
+  // The delta repro: one place is eligible and it is closed on every one of the trip's four weekdays, so the
+  // scheduler fills zero of the twelve slots. The old copy claimed a fill of one; the note must say what is
+  // eligible, not what the scheduler achieved, and it must not drag in the day-count ceiling, which the date
+  // panel already states.
+  const html = renderDesk(
+    seeded((trip) => {
+      for (const member of Object.keys(trip.votes)) {
+        const answers = trip.votes[member] as Record<string, Answer>
+        for (const [placeId, answer] of Object.entries(answers)) {
+          if (answer && placeId !== 'sensoji') answers[placeId] = 'no'
+        }
+      }
+      for (const place of Object.values(trip.options)) place.closedOn = ['friday', 'saturday', 'sunday', 'monday']
+    })
+  )
+  expect(html).toContain('Only 1 distinct place is eligible for 12 slots')
+  expect(html).not.toContain('can fill only')
+  expect(html).not.toContain('days at most')
 })
 
 test('says the days are the limit, not the places, when the content holds the plan but not the days', () => {
@@ -195,18 +219,17 @@ test('does not ask for confirmation on an empty calendar', () => {
 })
 
 test('renders no literal entity text', () => {
-  // JSX decodes entities in markup but not inside string literals: a `&rsquo;` written in a template literal
+  // JSX decodes entities in markup but not inside string literals: a `&rsquo;` written in a string literal
   // ships to the screen as the letters amp-r-s-q-u-o. The static render escapes the ampersand, so the tell is
-  // the doubled form. The capacity note renders on this trip, so both the markup path and the decoded apostrophe
-  // are pinned at once.
+  // the doubled form. The capacity note renders on this trip in its constraint branch, so both the markup path
+  // and the decoded apostrophe are pinned at once.
   const html = renderDesk(
     seeded((trip) => {
       for (const member of Object.keys(trip.votes)) {
         const answers = trip.votes[member] as Record<string, Answer>
-        for (const [placeId, answer] of Object.entries(answers)) {
-          if (answer && placeId !== 'sensoji') answers[placeId] = 'no'
-        }
+        for (const placeId of Object.keys(answers)) answers[placeId] = 'yes'
       }
+      for (const place of Object.values(trip.options)) place.closedOn = ['friday']
     })
   )
   expect(html).not.toContain('&amp;rsquo;')

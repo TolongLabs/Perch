@@ -278,11 +278,13 @@ export const Desk = () => {
 
           {/* Two different refusals, two different sentences: the content may not hold the plan, or the content may
               hold it and the days may not. availablePlaces counts the places that may be used, not the slots the
-              scheduler can fill, so only the first refusal may say how many slots stay empty. #313 */}
+              scheduler can fill, so the first refusal says how many places are eligible, not how many slots fill -
+              a single eligible place closed on its days fills zero of twelve. The day-count ceiling belongs to the
+              date panel, which says it when the dates exceed it. #313 */}
           {!capacity.canFill && (
             <p className="t-specimen desk-capnote">
               {capacity.availablePlaces < capacity.requiredPlaces
-                ? `The destination’s content covers ${capacity.maxDays} days at most, so this plan can fill only ${capacity.availablePlaces} of its ${capacity.requiredPlaces} slots. The days already on the Desk stay as they are.`
+                ? `Only ${capacity.availablePlaces} distinct ${capacity.availablePlaces === 1 ? 'place is' : 'places are'} eligible for ${capacity.requiredPlaces} slots. The days already on the Desk stay as they are.`
                 : 'The destination’s content is enough for every slot, but not every slot can be filled on these days. The days already on the Desk stay as they are.'}
             </p>
           )}
