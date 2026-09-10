@@ -91,7 +91,7 @@ export const useSwipeGesture = (onCommit: (swipe: Swipe) => void, enabled = true
   const up = useCallback((e: ReactPointerEvent<HTMLElement>) => finish(e, false), [finish])
   const cancel = useCallback((e: ReactPointerEvent<HTMLElement>) => finish(e, true), [finish])
   const click = useCallback((e: ReactMouseEvent<HTMLElement>) => {
-    if (Date.now() > suppressClickUntil.current) return
+    if (activePointer.current === null && Date.now() > suppressClickUntil.current) return
     e.preventDefault()
     e.stopPropagation()
   }, [])

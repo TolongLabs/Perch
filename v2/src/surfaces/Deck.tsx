@@ -120,7 +120,7 @@ const Swiping = ({ me }: { me: string }) => {
           intake 2 saw as barely registering. */}
       <div className="deck-flash" data-flash={flash ?? undefined} aria-hidden="true" />
 
-      <div className="deck-controls">
+      <div className="deck-controls" onClickCapture={handlers.onClickCapture}>
         {mustGo ? (
           <p className="deck-up-note">Your Must Go is on {mustGo.name}.</p>
         ) : (
