@@ -1,4 +1,6 @@
+import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
+import { BookFlip } from '../components/BookFlip'
 import { DayMap } from '../components/DayMap'
 import { transitMin } from '../data/travel'
 import type { Day, Place, Slot } from '../data/types'
@@ -18,7 +20,7 @@ const PERIOD: Record<Slot['period'], string> = {
   evening: 'That Evening'
 }
 
-/** Two stops to a page, which is the composition the reference spread uses and what fixes the page count. */
+/** Two destinations to a spread, which is the composition the intake names and what fixes the page count. */
 const PER_PAGE = 2
 
 type Entry = { slot: Slot; place: Place; transit: number }
@@ -44,13 +46,34 @@ const pagesOf = (entries: Entry[]): Entry[][] => {
   return pages
 }
 
+/** The picture side of a destination: the reel's own poster frame, cropped to a landscape window. */
+const DestPhoto = ({ entry }: { entry: Entry }) => (
+  <div className="dest dest-photo">
+    <img className="dest-shot" src={entry.place.reel.poster} alt="" loading="lazy" />
+  </div>
+)
+
+/** The words side of a destination: when, name, blurb, and the specimen line. */
+const DestDesc = ({ entry }: { entry: Entry }) => (
+  <div className="dest dest-desc">
+    <p className="t-label dest-when">{PERIOD[entry.slot.period]}</p>
+    <h3 className="t-name">{entry.place.name}</h3>
+    <p className="t-prose dest-prose">{entry.place.blurb}</p>
+    <p className="t-specimen">
+      {duration(entry.place.dwellMin)} &middot; {price(entry.place)}
+      {entry.transit > 0 && <> &middot; {entry.transit} min from the last stop</>}
+    </p>
+  </div>
+)
+
 /**
  * The keepsake, and the shared link. Printed state only: there is no setting state here, no blank slot and no
  * awaiting-decision chip, because a plate prints what was settled.
  *
- * Each day is a spread of pages laid two across, and the day's first stop is promoted out of its page into a plate
- * that runs the full width of the spread, crossing the gutter. The promotion is the day's own order rather than a
- * decoration: a day is read forwards, and the stop it opens with is the one that establishes it.
+ * Each day is a run of two-page spreads, and every spread lays out two destinations across its facing pages,
+ * alternating photo left / words right and words left / photo right. The alternation is the intake's own wording:
+ * a photo on the top left page, its words on the top right, then the next destination's words on the bottom left
+ * and its photo on the bottom right. A day is read forwards, so the destinations keep their visiting order.
  */
 export const Book = () => {
   const { trip } = useTrip()
@@ -98,7 +121,7 @@ export const Book = () => {
             <dd>{trip.party.map((p) => p.name).join(', ')}</dd>
           </div>
           <div>
-            <dt className="t-label">Each</dt>
+            <dt className="t-label">Total</dt>
             <dd>{money(tripCostRM(trip))}</dd>
           </div>
         </dl>
@@ -120,8 +143,7 @@ export const Book = () => {
       {planned &&
         trip.days.map((day) => {
           const entries = entriesOf(day, trip.options)
-          const pages = pagesOf(entries)
-          const lead = entries[0]
+          const folios = pagesOf(entries)
           const route = transitRoute(entries.map((e) => e.place))
 
           /* The day's reserve, and how far it is from the stop it is nearest. `backupFor` already guarantees the
@@ -153,8 +175,7 @@ export const Book = () => {
                   )}
                 </div>
 
-                {/* Day-level, like the band beside it, so the page number stays the last mark on the page. Below the
-                  pages it read as a footnote arriving after the book had already finished the spread. */}
+                {/* Day-level, like the band beside it, so the page number stays the last mark on the page. */}
                 {route && (
                   <a className="t-label day-route" href={route} target="_blank" rel="noreferrer noopener">
                     Open The Transit Route
@@ -162,53 +183,55 @@ export const Book = () => {
                 )}
               </header>
 
-              {lead ? (
-                <div className="spread-lead">
-                  {/* The reel's own poster frame. Nothing new is fetched: this is the still the deck already showed
-                    for the place, so the Book is made of the trip's pictures rather than of a map. */}
-                  <img className="lead-shot" src={lead.place.reel.poster} alt="" />
-                  <h2 className="t-plate-title lead-title">{day.title}</h2>
+              <h2 className="t-plate-title day-title">{day.title}</h2>
 
-                  {/* Pinned rather than printed: the route is the reader's own note about the day, laid on the plate
-                    it describes. The tilt is what pinning means; there is no shadow, per `DESIGN.md`. It is anchored
-                    to the picture rather than to the spread so it lands on the same corner whatever the band wraps
-                    to, and the note is opaque paper so the map is never read through a photograph. */}
-                  {entries.length > 1 && (
-                    <figure className="spread-pin">
-                      <span className="pin-head" aria-hidden="true" />
-                      <DayMap day={day.index} title={day.title} stops={entries.map((e) => e.place)} />
-                    </figure>
-                  )}
-                </div>
-              ) : (
-                <h2 className="t-plate-title">{day.title}</h2>
+              {/* The screen reader's copy of the day: the same stops, from the same ordered data, read in visiting
+                order, once. The visual folios below are the printed object and are `aria-hidden`, so this list is the
+                single accessible source and the two cannot disagree. It is `sr-only`, so it shows nowhere on screen
+                and only in the tree; print drops it because the sheet already carries these stops as pictures. */}
+              <ol className="day-stops sr-only">
+                {entries.map((entry) => (
+                  <li key={entry.slot.id}>
+                    <DestDesc entry={entry} />
+                  </li>
+                ))}
+              </ol>
+
+              {/* Pinned rather than printed: the route is the reader's own note about the day, laid on the spread it
+                describes. The tilt is what pinning means; there is no shadow, per `DESIGN.md`. Day-level now that the
+                lead plate is gone, so it anchors to the spread rather than to one picture. */}
+              {entries.length > 1 && (
+                <figure className="spread-pin">
+                  <span className="pin-head" aria-hidden="true" />
+                  <DayMap day={day.index} title={day.title} stops={entries.map((e) => e.place)} />
+                </figure>
               )}
 
-              <div className="spread-pages">
-                {pages.map((page, pageIndex) => (
-                  <section key={page[0]?.slot.id ?? pageIndex} className="page">
-                    {page.map((entry, i) => (
-                      <section key={entry.slot.id} className="entry">
-                        {/* The first stop's picture is the spread's plate above, so its entry is words only and sits
-                          directly beneath it. Everything after it carries its own. */}
-                        {!(pageIndex === 0 && i === 0) && (
-                          <img className="entry-shot" src={entry.place.reel.poster} alt="" loading="lazy" />
-                        )}
-                        <div className="entry-text">
-                          <p className="t-label entry-when">{PERIOD[entry.slot.period]}</p>
-                          <h3 className="t-name">{entry.place.name}</h3>
-                          <p className="t-prose entry-prose">{entry.place.blurb}</p>
-                          <p className="t-specimen">
-                            {duration(entry.place.dwellMin)} &middot; {price(entry.place)}
-                            {entry.transit > 0 && <> &middot; {entry.transit} min from the last stop</>}
-                          </p>
-                        </div>
-                      </section>
-                    ))}
-                    <p className="page-num t-specimen" aria-hidden="true" />
-                  </section>
-                ))}
-              </div>
+              <BookFlip>
+                {folios.map((folio) => {
+                  const [a, b] = folio
+                  if (!a) return null
+                  return (
+                    <Fragment key={a.slot.id}>
+                      {/* The first destination of the spread sits photo left / words right; the second flips to words
+                        left / photo right. That is the alternation the intake names, and it is what makes a spread read
+                        as two facing pages rather than two stacked lists. On a wide screen with motion, BookFlip turns
+                        these pages with page-flip; everywhere else they are the day's flat pages, laid out by the
+                        Book's own rules. */}
+                      <div className="book-page folio-page folio-left">
+                        <DestPhoto entry={a} />
+                        {b && <DestDesc entry={b} />}
+                        <p className="page-num t-specimen" aria-hidden="true" />
+                      </div>
+                      <div className="book-page folio-page folio-right">
+                        <DestDesc entry={a} />
+                        {b && <DestPhoto entry={b} />}
+                        <p className="page-num t-specimen" aria-hidden="true" />
+                      </div>
+                    </Fragment>
+                  )
+                })}
+              </BookFlip>
 
               {/* Under the folios rather than inside the last page, and the difference is visible: inside the page it
                 pushed that page's folio 129px above its neighbour's, and two page numbers at different heights read
@@ -228,16 +251,9 @@ export const Book = () => {
           )
         })}
 
+      {/* The Book shows the trip's destinations and nothing else: the checklist lives on the Desk, where it is set.
+          What remains is the one way back, and it is the last mark in the book. */}
       <article className="spread colophon">
-        <p className="t-label">Before We Go</p>
-        <h2 className="t-plate-title">What This Trip Needs</h2>
-        <ul className="colophon-list t-prose">
-          {trip.checklist.map((item) => (
-            <li key={item.id} data-ticked={item.ticked}>
-              {item.label}
-            </li>
-          ))}
-        </ul>
         <Link className="colophon-back t-label" to="/desk">
           Back To The Desk
         </Link>
