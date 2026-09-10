@@ -34,8 +34,7 @@ export const SignIn = () => {
       </section>
 
       <aside className="auth-hero" aria-hidden="true">
-        <svg className="auth-plate" viewBox="0 0 640 900" preserveAspectRatio="xMidYMid slice" role="img">
-          <title>A field-guide plate: layered hills under a low sun, with the ranked bench beneath</title>
+        <svg className="auth-plate" viewBox="0 0 640 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
           <rect width="640" height="900" fill="var(--ground-day-3)" />
           <circle cx="440" cy="250" r="82" fill="var(--paper)" />
 

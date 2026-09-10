@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
 import { Shell } from './chrome/Shell'
 import { isJoiner } from './lib/joiner'
+import { applyTheme, readTheme } from './lib/theme'
 import { TripProvider } from './state'
 import { BeforeWeGo } from './surfaces/BeforeWeGo'
 import { Book } from './surfaces/Book'
@@ -30,9 +31,24 @@ const ScrollToTop = () => {
   return null
 }
 
+/**
+ * Seeds the stored theme on the document element once after mount. The toggle-bearing surfaces (the landing and the
+ * top bar) each apply their own state, but a full load that lands on a route with neither - `/sign-in` is the one -
+ * would otherwise never set the attribute and fall back to the CSS default, dropping a stored dark choice.
+ * Client-side transitions need no help: `applyTheme` writes the attribute with no cleanup, so a choice made on one
+ * surface survives the push to the next.
+ */
+const ThemeSeed = () => {
+  useEffect(() => {
+    applyTheme(readTheme())
+  }, [])
+  return null
+}
+
 export const App = () => (
   <TripProvider>
     <BrowserRouter>
+      <ThemeSeed />
       <ScrollToTop />
       <Routes>
         {/* The landing folds over the footer like every other surface, so nothing of it shows until the reader
