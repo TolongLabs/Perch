@@ -709,6 +709,10 @@ describe('demo automation follows the shipped interface', () => {
   test('uses current Before We Go labels in the narration and script', () => {
     expect(spokenNarration).toContain('both unlock: The Book, and The Manual,')
     expect(videoScript).toContain('solid Open The Book beside outline The Manual')
+    expect(videoScript).toContain(
+      'Take Care on the left, Packing List on the right, and News For The Trip full-width below.'
+    )
+    expect(videoScript).not.toContain('Every line here is earned')
     expect(`${spokenNarration}\n${videoScript}`).not.toMatch(/\b(?:The|the) Handbook\b|Print The Book/)
   })
 })
