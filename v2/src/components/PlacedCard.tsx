@@ -50,6 +50,8 @@ export const PlacedCard = ({
   pinned,
   flying,
   order,
+  unanimous,
+  closed,
   onPin,
   onRemove
 }: {
@@ -61,6 +63,10 @@ export const PlacedCard = ({
   flying: boolean
   /** Position in the stagger, so the cards land in reading order rather than all at once. */
   order: number
+  /** Every member said yes; the oriole mark the pool card already carries, kept across the drag. */
+  unanimous: boolean
+  /** This place is closed on the day it is placed on, so the card warns in red rather than relying on a chip. */
+  closed: boolean
   onPin: () => void
   onRemove: () => void
 }) => {
@@ -76,12 +82,15 @@ export const PlacedCard = ({
       data-dragging={isDragging}
       data-pinned={pinned}
       data-flying={flying}
+      data-unanimous={unanimous}
+      data-closed={closed}
       style={flying ? ({ '--i': order } as CSSProperties) : undefined}
     >
       <div className="card-grip" {...listeners} {...attributes}>
         <p className="t-name card-name">{place.name}</p>
         <Line place={place} />
       </div>
+      {closed && <p className="t-label card-closed">Closed This Day</p>}
       <div className="card-acts">
         <button
           type="button"

@@ -21,6 +21,7 @@ import { Heading, Info } from '../components/Ui'
 import type { Day, DayFeasibility, Period, Slot } from '../data/types'
 import { dayCostRM } from '../lib/cost'
 import { clock, dayLabel, duration, money, price } from '../lib/format'
+import { planCapacity } from '../lib/planCapacity'
 import { CLUSTER_AREA } from '../lib/schedule'
 import { nextReplacement, tallyFor, votedIn, waitingPlaces } from '../lib/votes'
 import { SLOTS_PER_PERIOD, useTrip } from '../state'
@@ -114,8 +115,9 @@ const SlotCell = ({ dayIndex, slotIndex, children }: { dayIndex: number; slotInd
 
 export const Desk = () => {
   const navigate = useNavigate()
-  const { trip, place, remove, apply, pin, unpin, setDates, addSlot, removeSlot, restart } = useTrip()
+  const { trip, place, remove, apply, pin, unpin, setDates, setDayStart, addSlot, removeSlot, restart } = useTrip()
   const [flight, setFlight] = useState(0)
+  const [confirmOptimize, setConfirmOptimize] = useState(false)
   const [dragging, setDragging] = useState<string | null>(null)
   const [drawer, setDrawer] = useState<{ dayIndex: number; slotIndex: number } | null>(null)
   const [datesOpen, setDatesOpen] = useState(false)
@@ -168,8 +170,13 @@ export const Desk = () => {
   }, [trip])
 
   const tally = useMemo(() => tallyFor(trip), [trip])
+  // The scheduler's own ceiling, computed the way the scheduler computes it: one place per slot, three slots a day.
+  // The surface asks before it promises, so a date the content cannot hold is refused with a reason.
+  const capacity = useMemo(() => planCapacity(trip), [trip])
   const placed = new Set(trip.days.flatMap((d) => d.slots.map((s) => s.placeId).filter((id): id is string => !!id)))
   const pool = votedIn(tally).filter((t) => !placed.has(t.placeId))
+  // Places the pool marks in gold, so the mark the card already carries in the sidebar is the one it keeps in a slot.
+  const unanimousIds = new Set(tally.filter((t) => t.unanimous).map((t) => t.placeId))
 
   const onDragEnd = ({ active, over }: DragEndEvent) => {
     setDragging(null)
@@ -180,9 +187,30 @@ export const Desk = () => {
     place(from.placeId, to.dayIndex, to.slotIndex)
   }
 
+  // Optimize rewrites every stop that is not pinned. Two presses, on the surface, so a person who has arranged the
+  // days sees what they are about to lose before they lose it; a plan with nothing unpinned in it needs no warning.
+  const hasUnpinnedPlacements = trip.days.some((d) => d.slots.some((s) => s.placeId !== null && !s.pinned))
   const onApply = () => {
+    // A press that would do nothing must not ask about it: when the plan cannot be filled, the store's apply is a
+    // no-op, so the confirmation and the fly-in would both promise what the scheduler will not do. The capnote
+    // above carries the reason.
+    if (!capacity.canFill) return
+    if (hasUnpinnedPlacements && !confirmOptimize) {
+      setConfirmOptimize(true)
+      return
+    }
     apply()
     setFlight((f) => f + 1)
+    setConfirmOptimize(false)
+  }
+
+  // Start Over replaces the trip under the surface, so the confirmations that speak about the old trip close with
+  // it: a live demo resets between runs, and the next run opens on a clean Desk, not on a question about a plan
+  // that no longer exists.
+  const onRestart = () => {
+    setConfirmOptimize(false)
+    setConfirmReset(false)
+    restart()
   }
 
   // Removing never leaves a hole: the drawer opens first and the removal is whichever way the owner answers it.
@@ -199,6 +227,9 @@ export const Desk = () => {
   })()
 
   const nights = range.start && range.end ? nightsBetween(range.start, range.end) : 0
+  // The ceiling says the same thing `withDates` enforces silently: past it the trip cannot be scheduled, so the
+  // button is refused here with the reason in sight rather than pressed to nothing.
+  const capped = nights > 0 && nights + 1 > capacity.maxDays
 
   /* The flight animation staggers by a card's position across the whole calendar. Three per day was a constant
      while every day held three; a day that holds six would collide with the next day's cards. */
@@ -239,11 +270,39 @@ export const Desk = () => {
           </div>
 
           {/* Said out loud rather than left in a code comment. Optimizing rewrites every unpinned placement, and
-              until now nothing on the surface told anyone that pinning is what survives it. */}
-          {placed.size > 0 && (
+              until now nothing on the surface told anyone that pinning is what survives it. It steps aside while the
+              confirmation is open, because the confirmation says the same thing with the buttons attached. */}
+          {placed.size > 0 && !confirmOptimize && (
             <p className="t-specimen desk-pinnote">Optimizing reorders every day. Pinned stops keep their slot.</p>
           )}
+
+          {/* Two different refusals, two different sentences: the content may not hold the plan, or the content may
+              hold it and the days may not. availablePlaces counts the places that may be used, not the slots the
+              scheduler can fill, so the first refusal says how many places are eligible, not how many slots fill -
+              a single eligible place closed on its days fills zero of twelve. The day-count ceiling belongs to the
+              date panel, which says it when the dates exceed it. #313 */}
+          {!capacity.canFill && (
+            <p className="t-specimen desk-capnote">
+              {capacity.availablePlaces < capacity.requiredPlaces
+                ? `Only ${capacity.availablePlaces} distinct ${capacity.availablePlaces === 1 ? 'place is' : 'places are'} eligible for ${capacity.requiredPlaces} slots. The days already on the Desk stay as they are.`
+                : 'The destination’s content is enough for every slot, but not every slot can be filled on these days. The days already on the Desk stay as they are.'}
+            </p>
+          )}
         </header>
+
+        {confirmOptimize && (
+          <section className="desk-applyask">
+            <p className="t-specimen">This replaces every stop that is not pinned. Pinned stops keep their slot.</p>
+            <div className="desk-applyacts">
+              <button type="button" className="desk-dateset t-label" onClick={onApply}>
+                Yes, Optimize Plan
+              </button>
+              <button type="button" className="desk-dates t-label" onClick={() => setConfirmOptimize(false)}>
+                Keep This Plan
+              </button>
+            </div>
+          </section>
+        )}
 
         {datesOpen && (
           <section className="desk-datepick">
@@ -251,14 +310,16 @@ export const Desk = () => {
             <DateRangePicker value={range} onChange={setRange} />
             <div className="desk-datefoot">
               <p className="t-specimen">
-                {nights > 0
-                  ? `${nights + 1} days, ${nights} nights. Votes stay, they are on places.`
-                  : 'Tap the first day, then the last.'}
+                {capped
+                  ? `The destination’s content covers ${capacity.maxDays} days at most, so these dates cannot be set. Pick a range of at most ${capacity.maxDays} days.`
+                  : nights > 0
+                    ? `${nights + 1} days, ${nights} nights. Votes stay, they are on places.`
+                    : 'Tap the first day, then the last.'}
               </p>
               <button
                 type="button"
                 className="desk-dateset t-label"
-                disabled={nights < 1}
+                disabled={nights < 1 || capped}
                 onClick={() => {
                   if (range.start && nights > 0) setDates(range.start, nights)
                   setDatesOpen(false)
@@ -304,6 +365,9 @@ export const Desk = () => {
                   <h2 className="t-label desk-dayindex" id={`day-${day.index}`}>
                     Day {day.index}
                     <span className="desk-daydate">{dayLabel(day.date)}</span>
+                    {/* The weekday, which `day.weekday` already holds, so the card and the place it closes on say the
+                        same thing. 'Fri' rather than 'Friday' - the line is a stamp, and three letters is the stamp. */}
+                    <span className="desk-daydate">{day.weekday.slice(0, 3)}</span>
                   </h2>
                   {day.feasibility ? (
                     <span className="desk-fit">
@@ -316,6 +380,33 @@ export const Desk = () => {
                     <p className="t-specimen desk-unset">Not scheduled yet</p>
                   )}
                 </header>
+
+                {/* The day starts where the owner says it starts. `withDayStart` already recomputes the end and the
+                    overrun when it moves, so the control only has to say what the current answer is. */}
+                <div className="desk-daystart">
+                  <p className="t-label desk-daystart-label">Start</p>
+                  <button
+                    type="button"
+                    className="desk-slotact"
+                    disabled={day.startMin <= 0}
+                    title="Start the day thirty minutes earlier"
+                    aria-label={`Start day ${day.index} thirty minutes earlier`}
+                    onClick={() => setDayStart(day.index, Math.max(0, day.startMin - 30))}
+                  >
+                    &minus;
+                  </button>
+                  <span className="desk-daystart-time">{clock(day.startMin)}</span>
+                  <button
+                    type="button"
+                    className="desk-slotact"
+                    disabled={day.startMin >= 1439}
+                    title="Start the day thirty minutes later"
+                    aria-label={`Start day ${day.index} thirty minutes later`}
+                    onClick={() => setDayStart(day.index, Math.min(1439, day.startMin + 30))}
+                  >
+                    +
+                  </button>
+                </div>
 
                 {/* The two numbers a person decides on. Both were computed already and neither was shown: the walk
                     knows when the day ends and `dayCostRM` was imported only by the Book, so the Desk asked for a
@@ -379,6 +470,8 @@ export const Desk = () => {
                                 pinned={slot.pinned}
                                 flying={flight > 0}
                                 order={slotsBefore(dayPos) + index}
+                                unanimous={unanimousIds.has(held.id)}
+                                closed={held.closedOn.includes(day.weekday.toLowerCase())}
                                 onPin={() => (slot.pinned ? unpin(held.id) : pin(held.id, day.index, index))}
                                 onRemove={() => setDrawer({ dayIndex: day.index, slotIndex: index })}
                               />
@@ -412,7 +505,7 @@ export const Desk = () => {
               <div className="desk-resetask">
                 <p className="t-specimen">This clears the whole trip. There is no undo.</p>
                 <div className="desk-resetacts">
-                  <button type="button" className="desk-reset desk-reset-go t-label" onClick={restart}>
+                  <button type="button" className="desk-reset desk-reset-go t-label" onClick={onRestart}>
                     Yes, Start Over
                   </button>
                   <button type="button" className="desk-reset t-label" onClick={() => setConfirmReset(false)}>

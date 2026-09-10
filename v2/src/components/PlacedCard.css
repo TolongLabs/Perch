@@ -71,6 +71,27 @@
   border-color: var(--tint);
 }
 
+/* The oriole mark follows the card into its slot. It keeps its unanimous-only meaning - a place everyone said
+   yes to - and borrows the pool's ground so the two marks read as one signal, not a recoloured pin. */
+.card-placed[data-unanimous="true"] {
+  border-color: var(--gold);
+  background: var(--ground-gold);
+}
+
+/* A closed venue is a decision, not a footnote: the at-risk border outranks the pin and the unanimous mark
+   because it is the one that changes what happens on this day, so it comes last in the sheet. */
+.card-placed[data-closed="true"] {
+  border-color: var(--at-risk);
+  background: var(--ground-at-risk);
+}
+
+/* At-risk cannot carry text on its own ground, so the label takes the mixed tint the state chip uses - the recipe
+   from DESIGN.md, not the raw hue. */
+.card-closed {
+  color: color-mix(in oklab, var(--at-risk) 34%, var(--ink));
+  font-size: 10px;
+}
+
 .card-grip {
   cursor: grab;
   touch-action: none;
