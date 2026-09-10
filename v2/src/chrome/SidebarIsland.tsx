@@ -115,6 +115,7 @@ export const SidebarIsland = ({ expandedChanged }: { expandedChanged: (open: boo
           <li key={to}>
             <NavLink
               to={href ?? to}
+              end
               className="rail-item"
               data-current={to === current?.to}
               aria-current={to === current?.to ? 'page' : undefined}
@@ -155,6 +156,7 @@ export const BottomDock = () => {
           <li key={to}>
             <NavLink
               to={href ?? to}
+              end
               className="dock-item"
               data-action={to === '/new'}
               data-current={to === current?.to}

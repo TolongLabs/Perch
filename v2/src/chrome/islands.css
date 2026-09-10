@@ -11,7 +11,7 @@
      three places. 44px is the touch target, not 40: the dock is the only navigation on a phone and it is hit
      with a thumb, and a trackpad has no reason to be held to a looser target than that. */
   --island-row: 44px;
-  --dock-h: calc(var(--s2) * 2 + var(--island-row));
+  --dock-h: calc(var(--s2) * 2 + var(--island-row) * 2 + var(--s1));
   /* Everything that has to stay clear of the dock measures it from here: the page's own padding, the footer's,
      and the scroll padding. Three numbers that must agree are one number. */
   --dock-clear: calc(var(--rail-inset) * 2 + var(--dock-h));
@@ -492,12 +492,17 @@ body:has(.island-scrim[data-on="true"]) .top-badge {
   }
 
   .dock-list {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(var(--island-row), 1fr));
     gap: var(--s1);
     list-style: none;
     margin: 0;
     padding: 0;
+  }
+
+  .dock-list > li {
+    display: grid;
+    place-items: center;
   }
 
   .dock-item {
