@@ -692,6 +692,8 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
 describe('demo automation follows the shipped interface', () => {
   const recorder = readFileSync(join(import.meta.dir, 'record.mjs'), 'utf8')
   const preflight = readFileSync(join(import.meta.dir, 'check-shots.mjs'), 'utf8')
+  const spokenNarration = readFileSync(narration, 'utf8')
+  const videoScript = readFileSync(join(import.meta.dir, '../../docs/demo/video-script.md'), 'utf8')
 
   test('uses the current Open The Book gate label', () => {
     expect(preflight).toContain("exactText('Open The Book')")
@@ -702,6 +704,16 @@ describe('demo automation follows the shipped interface', () => {
     expect(recorder).toContain("exactText('The Manual')")
     expect(preflight).toContain("exactText('The Manual')")
     expect(`${recorder}\n${preflight}`).not.toContain('The Handbook')
+  })
+
+  test('uses current Before We Go labels in the narration and script', () => {
+    expect(spokenNarration).toContain('both unlock: The Book, and The Manual,')
+    expect(videoScript).toContain('solid Open The Book beside outline The Manual')
+    expect(videoScript).toContain(
+      'Take Care on the left, Packing List on the right, and News For The Trip full-width below.'
+    )
+    expect(videoScript).not.toContain('Every line here is earned')
+    expect(`${spokenNarration}\n${videoScript}`).not.toMatch(/\b(?:The|the) Handbook\b|Print The Book/)
   })
 })
 
