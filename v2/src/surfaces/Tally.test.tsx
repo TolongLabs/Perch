@@ -54,6 +54,31 @@ test('places accessible Must Go hearts beside destination names instead of verdi
   expect(html).not.toContain('Must Go ·')
 })
 
+test('preserves distinct member identities when Must Go voters share a name', () => {
+  const first = seed.party.find((member) => Object.values(seed.votes[member.id] ?? {}).includes('must'))
+  const second = seed.party.find((member) => member.id !== first?.id)
+  const placeId = first
+    ? Object.entries(seed.votes[first.id] ?? {}).find(([, answer]) => answer === 'must')?.[0]
+    : undefined
+  if (!first || !second || !placeId) throw new Error('The voting fixture needs two members and one Must Go vote')
+
+  const duplicateNameTrip: Trip = {
+    ...seed,
+    party: seed.party.map((member) =>
+      member.id === first.id || member.id === second.id ? { ...member, name: 'Same Name' } : member
+    ),
+    votes: {
+      ...seed.votes,
+      [second.id]: { ...seed.votes[second.id], [placeId]: 'must' }
+    }
+  }
+  const html = renderTally(duplicateNameTrip)
+
+  expect(html.match(/aria-label="Must Go by Same Name"/g)).toHaveLength(2)
+  expect(html).toContain(`data-must-voter="${first.id}"`)
+  expect(html).toContain(`data-must-voter="${second.id}"`)
+})
+
 test('lets the current owner end an open browser-local session and explains the deadline', () => {
   const html = renderTally()
 

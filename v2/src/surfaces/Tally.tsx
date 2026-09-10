@@ -23,8 +23,11 @@ export const Tally = () => {
   const waiting = trip.party.length - finishedMembers(trip).length
   const canEnd = !closed && !joiner && trip.currentMemberId === trip.ownerId
 
-  const mustNames = (ids: string[]) =>
-    ids.map((id) => trip.party.find((p) => p.id === id)?.name).filter((name): name is string => !!name)
+  const mustMembers = (ids: string[]) =>
+    ids.flatMap((id) => {
+      const member = trip.party.find((person) => person.id === id)
+      return member ? [member] : []
+    })
 
   // The trip id is the invite code: the link carries it, and there is no separate code field in the model.
   const inviteUrl = `${window.location.origin}/t/${trip.id}/swipe`
@@ -86,7 +89,7 @@ export const Tally = () => {
           {tally.map((entry) => {
             const place = trip.options[entry.placeId]
             if (!place) return null
-            const names = mustNames(entry.mustBy)
+            const mustVoters = mustMembers(entry.mustBy)
             return (
               <li
                 key={entry.placeId}
@@ -99,16 +102,17 @@ export const Tally = () => {
                   <div className="tally-top">
                     <div className="tally-destination">
                       <p className="t-name tally-name">{place.name}</p>
-                      {names.length > 0 && (
+                      {mustVoters.length > 0 && (
                         <span className="tally-musts">
-                          {names.map((name) => (
+                          {mustVoters.map((voter) => (
                             <span
-                              key={name}
+                              key={voter.id}
                               className="tally-must"
                               data-must-heart
+                              data-must-voter={voter.id}
                               role="img"
-                              aria-label={`Must Go by ${name}`}
-                              title={`Must Go by ${name}`}
+                              aria-label={`Must Go by ${voter.name}`}
+                              title={`Must Go by ${voter.name}`}
                             >
                               <Heart size={18} strokeWidth={2} aria-hidden="true" />
                             </span>
