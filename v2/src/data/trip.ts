@@ -22,6 +22,7 @@ const day = (index: number, date: string, weekday: string, tint: Day['tint'], ti
   tint,
   title,
   slots: PERIODS.map((period) => slot(index, period)),
+  startMin: 540,
   feasibility: null
 })
 

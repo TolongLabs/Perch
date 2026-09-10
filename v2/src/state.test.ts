@@ -1,6 +1,66 @@
-import { describe, expect, test } from 'bun:test'
+import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
 import { trip } from './data/trip'
-import { MAX_PARTY, renamed, SLOTS_PER_PERIOD, withMember, withoutMember, withoutSlot, withSlot } from './state'
+import type { Answer, Day, Trip } from './data/types'
+import { maxTripDays } from './lib/planCapacity'
+import { evaluateDay } from './lib/schedule'
+import { load, reset, save } from './lib/store'
+import {
+  MAX_PARTY,
+  renamed,
+  SLOTS_PER_PERIOD,
+  withDates,
+  withDayStart,
+  withMember,
+  withOptimizedPlan,
+  withoutMember,
+  withoutSlot,
+  withSlot
+} from './state'
+
+let originalDescriptor: PropertyDescriptor | undefined
+
+const allYes = (trip: Trip): Trip['votes'] => {
+  const votes: Record<string, Record<string, Answer>> = {}
+  for (const member of trip.party) {
+    const memberVotes: Record<string, Answer> = {}
+    for (const placeId of Object.keys(trip.options)) memberVotes[placeId] = 'yes'
+    votes[member.id] = memberVotes
+  }
+  return votes
+}
+
+const noVotes = (trip: Trip): Trip['votes'] => {
+  const votes: Record<string, Record<string, Answer>> = {}
+  for (const member of trip.party) votes[member.id] = {}
+  return votes
+}
+
+beforeEach(() => {
+  originalDescriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
+  const store: Record<string, string> = {}
+  Object.defineProperty(globalThis, 'localStorage', {
+    value: {
+      getItem: (key: string) => store[key] ?? null,
+      setItem: (key: string, value: string) => {
+        store[key] = value
+      },
+      removeItem: (key: string) => {
+        delete store[key]
+      }
+    },
+    configurable: true,
+    writable: true
+  })
+})
+
+afterEach(() => {
+  reset()
+  if (originalDescriptor) {
+    Object.defineProperty(globalThis, 'localStorage', originalDescriptor)
+  } else {
+    delete (globalThis as unknown as { localStorage?: unknown }).localStorage
+  }
+})
 
 const day = () => {
   const d = trip.days[0]
@@ -59,5 +119,152 @@ describe('the party', () => {
     const t = renamed(trip, 'hana', 'Hanabi')
     expect(t.party.find((p) => p.id === 'hana')?.name).toBe('Hanabi')
     expect(t.votes.hana).toBe(trip.votes.hana)
+  })
+})
+
+describe('dates', () => {
+  test('withDates is a no-op when nothing changes', () => {
+    expect(withDates(trip, trip.startDate, trip.nights)).toBe(trip)
+  })
+
+  test('withDates rejects non-roundtrip, invalid or over-long requests', () => {
+    const maxDays = maxTripDays(trip)
+    expect(withDates(trip, '2026-11-31', 3)).toBe(trip)
+    expect(withDates(trip, '2026-12-01', -1)).toBe(trip)
+    expect(withDates(trip, '2026-12-01', 1.5)).toBe(trip)
+    expect(withDates(trip, '2026-12-01', maxDays)).toBe(trip)
+  })
+
+  test('withDates uses UTC so month rollover and weekday are exact', () => {
+    const moved = withDates(trip, '2026-11-30', 1)
+    expect(moved.days[0]?.date).toBe('2026-11-30')
+    expect(moved.days[1]?.date).toBe('2026-12-01')
+    expect(moved.days[0]?.weekday).toBe('Monday')
+    expect(moved.days[1]?.weekday).toBe('Tuesday')
+  })
+
+  test('withDates rejects an invalid leap day and accepts a real one', () => {
+    expect(withDates(trip, '2025-02-29', 1)).toBe(trip)
+    const leap = withDates(trip, '2024-02-29', 1)
+    expect(leap.days[0]?.date).toBe('2024-02-29')
+    expect(leap.days[1]?.date).toBe('2024-03-01')
+  })
+
+  test('withDates regenerates days up to the content ceiling and clears pins', () => {
+    const pinned = { ...trip, pins: [{ placeId: 'sensoji', dayIndex: 1, slotIndex: 0 }] }
+    const maxNights = maxTripDays(trip) - 1
+    const moved = withDates(pinned, '2026-12-01', maxNights)
+    expect(moved.startDate).toBe('2026-12-01')
+    expect(moved.nights).toBe(maxNights)
+    expect(moved.pins).toHaveLength(0)
+    expect(moved.legs[0]?.endDay).toBe(maxNights + 1)
+    expect(moved.days[0]?.date).toBe('2026-12-01')
+    expect(moved.days.every((d) => d.startMin === 540)).toBe(true)
+  })
+})
+
+describe('day start time', () => {
+  test('withDayStart updates a valid day and start time', () => {
+    const t = withDayStart(trip, 1, 480)
+    expect(t).not.toBe(trip)
+    expect(t.days[0]?.startMin).toBe(480)
+  })
+
+  test('withDayStart is a no-op for an invalid day or time', () => {
+    expect(withDayStart(trip, 0, 480)).toBe(trip)
+    expect(withDayStart(trip, 99, 480)).toBe(trip)
+    expect(withDayStart(trip, 1, -1)).toBe(trip)
+    expect(withDayStart(trip, 1, 1440)).toBe(trip)
+    expect(withDayStart(trip, 1, 480.5)).toBe(trip)
+  })
+
+  test('withDayStart is a no-op for the same start time', () => {
+    expect(withDayStart(trip, 1, 540)).toBe(trip)
+  })
+
+  test('withDayStart recomputes feasibility for the target day', () => {
+    const placed = {
+      ...trip,
+      days: trip.days.map((d) =>
+        d.index === 1 ? { ...d, slots: d.slots.map((s, i) => (i === 0 ? { ...s, placeId: 'sensoji' } : s)) } : d
+      )
+    }
+    const place = placed.options.sensoji
+    if (!place) throw new Error('fixture missing sensoji')
+    const [h = '0', m = '0'] = place.opens.split(':')
+    const openMin = Number(h) * 60 + Number(m)
+    const dwell = place.dwellMin
+    const atEight = withDayStart(placed, 1, 480)
+    const atTen = withDayStart(placed, 1, 600)
+    expect(atEight.days[0]?.feasibility?.endMin).toBe(Math.max(480, openMin) + dwell)
+    expect(atTen.days[0]?.feasibility?.endMin).toBe(Math.max(600, openMin) + dwell)
+  })
+
+  test('withDayStart preserves other days and all trip data', () => {
+    const t = withDayStart(trip, 1, 480)
+    expect(t.days[1]).toBe(trip.days[1])
+    expect(t.votes).toBe(trip.votes)
+    expect(t.manualNotes).toBe(trip.manualNotes)
+  })
+})
+
+describe('plan optimization guard', () => {
+  test('withOptimizedPlan refuses to replace assignments when the plan cannot fill', () => {
+    if (!trip.days[0]) throw new Error('fixture has no day')
+    const assigned: Trip = {
+      ...trip,
+      votes: noVotes(trip),
+      days: trip.days.map((d) => ({
+        ...d,
+        slots: d.slots.map((s) => ({ ...s, placeId: 'sensoji' }))
+      }))
+    }
+    const out = withOptimizedPlan(assigned)
+    expect(out).toBe(assigned)
+    expect(out.days[0]?.slots.map((s) => s.placeId)).toEqual(assigned.days[0]?.slots.map((s) => s.placeId))
+  })
+
+  test('withOptimizedPlan fills the calendar when the plan can fill', () => {
+    const full = { ...trip, votes: allYes(trip) }
+    const out = withOptimizedPlan(full)
+    expect(out).not.toBe(full)
+    const placed = out.days.flatMap((d) => d.slots.map((s) => s.placeId))
+    expect(placed.length).toBe(12)
+    expect(placed.every((id) => id !== null)).toBe(true)
+    expect(new Set(placed).size).toBe(12)
+  })
+})
+
+describe('store migration', () => {
+  test('load preserves budget, votes, manual notes and valid day starts, and defaults invalid or missing starts to 540 with feasibility', () => {
+    const oldDays: Trip['days'] = trip.days.map((d, i) => {
+      const slots = d.slots.map((s, j) => (j === 0 ? { ...s, placeId: 'sensoji' } : s))
+      const startMin = i === 0 ? 480 : i === 1 ? undefined : 2000
+      const withStart = { ...d, startMin, slots, feasibility: null as Day['feasibility'] }
+      if (startMin === 480) {
+        withStart.feasibility = evaluateDay({ ...d, startMin: 480, slots }, trip.options)
+      }
+      return withStart as unknown as Day
+    })
+    const old = {
+      ...trip,
+      budgetRM: 777,
+      days: oldDays,
+      manualNotes: {
+        takeCare: [{ id: 'n1', text: 'A' }],
+        packing: [{ id: 'n2', text: 'B' }]
+      }
+    } as unknown as Trip
+    save(old)
+    const loaded = load()
+    expect(loaded.budgetRM).toBe(777)
+    expect(loaded.votes).toEqual(trip.votes)
+    expect(loaded.manualNotes).toEqual({ takeCare: [{ id: 'n1', text: 'A' }], packing: [{ id: 'n2', text: 'B' }] })
+    expect(loaded.days[0]?.startMin).toBe(480)
+    expect(loaded.days[0]?.feasibility).toEqual(oldDays[0]?.feasibility)
+    for (let i = 1; i < loaded.days.length; i += 1) {
+      expect(loaded.days[i]?.startMin).toBe(540)
+      expect(loaded.days[i]?.feasibility).not.toBeNull()
+    }
   })
 })

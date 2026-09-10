@@ -60,7 +60,7 @@ export type DayFeasibility = {
   transitMin: number
   dwellMin: number
   daySpanMin: number
-  /** Minutes after midnight when the last stop is left, from a 09:00 start. */
+  /** Minutes after midnight when the last stop is left. */
   endMin: number
   stopsOutsideHours: string[]
   rationale: string
@@ -75,6 +75,8 @@ export type Day = {
   title: string
   /** In period order, morning then afternoon then evening; three by default, and each period may hold two. */
   slots: Slot[]
+  /** Minutes after midnight when the day starts. 540 is 09:00. */
+  startMin: number
   /** Null until the day has been scheduled, which renders as the blank state. */
   feasibility: DayFeasibility | null
 }
