@@ -15,14 +15,16 @@ const ACTIVITIES = [
   { id: 'markets', label: 'Markets' },
   { id: 'night-views', label: 'Night Views' },
   { id: 'parks', label: 'Parks' },
-  { id: 'museums', label: 'Museums' }
+  { id: 'museums', label: 'Museums' },
+  { id: 'other', label: 'Other' }
 ]
 
 const DESTINATIONS = [
   { id: 'tokyo', label: 'Tokyo' },
   { id: 'kyoto', label: 'Kyoto', disabled: true },
   { id: 'osaka', label: 'Osaka', disabled: true },
-  { id: 'sapporo', label: 'Sapporo', disabled: true }
+  { id: 'sapporo', label: 'Sapporo', disabled: true },
+  { id: 'other', label: 'Other' }
 ]
 
 export const Onboarding = () => {
@@ -173,32 +175,30 @@ export const Onboarding = () => {
         </p>
       </section>
 
-      <section className="ob-section" data-state={activities.length > 0 || intent ? 'decided' : 'open'}>
+      <section
+        className="ob-section"
+        data-state={activities.some((id) => id !== 'other') || intent.trim() ? 'decided' : 'open'}
+      >
         <p className="t-label ob-legend">What You Are After</p>
-        <Field
-          label="What You Want"
-          placeholder="Tell Perch what you want out of this trip"
-          help="Type it in your own words first, then tap whatever matches."
-          value={intent}
-          onChange={setIntent}
-        />
         <ChipGroup
           label="Activities"
           chips={ACTIVITIES}
           selected={activities}
           onToggle={(id) => toggle(activities, setActivities, id)}
         />
+        {activities.includes('other') && (
+          <Field
+            label="Other Activity"
+            placeholder="Tell Perch what else you want from this trip"
+            help="Describe the activity in your own words."
+            value={intent}
+            onChange={setIntent}
+          />
+        )}
       </section>
 
-      <section className="ob-section" data-state={destination.length > 0 ? 'decided' : 'open'}>
+      <section className="ob-section" data-state={destination.includes('tokyo') || city.trim() ? 'decided' : 'open'}>
         <p className="t-label ob-legend">Where</p>
-        <Field
-          label="Where To"
-          placeholder="Name a city"
-          help="One city per trip. A different city means a different plan."
-          value={city}
-          onChange={setCity}
-        />
         <ChipGroup
           label="Destination"
           chips={DESTINATIONS}
@@ -206,6 +206,15 @@ export const Onboarding = () => {
           onToggle={(id) => setDestination([id])}
           note="Only Tokyo has reels in the prototype."
         />
+        {destination.includes('other') && (
+          <Field
+            label="Other Destination"
+            placeholder="Name a city"
+            help="A different city needs its own set of reels before Perch can plan it."
+            value={city}
+            onChange={setCity}
+          />
+        )}
       </section>
 
       <button type="button" className="ob-go t-label" disabled={!ready} onClick={start}>
