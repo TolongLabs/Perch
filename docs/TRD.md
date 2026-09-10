@@ -4,11 +4,12 @@
 [PRD.md](PRD.md) owns scope, [DESIGN.md](DESIGN.md) owns the look. This file is canonical over AGENTS.md on technical
 matters, and it goes deeper than [README.md](README.md) rather than repeating it.
 
-**This file describes the prototype specification as decided on 8 September 2026.** It is not yet built; the build phase
-opens 21 September. Every fenced block below is the design as the team committed to it. Two sections are deliberately
-not specifications: [Specified, Not Yet Built](#specified-not-yet-built) holds rules that are designed and deferred, and
-[Known Limitations](#known-limitations) holds things the design accepts or has not solved. Nothing outside those two
-sections is aspirational.
+**Contract Status.** The historical design below is dated 8 September 2026; selected implementation contracts have since
+been updated through PRs #301, #302 and #304, which does not make everything else here implemented.
+
+[Specified, Not Yet Built](#specified-not-yet-built) holds rules that are designed and deferred, and
+[Known Limitations](#known-limitations) holds things the design accepts or has not solved. The build phase opens 21
+September; see [brief.md](brief.md#dates).
 
 **What is built today, what is being rebuilt and what is new on 8 September.** The submission runs one path: sign in,
 new plan, swipe, votes, drag the calendar, apply, checklist, book. Two old surfaces are deleted, not kept behind a flag.
@@ -47,7 +48,7 @@ stage**.
 | **Motion**          | CSS keyframes and transitions. One branded mechanic: perch step-forward; 120ms cross-fade     |
 | **Icons**           | **None.** No icon library is installed. Every affordance is a labelled control or drawn shape |
 | **State**           | One React context mirrored to `localStorage`. No backend, database, auth or API key           |
-| **Data**            | Committed TypeScript fixtures. No network call other than reel MP4s from a public GCS bucket  |
+| **Data**            | Committed TypeScript fixtures. External media comes from a public GCS bucket and OSM tiles    |
 | **Container**       | Two stage. Bun builds, nginx serves `dist/` on 8080                                           |
 | **Deploy**          | Cloud Run in asia-southeast1, deployed by GitHub Actions on every merge to main               |
 | **Storage**         | Google Cloud Storage for reel MP4s                                                            |
@@ -78,8 +79,9 @@ name.
 
 ## Build Phase
 
-The prototype has no backend, no auth, no API key and no network call other than reel MP4s from a public GCS bucket. The
-build phase (21 September to 11 October) adds infrastructure behind these decisions.
+The prototype has no backend, no auth and no API key; external requests include media -- the reel and hero files from a
+public GCS bucket, and OpenStreetMap tiles. The build phase (21 September to 11 October) adds infrastructure behind
+these decisions.
 
 | Service              | Role                                                                                         | Constraint the team expects to face                                                                                                                             |
 | -------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -181,8 +183,9 @@ is a whole number, so no addition in the build ever produces a fraction.
 a four-line `minutes()` in `schedule.ts`; dwell minutes are plain minute counts. One destination, one timezone, so a
 timezone library would be ceremony.
 
-**One `Date` object is constructed in the whole build**, and it is not load-bearing: `format.dayLabel` builds it to
-render a date. Everything else is string and minute arithmetic.
+**Calendar Dates Are Real `Date` Work.** `format.dayLabel` builds one to render a date, `withDates` walks the calendar
+in UTC, and `votingDeadline` computes the previous-day midnight in Asia/Tokyo. Place opening times and durations remain
+string and minute arithmetic.
 
 ### Period, State And Kind
 
@@ -205,7 +208,8 @@ export type OptionKind =
 Three slots per day: morning, afternoon, evening. No midday period, no free-time dragging. Cards drop into named slots.
 
 There is no slot state. Feasibility is a property of the day: green renders as `--decided`, gold as `--gold`, red as
-`--at-risk`. After Apply every slot holds a card, because the trip has to be valid with zero group input.
+`--at-risk`. Apply is guarded by `planCapacity`: a successful run fills every requested slot, and a run that cannot is a
+no-op that leaves the existing plan, empty slots included.
 
 ### Place
 
@@ -231,7 +235,8 @@ export type Place = {
 ```
 
 `cluster` groups places by geographic area for the scheduler -- Asakusa and Ueno cluster together, Shibuya and Harajuku
-together, and so on. The scheduler clusters by this value per day, then nearest-neighbour within the cluster.
+together, and so on. The scheduler picks a cluster per day, fills a shortfall from the highest-ranked candidates in
+other clusters, then orders by period and nearest neighbour.
 
 `closedOn` holds lowercase weekday names and is compared against `Day.weekday.toLowerCase()`. `bestPeriod` is the field
 the fit filter reads first: a place declares the periods it belongs in rather than a slot declaring what it wants.
@@ -252,17 +257,21 @@ export type Day = {
   weekday: string
   tint: 1 | 2 | 3 | 4 | 5
   title: string
+  /** In period order, morning then afternoon then evening; three by default, and each period may hold two. */
   slots: Slot[]
+  /** Minutes after midnight when the day starts. 540 is 09:00. */
+  startMin: number
   feasibility: DayFeasibility | null
 }
 ```
 
-**Three slots per day, no exceptions.** The calendar enforces this at the type level: `Day.slots` always has length 3.
+**Three Slots Per Day By Default, Up To Six.** `Day.slots` starts with length 3 and a second slot can be opened in any
+period, up to six per day. The first slot of each period never closes.
 
-**`placeId` holds the place id when a card occupies the slot, null when empty.** The Perch drawer fills empty slots from
-the voted-in pool, maintaining each day's two-stop floor.
+**Slot Occupancy.** `placeId` holds a place id or null when empty. The Perch drawer offers the next-ranked voted-in
+place for an empty slot, while the state operation itself does not enforce the drawer's two-stop guard.
 
-### Person, Votes And Trip
+### Person, Votes, Manual Notes And Trip
 
 ```ts
 export type Person = {
@@ -271,7 +280,16 @@ export type Person = {
   initials: string
 }
 
-export type Votes = Record<string, Record<string, 'yes' | 'no' | null>>
+export type Answer = 'yes' | 'no' | 'must' | 'skip' | null
+
+export type Votes = Record<string, Record<string, Answer>>
+
+export type ManualSection = 'takeCare' | 'packing'
+
+export type ManualNote = {
+  id: string
+  text: string
+}
 
 export type Trip = {
   id: string
@@ -281,6 +299,10 @@ export type Trip = {
   nights: number
   budgetRM: number
   ownerId: string
+  /** Who this browser is voting as. The owner by default; the invite link lets a friend pick themselves. */
+  currentMemberId: string
+  /** ISO timestamp when voting closed, or null while it is open. */
+  votingClosedAt: string | null
   party: Person[]
   days: Day[]
   options: Record<string, Place>
@@ -288,11 +310,29 @@ export type Trip = {
   votes: Votes
   pins: Pin[]
   checklist: ChecklistItem[]
+  manualNotes: Record<ManualSection, ManualNote[]>
 }
 ```
 
-**`Votes` is a record of member id to a record of place id to yes, no or null.** A null value means the member has not
-yet swiped on that place. The owner's member id is stored in `ownerId`.
+**Answers.** `Answer` is `yes`, `no`, `must`, `skip` or null. A `must` is a yes with a rank bonus; a member holds only
+one, and a second `must` demotes the first to `yes`. A `skip` is an explicit abstention that still counts in the full
+party denominator. Null means that member has not yet swiped on that place.
+
+```ts
+export const MAX_NOTE_LENGTH = 1000
+
+export const withManualNote = (trip: Trip, section: ManualSection, text: string, id: string): Trip => { ... }
+export const withoutManualNote = (trip: Trip, section: ManualSection, id: string): Trip => { ... }
+```
+
+**Manual Notes.** `manualNotes` holds personal notes for the `takeCare` and `packing` sections. They are local to the
+browser and carry no owner-only enforcement; any current member can add or remove them, including after voting is
+closed.
+
+`withManualNote` trims the text and is a no-op when the result is blank, longer than `MAX_NOTE_LENGTH`, or the `id`
+already exists in the section -- a duplicate id is rejected, duplicate text is not. `withoutManualNote` is a no-op for a
+missing id. Successful changes return a new `Trip` without mutating the input or changing other fields. The provider
+generates the add operation's `id` with `crypto.randomUUID()` before entering the state updater.
 
 ### Legs
 
@@ -400,98 +440,142 @@ export const checklist: ChecklistItem[] = [
 This is the product. Everything else on this page is scaffolding for it. The scheduler is a heuristic, never called AI
 in the UI copy: cluster by area per day, order by best period and opening hours, nearest neighbour within the day.
 
-**Five rules govern every schedule produced.**
+**Five Scheduling Rules.**
 
-1. The trip is valid with zero group input: the owner's swipes alone produce a plan.
-2. Owner priority: the owner's swipe carries 1.5 weight in the tally. The owner can pin a card to a day and slot; the
-   scheduler never moves a pinned card.
-3. Deleting a card from the calendar opens the Perch drawer offering the next-ranked voted-in card for that slot, so the
-   trip cannot empty. Each day keeps at least two stops.
-4. Feasibility per day: green when every stop fits its hours and the day's travel plus dwell fits 09:00 to 21:00; gold
-   when it fits but the order is more than 25 percent slower than the scheduler's order; red when a stop is outside its
-   hours or the day overruns.
-5. A date change regenerates the calendar; votes survive because they are on places. A destination change is a new plan.
+1. The schedule is built from the voted-in pool, with pinned cards as an additional source: owner priority raises the
+   tally weight but the owner alone (1.5 of 4.5 in a four-person seed) does not guarantee a full calendar.
+2. Owner priority: the owner's yes or must carries 1.5 weight. A `must` adds a 0.5 rank bonus and is held one at a time
+   per member; a second `must` demotes the first to `yes` rather than being refused. The owner can pin a card; the
+   scheduler never moves it.
+3. The `remove` state operation empties a slot without a two-stop guard. The drawer separately hides Leave It Empty when
+   removal would leave fewer than two stops. An empty day has null feasibility, and a partially filled day can still
+   evaluate green; feasibility is not a fill guarantee.
+4. Feasibility per day: green when every placed stop fits its hours and the day ends by 21:00; gold when it fits but the
+   actual transit is more than 25 percent above the heuristic's own order for the same stops; red when a stop is closed
+   that weekday, outside its hours or the day overruns 21:00. The span is measured from `Day.startMin`, defaulting to
+   09:00, and opening waits are included.
+5. A date change that is valid and different regenerates the empty calendar and clears pins; invalid or unchanged dates
+   are a no-op. Votes survive because they are on places. A destination change is a new plan.
 
 ### The Scheduler
 
 ```ts
-export type ScheduleResult = {
-  orderedStops: string[]
-  feasibility: 'green' | 'gold' | 'red'
-  rationale: string | null
-}
-
-/**
- * Heuristic scheduler. Clusters cards by geographic area per day, orders by best period and
- * opening hours, then nearest-neighbour within each cluster.
- *
- * Algorithm:
- * 1. Group the day's voted-in cards by cluster (geographic area)
- * 2. For each cluster, sort by bestPeriod (morning/afternoon/evening) then opening time
- * 3. Within each cluster, nearest-neighbour ordering by transit minutes
- * 4. Assign to morning/afternoon/evening slots
- * 5. Return ordered slots with feasibility state
- */
-export const scheduleDay = (
-  day: Day,
-  votedCards: Place[],
-  travelMatrix: TravelMatrix,
-  pinned: string[]
-): ScheduleResult => { ... }
-
 /**
  * Schedule all days in a trip. Pure, never mutates its input. Skips pinned cards: they stay
- * where the owner put them.
+ * where the owner put them. Fills cross-cluster shortfall from the ranked pool before route
+ * ordering. Returns Day objects with feasibility attached.
  */
-export const scheduleTrip = (trip: Trip): ScheduleResult[] => { ... }
+export const scheduleTrip = (trip: Trip): Day[] => { ... }
+
+export const scheduleOrder = (stops: Place[]): string[] => { ... }
 ```
 
-In prose, four steps:
+In prose, five steps:
 
-1. **Voted-in cards are the pool.** Only cards that the tally has returned as viable (non-zero votes, or owner-endorsed)
-   enter the scheduler. Zero-vote cards are eliminated and do not appear in any day
-2. **Cluster by area per day.** The scheduler groups cards by their `cluster` field -- Asakusa and Ueno together,
-   Shibuya and Harajuku together, and so on. Each day gets one or two clusters, never fragments from four clusters
-3. **Order by best period and opening hours.** Within a cluster, cards are sorted: morning slots get the
-   earliest-opening cards that declare `bestPeriod: ['morning']`, then afternoon, then evening. If a card is closed on
-   that weekday, it is moved to the next day's pool
-4. **Nearest neighbour within the day.** Transit minutes between consecutive stops are read from the travel matrix. The
-   order that minimises total travel time per day wins. This is not a full TSP solve -- it is a greedy walk from the
-   first stop
+1. **Voted-In Pool.** Only cards at or above the rounded 50 percent threshold and not eliminated enter the unpinned
+   pool. Zero-vote cards are excluded from it; pinned cards are the exception, sitting in their slots regardless of
+   tally.
+2. **Strongest Cluster Per Day.** Each day takes the cluster with the most candidates open on that weekday -- a count of
+   open cards, not an aggregate rank -- preferring a cluster not yet taken, with the deterministic existing order
+   breaking ties. Once every cluster has been taken it may be reused.
+3. **Ranked Subset Before Ordering.** The day keeps only as many of the cluster's cards as it has open slots, taken in
+   pool rank order, and any shortfall is filled with the highest-ranked candidates from other clusters that are open
+   that weekday -- all before any route ordering.
+4. **Period Match, Then Nearest.** For each open slot the scheduler prefers a card whose `bestPeriod` matches the slot's
+   period, falling back to all of the day's selected cards when none match. With a previous stop it picks the nearest
+   candidate; without one, the earliest opener. This is not a full TSP solve.
+5. **Feasibility From `Day.startMin`.** A stop closed that weekday, reached outside its hours, or a day that ends after
+   21:00 turns red. Gold compares the day's actual transit against `scheduleOrder(stops)`, which seeds on the earliest
+   best-period rank and opening time then walks nearest neighbour -- a deterministic baseline, not a global optimum --
+   and applies only when that transit is positive and the actual exceeds 1.25 times it.
 
-**Pinned cards override the scheduler.** The owner can pin any card to a specific day and slot. The scheduler detects
-`pinned` by id and never moves that card. The day is scheduled around pinned cards, filling remaining slots from the
-remaining pool.
+**Pinned Cards Override.** The owner can pin any card to a specific day and slot. The authority is the slot itself --
+`slot.pinned` with a non-null `slot.placeId` -- not a lookup in `trip.pins`, and the scheduler never moves that card.
+The day is scheduled around pinned cards, filling remaining slots from the remaining pool. A pinned card closed on that
+weekday stays pinned and the day warns through feasibility.
+
+### Plan Capacity
+
+```ts
+export const maxTripDays = (trip: Trip): number => Math.floor(Object.keys(trip.options).length / 3)
+
+export const planCapacity = (
+  trip: Trip
+): { maxDays: number; availablePlaces: number; requiredPlaces: number; canFill: boolean } => { ... }
+
+export const withDates = (trip: Trip, startDate: string, nights: number): Trip => { ... }
+export const withDayStart = (trip: Trip, dayIndex: number, startMin: number): Trip => { ... }
+export const withOptimizedPlan = (trip: Trip): Trip => { ... }
+```
+
+**Content Ceiling.** `maxTripDays` is `floor(options / 3)`. With 24 options the fixture allows up to 8 days. It is a
+content ceiling, not a tally or hours check.
+
+**Date And Start Updates.** The provider delegates `setDates` to `withDates`, `setDayStart` to `withDayStart` and
+`apply` to `withOptimizedPlan`. `withDates` requires a real `YYYY-MM-DD` start date, integer `nights >= 0` and
+`nights + 1 <= maxTripDays`; invalid input or unchanged dates return the original `Trip` reference.
+
+Changed dates rebuild the calendar as UTC days with `startMin` 540, clear the pins, rebuild a single leg, and keep votes
+and manual notes.
+
+`withDayStart` matches on `Day.index`, not the array position, and takes an integer `0..1439`; a missing day, an invalid
+value or the same value returns the original trip. A successful change recomputes that day's feasibility and leaves the
+other day references untouched.
+
+`availablePlaces` counts distinct voted-in ids plus known ids in actual pinned slots. `requiredPlaces` sums
+`day.slots.length` across all days, including empty slots and extra slots.
+
+`planCapacity` scans occupied pinned slots for known options with `Object.hasOwn` before running the scheduler, and
+ignores stale `trip.pins` entries. `canFill` additionally requires nonempty days, a positive required count, and a
+schedule where every requested slot is filled with a distinct id known to `trip.options`; a closed but known pinned
+place can still yield `canFill: true` while its day warns red. Duplicate placed ids make `canFill` false.
+
+This is not an hours-feasibility guarantee, a general malformed-input boundary or a global solver.
+
+`withOptimizedPlan` writes scheduled days only when `planCapacity` reports `canFill`; on success it schedules twice --
+once inside `planCapacity` and once to write the days -- and on failure it returns the original `Trip` reference. The
+visible controls for these contracts are pending under #311, #313 and #317.
 
 ### Feasibility
 
 ```ts
 /**
  * Feasibility per day. Three status values:
- * - 'green': every stop fits its hours and the day's travel + dwell fits 09:00 to 21:00
- * - 'gold': fits but the order is more than 25% slower than the scheduler's optimal order
- * - 'red': a stop is outside its hours or the day overruns 21:00
+ * - 'green': every stop fits its hours and the day ends by 21:00
+ * - 'gold': fits but transit is more than 25% above the heuristic's own order for the same stops
+ * - 'red': a stop is closed that weekday, outside its hours, or the day overruns 21:00
  */
 export type DayFeasibility = {
   status: 'green' | 'gold' | 'red'
+  /** Why a red day is red: closed, hours, or overrun. */
+  reason: 'closed' | 'hours' | 'overrun' | null
   transitMin: number
   dwellMin: number
   daySpanMin: number
+  /** Minutes after midnight when the last stop is left. */
+  endMin: number
   stopsOutsideHours: string[]
   rationale: string
 }
 
 export const evaluateDay = (
   day: Day,
-  travelMatrix: TravelMatrix
-): DayFeasibility => { ... }
+  options: Record<string, Place>
+): DayFeasibility | null => { ... }
 ```
 
 | State | Means                                                                       | Rendered As                  |
 | ----- | --------------------------------------------------------------------------- | ---------------------------- |
-| Green | Every stop fits its hours. Travel plus dwell fits 09:00 to 21:00            | Green tint on the day header |
-| Gold  | Fits, but the order is more than 25 percent slower than the scheduler's own | Gold tint, slower badge      |
-| Red   | A stop is outside its hours, or the day overruns 21:00                      | Red tint, what-went-wrong    |
+| Green | Every stop fits its hours. The day ends by 21:00.                           | Green tint on the day header |
+| Gold  | Fits, but transit is more than 25 percent above the heuristic's own order   | Gold tint, slower badge      |
+| Red   | A stop is closed that weekday, outside its hours, or the day overruns 21:00 | Red tint, what-went-wrong    |
+
+**Null And Green.** `evaluateDay` returns null for a day with no stops, which renders as the blank state. Green
+certifies only the stops that are placed: a day with empty slots can still be green, so green is not a guarantee the day
+is filled.
+
+**Two Golds.** The gold day state is not the gold unanimous border in the tally: one marks a day that fits but runs
+slow, the other a tally row every member backed.
 
 **`gold` is new for this rebuild**, matching the Black-naped Oriole token `--gold`. It means the owner has re-ordered
 the day by dragging and the day is viable but noticeably suboptimal. The gold tint communicates this without requiring a
@@ -505,17 +589,21 @@ the day by dragging and the day is viable but noticeably suboptimal. The gold ti
 export type TallyEntry = {
   placeId: string
   name: string
+  /** Displayed as a rounded integer. */
   percentage: number
-  /** True when every voter picked this place */
+  /** True when every member, owner included, said yes or must. */
   unanimous: boolean
-  /** True when no voter picked this place, weighted yes is zero */
+  /** True when the weighted yes score is zero. */
   eliminated: boolean
+  /** Members who marked this place Must Go. */
+  mustBy: string[]
 }
 
 /**
- * Compute the tally from votes. The owner's vote carries 1.5 weight.
+ * Compute the tally from votes. The owner's yes or must carries 1.5 weight.
+ * A must is a yes for the percentage and adds a 0.5 rank bonus to the score.
  * Returns entries sorted by weighted score descending, ties broken by fixture order.
- * Places at or above 50 percent are the ranked voted-in list.
+ * Places at or above the rounded 50 percent threshold and not eliminated are the ranked voted-in list.
  */
 export const computeTally = (
   votes: Votes,
@@ -525,28 +613,35 @@ export const computeTally = (
 ): TallyEntry[] => { ... }
 ```
 
-**Percentage per place** is weighted yes over total possible weight. Each member's yes is 1, the owner's yes is 1.5.
-With four people (one owner), the total possible weight is 4.5 and the owner alone is 33 percent. Unanimous means every
-member said yes. Eliminated means weighted yes is zero. The ranked voted-in list is places at or above 50 percent,
-weighted score descending, ties broken by fixture order.
+**Percentage Per Place.** Weighted yes over total possible weight. Each member's yes or must is 1, the owner's is 1.5.
+`no`, `skip` and unanswered answers keep the full party in the denominator, so partial results are legitimate: a member
+with an incomplete deck can still have a valid Must Go. The percentage is rounded for display.
 
-| Condition         | Effect                                                                   |
-| ----------------- | ------------------------------------------------------------------------ |
-| Unanimous (all)   | Marked gold. Always appears in the scheduler pool                        |
-| Eliminated (zero) | Greyed, eliminated. The scheduler never considers them                   |
-| Owner 1.5 weight  | The owner's vote counts 1.5, giving the owner 33 percent of total weight |
-| Owner pinned      | Not in the tally. Pins are a Desk operation, not a voting mechanic       |
+With four people (one owner), the total possible weight is 4.5 and the owner alone is 33 percent; the share changes with
+party size. Unanimous means every member said yes or must. Eliminated means weighted yes is zero. The ranked voted-in
+list is places at or above the rounded 50 percent threshold and not eliminated, weighted score descending, ties broken
+by fixture order.
 
-**The tally is the only input to the scheduler.** Cards with zero votes across the group and the owner never reach the
-calendar. Cards with low percentages stay in the sidebar for the Perch drawer.
+| Condition         | Effect                                                                                    |
+| ----------------- | ----------------------------------------------------------------------------------------- |
+| Unanimous (All)   | Marked gold. Still does not guarantee a calendar place when capacity is limited           |
+| Eliminated (Zero) | Greyed, eliminated. The scheduler never considers them unless the owner pins one          |
+| Must Go Bonus     | Adds 0.5 to the ordering score, not the percentage. Each member holds one at a time       |
+| Owner 1.5 Weight  | The owner's yes or must counts 1.5, giving 33 percent in the four-person seed (1.5 / 4.5) |
+| Owner Pinned      | Not in the tally. Pins are a Desk operation and can bypass the tally threshold            |
+
+**Primary Input, Pins Excepted.** Within `scheduleTrip`, pinned slots survive regardless of tally; zero-vote cards never
+enter its unpinned pool. The Perch drawer draws from `waitingPlaces`, which is voted-in cards not yet placed anywhere on
+the trip; cards below the threshold are not offered.
 
 ### Owner Priority And Pins
 
 Two mechanisms give the owner control without making the group's input decorative.
 
-1. **Owner vote weight 1.5.** The owner's swipe counts 50 percent more than a regular vote. This means the owner can
-   carry a place into the scheduling pool against group indifference, but cannot override a clear group preference (3
-   regular votes = 3.0 vs 1 owner vote = 1.5)
+1. **Owner Vote Weight 1.5.** The owner's swipe counts 50 percent more than a regular vote: 1.5 of 4.5, or 33 percent,
+   in the four-person seed. That is below the 50 percent threshold, so the owner cannot carry a place into the
+   scheduling pool alone, and cannot override a clear group preference (3 regular votes = 3.0 vs 1 owner vote = 1.5). A
+   pin, not the vote, is what bypasses the tally
 2. **Owner pins a card to a day and slot.** Once pinned, the scheduler never moves it. Pin is a Desk operation: the
    owner drags a card onto the calendar and pins it. Pinned cards carry a pin indicator in the calendar grid
 
@@ -567,12 +662,13 @@ drawer.
 ### The Perch Drawer
 
 When the owner removes a card from a slot, the Perch drawer opens from that slot offering the next-ranked voted-in card
-not already placed that day.
+that is open on the weekday, fits the slot's period and is not already placed anywhere on the trip -- the exclusion
+spans every day, plus the stops of a hypothetical day passed in for checking.
 
 ```ts
 /**
  * Find the next best replacement for a slot. Draws from voted-in cards that are not already
- * placed on this day, ranked by tally percentage.
+ * placed anywhere on the trip, open on this weekday, and matching this period, in tally rank order.
  */
 export const nextReplacement = (
   slot: Slot,
@@ -590,7 +686,7 @@ export const nextReplacement = (
 | Day has fewer than 2 stops after | Drawer refuses to close: the day needs at least two stops        |
 
 **The Perch drawer is the same mechanism for all slots.** It is not a separate "pick a replacement" screen -- it is the
-same `PerchDrawer.tsx` component mounted over the calendar slot. The drawer shows the replacement card and its tally
+same `Perch.tsx` component mounted over the calendar slot. The drawer shows the replacement card and its tally
 percentage. The owner can accept or cycle to the next option.
 
 **The two-stop floor is enforced at the Perch drawer level.** Removing a card that would bring a day below two stops is
@@ -601,22 +697,58 @@ rejected; the drawer offers the next-ranked voted-in card from the tally.
 **One context, one `useState`, one operation per write.** `state.tsx` is the only place a `Trip` is written, and every
 write is a whole-object replacement. The list grew through the release cycle; this table is the contract.
 
-| Operation          | Writes                                                                                  |
-| ------------------ | --------------------------------------------------------------------------------------- |
-| `swipe`            | A member's yes, no or Must Go for a place. A second Must Go demotes the first to yes    |
-| `setCurrentMember` | Who this browser votes as, any party member. The owner by default                       |
-| `renameMember`     | A new name on the same id, so the votes stay                                            |
-| `addMember`        | A new member with a fresh id and no votes. Refused past six                             |
-| `removeMember`     | Drops the member and their votes. The owner cannot be removed                           |
-| `place`            | Puts a place into a day and slot, taking it out of any slot it held                     |
-| `remove`           | Empties a day and slot                                                                  |
-| `apply`            | Runs the scheduler over every day around the pins                                       |
-| `pin` / `unpin`    | Fixes a card to a day and slot, or frees it. The scheduler never moves a pinned card    |
-| `tick`             | Toggles a checklist item                                                                |
-| `setDates`         | New start and nights regenerate the days and drop the pins; unchanged dates are a no-op |
-| `addSlot`          | Opens a second slot in a period of a day. Two per period, six per day                   |
-| `removeSlot`       | Closes a period's empty second slot. The first slot of a period never goes              |
-| `restart`          | Clears the storage key and reloads the seed                                             |
+| Operation          | Writes                                                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `swipe`            | A member's yes, no, Skip or Must Go for a place. A second Must Go demotes the first to yes                                      |
+| `setCurrentMember` | Only switches which member this browser votes as; the load-time backfill to the owner is a separate step                        |
+| `endVoting`        | Owner acting as the current member: fills null or missing answers with `skip`, freezing votes and member add/remove             |
+| `renameMember`     | A new name on the same id, so the votes stay; allowed while voting is open or closed                                            |
+| `addMember`        | A new member with a fresh id and no votes. Refused past six and once voting is closed                                           |
+| `removeMember`     | Drops the member and their votes. Refused for the owner and once closed; removing the active member restores the owner identity |
+| `place`            | Puts a place into a day and slot, taking it out of any slot it held                                                             |
+| `remove`           | Empties a day and slot                                                                                                          |
+| `apply`            | Writes scheduled days only when `planCapacity` can fill; otherwise preserves the existing plan                                  |
+| `pin` / `unpin`    | Fixes a card to a day and slot, or frees it. The scheduler never moves a pinned card                                            |
+| `tick`             | Toggles a checklist item                                                                                                        |
+| `setDates`         | New start and nights regenerate the days and clear pins; unchanged or invalid dates are a no-op                                 |
+| `setDayStart`      | Sets when a day starts, a valid integer 0..1439, and recomputes that day's feasibility only                                     |
+| `addSlot`          | Opens a second slot in a period of a day. Two per period, six per day; raises required capacity                                 |
+| `removeSlot`       | Closes a period's second slot, only while empty. The first slot of a period never goes                                          |
+| `addManualNote`    | Adds a personal note to `takeCare` or `packing`, 1..1000 chars, no duplicate ids in the section                                 |
+| `removeManualNote` | Removes a personal note by id                                                                                                   |
+| `restart`          | Clears the storage key, reloads the seed and runs the voting-deadline check on it                                               |
+
+### Voting Session
+
+```ts
+export const votingDeadline = (trip: Trip): Date | null => { ... }
+export const finalizeVotingIfDue = (trip: Trip, now: Date = new Date()): Trip => { ... }
+export const closeVoting = (trip: Trip, actorId: string, now: Date = new Date()): Trip => { ... }
+export const castVote = (
+  trip: Trip,
+  memberId: string,
+  placeId: string,
+  answer: boolean | 'must' | 'skip',
+  now: Date = new Date()
+): Trip => { ... }
+```
+
+**Deadline.** `votingClosedAt` is `null` while voting is open and an ISO timestamp once closed. `votingDeadline`
+validates `startDate` as a real ISO date and returns midnight Asia/Tokyo on the calendar day before it: a start of
+2026-11-20 yields `2026-11-18T15:00:00Z`, which is 19 November 00:00 in Tokyo. There is no real authentication; a manual
+`closeVoting` acts only when the actor is both the owner and the current member.
+
+**Evaluation.** The deadline is checked on initial load and restart, on mount, on a 60 second interval, on `window`
+focus, and inside `castVote` as an expiry catch-up that may close the round first. There is no background server and no
+cross-device sync. Changing the dates does not immediately rerun the expiry effect.
+
+**Closure.** The first closure fills only null or missing answers on known member and place pairs with `skip`, records
+the timestamp, and freezes voting plus member add and remove. Rename and manual notes are not frozen, and closure does
+not touch pins or the schedule. Idempotent means an already-closed trip returns the same object; it does not fill votes
+that became missing later.
+
+`castVote` validates a known place, a known member and the current identity before writing. The controls are pending
+under #307, #308 and #309.
 
 ### Trip States
 
@@ -632,11 +764,13 @@ what personal completion does and does not mean.
 | **Planned**       | Every day has feasibility, and no vote or member changed since Apply | Open The Desk, Before We Go, The Book                                           |
 | **Needs review**  | Days are planned, and a vote or member changed after the last Apply  | Open The Desk with a _votes changed since the days were planned_ line           |
 
-**Planning is allowed while the group is still voting.** The Tally is provisional until everyone has answered: an
-unanswered member still counts in the total weight, so their answers can move percentages and change who qualifies. The
-helper on the Tally says so in one sentence, and the Desk rebuilds the days on the next Apply. Editing the trip through
-onboarding is _Edit Trip_, not _New Plan_: the prototype holds one trip, and the calendar survives an edit that leaves
-the dates alone.
+**Planning During Voting.** The Tally is provisional until the round closes: an unanswered member still counts in the
+total weight, so open-session answers can move percentages and change who qualifies, and closing fills what is missing
+with `skip`. The Desk rebuilds the days only on the next Apply, which is itself a no-op when `planCapacity` cannot fill
+every slot.
+
+Editing the trip through onboarding is _Edit Trip_, not _New Plan_: the prototype holds one trip, and the calendar
+survives an edit that leaves the dates alone.
 
 **One `useEffect` mirrors the trip to `localStorage` on every change**, including the first render, so a cold visit
 writes the seed immediately and the surfaces share one object from the first paint.
@@ -646,45 +780,36 @@ writes the seed immediately and the surfaces share one object from the first pai
 ```ts
 const KEY = 'perch.trip.v1'
 
-/** A cold load with nothing stored is the normal case, not an error. */
-export const load = (): Trip => {
-  try {
-    const raw = localStorage.getItem(KEY)
-    if (!raw) return seed
-    const parsed = JSON.parse(raw) as Trip
-    return parsed.id === seed.id ? parsed : seed
-  } catch {
-    return seed
-  }
-}
-
-export const save = (trip: Trip): void => {
-  try {
-    localStorage.setItem(KEY, JSON.stringify(trip))
-  } catch {
-    /* A demo machine with storage disabled still runs. */
-  }
-}
-
-export const reset = (): void => {
-  try {
-    localStorage.removeItem(KEY)
-  } catch {
-    /* nothing to do */
-  }
-}
+export const load = (): Trip => { ... }
+export const save = (trip: Trip): void => { ... }
+export const reset = (): void => { ... }
 ```
 
-Four properties, and each is a decision rather than an accident.
+**Load Path.** `load` validates the stored object with the shallow `isTrip` predicate, not a full schema check. A
+mismatched `id`, or a throw during read, parse or evaluation, falls back to the seed; a cold load returns the seed
+fixture as authored, before the provider runs its expiry check.
 
-- **One key, and the whole `Trip` is the value.** Not a delta against the fixture. One key means one thing to clear, and
-  a demo that has to be repeatable needs exactly that
-- **A stored trip whose `id` does not match the seed's is discarded.** That is the version check: change the fixture's
-  id and every stored copy in the room is stale
-- **Every read and write is wrapped.** `localStorage` throws in some privacy modes, so a storage failure degrades to
-  forgetting between reloads rather than blanking a screen
-- **A cold load renders the fixture as authored.** The friends' swipes are already in, the calendar is empty until
-  Apply, and there is no onboarding wall on any route
+**Migrations.** `currentMemberId` is backfilled to `ownerId` only when nullish. A missing or invalid `Day.startMin`
+becomes 540 and feasibility is recomputed; a valid `startMin` keeps the stored feasibility, or null when none was
+stored. `manualNotes` is checked only for the two arrays of `{ id: string, text: string }` -- there is no max-length or
+duplicate validation on load -- and a malformed shape resets both sections to empty.
+
+| Migration                         | Source Shape                  | Result                                     |
+| --------------------------------- | ----------------------------- | ------------------------------------------ |
+| Missing `currentMemberId`         | Stored before member switcher | Defaults to `ownerId`                      |
+| Missing `votingClosedAt`          | Stored before voting closure  | Defaults to `null` (open)                  |
+| Missing or invalid `Day.startMin` | Stored before day start times | Resets to 540, recomputes feasibility      |
+| Valid `Day.startMin`              | Stored with day start times   | Kept; stored feasibility retained, or null |
+| Malformed `manualNotes`           | Stored before manual notes    | `{ takeCare: [], packing: [] }`            |
+
+Three properties, and each is a decision rather than an accident.
+
+- **One Storage Key.** The whole `Trip` is the value. Not a delta against the fixture. One key means one thing to clear,
+  and a demo that has to be repeatable needs exactly that
+- **Fixture Identity.** A stored trip whose `id` does not match the seed's is discarded. That is the version check:
+  change the fixture's id and every stored copy in the room is stale
+- **Storage Failures.** Every read and write is wrapped. `localStorage` throws in some privacy modes, so a storage
+  failure degrades to forgetting between reloads rather than blanking a screen
 
 ## The Shared Link With No Backend
 
@@ -893,16 +1018,39 @@ Six items derived from a Tokyo trip in November. All must be ticked to enable Pr
 
 ### Handbook Fixture
 
-`data/handbook.ts` holds every line the Handbook can say, and `handbookFor(trip)` returns only the lines the trip earns:
-Take Care entries whose `derivedFrom` is a fact of the trip, news rows dated inside the trip, and packing entries whose
-derivation is the destination, a place kind on the calendar or a news trigger such as `weather:rain`. Every entry
-carries a `source`; the weather rows are climate normals from the Japan Meteorological Agency and say so in their text,
-because a forecast for a date fourteen months out is not a forecast.
+`data/handbook.ts` holds every line the Handbook can say, and imports the `HandbookEntry` and `NewsItem` types from
+`data/types.ts`. `handbookFor(trip)` returns only the lines the trip earns: Take Care entries whose `derivedFrom` is a
+fact of the trip, news rows dated inside the trip, and packing entries whose derivation is the destination, a place kind
+on the calendar or a news trigger such as `weather:rain`.
+
+```ts
+export type HandbookEntry = {
+  id: string
+  title: string
+  text: string
+  derivedFrom: string
+  source: string
+}
+
+export type Handbook = {
+  takeCare: HandbookEntry[]
+  news: NewsItem[]
+  packing: HandbookEntry[]
+}
+```
+
+**Authored Normals, Not A Forecast.** The news rows are authored fixture data for this November 2026 trip: the weather
+lines are climate normals attributed in the fixture to the Japan Meteorological Agency, while the sunset, autumn colour
+and 23 November holiday rows carry their own named sources. The attributions are recorded as authored, not re-verified
+here.
+
+`factsOf` adds every non-null `NEWS.triggers` value regardless of the trip's dates, so packing derivations are not fully
+date-scoped even though the displayed news rows are.
 
 | Section   | Entries | Derived From                                                                        |
 | --------- | ------- | ----------------------------------------------------------------------------------- |
 | Take Care | 9       | `destination:japan`, `kind:shrine`, `kind:temple`, `kind:museum`, `tag:street-food` |
-| News      | 5       | The trip's dates: weather normals, sunset, autumn colour, the 23 November holiday   |
+| News      | 5       | The trip's dates: climate normals, sunset, autumn colour, the 23 November holiday   |
 | Packing   | 7       | `destination:japan`, `kind:temple`, `weather:rain`, `weather:cool`                  |
 
 ### The Prototype Controls
@@ -912,17 +1060,20 @@ the product.** One button: `Start Over` clears the storage key and reloads the s
 
 ## Known Limitations
 
-Each of these is true of the prototype specification. None of them blocks the 13 September submission; all of them are
-the build phase's opening backlog.
+Each of these is true of the prototype today. None of them blocks the 13 September submission; most are the build
+phase's opening backlog, and the pending-control rows are prototype integration work still in flight.
 
-| Limitation                                    | What Is Actually Wrong                                                                                                                 |
-| --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
-| **Transit minutes are estimates**             | The travel matrix is hand-authored from Google Maps transit estimates, not a routed result, and can be wrong by ten minutes either way |
-| **`/t/:tripId` is never read**                | `useParams` is not called, so `/t/anything` renders the stored trip. There is one trip, so nothing is wrong on screen                  |
-| **Votes are fixture data**                    | Farah, Hana and Iman have already swiped. No live voting crosses devices. The tally shows percentages nobody voted for                 |
-| **Reels are static files**                    | The manifest is committed. No CMS, no upload UI, no creator workflow                                                                   |
-| **No backend, no persistence across devices** | The storage key is per browser. A second phone opening the link gets the seed, not Aisyah's trip                                       |
-| **Checklist is fixture-derived**              | Items are hardcoded from the trip fixture, not inferred from the trip's actual content                                                 |
+| Limitation                                      | What Is Actually Wrong                                                                                                                        |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Transit Minutes Are Estimates**               | The travel matrix is hand-authored from Google Maps transit estimates, not a routed result, and can be wrong by ten minutes either way        |
+| **`/t/:tripId` Is Never Read**                  | `useParams` is not called, so `/t/anything` renders the stored trip. There is one trip, so nothing is wrong on screen                         |
+| **Votes Are Fixture Data**                      | Farah, Hana and Iman have already swiped, and Farah's deck is partial. No live voting crosses devices; the fixture votes are editable locally |
+| **Reels Are Static Files**                      | The manifest is committed. No CMS, no upload UI, no creator workflow                                                                          |
+| **No Backend, No Cross-Device Persistence**     | The storage key is per browser. A second phone opening the link gets the seed, not Aisyah's trip                                              |
+| **Checklist Is Fixture-Derived**                | Items are hardcoded from the trip fixture, not inferred from the trip's actual content                                                        |
+| **Manual, Capacity And Start Controls Pending** | The data contracts are in code; the requested UI controls are still being integrated under #305–#344, alongside the existing Deck controls    |
+| **Voting Expiry Is Client-Side Only**           | The deadline is checked only while the browser is open. There is no server, no cross-device sync and no real authentication                   |
+| **Plan Capacity Failure Is Unexplained In UI**  | `apply` preserves the existing plan when the scheduler cannot fill every slot; the UI that explains this is pending                           |
 
 ## Specified, Not Yet Built
 
