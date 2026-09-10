@@ -1,5 +1,5 @@
 import { trip as seed } from '../data/trip'
-import type { Trip } from '../data/types'
+import type { ManualNote, ManualSection, Trip } from '../data/types'
 
 const KEY = 'perch.trip.v1'
 
@@ -7,6 +7,24 @@ const KEY = 'perch.trip.v1'
  * Storage is a boundary, so what comes back over it is validated rather than cast. A stored trip from an older shape
  * fails this and the seed is used, which is the same path as a first visit.
  */
+
+const isManualNote = (value: unknown): value is ManualNote => {
+  if (typeof value !== 'object' || value === null) return false
+  const n = value as Partial<ManualNote>
+  return typeof n.id === 'string' && typeof n.text === 'string'
+}
+
+const isManualNotes = (value: unknown): value is Record<ManualSection, ManualNote[]> => {
+  if (typeof value !== 'object' || value === null) return false
+  const m = value as Partial<Record<ManualSection, ManualNote[]>>
+  return (
+    Array.isArray(m.takeCare) &&
+    Array.isArray(m.packing) &&
+    m.takeCare.every(isManualNote) &&
+    m.packing.every(isManualNote)
+  )
+}
+
 const isTrip = (value: unknown): value is Trip => {
   if (typeof value !== 'object' || value === null) return false
   const t = value as Partial<Trip>
@@ -39,7 +57,8 @@ export const load = (): Trip => {
     return {
       ...parsed,
       currentMemberId: parsed.currentMemberId ?? parsed.ownerId,
-      votingClosedAt: parsed.votingClosedAt ?? null
+      votingClosedAt: parsed.votingClosedAt ?? null,
+      manualNotes: isManualNotes(parsed.manualNotes) ? parsed.manualNotes : { takeCare: [], packing: [] }
     }
   } catch {
     return seed

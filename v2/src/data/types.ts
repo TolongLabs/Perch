@@ -123,6 +123,7 @@ export type ChecklistItem = {
  */
 export type HandbookEntry = {
   id: string
+  title: string
   text: string
   derivedFrom: string
   source: string
@@ -144,6 +145,13 @@ export type Handbook = {
   packing: HandbookEntry[]
 }
 
+export type ManualSection = 'takeCare' | 'packing'
+
+export type ManualNote = {
+  id: string
+  text: string
+}
+
 export type Trip = {
   id: string
   destination: string
@@ -163,6 +171,7 @@ export type Trip = {
   votes: Votes
   pins: Pin[]
   checklist: ChecklistItem[]
+  manualNotes: Record<ManualSection, ManualNote[]>
 }
 
 /** travelMatrix[fromId][toId] is transit minutes. Symmetric, zero diagonal, no empty cell. */

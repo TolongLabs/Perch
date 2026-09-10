@@ -1,5 +1,6 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import type { Day, Period, Person, Slot, Trip } from './data/types'
+import type { Day, ManualSection, Period, Person, Slot, Trip } from './data/types'
+import { withManualNote, withoutManualNote } from './lib/manualNotes'
 import { scheduleTrip, withFeasibility } from './lib/schedule'
 import { load, reset, save } from './lib/store'
 import { castVote, closeVoting, finalizeVotingIfDue } from './lib/votingSession'
@@ -34,6 +35,10 @@ type Ctx = {
   /** Closes a period's second slot, only while it is empty. The first slot of a period never goes. */
   removeSlot: (dayIndex: number, slotId: string) => void
   restart: () => void
+  /** Adds a personal note to a handbook section. */
+  addManualNote: (section: ManualSection, text: string) => void
+  /** Removes a personal note by id. */
+  removeManualNote: (section: ManualSection, id: string) => void
 }
 
 const TripContext = createContext<Ctx | null>(null)
@@ -271,6 +276,15 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     setTrip(finalizeVotingIfDue(load()))
   }, [])
 
+  const addManualNote = useCallback((section: ManualSection, text: string) => {
+    const id = window.crypto.randomUUID()
+    setTrip((current) => withManualNote(current, section, text, id))
+  }, [])
+
+  const removeManualNote = useCallback((section: ManualSection, id: string) => {
+    setTrip((current) => withoutManualNote(current, section, id))
+  }, [])
+
   const value = useMemo(
     () => ({
       trip,
@@ -289,6 +303,8 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
       setDates,
       addSlot,
       removeSlot,
+      addManualNote,
+      removeManualNote,
       restart
     }),
     [
@@ -308,6 +324,8 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
       setDates,
       addSlot,
       removeSlot,
+      addManualNote,
+      removeManualNote,
       restart
     ]
   )
