@@ -86,19 +86,19 @@ export const BeforeWeGo = () => {
 
       <div className="bwg-foot">
         <button type="button" className="bwg-print t-label" disabled={!ready} onClick={() => navigate(`/t/${trip.id}`)}>
-          Print The Book
+          Open The Book
         </button>
         {/* The second thing the checklist unlocks, and an outline one: `DESIGN.md` allows a screen one solid button
-            and Print The Book is it. */}
+            and Open The Book is it. */}
         <button
           type="button"
           className="bwg-handbook t-label"
           disabled={!ready}
           onClick={() => navigate(`/t/${trip.id}/handbook`)}
         >
-          The Handbook
+          The Manual
         </button>
-        {!ready && <p className="t-specimen">Tick every item to print the book and open the handbook.</p>}
+        {!ready && <p className="t-specimen">Tick every item to open the book and the manual.</p>}
       </div>
 
       <button type="button" className="bwg-back t-label" onClick={() => navigate('/desk')}>
