@@ -755,9 +755,9 @@ export async function recordDemo(options = {}) {
       await click(row.locator('.check-label'), 500)
     }
 
-    const handbookButton = page.getByRole('button', { name: exactText('The Handbook') })
-    await must(handbookButton, 'shot 9 Handbook button')
-    await click(handbookButton, 600)
+    const manualButton = page.getByRole('button', { name: exactText('The Manual') })
+    await must(manualButton, 'shot 9 Manual button')
+    await click(manualButton, 600)
     await page.waitForURL(/\/t\/tokyo-nov-2026\/handbook/)
     await must(page.locator('.hb-list .hb-item'), 'shot 9 handbook entries')
     await pause(2_000)
