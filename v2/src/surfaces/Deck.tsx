@@ -1,4 +1,4 @@
-import { ArrowUp, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Heart } from 'lucide-react'
 import { type AnimationEvent, useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Presence } from '../components/Presence'
@@ -36,6 +36,7 @@ const Swiping = ({ me }: { me: string }) => {
   // animation would never restart. The counter is what makes the second answer a new element.
   const [flashId, setFlashId] = useState(0)
   const flashTimer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const committing = useRef(false)
 
   /**
    * The edge glow runs on its own clock rather than on the card's exit. Under reduced motion that exit collapses to
@@ -43,7 +44,9 @@ const Swiping = ({ me }: { me: string }) => {
    * window whether or not it animated getting there.
    */
   const commit = useCallback((s: Swipe) => {
-    setLeaving((current) => current ?? s)
+    if (committing.current) return
+    committing.current = true
+    setLeaving(s)
     setFlash(s)
     setFlashId((n) => n + 1)
     clearTimeout(flashTimer.current)
@@ -57,9 +60,13 @@ const Swiping = ({ me }: { me: string }) => {
   const gone = (e: AnimationEvent<HTMLDivElement>) => {
     if (e.target !== e.currentTarget || !leaving) return
     const place = queue[index]
-    if (place) swipe(me, place.id, leaving === 'must' ? 'must' : leaving === 'keep')
+    if (place) {
+      const answer = leaving === 'must' || leaving === 'skip' ? leaving : leaving === 'keep'
+      swipe(me, place.id, answer)
+    }
     setIndex((i) => i + 1)
     setLeaving(null)
+    committing.current = false
   }
 
   const rest = queue.slice(index, index + VISIBLE)
@@ -96,7 +103,7 @@ const Swiping = ({ me }: { me: string }) => {
     <main className="deck">
       <header className="deck-head">
         <Heading as="h1">The Deck</Heading>
-        <p className="deck-count">
+        <p className="deck-count" aria-live="polite" aria-atomic="true">
           Reel {index + 1} Of {queue.length}
         </p>
       </header>
@@ -113,85 +120,65 @@ const Swiping = ({ me }: { me: string }) => {
           intake 2 saw as barely registering. */}
       <div className="deck-flash" data-flash={flash ?? undefined} aria-hidden="true" />
 
-      {/* The whole Must Go story in one place, above the reel: the direction, the rule, and where the mark went
-          once it is spent. It used to be told twice, here and again in a line under the buttons, and that line
-          was the one a phone's dock covered nine tenths of. One line, not two: the direction is the glyph, the
-          quota is the label, and the button under the reel already says the words "Must Go".
-
-          Spent, the arrow and the label go with the button, because an affordance for something you can no longer
-          do is a control that lies. What is left is the sentence naming the place, which is the question the
-          mechanic actually raises, and it is a sentence rather than a label because it reports rather than
-          instructs. */}
-      <div className="deck-up">
+      <div className="deck-controls" onClickCapture={handlers.onClickCapture}>
         {mustGo ? (
           <p className="deck-up-note">Your Must Go is on {mustGo.name}.</p>
         ) : (
-          <>
+          <button type="button" className="deck-direction" data-side="must" onClick={() => commit('must')}>
             <ArrowUp size={20} strokeWidth={2} aria-hidden="true" />
-            <span className="t-label deck-hint-label">Swipe Up &middot; You Get One</span>
-          </>
-        )}
-      </div>
-
-      <div className="deck-stack">
-        {/* Outside the reel now, in the gutter the stack leaves either side, so nothing sits on the video. The
-            label is what names the direction; the chevron on its own was a glyph the reader had to guess at. */}
-        <span className="deck-hint" data-side="pass" aria-hidden="true">
-          <ChevronLeft size={20} strokeWidth={2} />
-          <span className="t-label deck-hint-label">Pass</span>
-        </span>
-        <span className="deck-hint" data-side="keep" aria-hidden="true">
-          <ChevronRight size={20} strokeWidth={2} />
-          <span className="t-label deck-hint-label">Keep</span>
-        </span>
-
-        {/* The plumage dot is the product's own mark for "this one counts", and it is what carries the moment the
-            team asked heart emoji for. One rises on a Keep, two in gold on a Must Go. */}
-        {(flash === 'keep' || flash === 'must') && (
-          <span className="deck-rise" key={flashId} data-rise={flash} aria-hidden="true">
-            <span className="rise-dot" />
-            {flash === 'must' && <span className="rise-dot" />}
-          </span>
-        )}
-
-        {rest.map((place, depth) => {
-          const top = depth === 0
-          return (
-            <div
-              key={place.id}
-              className="deck-card"
-              data-depth={depth}
-              data-leaving={top && leaving ? leaving : undefined}
-              data-heading={top && dragging ? (heading ?? undefined) : undefined}
-              style={
-                top && dragging
-                  ? {
-                      transform: `translate(${dx}px, ${dy}px) rotate(${dx * 0.03}deg)`,
-                      opacity: 1 - progress * 0.35
-                    }
-                  : undefined
-              }
-              onAnimationEnd={top ? gone : undefined}
-              {...(top ? handlers : {})}
-            >
-              {/* Only the top two decode video. The rest hold their poster frame, so a 24-card deck stays flat. */}
-              <ReelCard place={place} live={depth < 2} />
-            </div>
-          )
-        })}
-      </div>
-
-      <div className="deck-acts">
-        <button type="button" className="deck-pass t-label" onClick={() => commit('pass')}>
-          Pass
-        </button>
-        {!spent && (
-          <button type="button" className="deck-must t-label" onClick={() => commit('must')}>
-            Must Go
+            <span className="t-label deck-hint-label">Must Go One Only</span>
           </button>
         )}
-        <button type="button" className="deck-keep t-label" onClick={() => commit('keep')}>
-          Keep
+
+        <div className="deck-row">
+          <button type="button" className="deck-direction" data-side="pass" onClick={() => commit('pass')}>
+            <ChevronLeft size={20} strokeWidth={2} aria-hidden="true" />
+            <span className="t-label deck-hint-label">Pass</span>
+          </button>
+
+          <div className="deck-stack">
+            {flash === 'must' && (
+              <span className="deck-rise" key={flashId} aria-hidden="true">
+                <Heart className="rise-heart" size={30} strokeWidth={2} />
+              </span>
+            )}
+
+            {rest.map((place, depth) => {
+              const top = depth === 0
+              return (
+                <div
+                  key={place.id}
+                  className="deck-card"
+                  data-depth={depth}
+                  data-leaving={top && leaving ? leaving : undefined}
+                  data-heading={top && dragging ? (heading ?? undefined) : undefined}
+                  style={
+                    top && dragging
+                      ? {
+                          transform: `translate(${dx}px, ${dy}px) rotate(${dx * 0.03}deg)`,
+                          opacity: 1 - progress * 0.35
+                        }
+                      : undefined
+                  }
+                  onAnimationEnd={top ? gone : undefined}
+                  {...(top ? handlers : {})}
+                >
+                  {/* Only the top two decode video. The rest hold their poster frame, so a 24-card deck stays flat. */}
+                  <ReelCard place={place} live={depth < 2} />
+                </div>
+              )
+            })}
+          </div>
+
+          <button type="button" className="deck-direction" data-side="keep" onClick={() => commit('keep')}>
+            <ChevronRight size={20} strokeWidth={2} aria-hidden="true" />
+            <span className="t-label deck-hint-label">Keep</span>
+          </button>
+        </div>
+
+        <button type="button" className="deck-direction" data-side="skip" onClick={() => commit('skip')}>
+          <ArrowDown size={20} strokeWidth={2} aria-hidden="true" />
+          <span className="t-label deck-hint-label">Skip</span>
         </button>
       </div>
     </main>

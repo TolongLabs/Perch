@@ -1,10 +1,7 @@
 /* The Deck runs on The Desk register: paper ground, Quicksand, left aligned, one solid button. */
 
 .deck {
-  /* The gutter either side of the reel that the chevrons and their labels sit in. Wide enough for the longer of
-     the two labels with room off the screen edge, measured, so neither can reach the video. The reel gives up
-     124px of width for it on a phone and gets back the two glyphs that used to sit on top of it. */
-  --deck-gutter: 62px;
+  --deck-control: 44px;
   position: relative;
   /* The glow is a fixed layer at z-index -1, so this has to be the stacking context it sits inside: above the
      shell's paper ground and below everything the page draws. */
@@ -15,8 +12,8 @@
   max-width: 420px;
   margin: 0 auto;
   /* 16 at the top, not 32: the shell already reserves 88px above this for the cluster, and the two together were
-     pushing the three buttons under the dock on a 390x844 phone. What the reader must see without scrolling is the
-     reel and the three answers to it. */
+     pushing the direction controls under the dock on a 390x844 phone. The reel and all four answers must stay visible
+     without scrolling. */
   padding: var(--s3) var(--s5) var(--s7);
 }
 
@@ -36,61 +33,50 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* The reel was bound by the column's width and never by the viewport's height, so the three answers sat at a fixed
-   distance from the top whatever the screen and fell off the bottom of a short one. Bound by both, and the shorter
-   screen shrinks the reel rather than dropping the controls off it.
-
-   165px is the column above and below the reel, measured. The rest of the chrome is conditional and is read from
-   the token that causes it rather than folded into that number: a joiner lands straight on the swipe link and gets
-   no islands, so `.shell` reserves nothing for the cluster, and the same page sits 88px higher than it does for an
-   owner who navigated in. Two routes, two heights, one rule.
-
-   The floor is what has to stay clear underneath, and on a phone that is the dock's own 76px. Below the tablet
-   breakpoint the width still wins, so nothing about the phone moves and `dvh` never resizes the reel as a mobile
-   browser's chrome comes and goes. */
-.deck-stack {
+/* The row is one centred object: 44px controls, equal gaps, then the 9:16 reel. The reel pays when a phone runs out
+   of width, instead of shifting sideways to save one affordance and losing the other beyond the viewport. */
+.deck-row {
   --deck-chrome: 165px;
   --deck-floor: 24px;
+  --deck-reel: min(
+    420px,
+    max(220px, calc((100dvh - var(--deck-chrome) - var(--deck-floor)) * 9 / 16)),
+    calc(100vw - var(--s6) - var(--deck-control) * 2 - var(--s2) * 2)
+  );
   position: relative;
-  isolation: isolate;
-  width: min(100%, max(220px, calc((100dvh - var(--deck-chrome) - var(--deck-floor)) * 9 / 16)));
-  margin-inline: auto;
+  display: grid;
+  grid-template-columns: var(--deck-control) var(--deck-reel) var(--deck-control);
+  align-items: center;
+  gap: var(--s2);
+  width: calc(var(--deck-reel) + var(--deck-control) * 2 + var(--s2) * 2);
 }
 
-.shell[data-islands="true"] .deck-stack {
+.deck-stack {
+  position: relative;
+  isolation: isolate;
+  width: var(--deck-reel);
+}
+
+.shell[data-islands="true"] .deck-row {
   --deck-chrome: calc(165px + var(--cluster-clear));
 }
 
 @media (max-width: 899px) {
-  .deck-stack {
-    --deck-floor: 116px;
+  .deck-row {
+    --deck-floor: var(--dock-clear);
   }
 
-  /* The presence row costs the reel height only here: 32px of discs and the column's own 24px gap. Above the
-     breakpoint the strip hangs in the page beside the column and the reel keeps every pixel it has. Without this
-     the three answers slid 16px under the dock and the surface started scrolling. */
-  .shell[data-islands="true"] .deck-stack {
+  .shell[data-islands="true"] .deck-row {
     --deck-chrome: calc(165px + var(--cluster-clear) + 56px);
-  }
-}
-
-/* The affordances hang outside the column, and above 496px there is page either side to hang them in: the reel
-   keeps every pixel it has today. Below that the viewport runs out, and the reel is what pays, because a chevron
-   half off the screen is worse than a reel 76px narrower. 496 is where the two meet: the column stops growing at
-   420, its padding takes 48, and the gutter needs 62 a side. */
-@media (max-width: 495px) {
-  .deck-stack {
-    margin-inline: calc(var(--deck-gutter) - var(--s5));
   }
 }
 
 .deck-card {
   position: relative;
   z-index: 3;
-  /* Not `pan-y`. That hands every vertical gesture to the browser, so on a phone a swipe up scrolled the page and
-     the Must Go was never delivered: the pointermove events stop arriving the moment the browser claims the axis.
-     The card owns both axes, which is what the placed card on the Desk already does. */
-  touch-action: none;
+  /* One finger belongs to the Deck on both axes; two fingers still belong to the browser. `pan-y` lost upward votes
+     when the browser claimed the axis, while `none` made the card an accessibility dead zone for pinch zoom. */
+  touch-action: pinch-zoom;
   cursor: grab;
   user-select: none;
   /* Its own layer. The stack holds two decoding videos and a still, and the front card's opacity moves on every
@@ -143,6 +129,10 @@
   animation: card-up var(--motion-step) var(--ease-expo) forwards;
 }
 
+.deck-card[data-leaving="skip"] {
+  animation: card-down var(--motion-step) var(--ease-expo) forwards;
+}
+
 @keyframes card-up {
   to {
     transform: translateY(-130%) scale(1.06);
@@ -150,12 +140,16 @@
   }
 }
 
-/* What releasing now would do, and only once releasing would do it: the hook returns no heading below the two
-   thresholds the commit uses, so a hand resting on the card names nothing.
+@keyframes card-down {
+  to {
+    transform: translateY(130%) scale(0.96);
+    opacity: 0;
+  }
+}
 
-   All three, in the colour their own glow answers with, because a preview that shares a colour with another answer
-   is not a directional confirmation. That moves the Must Go outline from `--decided` to `--gold`: its glow was
-   already gold, and green on both it and a Keep meant the two most different answers previewed the same. */
+/* What releasing now would do, and only once releasing would do it: the hook returns no heading below the gesture
+   thresholds, so a hand resting on the card names nothing. Must Go and Keep use their own answer colours; the neutral
+   Pass and Skip remain distinct through the direction of the drag. */
 .deck-card[data-heading] {
   outline: var(--outline) solid var(--state-line);
   outline-offset: calc(var(--outline) * -1);
@@ -170,7 +164,8 @@
   --state-line: var(--decided);
 }
 
-.deck-card[data-heading="pass"] {
+.deck-card[data-heading="pass"],
+.deck-card[data-heading="skip"] {
   --state-line: var(--ink-muted);
 }
 
@@ -181,19 +176,9 @@
   }
 }
 
-.deck-acts {
-  display: flex;
-  gap: var(--s3);
-}
-
-.deck-pass,
-.deck-must,
-.deck-keep,
 .deck-go {
   flex: 1;
   padding: var(--s4) var(--s3);
-  /* Three actions rather than two: at the old padding "Must Go" broke over two lines on a 390px screen while its
-     neighbours held one, which read as the button being too small rather than the label being too long. */
   white-space: nowrap;
   border-radius: var(--r-pill);
   transition:
@@ -202,33 +187,7 @@
     color var(--motion-fade) var(--ease);
 }
 
-/* The border is `--ink-muted`, not ink at 22%. That mix reads 1.54:1 on paper against the 3:1 WCAG 1.4.11 asks of
-   a control's boundary, so the answer given most often was also the one that looked most disabled, sitting beside
-   a green chip and a solid ink pill. The muted ink is the token for "quieter than ink" and clears the bar in both
-   themes without making Pass the loudest thing in the row. */
-.deck-pass {
-  border: var(--outline) solid var(--ink-muted);
-  background: var(--paper);
-}
-
-/* The chip's device rather than a third pill weight: a tint, a rule in the full colour, and ink for the label.
-   The state colour as its own text lands at 3.3:1 on paper, which is the trap DESIGN.md names by hand. */
-.deck-must {
-  border: var(--outline) solid var(--decided);
-  background: color-mix(in oklab, var(--decided) 10%, var(--paper));
-  color: color-mix(in oklab, var(--decided) 30%, var(--ink));
-}
-
-.deck-must:hover {
-  background: color-mix(in oklab, var(--decided) 18%, var(--paper));
-}
-
-.deck-pass:hover {
-  border-color: var(--ink);
-}
-
 /* The screen's one solid button. */
-.deck-keep,
 .deck-go {
   border: var(--outline) solid var(--ink);
   background: var(--ink);
@@ -315,90 +274,74 @@
   padding: var(--s4) var(--s6);
 }
 
-/* The three gestures, and the answer to each */
-
-/* The third affordance, and the same object as the other two: a glyph pointing the way the gesture goes, its label
-   under it, on the page rather than on the video. The gap the column already sets is what separates it from the
-   reel, so it needs no margin of its own. */
-.deck-up {
+/* Four equal, reachable directions around one centred reel. The buttons stay on the page ground rather than over
+   the image, so their ink and focus outline never depend on the photograph behind them. */
+.deck-controls {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--s1);
-  /* Half the column's gap above it and half below: the marker belongs to the reel under it, not to the heading
-     over it, and on a phone every pixel between them is one the buttons need. */
-  margin: calc(var(--s5) * -1) 0 calc(var(--s4) * -1);
-  color: var(--ink-muted);
-  pointer-events: none;
+  gap: var(--s2);
 }
 
-/* Not centred, though it sits under a centred glyph: the flex item shrinks to its content, so one line reads as
-   centred and a wrapped one reads left, which is the alignment `DESIGN.md` allows. */
+.deck-direction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s1);
+  min-width: var(--deck-control);
+  min-height: var(--deck-control);
+  padding: var(--s1);
+  border: 0;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition:
+    background var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease);
+}
+
+.deck-direction:hover {
+  background: color-mix(in oklab, var(--ink) 7%, transparent);
+  color: var(--ink);
+}
+
+.deck-direction[data-side="pass"],
+.deck-direction[data-side="keep"] {
+  width: var(--deck-control);
+  padding-inline: 0;
+}
+
 .deck-up-note {
+  min-height: var(--deck-control);
   margin: 0;
+  display: grid;
+  place-items: center;
   max-width: 34ch;
-}
-
-/* Outside the reel and on the page's own ground, so they take the page's ink rather than the scrim disc they wore
-   when they sat on the video. The label under the chevron rather than beside it: at 390 the gutter is 52px, and a
-   chevron and a label in a row need 60 even before a gap, which would have to come out of the reel. */
-.deck-hint {
-  position: absolute;
-  top: 50%;
-  z-index: 4;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--s1);
-  width: var(--deck-gutter);
-  color: var(--ink-muted);
-  pointer-events: none;
-  transform: translateY(-50%);
 }
 
 .deck-hint-label {
   font-size: 11px;
+  text-transform: none;
 }
 
-/* Shifted 6px in from the gutter's outer edge. Centred in a 62px gutter the labels sat 15px from the screen, and
-   `DESIGN.md` puts the phone margin at 24; this reads 21, with 9px still clear of the video. */
-.deck-hint[data-side="pass"] {
-  left: calc(var(--deck-gutter) * -1 + 6px);
-}
-
-.deck-hint[data-side="keep"] {
-  right: calc(var(--deck-gutter) * -1 + 6px);
-}
-
-/* The mark that rises. `DESIGN.md`'s plumage dot is the field guide's device for "this is the specimen", which is
-   the sentence a Keep makes; two of them in gold is the sentence a Must Go makes. The team asked for a heart, and
-   the product has no emoji register to put one in. */
+/* The filled heart is the one celebratory mark on the Deck. It begins at the reel's foot, then rises through the
+   image; its pale stroke stays legible over every reel while its gold fill ties it to the Must Go edge light. */
 .deck-rise {
   position: absolute;
-  top: 34%;
+  bottom: var(--s2);
   left: 50%;
   z-index: 5;
-  display: flex;
-  gap: var(--s4);
+  line-height: 0;
   pointer-events: none;
   transform: translateX(-50%);
 }
 
-/* A ring as well as the colour, because the dot travels over a photograph and a chip's worth of colour disappears
-   into a brown building. The ring is a fixed light value for the same reason `--reel-ink` is: read from `--paper`
-   it would be the near-black ground in dark and vanish on the two night reels in the set. */
-.rise-dot {
-  width: 16px;
-  height: 16px;
-  border: 2px solid rgb(251 248 242 / 88%);
-  border-radius: var(--r-pill);
-  background: var(--decided);
-  box-shadow: 0 0 18px color-mix(in oklab, var(--decided) 80%, transparent);
-}
-
-.deck-rise[data-rise="must"] .rise-dot {
-  background: var(--gold);
-  box-shadow: 0 0 18px color-mix(in oklab, var(--gold) 80%, transparent);
+.rise-heart {
+  color: rgb(251 248 242 / 88%);
+  fill: var(--gold);
+  filter: drop-shadow(0 0 12px color-mix(in oklab, var(--gold) 80%, transparent));
 }
 
 /* Fixed to the viewport, not to the reel. A 36px halo on the card's own edge is the same size as the card's radius
@@ -406,6 +349,7 @@
    from the screen's edge. Behind everything the page draws and above the shell's ground, which is what -1 inside
    `.deck`'s stacking context buys. */
 .deck-flash {
+  --flash-peak: 1;
   position: fixed;
   /* Past the viewport on every side, because `filter` fades an element's own edge: blurred at inset 0, the glow was
      weakest exactly where it is supposed to be strongest, measured 9 levels darker 40px inboard than at the edge
@@ -422,7 +366,7 @@
 /* Held by the attribute, not by the animation, so the answer is still on screen under reduced motion where the
    animation is suppressed. Only the islands are exempt from that suppression, and these are not islands. */
 .deck-flash[data-flash] {
-  opacity: 1;
+  opacity: var(--flash-peak);
 }
 
 /* The falloff is capped in pixels as well as set as a fraction, so the light has the same weight on any screen: at
@@ -433,6 +377,7 @@
    wall on a paper page, which is what read as heavy; mixed halfway to the plate it is light coming off the edge.
    The ramp is `DESIGN.md`'s five steps toward `--plate`, and this is the middle one. */
 .deck-flash[data-flash="keep"] {
+  --flash-peak: 0.2;
   background: linear-gradient(
     to left,
     color-mix(in oklab, var(--decided) 55%, var(--plate)),
@@ -442,14 +387,25 @@
 
 /* Dull, per the issue: a pass is the answer you give most often and it should not celebrate. */
 .deck-flash[data-flash="pass"] {
+  --flash-peak: 0.82;
   background: linear-gradient(to right, var(--ink-muted), transparent min(52%, 400px));
-  opacity: 0.82;
+}
+
+.deck-flash[data-flash="skip"] {
+  --flash-peak: 0.45;
+  background: linear-gradient(to top, var(--ink-muted), transparent 52%);
 }
 
 /* Gold is the one colour the product celebrates with, and a Must Go is the one thing worth celebrating, so this
    reaches further down the screen than the other two reach across it. */
 .deck-flash[data-flash="must"] {
   background: linear-gradient(to bottom, var(--gold), transparent 58%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deck-rise {
+    bottom: 45%;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -464,7 +420,7 @@
     }
 
     28% {
-      opacity: 1;
+      opacity: var(--flash-peak);
     }
 
     to {
@@ -472,28 +428,19 @@
     }
   }
 
-  /* The rise is the whole of this mark, so it is the one part that has nothing to show when motion is suppressed.
-     The dots still appear and still hold for the flash window there; they simply do not travel. */
-  /* Not `--ease-expo`. The island's curve puts 85% of the travel in the first third, which threw the mark off the
-     top of the screen before it could be seen; the product's ordinary ease keeps it moving through the middle.
-
-     Gold on the gold wash its own answer paints is 1.38:1, so the mark is spent by the time it would reach the
-     label above the reel: it is gone at the top edge rather than drifting over the page beyond it. */
-  .rise-dot {
-    animation: dot-rise var(--flash) var(--ease) forwards;
+  .rise-heart {
+    animation: heart-rise var(--flash) var(--ease) forwards;
   }
 
-  /* Far enough to leave the reel rather than to drift inside it, which is what "rises off the reel" means, and no
-     further: from 34% of a 473px card the mark fades out level with its top edge. */
-  @keyframes dot-rise {
+  @keyframes heart-rise {
     from {
       opacity: 0;
-      transform: translateY(36px) scale(0.4);
+      transform: translateY(0) scale(0.4);
     }
 
     22% {
       opacity: 1;
-      transform: translateY(-10px) scale(1);
+      transform: translateY(-48px) scale(1);
     }
 
     54% {
@@ -502,7 +449,7 @@
 
     to {
       opacity: 0;
-      transform: translateY(-165px) scale(0.85);
+      transform: translateY(max(-390px, -45dvh)) scale(0.85);
     }
   }
 }
