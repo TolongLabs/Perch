@@ -32,11 +32,11 @@ const ScrollToTop = () => {
 }
 
 /**
- * Seeds the stored theme on the document element at mount, once, before any route paints. The toggle-bearing
- * surfaces (the landing and the top bar) each apply their own state, but a full load that lands on a route with
- * neither - `/sign-in` is the one - would otherwise never set the attribute and fall back to the CSS default,
- * dropping a stored dark choice. Client-side transitions need no help: `applyTheme` writes the attribute with no
- * cleanup, so a choice made on one surface survives the push to the next.
+ * Seeds the stored theme on the document element once after mount. The toggle-bearing surfaces (the landing and the
+ * top bar) each apply their own state, but a full load that lands on a route with neither - `/sign-in` is the one -
+ * would otherwise never set the attribute and fall back to the CSS default, dropping a stored dark choice.
+ * Client-side transitions need no help: `applyTheme` writes the attribute with no cleanup, so a choice made on one
+ * surface survives the push to the next.
  */
 const ThemeSeed = () => {
   useEffect(() => {
