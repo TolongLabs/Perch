@@ -85,11 +85,12 @@ export type Person = {
   initials: string
 }
 
-export type Answer = 'yes' | 'no' | 'must' | null
+export type Answer = 'yes' | 'no' | 'must' | 'skip' | null
 
 /**
  * Member id to place id to answer. Null means that member has not swiped that place yet. A must is a yes the member
  * wants weighted extra; each member holds at most one, and the tally ranks it higher without changing percentages.
+ * A skip is an explicit abstain: it gives no support, keeps the full denominator, and counts as answered.
  */
 export type Votes = Record<string, Record<string, Answer>>
 
@@ -153,6 +154,8 @@ export type Trip = {
   ownerId: string
   /** Who this browser is voting as. The owner by default; the invite link lets a friend pick themselves. */
   currentMemberId: string
+  /** ISO timestamp when voting closed, or null while it is open. */
+  votingClosedAt: string | null
   party: Person[]
   days: Day[]
   options: Record<string, Place>
