@@ -10,6 +10,7 @@ const subtitles = join(import.meta.dir, 'subtitles.py')
 const speak = join(import.meta.dir, 'speak.py')
 const narration = join(import.meta.dir, 'narration.txt')
 const scratchDirs: string[] = []
+const NBSP = String.fromCharCode(160)
 
 // Every test below drives the real ffmpeg, ffprobe and python3, because the thing being checked is
 // whether the pipeline actually produces a video rather than whether a mock was called. CI has none
@@ -320,10 +321,11 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
     ])
   })
 
-  test('cuts subtitle audio at the next spoken line', () => {
+  test('keeps padded one-line captions on the bottom track until the next line starts', () => {
     const demoDir = makeScratchDir()
     const segmentDir = join(demoDir, 'narration-segments')
     mkdirSync(segmentDir)
+    writeFileSync(join(demoDir, 'narration-top.srt'), 'stale top caption\n')
     writeJson(join(demoDir, 'lines.json'), [
       { beat: 'shot-1', offset_ms: 0, ms: 1_000, text: 'First caption.' },
       { beat: 'shot-2', offset_ms: 0, ms: 2_500, text: 'Second caption.' }
@@ -355,13 +357,56 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
       [
         '1',
         '00:00:01,000 --> 00:00:02,500',
-        'First caption.',
+        `${NBSP}First caption.${NBSP}`,
         '',
         '2',
         '00:00:02,500 --> 00:00:03,500',
-        'Second caption.',
+        `${NBSP}Second caption.${NBSP}`,
         ''
       ].join('\n')
+    )
+    expect(readFileSync(join(demoDir, 'narration-top.srt'), 'utf8')).toBe('')
+  })
+
+  test('writes two-line subtitles to synchronized independent tracks', () => {
+    const demoDir = makeScratchDir()
+    const segmentDir = join(demoDir, 'narration-segments')
+    mkdirSync(segmentDir)
+    writeJson(join(demoDir, 'lines.json'), [
+      {
+        beat: 'shot-1',
+        offset_ms: 0,
+        ms: 1_000,
+        text: 'Independent black bands keep wrapped subtitle lines clearly separated.'
+      }
+    ])
+    expect(
+      run(
+        'ffmpeg',
+        '-y',
+        '-loglevel',
+        'error',
+        '-f',
+        'lavfi',
+        '-i',
+        'anullsrc=r=8000:cl=mono',
+        '-t',
+        '2',
+        '-c:a',
+        'pcm_s16le',
+        join(segmentDir, '0.wav')
+      ).exitCode
+    ).toBe(0)
+
+    const result = run('python3', subtitles, demoDir)
+    const timing = '00:00:01,000 --> 00:00:03,000'
+
+    expect(result.exitCode).toBe(0)
+    expect(readFileSync(join(demoDir, 'narration-top.srt'), 'utf8')).toBe(
+      ['1', timing, `${NBSP}Independent black bands keep wrapped${NBSP}`, ''].join('\n')
+    )
+    expect(readFileSync(join(demoDir, 'narration.srt'), 'utf8')).toBe(
+      ['1', timing, `${NBSP}subtitle lines clearly separated.${NBSP}`, ''].join('\n')
     )
   })
 
@@ -391,14 +436,18 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
     ).toBe(0)
 
     const result = run('python3', subtitles, demoDir)
-    const blocks = readFileSync(join(demoDir, 'narration.srt'), 'utf8').trim().split('\n\n')
-    const captionLines = blocks.flatMap((block) => block.split('\n').slice(2))
+    const bottomBlocks = readFileSync(join(demoDir, 'narration.srt'), 'utf8').trim().split('\n\n')
+    const topBlocks = readFileSync(join(demoDir, 'narration-top.srt'), 'utf8').trim().split('\n\n')
+    const captionLines = [...topBlocks, ...bottomBlocks]
+      .flatMap((block) => block.split('\n').slice(2))
+      .map((line) => line.replaceAll(NBSP, ''))
 
     expect(result.exitCode).toBe(0)
-    expect(blocks).toHaveLength(2)
+    expect(bottomBlocks).toHaveLength(2)
+    expect(topBlocks).toHaveLength(2)
     expect(captionLines.every((line) => line.length <= 42)).toBe(true)
-    expect(blocks[0]).toContain('00:00:01,000 -->')
-    expect(blocks[1]).toContain('--> 00:00:07,000')
+    expect(bottomBlocks[0]).toContain('00:00:01,000 -->')
+    expect(bottomBlocks[1]).toContain('--> 00:00:07,000')
     expect(captionLines.at(-1)?.split(' ').length).toBeGreaterThan(2)
   })
 
@@ -447,6 +496,8 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
     const output = join(demoDir, 'finished.mp4')
     const script = join(demoDir, 'narration.txt')
     const fakeSpeak = join(demoDir, 'fake-speak.py')
+    const ffmpegLog = join(demoDir, 'ffmpeg.log')
+    const ffmpegWrapper = join(demoDir, 'ffmpeg-wrapper.sh')
     expect(
       run(
         'ffmpeg',
@@ -470,7 +521,12 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
       join(demoDir, 'beats.json'),
       browserBeats.map((beat, index) => ({ ...beat, ms: beat.name === 'end' ? 5_000 : (index + 1) * 100 }))
     )
-    writeFileSync(script, 'shot-1 | 100 | The evidence stays with the decision.\n')
+    writeFileSync(script, 'shot-1 | 100 | Independent black bands keep wrapped subtitle lines clearly separated.\n')
+    writeFileSync(
+      ffmpegWrapper,
+      ['#!/usr/bin/env bash', 'printf \'%s\\n\' "$*" >> "$DEMO_FFMPEG_LOG"', 'exec ffmpeg "$@"', ''].join('\n')
+    )
+    chmodSync(ffmpegWrapper, 0o755)
     writeFileSync(
       fakeSpeak,
       [
@@ -489,6 +545,8 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
       env: {
         ...process.env,
         DEMO_DIR: demoDir,
+        DEMO_FFMPEG: ffmpegWrapper,
+        DEMO_FFMPEG_LOG: ffmpegLog,
         DEMO_FPS: '10',
         DEMO_OUT: output,
         DEMO_PRESET: 'ultrafast',
@@ -500,7 +558,13 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
 
     expect(result.exitCode, result.stderr.toString()).toBe(0)
     expect(existsSync(output)).toBe(true)
-    expect(readFileSync(join(demoDir, 'narration.srt'), 'utf8')).toContain('The evidence stays with the decision.')
+    expect(readFileSync(join(demoDir, 'narration-top.srt'), 'utf8')).toContain('Independent black bands keep wrapped')
+    expect(readFileSync(join(demoDir, 'narration.srt'), 'utf8')).toContain('subtitle lines clearly separated.')
+    const ffmpegCalls = readFileSync(ffmpegLog, 'utf8')
+    const bottomFilter = ffmpegCalls.indexOf('subtitles=filename=narration.srt')
+    const topFilter = ffmpegCalls.indexOf('subtitles=filename=narration-top.srt')
+    expect(bottomFilter).toBeGreaterThan(-1)
+    expect(topFilter).toBeGreaterThan(bottomFilter)
     const streams = run(
       'ffprobe',
       '-v',
