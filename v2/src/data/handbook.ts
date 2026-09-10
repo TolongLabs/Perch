@@ -12,54 +12,63 @@ const JMA = 'Japan Meteorological Agency, 1991 to 2020 climate normals for Tokyo
 export const TAKE_CARE: HandbookEntry[] = [
   {
     id: 'shoes',
+    title: 'Shoes Off',
     text: 'Expect to take your shoes off at temple halls, some restaurants and any tatami room. Socks without holes are the quiet win.',
     derivedFrom: 'destination:japan',
     source: JNTO
   },
   {
     id: 'cash',
+    title: 'Cash On Hand',
     text: 'Cards work in most shops now, but small eateries, shrines and market stalls still take cash only. Keep a few thousand yen in coins and notes.',
     derivedFrom: 'destination:japan',
     source: JNTO
   },
   {
     id: 'bins',
+    title: 'Carry Your Rubbish',
     text: 'Public bins are rare. Carry a small bag for your own rubbish and use the bins at convenience stores and stations.',
     derivedFrom: 'destination:japan',
     source: JNTO
   },
   {
     id: 'trains-quiet',
+    title: 'Quiet Trains',
     text: 'Trains are quiet. Phones on silent, no calls, and backpacks worn on the front when it is crowded.',
     derivedFrom: 'destination:japan',
     source: JNTO
   },
   {
     id: 'shrine-etiquette',
+    title: 'Shrine Etiquette',
     text: 'At a shrine, bow once at the gate, keep to the sides of the approach, rinse hands at the basin, then bow twice, clap twice and bow once at the hall.',
     derivedFrom: 'kind:shrine',
     source: JNTO
   },
   {
     id: 'temple-etiquette',
+    title: 'Temple Etiquette',
     text: 'At a temple, incense smoke is wafted over the head for luck and photographs are not taken inside the main hall.',
     derivedFrom: 'kind:temple',
     source: JNTO
   },
   {
     id: 'museum-bags',
+    title: 'Museum Lockers',
     text: 'Large bags go into the coin lockers at the museum entrance; the coin comes back.',
     derivedFrom: 'kind:museum',
     source: 'Tokyo National Museum visitor guidance, tnm.jp'
   },
   {
     id: 'street-food',
+    title: 'Eat Where You Buy',
     text: 'Eat street food where you bought it. Walking while eating is frowned on, and stalls set out a spot for it.',
     derivedFrom: 'tag:street-food',
     source: JNTO
   },
   {
     id: 'tattoos',
+    title: 'Tattoos And Baths',
     text: 'Tattoos can be refused at public baths and some pools. Cover them where you can, or check the venue first.',
     derivedFrom: 'destination:japan',
     source: JNTO
@@ -107,42 +116,49 @@ export const NEWS: NewsItem[] = [
 export const PACKING: HandbookEntry[] = [
   {
     id: 'umbrella',
+    title: 'Umbrella',
     text: 'A compact umbrella. Convenience stores sell them for a few hundred yen if you forget.',
     derivedFrom: 'weather:rain',
     source: JMA
   },
   {
     id: 'layers',
+    title: 'Warm Layers',
     text: 'A light jacket and one warm layer for the evenings.',
     derivedFrom: 'weather:cool',
     source: JMA
   },
   {
     id: 'shoes',
+    title: 'Slip-Off Shoes',
     text: 'Shoes that slip off easily. You will be taking them off more than you think.',
     derivedFrom: 'destination:japan',
     source: JNTO
   },
   {
     id: 'coin-purse',
+    title: 'Coin Purse',
     text: 'A coin purse. Change builds up fast when stalls and shrines take cash.',
     derivedFrom: 'destination:japan',
     source: JNTO
   },
   {
     id: 'rubbish-bag',
+    title: 'Rubbish Bag',
     text: 'A small folding bag for your own rubbish between bins.',
     derivedFrom: 'destination:japan',
     source: JNTO
   },
   {
     id: 'battery',
+    title: 'Power Bank',
     text: 'A power bank. Maps, the Book and the transit routes all live on the phone.',
     derivedFrom: 'destination:japan',
     source: JNTO
   },
   {
     id: 'socks',
+    title: 'Warm Socks',
     text: 'Warm socks, because the floors you stand on without shoes are cold in November.',
     derivedFrom: 'kind:temple',
     source: JNTO

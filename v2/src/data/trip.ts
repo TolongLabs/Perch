@@ -68,5 +68,6 @@ export const trip: Trip = {
   legs: [{ city: 'Tokyo', startDay: 1, endDay: 4, transferMin: 0 }],
   votes,
   pins: [],
-  checklist
+  checklist,
+  manualNotes: { takeCare: [], packing: [] }
 }
