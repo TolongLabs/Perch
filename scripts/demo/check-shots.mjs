@@ -265,16 +265,16 @@ export async function runShotChecks(options = {}) {
     )
     await check(
       9,
-      'Print The Book button',
+      'Open The Book button',
       'button.bwg-print',
-      page.locator('button.bwg-print', { hasText: exactText('Print The Book') })
+      page.locator('button.bwg-print', { hasText: exactText('Open The Book') })
     )
     // Shot 9 ends by pressing this, and shot 10 starts from where it lands, so a rename costs both beats.
     await check(
       9,
-      'The Handbook button',
-      'button named The Handbook',
-      page.getByRole('button', { name: exactText('The Handbook') })
+      'The Manual button',
+      'button named The Manual',
+      page.getByRole('button', { name: exactText('The Manual') })
     )
     // Five rows are ticked by title. The sixth, JR Pass, starts ticked and is never clicked, so it is not listed.
     for (const title of [

@@ -689,6 +689,22 @@ describe.skipIf(missing.length > 0)('demo narration scheduling', () => {
   }, 90_000)
 })
 
+describe('demo automation follows the shipped interface', () => {
+  const recorder = readFileSync(join(import.meta.dir, 'record.mjs'), 'utf8')
+  const preflight = readFileSync(join(import.meta.dir, 'check-shots.mjs'), 'utf8')
+
+  test('uses the current Open The Book gate label', () => {
+    expect(preflight).toContain("exactText('Open The Book')")
+    expect(preflight).not.toContain('Print The Book')
+  })
+
+  test('uses The Manual throughout shot 9', () => {
+    expect(recorder).toContain("exactText('The Manual')")
+    expect(preflight).toContain("exactText('The Manual')")
+    expect(`${recorder}\n${preflight}`).not.toContain('The Handbook')
+  })
+})
+
 // narration.txt holds the spoken lines and record.mjs holds the beat budgets, in two files that must agree. They
 // drifted once already, when #166 re-chained shot-7's offsets and the recorder's budgets were not re-checked, and
 // the failure would have been a line still being spoken over the start of the next beat rather than anything that

@@ -499,7 +499,7 @@ default face **without warning**, and the render looks exactly like a fontsdir t
 ```bash
 export DEMO_FONTSDIR="$HOME/.cache/perch-demo/fonts"
 export DEMO_SUBTITLE_FONT="Quicksand"
-export DEMO_SUBTITLE_SIZE=13
+export DEMO_SUBTITLE_SIZE=12
 ```
 
 ---
@@ -600,7 +600,7 @@ anything they have to read.
 when the next begins, so one short beat delays every line after it. If a line reads for 6.5 seconds, give its beat about
 7 seconds of picture.
 
-**Subtitles are burned in, bottom-centred, at `FontSize=14`.** Two traps, both invisible to a numeric check that looks
+**Subtitles are burned in, bottom-centred, at `FontSize=12`.** Two traps, both invisible to a numeric check that looks
 for dark pixels near the bottom: `FontSize` is a libass script unit rather than a pixel, so 26 renders enormous at
 1080p; and under `BorderStyle=3` the box takes its colour from `OutlineColour`, so an alpha set on `BackColour` is
 silently ignored and the scrim comes out fully opaque.
