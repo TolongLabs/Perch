@@ -35,7 +35,7 @@ export const navItems = (tripId: string): Item[] => [
   { to: '/desk/before-we-go', label: 'Before We Go', Icon: ListChecks },
   { to: `/t/${tripId}`, label: 'The Book', Icon: BookOpen },
   // Guidance rather than a second book: `BookOpen` is taken, and two open books at 20px are one shape.
-  { to: `/t/${tripId}/handbook`, label: 'The Handbook', Icon: Compass }
+  { to: `/t/${tripId}/handbook`, label: 'The Manual', Icon: Compass }
 ]
 
 /**

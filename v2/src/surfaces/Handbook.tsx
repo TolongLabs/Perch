@@ -1,23 +1,20 @@
+import { type FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Heading } from '../components/Ui'
 import { handbookFor } from '../data/handbook'
-import type { NewsItem } from '../data/types'
+import type { HandbookEntry, ManualNote, ManualSection, NewsItem } from '../data/types'
 import { dayLabel } from '../lib/format'
+import { MAX_NOTE_LENGTH } from '../lib/manualNotes'
 import { saveAsPdf } from '../lib/print'
 import { useTrip } from '../state'
 import './Handbook.css'
 
-/**
- * What a packing line was earned by, in words. The columns put the list on the left and its reasons on the right,
- * which is the order the team drew, so the derivation has to be carried in the sentence rather than by the layout.
- */
 const WHY: Record<string, string> = {
   'weather:rain': 'rain is likely',
   'weather:cool': 'the evenings run cold'
 }
 
 const because = (derivedFrom: string): string | null => {
-  // Everything a Japan trip earns is earned by every Japan trip, so saying so on six lines out of seven is noise.
   if (derivedFrom.startsWith('destination:')) return null
   const known = WHY[derivedFrom]
   if (known) return known
@@ -26,9 +23,8 @@ const because = (derivedFrom: string): string | null => {
   return prefix === 'kind' || prefix === 'tag' ? `a ${value.replace(/-/g, ' ')} is on the calendar` : value
 }
 
-/** One line naming what a section drew on, rather than the same two strings repeated under a dozen rows. */
 const Sources = ({ of }: { of: { source: string }[] }) => {
-  const named = [...new Set(of.map((e) => e.source))]
+  const named = [...new Set(of.map((entry) => entry.source))]
   if (named.length === 0) return null
   return (
     <p className="t-specimen hb-sources">
@@ -38,7 +34,6 @@ const Sources = ({ of }: { of: { source: string }[] }) => {
   )
 }
 
-/** News, in trip order, grouped under the day it belongs to. Two things can land on one day and often do. */
 const byDate = (news: NewsItem[]): { date: string; items: NewsItem[] }[] => {
   const days: { date: string; items: NewsItem[] }[] = []
   for (const item of news) {
@@ -49,85 +44,168 @@ const byDate = (news: NewsItem[]): { date: string; items: NewsItem[] }[] => {
   return days
 }
 
-/**
- * The second thing the checklist unlocks, beside the Book and in the same plate register. Every line on it is earned
- * by a fact the trip established: a shrine on the calendar, rain in the dates, Japan as the destination. A trip that
- * establishes none of them shows none of the lines, which is why nothing here is written as general travel advice.
- */
+const GuideList = ({ entries, explain = false }: { entries: HandbookEntry[]; explain?: boolean }) => (
+  <ul className="hb-list">
+    {entries.map((entry) => {
+      const why = explain ? because(entry.derivedFrom) : null
+      return (
+        <li key={entry.id} className="hb-item">
+          <h3 className="hb-item-title">{entry.title}</h3>
+          <p className="t-prose hb-item-description">{entry.text}</p>
+          {why && <p className="t-specimen hb-why">Because {why}.</p>}
+        </li>
+      )
+    })}
+  </ul>
+)
+
+type PersonalNotesProps = {
+  section: ManualSection
+  heading: string
+  notes: ManualNote[]
+  onAdd: (section: ManualSection, text: string) => void
+  onRemove: (section: ManualSection, id: string) => void
+}
+
+const PersonalNotes = ({ section, heading, notes, onAdd, onRemove }: PersonalNotesProps) => {
+  const [text, setText] = useState('')
+  const fieldId = `hb-${section}-note`
+
+  const submit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!text.trim()) return
+    onAdd(section, text)
+    setText('')
+  }
+
+  return (
+    <div className="hb-personal" data-empty={notes.length === 0}>
+      <div className="hb-personal-head">
+        <h3 className="t-label">Your Notes</h3>
+        <p className="t-specimen">Personal. Saved only in this browser.</p>
+      </div>
+
+      <div className="hb-personal-list" aria-live="polite">
+        {notes.length === 0 ? (
+          <p className="t-specimen hb-note-empty">No personal notes yet.</p>
+        ) : (
+          <ul aria-label={`${heading} Personal Notes`}>
+            {notes.map((note) => (
+              <li key={note.id} className="hb-personal-note">
+                <p className="t-prose">{note.text}</p>
+                <button type="button" className="t-label hb-note-remove" onClick={() => onRemove(section, note.id)}>
+                  Remove Note
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      <form className="hb-note-form" aria-label={`Add A ${heading} Note`} onSubmit={submit}>
+        <label className="t-label hb-note-label" htmlFor={fieldId}>
+          Add A Note
+        </label>
+        <textarea
+          id={fieldId}
+          name={`${section}-note`}
+          value={text}
+          maxLength={MAX_NOTE_LENGTH}
+          rows={2}
+          placeholder="Add a reminder for this trip"
+          onChange={(event) => setText(event.target.value)}
+        />
+        <button type="submit" className="t-label hb-note-add" disabled={!text.trim()}>
+          Add Note
+        </button>
+      </form>
+    </div>
+  )
+}
+
 export const Handbook = () => {
   const navigate = useNavigate()
-  const { trip } = useTrip()
+  const { trip, addManualNote, removeManualNote } = useTrip()
   const { takeCare, news, packing } = handbookFor(trip)
-
-  /** A Take Care line and a news line are the same row; only what earned them differs, and that is not shown here. */
-  const entry = (e: { id: string; text: string }) => (
-    <li key={e.id} className="hb-item">
-      <p className="t-prose">{e.text}</p>
-    </li>
-  )
 
   return (
     <main className="handbook">
       <header className="hb-head">
-        {/* No info bubble. The dot is the one pill in the plate register, and a sentence a reader has to hover to
-            find is a sentence most readers never see, which is the mistake the Desk's first frame was making. It
-            is written on the page instead. */}
         <Heading as="h1">
-          <span className="t-display">The Handbook</span>
+          <span className="t-display">The Manual</span>
         </Heading>
         <p className="t-prose hb-lede">
           {trip.destination}, {dayLabel(trip.startDate)} to{' '}
-          {dayLabel(trip.days[trip.days.length - 1]?.date ?? trip.startDate)}. Every line here is earned by something on
-          your calendar or in your dates.
+          {dayLabel(trip.days[trip.days.length - 1]?.date ?? trip.startDate)}. Sourced advice follows the trip; your own
+          notes stay separate and on this browser.
         </p>
       </header>
 
       <div className="hb-body">
-        <section className="hb-pack" aria-labelledby="hb-packing">
-          <h2 className="t-plate-title" id="hb-packing">
-            Packing List
-          </h2>
-          <p className="t-specimen hb-note">
-            Not the essentials, which are on Before We Go. These follow from the lines beside them.
-          </p>
-          <ul className="hb-list">
-            {packing.map((e) => {
-              const why = because(e.derivedFrom)
-              return (
-                <li key={e.id} className="hb-item">
-                  <p className="t-prose">{e.text}</p>
-                  {why && <p className="t-specimen hb-why">Because {why}.</p>}
-                </li>
-              )
-            })}
-          </ul>
-          <Sources of={packing} />
-        </section>
-
-        <div className="hb-col">
-          <section className="hb-care" aria-labelledby="hb-take-care">
+        <div className="hb-guide">
+          <section className="hb-care hb-section" aria-labelledby="hb-take-care">
             <h2 className="t-plate-title" id="hb-take-care">
               Take Care
             </h2>
-            <ul className="hb-list">{takeCare.map(entry)}</ul>
+            <p className="t-label hb-kind">Sourced Advice</p>
+            <GuideList entries={takeCare} />
             <Sources of={takeCare} />
+            <PersonalNotes
+              section="takeCare"
+              heading="Take Care"
+              notes={trip.manualNotes.takeCare}
+              onAdd={addManualNote}
+              onRemove={removeManualNote}
+            />
           </section>
 
-          <section className="hb-news" aria-labelledby="hb-news-head">
+          <section className="hb-pack hb-section" aria-labelledby="hb-packing">
+            <h2 className="t-plate-title" id="hb-packing">
+              Packing List
+            </h2>
+            <p className="t-specimen hb-note">
+              Not the essentials from Before We Go. These follow from the forecast and places on your calendar.
+            </p>
+            <p className="t-label hb-kind">Sourced Advice</p>
+            <GuideList entries={packing} explain />
+            <Sources of={packing} />
+            <PersonalNotes
+              section="packing"
+              heading="Packing"
+              notes={trip.manualNotes.packing}
+              onAdd={addManualNote}
+              onRemove={removeManualNote}
+            />
+          </section>
+        </div>
+
+        <section className="hb-news hb-section" aria-labelledby="hb-news-head">
+          <div className="hb-news-head">
             <h2 className="t-plate-title" id="hb-news-head">
               News For The Trip
             </h2>
-            <div className="hb-days">
-              {byDate(news).map(({ date, items }) => (
-                <div key={date} className="hb-day">
-                  <p className="t-label hb-date">{dayLabel(date)}</p>
-                  <ul className="hb-list">{items.map(entry)}</ul>
-                </div>
-              ))}
-            </div>
-            <Sources of={news} />
-          </section>
-        </div>
+            <p className="t-specimen hb-note">
+              These prototype conditions use climate normals and public-calendar guidance, not a live forecast.
+            </p>
+          </div>
+          <div className="hb-days">
+            {byDate(news).map(({ date, items }) => (
+              <section key={date} className="hb-day" aria-labelledby={`hb-news-${date}`}>
+                <h3 className="t-label hb-date" id={`hb-news-${date}`}>
+                  {dayLabel(date)}
+                </h3>
+                <ul className="hb-news-list">
+                  {items.map((item) => (
+                    <li key={item.id} className="hb-news-item">
+                      <p className="t-prose">{item.text}</p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+          <Sources of={news} />
+        </section>
       </div>
 
       <div className="hb-foot">
@@ -135,7 +213,7 @@ export const Handbook = () => {
           type="button"
           className="hb-save t-label"
           onClick={() =>
-            saveAsPdf(`${trip.destination} Handbook, ${dayLabel(trip.startDate)} ${trip.startDate.slice(0, 4)}`)
+            saveAsPdf(`${trip.destination} Manual, ${dayLabel(trip.startDate)} ${trip.startDate.slice(0, 4)}`)
           }
         >
           Save As PDF

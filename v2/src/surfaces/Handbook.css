@@ -1,10 +1,9 @@
-/* Plate register, like the Book: the ground is plate stock, nothing is rounded, nothing is a pill, and every rule
-   is struck in ink rather than grey. This is a document the group reads, not an instrument one of them operates. */
+/* The Manual uses the plate register: square section grounds, ink rules on controls, and no shadows. */
 
 .handbook {
-  padding: var(--s7) var(--s5) var(--s8);
-  max-width: 620px;
+  max-width: 760px;
   margin: 0 auto;
+  padding: var(--s7) var(--s5) var(--s8);
 }
 
 .hb-head {
@@ -12,35 +11,41 @@
 }
 
 .hb-lede {
+  max-width: 65ch;
   margin: var(--s3) 0 0;
   color: var(--ink-muted);
 }
 
-.hb-body {
+.hb-body,
+.hb-guide {
   display: grid;
-  gap: var(--s8);
+  gap: var(--s5);
 }
 
-/* Only the right-hand column is a stack of sections; the left one is a single section, and giving it the same
-   flex gap put a section's worth of air between the heading and its own first line. */
-.hb-col {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s8);
+.hb-section {
+  min-width: 0;
+  padding: var(--s5);
+  background: var(--plate);
 }
 
-.hb-pack > .t-plate-title,
-.hb-care > .t-plate-title,
-.hb-news > .t-plate-title {
-  margin: 0 0 var(--s3);
+.hb-section > .t-plate-title,
+.hb-news-head > .t-plate-title {
+  margin: 0;
+  text-wrap: balance;
 }
 
 .hb-note {
-  margin: 0 0 var(--s5);
-  max-width: 42ch;
+  max-width: 52ch;
+  margin: var(--s3) 0 0;
 }
 
-.hb-list {
+.hb-kind {
+  margin: var(--s5) 0 var(--s3);
+  color: var(--ink-muted);
+}
+
+.hb-list,
+.hb-news-list {
   display: flex;
   flex-direction: column;
   gap: var(--s5);
@@ -49,39 +54,170 @@
   list-style: none;
 }
 
-.hb-item > .t-prose {
-  margin: 0;
-  max-width: 46ch;
+.hb-item {
+  min-width: 0;
 }
 
-/* Only on the lines this trip earned rather than every Japan trip. Six "because this is Japan" rows under seven
-   items says nothing; three rows naming rain, cold evenings and a temple on the calendar say what changed. */
+.hb-item-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  line-height: 1.25;
+  text-wrap: pretty;
+}
+
+.hb-item-description {
+  max-width: 48ch;
+  margin: var(--s1) 0 0;
+  color: var(--ink-muted);
+  font-size: 14px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
 .hb-why {
   margin: var(--s2) 0 0;
-  color: var(--ink-muted);
 }
 
-.hb-day {
+.hb-sources {
+  max-width: 60ch;
+  margin: var(--s5) 0 0;
+}
+
+.hb-personal {
+  margin-top: var(--s7);
+}
+
+.hb-personal-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s1) var(--s3);
+}
+
+.hb-personal-list {
+  margin-top: var(--s3);
+}
+
+.hb-personal-list > ul {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+}
+
+.hb-personal-note {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: var(--s3);
+  padding: var(--s3);
+  background: var(--paper);
+}
+
+.hb-personal-note > .t-prose {
+  min-width: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.hb-note-empty {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+}
+
+.hb-note-remove,
+.hb-note-add {
+  min-height: 44px;
+  padding: var(--s2) var(--s3);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-plate);
+  background: transparent;
+  color: var(--ink);
+  transition:
+    background var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease);
+}
+
+.hb-note-remove {
+  border-color: transparent;
+}
+
+.hb-note-remove:hover,
+.hb-note-remove:focus-visible,
+.hb-note-add:hover:not(:disabled),
+.hb-note-add:focus-visible:not(:disabled) {
+  background: var(--ink);
+  color: var(--plate);
+}
+
+.hb-note-form {
+  display: grid;
+  gap: var(--s2);
+  margin-top: var(--s4);
+}
+
+.hb-note-label {
+  justify-self: start;
+}
+
+.hb-note-form textarea {
+  width: 100%;
+  min-height: 76px;
+  resize: vertical;
+  padding: var(--s3);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-plate);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--face-sans);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.hb-note-form textarea::placeholder {
+  color: var(--ink-muted);
+  opacity: 1;
+}
+
+.hb-note-add {
+  justify-self: start;
+}
+
+.hb-note-add:disabled {
+  border-color: color-mix(in oklab, var(--ink) 24%, transparent);
+  color: color-mix(in oklab, var(--ink) 48%, transparent);
+  cursor: not-allowed;
+}
+
+.hb-news-head {
+  display: grid;
+  gap: var(--s1);
   margin-bottom: var(--s5);
 }
 
+.hb-days {
+  display: grid;
+  gap: var(--s6);
+}
+
+.hb-day {
+  min-width: 0;
+}
+
 .hb-date {
-  color: var(--tint);
   margin: 0 0 var(--s3);
+  color: var(--open);
 }
 
-.hb-days > .hb-day:last-child {
-  margin-bottom: 0;
-}
-
-/* One line per section rather than one under every row: two sources carry the whole fixture, so per-row they would
-   print the same two strings a dozen times. A guidebook puts them at the foot of the section and so does this. */
-.hb-sources {
-  margin: var(--s5) 0 0;
-  padding-top: var(--s3);
-  border-top: 1px solid color-mix(in oklab, var(--ink) 20%, transparent);
-  color: var(--ink-muted);
-  max-width: 52ch;
+.hb-news-item > .t-prose {
+  max-width: 42ch;
+  font-size: 16px;
+  line-height: 1.55;
+  text-wrap: pretty;
 }
 
 .hb-foot {
@@ -91,25 +227,7 @@
   margin-top: var(--s8);
 }
 
-/* The Handbook's one solid button, matching the Book's cover control so the two read as the same action. */
-.hb-save {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: var(--s3) var(--s5);
-  border: var(--outline) solid var(--ink);
-  border-radius: var(--r-plate);
-  background: var(--ink);
-  color: var(--plate);
-  cursor: pointer;
-  transition: background-color var(--motion-fade) var(--ease);
-}
-
-.hb-save:hover,
-.hb-save:focus-visible {
-  background: color-mix(in oklab, var(--tint) 34%, var(--ink));
-}
-
+.hb-save,
 .hb-back {
   display: inline-flex;
   align-items: center;
@@ -117,9 +235,24 @@
   padding: var(--s3) var(--s5);
   border: var(--outline) solid var(--ink);
   border-radius: var(--r-plate);
+  cursor: pointer;
+}
+
+/* The Manual's one solid button, matching The Book's document control. */
+.hb-save {
+  background: var(--ink);
+  color: var(--plate);
+  transition: background-color var(--motion-fade) var(--ease);
+}
+
+.hb-save:hover,
+.hb-save:focus-visible {
+  background: color-mix(in oklab, var(--open) 28%, var(--ink));
+}
+
+.hb-back {
   background: transparent;
   color: var(--ink);
-  cursor: pointer;
 }
 
 .hb-back:hover,
@@ -128,23 +261,32 @@
   color: var(--plate);
 }
 
+@media (min-width: 640px) {
+  .hb-days {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (min-width: 1024px) {
-  /* The same 1440 spread the Book uses, and the team's own column order: the list on the left, the lines that earned
-     it on the right. The derivation runs right to left, which is why each packing line names its reason in words. */
   .handbook {
     max-width: 1440px;
     padding: var(--s7) 80px var(--s8);
   }
 
-  .hb-body {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--s8) 64px;
+  .hb-guide {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hb-section {
+    padding: var(--s6);
+  }
+
+  .hb-days {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   }
 }
 
 @media print {
-  /* Same reason as the Book: an A4 landscape sheet is 1016px of content against a 1024 breakpoint, so the columns
-     are declared for paper rather than inherited from a screen size the sheet never reaches. */
   .handbook {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -152,16 +294,25 @@
     padding: 0;
   }
 
-  .hb-body {
-    grid-template-columns: 1fr 1fr;
-    gap: var(--s7) 32px;
+  .hb-guide,
+  .hb-days {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hb-section {
+    padding: var(--s5);
   }
 
   .hb-item,
-  .hb-day {
+  .hb-day,
+  .hb-personal-note {
     break-inside: avoid;
   }
 
+  .hb-personal[data-empty="true"],
+  .hb-note-form,
+  .hb-note-remove,
+  .hb-note-empty,
   .hb-foot {
     display: none;
   }
