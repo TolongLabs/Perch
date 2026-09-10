@@ -1,5 +1,6 @@
 import { trip as seed } from '../data/trip'
 import type { ManualNote, ManualSection, Trip } from '../data/types'
+import { evaluateDay } from './schedule'
 
 const KEY = 'perch.trip.v1'
 
@@ -54,11 +55,23 @@ export const load = (): Trip => {
     if (!isTrip(parsed) || parsed.id !== seed.id) return seed
     // A trip stored before the member switcher existed has no current member; it was always the owner.
     // A trip stored before voting closure tracking has no votingClosedAt; default it to open.
+    // Old stored days may be missing startMin or have an invalid one; migrate to 09:00 and recompute feasibility.
+    const days = parsed.days.map((day) => {
+      const valid =
+        typeof day.startMin === 'number' && Number.isInteger(day.startMin) && day.startMin >= 0 && day.startMin <= 1439
+      const startMin = valid ? day.startMin : 540
+      const withStart = { ...day, startMin }
+      return {
+        ...withStart,
+        feasibility: valid ? (day.feasibility ?? null) : evaluateDay(withStart, parsed.options)
+      }
+    })
     return {
       ...parsed,
       currentMemberId: parsed.currentMemberId ?? parsed.ownerId,
       votingClosedAt: parsed.votingClosedAt ?? null,
-      manualNotes: isManualNotes(parsed.manualNotes) ? parsed.manualNotes : { takeCare: [], packing: [] }
+      manualNotes: isManualNotes(parsed.manualNotes) ? parsed.manualNotes : { takeCare: [], packing: [] },
+      days
     }
   } catch {
     return seed

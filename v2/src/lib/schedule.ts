@@ -68,15 +68,16 @@ export const scheduleOrder = (stops: Place[]): string[] => {
 }
 
 /**
- * Walk the day from 09:00. A stop that opens later is waited for; a stop reached after it closes, or that closes
- * before its dwell is done, is outside its hours. The rationale is one sentence, in sentence case, and never the
- * decision path itself.
+ * Walk the day from its start time, defaulting to 09:00. A stop that opens later is waited for; a stop reached after
+ * it closes, or that closes before its dwell is done, is outside its hours. The rationale is one sentence, in sentence
+ * case, and never the decision path itself.
  */
 export const evaluateDay = (day: Day, options: Record<string, Place>): DayFeasibility | null => {
   const stops = day.slots.map((s) => (s.placeId ? options[s.placeId] : undefined)).filter((p): p is Place => !!p)
   if (stops.length === 0) return null
 
-  let clock = DAY_START
+  const start = day.startMin ?? DAY_START
+  let clock = start
   let transit = 0
   let dwell = 0
   const outside: string[] = []
@@ -105,7 +106,7 @@ export const evaluateDay = (day: Day, options: Record<string, Place>): DayFeasib
     dwell += place.dwellMin
     clock = leave
   })
-  const daySpanMin = clock - DAY_START
+  const daySpanMin = clock - start
   const overrun = clock - DAY_END
 
   const base = { transitMin: transit, dwellMin: dwell, daySpanMin, endMin: clock, stopsOutsideHours: outside }
@@ -182,8 +183,17 @@ export const scheduleTrip = (trip: Trip): Day[] => {
 
     // The pool is in rank order, so the day keeps only as many cluster cards as it has open slots before ordering
     // them. Otherwise the period and geography picks below can seat three weaker cards and bench a unanimous one.
+    // If the chosen cluster has fewer open cards than slots, the shortfall is filled with the highest-ranked remaining
+    // openOn(day) candidates from other clusters before any route ordering.
     const open = day.slots.filter((s) => !(s.pinned && s.placeId)).length
     let local = candidates.filter((p) => p.cluster === cluster).slice(0, open)
+    const shortfall = open - local.length
+    if (shortfall > 0) {
+      const outside = candidates
+        .filter((p) => p.cluster !== cluster && !local.some((l) => l.id === p.id))
+        .slice(0, shortfall)
+      local = [...local, ...outside]
+    }
     let previous: string | null = null
     const slots = day.slots.map((slot) => {
       if (slot.pinned && slot.placeId) {

@@ -1,7 +1,8 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { Day, ManualSection, Period, Person, Slot, Trip } from './data/types'
 import { withManualNote, withoutManualNote } from './lib/manualNotes'
-import { scheduleTrip, withFeasibility } from './lib/schedule'
+import { maxTripDays, planCapacity } from './lib/planCapacity'
+import { evaluateDay, scheduleTrip, withFeasibility } from './lib/schedule'
 import { load, reset, save } from './lib/store'
 import { castVote, closeVoting, finalizeVotingIfDue } from './lib/votingSession'
 
@@ -30,6 +31,8 @@ type Ctx = {
   tick: (itemId: string) => void
   /** Regenerates the calendar when the dates change, and leaves it alone when they do not. */
   setDates: (startDate: string, nights: number) => void
+  /** Sets when the day starts, in minutes after midnight. Recomputes that day's feasibility. */
+  setDayStart: (dayIndex: number, startMin: number) => void
   /** Opens a second slot in a period of a day. Each period holds at most two, so a day tops out at six. */
   addSlot: (dayIndex: number, period: Period) => void
   /** Closes a period's second slot, only while it is empty. The first slot of a period never goes. */
@@ -48,19 +51,62 @@ const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frida
 
 const emptyDays = (startDate: string, nights: number, titles: string[]): Day[] =>
   Array.from({ length: nights + 1 }, (_, i) => {
-    const d = new Date(`${startDate}T00:00:00`)
-    d.setDate(d.getDate() + i)
+    const d = new Date(`${startDate}T00:00:00Z`)
+    d.setUTCDate(d.getUTCDate() + i)
     const index = i + 1
     return {
       index,
       date: d.toISOString().slice(0, 10),
-      weekday: WEEKDAYS[d.getDay()] ?? 'Sunday',
+      weekday: WEEKDAYS[d.getUTCDay()] ?? 'Sunday',
       tint: ((i % 5) + 1) as Day['tint'],
       title: titles[i] ?? `Day ${index}`,
       slots: PERIODS.map((period): Slot => ({ id: `d${index}-${period}`, period, placeId: null, pinned: false })),
+      startMin: 540,
       feasibility: null
     }
   })
+
+const isISODate = (s: string): boolean => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false
+  const d = new Date(`${s}T00:00:00Z`)
+  if (Number.isNaN(d.getTime())) return false
+  return d.toISOString().slice(0, 10) === s
+}
+
+export const withDates = (trip: Trip, startDate: string, nights: number): Trip => {
+  if (trip.startDate === startDate && trip.nights === nights) return trip
+  if (!isISODate(startDate)) return trip
+  if (!Number.isInteger(nights) || nights < 0) return trip
+  if (nights + 1 > maxTripDays(trip)) return trip
+  return {
+    ...trip,
+    startDate,
+    nights,
+    days: emptyDays(
+      startDate,
+      nights,
+      trip.days.map((d) => d.title)
+    ),
+    pins: [],
+    legs: [{ city: trip.destination, startDay: 1, endDay: nights + 1, transferMin: 0 }]
+  }
+}
+
+export const withDayStart = (trip: Trip, dayIndex: number, startMin: number): Trip => {
+  const day = trip.days.find((d) => d.index === dayIndex)
+  if (!day) return trip
+  if (!Number.isInteger(startMin) || startMin < 0 || startMin > 1439) return trip
+  if (day.startMin === startMin) return trip
+  return {
+    ...trip,
+    days: trip.days.map((d) =>
+      d.index === dayIndex ? { ...d, startMin, feasibility: evaluateDay({ ...d, startMin }, trip.options) } : d
+    )
+  }
+}
+
+export const withOptimizedPlan = (trip: Trip): Trip =>
+  planCapacity(trip).canFill ? { ...trip, days: scheduleTrip(trip) } : trip
 
 const setSlot = (days: Day[], dayIndex: number, slotIndex: number, patch: Partial<Slot>): Day[] =>
   days.map((day) =>
@@ -206,7 +252,7 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const apply = useCallback(() => {
-    setTrip((current) => ({ ...current, days: scheduleTrip(current) }))
+    setTrip((current) => withOptimizedPlan(current))
   }, [])
 
   const pin = useCallback((placeId: string, dayIndex: number, slotIndex: number) => {
@@ -239,22 +285,7 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
   }, [])
 
   const setDates = useCallback((startDate: string, nights: number) => {
-    setTrip((current) => {
-      // Editing the trip without moving its dates is not a reason to throw the calendar away.
-      if (current.startDate === startDate && current.nights === nights) return current
-      return {
-        ...current,
-        startDate,
-        nights,
-        days: emptyDays(
-          startDate,
-          nights,
-          current.days.map((d) => d.title)
-        ),
-        pins: [],
-        legs: [{ city: current.destination, startDay: 1, endDay: nights + 1, transferMin: 0 }]
-      }
-    })
+    setTrip((current) => withDates(current, startDate, nights))
   }, [])
 
   const addSlot = useCallback((dayIndex: number, period: Period) => {
@@ -269,6 +300,10 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
       ...current,
       days: current.days.map((day) => (day.index === dayIndex ? withoutSlot(day, slotId) : day))
     }))
+  }, [])
+
+  const setDayStart = useCallback((dayIndex: number, startMin: number) => {
+    setTrip((current) => withDayStart(current, dayIndex, startMin))
   }, [])
 
   const restart = useCallback(() => {
@@ -301,6 +336,7 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
       unpin,
       tick,
       setDates,
+      setDayStart,
       addSlot,
       removeSlot,
       addManualNote,
@@ -322,6 +358,7 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
       unpin,
       tick,
       setDates,
+      setDayStart,
       addSlot,
       removeSlot,
       addManualNote,

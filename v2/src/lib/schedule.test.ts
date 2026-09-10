@@ -2,8 +2,8 @@ import { describe, expect, test } from 'bun:test'
 import { places } from '../data/places'
 import { travelMatrix } from '../data/travel'
 import { trip } from '../data/trip'
-import type { Day } from '../data/types'
-import { backupFor, CLUSTER_LABEL, evaluateDay, scheduleTrip } from './schedule'
+import type { Answer, Day, Trip } from '../data/types'
+import { backupFor, CLUSTER_LABEL, evaluateDay, minutes, scheduleTrip } from './schedule'
 
 const ids = places.map((p) => p.id)
 
@@ -149,5 +149,130 @@ describe('backupFor', () => {
     }
     expect(days.map((d) => backupFor(d, planned)).some((b) => b !== null)).toBe(true)
     expect(backupFor(trip.days[0] as (typeof days)[number], trip)).toBeNull()
+  })
+})
+
+const dayVotes = (trip: Trip, ids: string[], below?: string): Trip['votes'] => {
+  const votes: Record<string, Record<string, Answer>> = {}
+  for (const member of trip.party) {
+    const memberVotes: Record<string, Answer> = {}
+    for (const id of ids) memberVotes[id] = 'yes'
+    if (below) memberVotes[below] = member.id === trip.ownerId ? 'yes' : 'skip'
+    votes[member.id] = memberVotes
+  }
+  return votes
+}
+
+describe('day start time', () => {
+  test('08:00 and 10:00 starts affect elapsed and end with opening waits', () => {
+    const museum = 'tokyo-national-museum'
+    const place = trip.options[museum]
+    if (!place) throw new Error(`fixture missing ${museum}`)
+    const openMin = minutes(place.opens)
+    const dwell = place.dwellMin
+    const base = dayWith([null, museum, null])
+    for (const startMin of [480, 600]) {
+      const result = evaluateDay({ ...base, startMin }, trip.options)
+      expect(result).not.toBeNull()
+      if (!result) throw new Error('evaluateDay returned null')
+      expect(result.endMin).toBe(Math.max(startMin, openMin) + dwell)
+      expect(result.daySpanMin).toBe(result.endMin - startMin)
+    }
+  })
+})
+
+describe('scheduleTrip fallback', () => {
+  const asakusaA = 'nakamise'
+  const asakusaB = 'kappabashi'
+  const shibuya = 'shibuya-crossing'
+  const baseDay = trip.days[0]
+  if (!baseDay) throw new Error('fixture has no day')
+
+  test('fills a shortfall with the highest-ranked open place from another cluster', () => {
+    const day: Day = { ...baseDay, weekday: 'Saturday', title: 'Test' }
+    const mixed: Trip = {
+      ...trip,
+      nights: 0,
+      days: [day],
+      legs: [{ city: 'Tokyo', startDay: 1, endDay: 1, transferMin: 0 }],
+      votes: dayVotes(trip, [asakusaA, asakusaB, shibuya])
+    }
+    const scheduled = scheduleTrip(mixed)
+    const placeIds = scheduled[0]?.slots.map((s) => s.placeId).filter((id): id is string => id !== null) ?? []
+    expect(placeIds).toHaveLength(3)
+    expect(new Set(placeIds).size).toBe(3)
+    for (const id of [asakusaA, asakusaB, shibuya]) {
+      expect(placeIds).toContain(id)
+    }
+    expect(scheduled[0]?.title).toBe(CLUSTER_LABEL['asakusa-ueno'])
+  })
+
+  test('skips a closed-on-that-weekday place and fills with open alternatives', () => {
+    const closed = 'tokyo-national-museum'
+    const open = ['sensoji', 'ameyoko', shibuya]
+    const day: Day = { ...baseDay, weekday: 'Monday', title: 'Test' }
+    const mixed: Trip = {
+      ...trip,
+      nights: 0,
+      days: [day],
+      legs: [{ city: 'Tokyo', startDay: 1, endDay: 1, transferMin: 0 }],
+      votes: dayVotes(trip, [...open, closed])
+    }
+    const scheduled = scheduleTrip(mixed)
+    const placeIds = scheduled[0]?.slots.map((s) => s.placeId).filter((id): id is string => id !== null) ?? []
+    expect(placeIds).toHaveLength(3)
+    expect(new Set(placeIds).size).toBe(3)
+    for (const id of open) {
+      expect(placeIds).toContain(id)
+    }
+    expect(placeIds).not.toContain(closed)
+  })
+
+  test('excludes a below-threshold place and fills with the voted-in majority', () => {
+    const below = 'takeshita-street'
+    const open = [asakusaA, asakusaB, shibuya]
+    const day: Day = { ...baseDay, weekday: 'Saturday', title: 'Test' }
+    const mixed: Trip = {
+      ...trip,
+      nights: 0,
+      days: [day],
+      legs: [{ city: 'Tokyo', startDay: 1, endDay: 1, transferMin: 0 }],
+      votes: dayVotes(trip, open, below)
+    }
+    const scheduled = scheduleTrip(mixed)
+    const placeIds = scheduled[0]?.slots.map((s) => s.placeId).filter((id): id is string => id !== null) ?? []
+    expect(placeIds).toHaveLength(3)
+    expect(new Set(placeIds).size).toBe(3)
+    for (const id of open) {
+      expect(placeIds).toContain(id)
+    }
+    expect(placeIds).not.toContain(below)
+  })
+
+  test('preserves a pinned closed venue and fills around it without duplicates', () => {
+    const monday = 'Monday'
+    const closed = 'tokyo-national-museum'
+    const place = trip.options[closed]
+    if (!place?.closedOn.includes(monday.toLowerCase())) {
+      throw new Error('fixture missing a Monday-closed place')
+    }
+    const day: Day = {
+      ...baseDay,
+      weekday: monday,
+      slots: baseDay.slots.map((s, i) => (i === 1 ? { ...s, placeId: closed, pinned: true } : s))
+    }
+    const pinned: Trip = {
+      ...trip,
+      nights: 0,
+      days: [day],
+      legs: [{ city: 'Tokyo', startDay: 1, endDay: 1, transferMin: 0 }],
+      votes: dayVotes(trip, Object.keys(trip.options))
+    }
+    const scheduled = scheduleTrip(pinned)
+    expect(scheduled[0]?.slots[1]?.placeId).toBe(closed)
+    expect(scheduled[0]?.slots[1]?.pinned).toBe(true)
+    const placeIds = scheduled[0]?.slots.map((s) => s.placeId).filter((id): id is string => id !== null) ?? []
+    expect(placeIds).toHaveLength(3)
+    expect(new Set(placeIds).size).toBe(placeIds.length)
   })
 })
