@@ -170,9 +170,10 @@
   transition: background-color var(--motion-fade) var(--ease);
 }
 
-/* The theme switch, the same control the app's top bar carries. Outlined rather than filled, so the CTA keeps its
-   place as the one solid button on the page. Pushed to the far edge of the top row, with the way in after it: the two
-   controls sit together on the right, the way the app's own top bar groups its controls. */
+/* The theme switch. Outlined and paper-grounded rather than the top bar's borderless control, because it sits over
+   a photograph, not on an island: the ground keeps the icon legible against the bright sky in both themes, and paper
+   (not ink) leaves the CTA as the one solid button on the page. Pushed to the far edge of the top row, with the way in
+   after it. */
 .land-theme {
   display: grid;
   place-items: center;
@@ -182,7 +183,11 @@
   padding: 0;
   border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
   border-radius: var(--r-pill);
-  background: transparent;
+  /* A paper ground, not transparent: the icon sits on the photograph, and in dark mode the near-white icon over the
+     bright sky measured 1.29:1. Opaque rather than a veil, so the contrast is the token contrast (ink on paper,
+     ~13:1) in both themes instead of depending on the photo behind it. Paper inverts with the theme, so the same
+     rule is a light chip in light and a dark one in dark. */
+  background: var(--paper);
   color: var(--ink);
   cursor: pointer;
   transition:
