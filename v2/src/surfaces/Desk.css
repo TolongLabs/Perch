@@ -119,6 +119,30 @@
   color: var(--ink-muted);
 }
 
+/* Same posture as the pin note: it says what the scheduler will and will not do, so the button next to it cannot
+   be pressed into a promise the plan cannot keep. */
+.desk-capnote {
+  flex-basis: 100%;
+  margin: var(--s3) 0 0;
+  color: var(--ink-muted);
+}
+
+/* The press that loses the unpinned arrangement asks once, on the surface, before it happens. */
+.desk-applyask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  max-width: 54ch;
+}
+
+.desk-applyacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+}
+
 .desk-resetask {
   display: flex;
   flex-direction: column;
@@ -185,6 +209,26 @@
   display: inline-flex;
   align-items: center;
   gap: var(--s2);
+}
+
+/* The day's start, in the words the day is already written in: the label, the current answer, and the thirty-minute
+   steps on either side of it. The end and the total follow from it - `withDayStart` recomputes both when it moves. */
+.desk-daystart {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.desk-daystart-label {
+  color: var(--ink-on-tint);
+  font-size: 10px;
+}
+
+.desk-daystart-time {
+  color: var(--ink-on-tint);
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
 
 /* The day's own controls, on the day's own heading. Small and quiet: they change the shape of the day, which is a
@@ -375,8 +419,13 @@
     grid-area: 1 / 2 / span 2 / auto;
   }
 
+  /* The pool pins at the top while the calendar scrolls, and on a long trip it lands on the Prototype Controls
+     below it in the same column - which is the control a live demo has to be able to reach. The panel is opaque,
+     so putting it above the pinned list reads as a panel over the cards and keeps the button clickable. */
   .desk-proto {
     grid-area: 2 / 1;
+    position: relative;
+    z-index: 1;
   }
 
   .desk-grid {
