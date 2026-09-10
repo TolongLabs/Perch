@@ -1,12 +1,14 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import type { Answer, Day, Period, Person, Slot, Trip } from './data/types'
+import type { Day, Period, Person, Slot, Trip } from './data/types'
 import { scheduleTrip, withFeasibility } from './lib/schedule'
 import { load, reset, save } from './lib/store'
+import { castVote, closeVoting, finalizeVotingIfDue } from './lib/votingSession'
 
 type Ctx = {
   trip: Trip
-  /** A member's yes, no or Must Go on a place. Votes live on places, so they survive a date change. */
-  swipe: (memberId: string, placeId: string, answer: boolean | 'must') => void
+  /** A member's yes, no, Skip or Must Go on a place. Votes survive a date change. */
+  swipe: (memberId: string, placeId: string, answer: boolean | 'must' | 'skip') => void
+  endVoting: () => void
   /** Renames the party. Ids are kept where a row keeps its position, so votes keyed by member id survive. */
   /** Who this browser votes as. Ignored for an id that is not in the party. */
   setCurrentMember: (memberId: string) => void
@@ -81,7 +83,7 @@ const person = (id: string, name: string): Person => ({
 /** Adds a member unless the party is full or the name is blank; the id is unique against the current party. */
 export const withMember = (trip: Trip, name: string): Trip => {
   const clean = name.trim()
-  if (clean.length === 0 || trip.party.length >= MAX_PARTY) return trip
+  if (clean.length === 0 || trip.party.length >= MAX_PARTY || trip.votingClosedAt !== null) return trip
   const base = slug(clean) || 'member'
   let id = base
   for (let n = 2; trip.party.some((p) => p.id === id); n += 1) id = `${base}-${n}`
@@ -90,9 +92,11 @@ export const withMember = (trip: Trip, name: string): Trip => {
 
 /** Removes a member and their votes. The owner stays; a missing id is a no-op. */
 export const withoutMember = (trip: Trip, memberId: string): Trip => {
-  if (memberId === trip.ownerId || !trip.party.some((p) => p.id === memberId)) return trip
+  if (trip.votingClosedAt !== null || memberId === trip.ownerId || !trip.party.some((p) => p.id === memberId))
+    return trip
   const { [memberId]: _dropped, ...votes } = trip.votes
-  return { ...trip, party: trip.party.filter((p) => p.id !== memberId), votes }
+  const currentMemberId = trip.currentMemberId === memberId ? trip.ownerId : trip.currentMemberId
+  return { ...trip, party: trip.party.filter((p) => p.id !== memberId), votes, currentMemberId }
 }
 
 export const renamed = (trip: Trip, memberId: string, name: string): Trip => {
@@ -128,21 +132,29 @@ const clearPlace = (days: Day[], placeId: string): Day[] =>
   )
 
 export const TripProvider = ({ children }: { children: ReactNode }) => {
-  const [trip, setTrip] = useState<Trip>(load)
+  const [trip, setTrip] = useState<Trip>(() => finalizeVotingIfDue(load()))
 
   useEffect(() => {
     save(trip)
   }, [trip])
 
-  const swipe = useCallback((memberId: string, placeId: string, answer: boolean | 'must') => {
-    setTrip((current) => {
-      const mine: Record<string, Answer> = { ...current.votes[memberId] }
-      if (answer === 'must') {
-        for (const id of Object.keys(mine)) if (mine[id] === 'must') mine[id] = 'yes'
-      }
-      mine[placeId] = answer === 'must' ? 'must' : answer ? 'yes' : 'no'
-      return { ...current, votes: { ...current.votes, [memberId]: mine } }
-    })
+  useEffect(() => {
+    const checkDeadline = () => setTrip((current) => finalizeVotingIfDue(current))
+    checkDeadline()
+    const timer = window.setInterval(checkDeadline, 60_000)
+    window.addEventListener('focus', checkDeadline)
+    return () => {
+      window.clearInterval(timer)
+      window.removeEventListener('focus', checkDeadline)
+    }
+  }, [])
+
+  const swipe = useCallback((memberId: string, placeId: string, answer: boolean | 'must' | 'skip') => {
+    setTrip((current) => castVote(current, memberId, placeId, answer))
+  }, [])
+
+  const endVoting = useCallback(() => {
+    setTrip((current) => closeVoting(current, current.currentMemberId))
   }, [])
 
   const setCurrentMember = useCallback((memberId: string) => {
@@ -256,13 +268,14 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
 
   const restart = useCallback(() => {
     reset()
-    setTrip(load())
+    setTrip(finalizeVotingIfDue(load()))
   }, [])
 
   const value = useMemo(
     () => ({
       trip,
       swipe,
+      endVoting,
       setCurrentMember,
       renameMember,
       addMember,
@@ -281,6 +294,7 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     [
       trip,
       swipe,
+      endVoting,
       setCurrentMember,
       renameMember,
       addMember,

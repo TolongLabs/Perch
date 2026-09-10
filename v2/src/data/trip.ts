@@ -56,6 +56,7 @@ export const trip: Trip = {
   budgetRM: 600,
   ownerId: 'aisyah',
   currentMemberId: 'aisyah',
+  votingClosedAt: null,
   party: [
     { id: 'aisyah', name: 'Aisyah', initials: 'AI' },
     { id: 'farah', name: 'Farah', initials: 'FA' },

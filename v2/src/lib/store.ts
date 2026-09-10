@@ -22,6 +22,7 @@ const isTrip = (value: unknown): value is Trip => {
     t.votes !== null &&
     typeof t.options === 'object' &&
     t.options !== null &&
+    (t.votingClosedAt === undefined || t.votingClosedAt === null || typeof t.votingClosedAt === 'string') &&
     t.days.every((d) => Array.isArray(d?.slots) && d.slots.every((s) => typeof s?.pinned === 'boolean'))
   )
 }
@@ -34,7 +35,12 @@ export const load = (): Trip => {
     const parsed: unknown = JSON.parse(raw)
     if (!isTrip(parsed) || parsed.id !== seed.id) return seed
     // A trip stored before the member switcher existed has no current member; it was always the owner.
-    return { ...parsed, currentMemberId: parsed.currentMemberId ?? parsed.ownerId }
+    // A trip stored before voting closure tracking has no votingClosedAt; default it to open.
+    return {
+      ...parsed,
+      currentMemberId: parsed.currentMemberId ?? parsed.ownerId,
+      votingClosedAt: parsed.votingClosedAt ?? null
+    }
   } catch {
     return seed
   }
