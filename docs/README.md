@@ -70,7 +70,7 @@ dragging. One chain, and the feature list below is that chain in order.
 
 | Feature          | What It Does                                                                                                                                              |
 | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Onboarding**   | Free text first, chips as shortcuts under it, and a drawn month tapped twice for the dates                                                                |
+| **Onboarding**   | A drawn month tapped twice for the dates, activity and destination chips, and a free-text field that appears only under Other; only Tokyo continues       |
 | **The Deck**     | The invite link. Each place is a reel; friends swipe yes or no with no account and no install                                                             |
 | **The Tally**    | A percentage per place. The owner's swipe weighs 1.5; unanimous places go gold, places nobody wanted are greyed                                           |
 | **The Desk**     | Four days, three to six slots each. She drags what won into slots, pins what must not move, and Optimize Plan orders every day around it                  |
@@ -78,7 +78,7 @@ dragging. One chain, and the feature list below is that chain in order.
 | **The Perch**    | Remove a card and the drawer offers the next-ranked voted-in place for that slot, so the trip cannot empty                                                |
 | **Before We Go** | A checklist derived from the trip itself, and all of it ticked is what unlocks the Book and the Handbook                                                  |
 | **The Book**     | The shared link and the keepsake. A day is a spread: two stops to a page, the poster frames as torn plates, the day's drawn route pinned on the first one |
-| **The Handbook** | The other thing the checklist unlocks. Customs, forecast and a packing list, every line earned by something on the calendar or in the dates               |
+| **The Handbook** | The other thing the checklist unlocks. Customs and packing derived from trip facts and authored news triggers; displayed news is filtered to trip dates   |
 
 **The scheduler is a heuristic and the copy never calls it AI**: cluster by area per day, order by best period and
 opening hours, nearest neighbour within the day. Its colours are the explanation, and every red carries the reason.
@@ -193,7 +193,8 @@ about at the same time.
 
 **The flow is Landing, Dashboard, Onboarding, The Deck, The Tally, The Desk, Before We Go, and then The Book and The
 Handbook, which the same checklist unlocks together**, and every step is a real click in the deployed prototype. Nothing
-here is a static mock-up of a screen that does not exist.
+here is a static mock-up of a screen that does not exist. The captures record the build as it stood when they were
+taken, so controls still being integrated may differ on the live URL.
 
 **The six phone screens are captured at 390 by 844 and the three desktop screens at 1440 by 900, every one rendered at
 double scale so it stays sharp on a high-density display**, which is why their proportions differ. The Desk, the Book
@@ -215,13 +216,13 @@ real bird guide and off four Japanese sites read directly. The eight studies beh
 
 **One novel chain, and we are deliberately not claiming more than one.**
 
-| What                                                      | Why It Is Novel, Or What The Twist Is                                                                                                                                                   |
-| --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **The swipes become the calendar**                        | SwipeSights computes a ranked group preference and spends it on how long you stay. **We spend it on the days**: the tally is the only input to the scheduler, and nothing else is asked |
-| **The losing swipes are kept and spent**                  | Every voting product discards what lost. The ranked voted-in list survives as the Perch drawer, so removing a card offers the next place the group already said yes to                  |
-| **Owner priority without owner override**                 | The owner's swipe weighs 1.5 and she can pin any card the scheduler must not move. **She can carry a place in against indifference, not against three friends who said no**             |
-| **The day explains itself in colour**                     | Green, gold or red per day with the reason stated: the order is slow by so many minutes, or this stop is shut on Monday. **A heuristic that says what it did, never called AI**         |
-| **The invite link is the deck, the keepsake is the book** | Friends land on reels and swipe with nothing installed; what they get back is a printed book of the trip they chose. **The book is not a reward at the end, it is why they swipe**      |
+| What                                                      | Why It Is Novel, Or What The Twist Is                                                                                                                                                    |
+| --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **The Swipes Become The Calendar**                        | SwipeSights computes a ranked group preference and spends it on how long you stay. **We Spend It On The Days**: the tally is the scheduler's pool, with the owner's pins the only bypass |
+| **The losing swipes are kept and spent**                  | Every voting product discards what lost. The ranked voted-in list survives as the Perch drawer, so removing a card offers the next place the group already said yes to                   |
+| **Owner Vote Weight And Pins**                            | The owner's swipe weighs 1.5, only 33 percent of the four-person seed, so their vote alone cannot carry a place in. **A pin can still place a card -- a Desk act, not a vote**           |
+| **The day explains itself in colour**                     | Green, gold or red per day with the reason stated: the order is slow by so many minutes, or this stop is shut on Monday. **A heuristic that says what it did, never called AI**          |
+| **The invite link is the deck, the keepsake is the book** | Friends land on reels and swipe with nothing installed; what they get back is a printed book of the trip they chose. **The book is not a reward at the end, it is why they swipe**       |
 
 ### Against The Products We Named
 
@@ -260,7 +261,7 @@ rather than assumed away.
 | **Drag**      | `@dnd-kit/core`, the one new dependency          | Accessible drag for the calendar slots            |
 | **Backend**   | **None, by design, for the prototype**           | Nothing in the Must tier writes to a server       |
 | **APIs**      | **None. No key exists**                          | The demo cannot fail on someone else's rate limit |
-| **Reels**     | Small muted MP4s from a public GCS bucket        | The one network call on stage                     |
+| **Reels**     | Small muted MP4s from a public GCS bucket        | One of the few network calls on stage             |
 | **Hero Clip** | One 10-second loop from the same bucket          | The landing's ground, AI-generated. See below     |
 | **Hosting**   | Google Cloud Run, `asia-southeast1`              | Scales to zero, so free at our traffic            |
 | **CI/CD**     | GitHub Actions on every merge to `main`          | Workload Identity Federation, no stored key       |
@@ -269,10 +270,21 @@ rather than assumed away.
 **Why not Vercel**, since it is the obvious choice: its Hobby tier only builds commits authored by the account owner, so
 a teammate's merge would not ship. Cloud Run has no such rule, and no one person holds the keys.
 
-**The constraints on stage.** The prototype has no backend, no auth, no API key and no network call other than the reel
-and hero MP4s from a public GCS bucket. The demo is one city, Tokyo; the data model carries legs, so multi-area Japan is
-a README claim backed by a type rather than a screen. Place data is hand-authored for now: 24 places across four
-clusters and a 24 x 24 travel matrix, both committed.
+**The Constraints On Stage.** Committed place data; external media from a public GCS bucket and OpenStreetMap tiles; no
+backend, no auth, no API key. The demo is one city, Tokyo; the data model carries legs, so multi-area Japan is a README
+claim backed by a type rather than a screen. Place data is hand-authored for now: 24 places across four clusters and a
+24 x 24 travel matrix, both committed.
+
+Voting closure is browser-local and evaluated while the browser runs or opens, not by a server. Skip is an answered
+abstention; unanswered cards and Skip both remain in the full-party denominator. See [TRD.md](TRD.md#voting-session) for
+the closure contract.
+
+**Controls Still Pending.** The data contracts for manual notes, day start times and plan capacity are in code while
+their visible controls are still being integrated; the existing Deck controls remain. `apply` leaves the plan untouched
+when the scheduler cannot fill every slot. Older stored trips are migrated on load.
+
+The Handbook adds every non-null authored news trigger to its packing facts, even outside the trip dates; only the
+displayed news is date-filtered. See [TRD.md](TRD.md#known-limitations).
 
 **One piece of prior work is in the repo, and it ships nothing to a user.** `scripts/demo/` is the recorder that films
 the deployed site, dubs it and burns in subtitles for the submission video. It was written for `TolongLabs/MakanLah` on
@@ -367,7 +379,7 @@ Verbatim, append-only. We cite these instead of relying on memory.
 
 ```bash
 bun install                  # dependencies and the husky git hooks
-cp .env.example .env         # empty of keys today; the prototype calls nothing external
+cp .env.example .env         # empty of keys today; the prototype calls no keyed API
 bun run dev                  # the prototype, on http://localhost:5173
 ```
 
