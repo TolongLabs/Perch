@@ -128,12 +128,17 @@ fi
 # libass falls back to. Point DEMO_FONTSDIR at a directory holding a static TTF; libass cannot read woff2, so the
 # app's variable Quicksand has to be instanced and converted first. See the README.
 subtitle_font="${DEMO_SUBTITLE_FONT:-DejaVu Sans}"
-subtitle_size="${DEMO_SUBTITLE_SIZE:-14}"
+subtitle_size="${DEMO_SUBTITLE_SIZE:-12}"
 fontsdir="${DEMO_FONTSDIR:-}"
-subtitle_style="FontName=$subtitle_font,FontSize=$subtitle_size,PrimaryColour=&H00FFFFFF,OutlineColour=&H40101010,BorderStyle=3,Outline=3,Shadow=0,Alignment=2,MarginV=28"
-subtitle_filter="subtitles=filename=narration.srt:force_style='$subtitle_style'"
+subtitle_style="FontName=$subtitle_font,FontSize=$subtitle_size,PrimaryColour=&H00FFFFFF"
+subtitle_style+=",OutlineColour=&H0D000000,BorderStyle=3,Outline=2,Shadow=0,Alignment=2"
+subtitle_fonts=''
 if [ -n "$fontsdir" ]; then
-  subtitle_filter="subtitles=filename=narration.srt:fontsdir='$(realpath "$fontsdir")':force_style='$subtitle_style'"
+  subtitle_fonts=":fontsdir='$(realpath "$fontsdir")'"
+fi
+subtitle_filter="subtitles=filename=narration.srt$subtitle_fonts:force_style='$subtitle_style,MarginV=19'"
+if [ -s "$demo_dir/narration-top.srt" ]; then
+  subtitle_filter+=",subtitles=filename=narration-top.srt$subtitle_fonts:force_style='$subtitle_style,MarginV=37'"
 fi
 source_path="$(realpath "$source")"
 audio_path="$(realpath "$demo_dir/narration.wav")"

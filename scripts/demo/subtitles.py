@@ -9,6 +9,7 @@ from pathlib import Path
 MAX_CHARS = 42
 MAX_LINES = 2
 MIN_CARD_MS = 900
+NBSP = chr(0xA0)
 
 
 def wav_duration_ms(path):
@@ -101,14 +102,22 @@ def build(demo_dir):
             current[1] = following[0]
     spans = [span for span in spans if span[1] - span[0] >= 200]
 
-    blocks = [
-        f'{index}\n{timestamp(start)} --> {timestamp(end)}\n{text}'
-        for index, (start, end, text) in enumerate(spans, 1)
-    ]
+    bottom_blocks = []
+    top_blocks = []
+    for start, end, text in spans:
+        caption_lines = text.split('\n')
+        timing = f'{timestamp(start)} --> {timestamp(end)}'
+        bottom_blocks.append(f'{len(bottom_blocks) + 1}\n{timing}\n{NBSP}{caption_lines[-1]}{NBSP}')
+        if len(caption_lines) == MAX_LINES:
+            top_blocks.append(f'{len(top_blocks) + 1}\n{timing}\n{NBSP}{caption_lines[0]}{NBSP}')
+
     output = demo_dir / 'narration.srt'
-    content = '\n\n'.join(blocks)
-    output.write_text(f'{content}\n', encoding='utf-8')
-    print(f'built {len(blocks)} subtitle cards from {len(lines)} narration lines')
+    bottom_content = '\n\n'.join(bottom_blocks)
+    output.write_text(f'{bottom_content}\n', encoding='utf-8')
+    top_output = demo_dir / 'narration-top.srt'
+    top_content = '\n\n'.join(top_blocks)
+    top_output.write_text(f'{top_content}\n' if top_content else '', encoding='utf-8')
+    print(f'built {len(bottom_blocks)} subtitle cards from {len(lines)} narration lines')
     return output
 
 
