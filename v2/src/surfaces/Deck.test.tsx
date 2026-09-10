@@ -2,6 +2,7 @@ import { expect, test } from 'bun:test'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { MemoryRouter } from 'react-router-dom'
 import { BottomDock } from '../chrome/SidebarIsland'
+import { trip } from '../data/trip'
 import { TripProvider } from '../state'
 import { Deck } from './Deck'
 
@@ -42,4 +43,24 @@ test('exposes exactly one current destination from the Deck', () => {
   )
 
   expect(html.match(/aria-current="page"/g)).toHaveLength(1)
+})
+
+test('closes the reels once voting has ended', () => {
+  const descriptor = Object.getOwnPropertyDescriptor(globalThis, 'localStorage')
+  Object.defineProperty(globalThis, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: () => JSON.stringify({ ...trip, votingClosedAt: '2026-09-10T12:00:00.000Z' }),
+      setItem: () => undefined
+    }
+  })
+  try {
+    const html = renderDeck()
+    expect(html).toContain('Voting Is Closed')
+    expect(html).toContain('>See The Final Tally</button>')
+    expect(html).not.toContain('class="deck-controls"')
+  } finally {
+    if (descriptor) Object.defineProperty(globalThis, 'localStorage', descriptor)
+    else Reflect.deleteProperty(globalThis, 'localStorage')
+  }
 })

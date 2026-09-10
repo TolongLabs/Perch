@@ -204,6 +204,7 @@ const storedVoter = (party: { id: string }[]): string | null => {
  * could never start their own. The owner never sees this, because she opened her own trip.
  */
 export const Deck = () => {
+  const navigate = useNavigate()
   const { trip, setCurrentMember } = useTrip()
   const joiner = isJoiner()
   const [voter, setVoter] = useState<string | null>(() => (joiner ? storedVoter(trip.party) : null))
@@ -213,8 +214,8 @@ export const Deck = () => {
   // trip. The owner's tab puts it back to her, so a friend's pick in another tab cannot follow her into her own
   // walkthrough through the store they share.
   useEffect(() => {
-    if (me && me !== trip.currentMemberId) setCurrentMember(me)
-  }, [me, trip.currentMemberId, setCurrentMember])
+    if (trip.votingClosedAt === null && me && me !== trip.currentMemberId) setCurrentMember(me)
+  }, [me, trip.currentMemberId, trip.votingClosedAt, setCurrentMember])
 
   const pick = (id: string) => {
     try {
@@ -224,6 +225,25 @@ export const Deck = () => {
     }
     setCurrentMember(id)
     setVoter(id)
+  }
+
+  if (trip.votingClosedAt !== null) {
+    return (
+      <main className="deck">
+        <section className="deck-done" data-state="closed">
+          <Heading as="h1">Voting Is Closed</Heading>
+          <p className="t-specimen">The reels are frozen. Every unanswered destination was recorded as Skip.</p>
+          <button
+            type="button"
+            className="deck-go t-label"
+            style={{ textTransform: 'none' }}
+            onClick={() => navigate(`/t/${trip.id}/votes`)}
+          >
+            See The Final Tally
+          </button>
+        </section>
+      </main>
+    )
   }
 
   if (!me) {

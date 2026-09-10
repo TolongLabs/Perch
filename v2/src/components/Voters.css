@@ -15,12 +15,28 @@
   font-size: 15px;
 }
 
+/* A partial ballot is a real state: it can already hold a Must Go and affect the running order without being done. */
+.voter[data-progress="in-progress"] {
+  border-color: var(--open);
+  background: color-mix(in oklab, var(--open) 10%, var(--paper));
+}
+
 /* Finished, so it takes the settled colour: swiping through is a thing you complete, not a state you are put in.
    Ink weighted, because a state colour set as text on its own tint fails contrast. */
-.voter[data-done="true"] {
+.voter[data-progress="complete"] {
   border-color: var(--decided);
   background: color-mix(in oklab, var(--decided) 10%, var(--paper));
   color: color-mix(in oklab, var(--decided) 76%, var(--ink));
+  font-weight: 700;
+}
+
+.voter-name {
+  font-weight: 700;
+}
+
+.voter-progress {
+  color: color-mix(in oklab, var(--ink-muted) 80%, var(--ink));
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -31,6 +47,4 @@
   color: var(--ink);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
