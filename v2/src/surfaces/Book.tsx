@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 import { BookFlip } from '../components/BookFlip'
 import { DayMap } from '../components/DayMap'
@@ -212,7 +211,7 @@ export const Book = () => {
                   const [a, b] = folio
                   if (!a) return null
                   return (
-                    <Fragment key={a.slot.id}>
+                    <div className="folio-spread" key={a.slot.id}>
                       {/* The first destination of the spread sits photo left / words right; the second flips to words
                         left / photo right. That is the alternation the intake names, and it is what makes a spread read
                         as two facing pages rather than two stacked lists. On a wide screen with motion, BookFlip turns
@@ -228,7 +227,7 @@ export const Book = () => {
                         {b && <DestPhoto entry={b} />}
                         <p className="page-num t-specimen" aria-hidden="true" />
                       </div>
-                    </Fragment>
+                    </div>
                   )
                 })}
               </BookFlip>

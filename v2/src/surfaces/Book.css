@@ -59,7 +59,10 @@
 
 .cover-save:hover,
 .cover-save:focus-visible {
-  background: color-mix(in oklab, var(--tint) 34%, var(--ink));
+  /* The cover sits outside every `[data-day]` scope, so it has no `--tint` to answer with: without the fallback the
+     mix is invalid and the button stays `--ink` on hover, reading as dead. `--open` is the tint the other tintless
+     controls use, so the cover answers in the same voice the rest of the Book already answers in. */
+  background: color-mix(in oklab, var(--tint, var(--open)) 34%, var(--ink));
 }
 
 .cover-facts {
@@ -204,12 +207,25 @@
  * On a phone the two facing pages stack, and the split that makes a spread read as two pages (photo left, words
  * right) would otherwise interleave the destinations: a photo, the next stop's words, this stop's words, the next
  * photo. `display: contents` lets the four destinations flow as one column instead, and the `order` below sets each
- * picture beside its own words. The page box carries no semantics, so dropping it from the box tree loses nothing;
- * the counter still increments on it. At spread width the pages come back to being boxes, as the spread needs them,
- * and on a reduced-motion screen the same box rule is what the flat book lays out on. */
+ * picture beside its own words - on the spread's own box, not the stage's, so a day with two spreads reads spread by
+ * spread rather than interleaving the same-order children of every spread on the page. The page box carries no
+ * semantics, so dropping it from the box tree loses nothing; the counter still increments on it. At spread width and
+ * on paper the spread and the pages come back to being plain flow, as the two-column layout needs them. */
 .folio-page {
   display: contents;
   counter-increment: page;
+}
+
+/* The spread's box while the pages flow as one column - a phone, and the stage wherever it is not a two-column
+   grid - and the thing the `order` below applies to. It is `contents` by default so that at spread width and on
+   paper it drops out of the box tree entirely and the two-column layouts see only the pages: a box here would break
+   both. The column only ever shows on a phone, where nothing else lays out the stage, so the `max-width` query
+   scopes it to exactly that case. */
+@media (max-width: 1023px) {
+  .folio-spread {
+    display: flex;
+    flex-direction: column;
+  }
 }
 
 /* Pushed to the foot of the page rather than trailing the last destination, so facing pages carry their numbers on
@@ -296,9 +312,11 @@
   margin-top: var(--s2);
 }
 
-/* The mobile reading order: each destination's picture, then its words, for the two stops on the spread. A single-
-   destination spread simply has no second pair, so it reads picture, words. Set after the destination and page-number
-   rules so the higher-specificity selectors follow the base ones. */
+/* The mobile reading order: each destination's picture, then its words, for the two stops on the spread. `order`
+   reaches the destinations only through the spread's flex column above - on the stage's own box the pages are
+   `contents` and the stage is no flex container, so these values are inert there. A single-destination spread simply
+   has no second pair, so it reads picture, words. Set after the destination and page-number rules so the
+   higher-specificity selectors follow the base ones. */
 .folio-left .dest-photo {
   order: 1;
 }
@@ -394,6 +412,18 @@
 
   .bookflip-stage .folio-page {
     display: flex;
+    flex-direction: column;
+    gap: var(--s5);
+  }
+
+  /* The book the reader sees is the host's clones, and the library sets each one's `display` inline as `block`, so
+     the rule above never reaches them: on the live book the destinations stack with no rhythm and the page number
+     sits against the last destination instead of the page's foot. `!important` is the only way to beat an inline
+     style; it wins on the live clones, and it is harmless to the authored pages, which the stage rule already lays
+     out the same way. */
+  .bookflip-host .book-page {
+    /* biome-ignore lint/complexity/noImportantStyles: the library sets `display` inline, so only `!important` reaches the live clones */
+    display: flex !important;
     flex-direction: column;
     gap: var(--s5);
   }

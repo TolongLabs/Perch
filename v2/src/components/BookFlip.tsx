@@ -20,8 +20,8 @@ type Props = {
  * showing on screen.
  *
  * The prev/next controls and the "Spread X of Y" line are driven imperatively through refs and the library's own
- * events, because a React state update after `init` would reconcile the very pages the library just rearranged and
- * tear them out of the book.
+ * events: the pages the book shows are clones the library owns inside the host, so nothing React renders changes
+ * while it is up, and the controls only need to mirror the state the library's `flip` event reports.
  *
  * The pages are the printed object and are `aria-hidden`; the host, which holds their clones, is hidden the same
  * way. The day's ordered stops live in the Book's `sr-only` list, which is a sibling of this book and stays the

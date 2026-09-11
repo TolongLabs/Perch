@@ -41,7 +41,7 @@
    Book's own `@media(min-width:1024px) .bookflip-stage .folio-page { display:flex }`, which otherwise wins on source
    order and leaves the flat originals showing alongside the flipbook. The print sheet reads the authored pages
    directly, and its `!important` rule below wins over this, so the hide is screen-only in effect. */
-.bookflip-stage.bookflip-live > .book-page {
+.bookflip-stage.bookflip-live .book-page {
   display: none;
 }
 
@@ -54,6 +54,12 @@
   justify-content: space-between;
   gap: var(--s3);
   margin-top: var(--s5);
+}
+
+/* The flat book has no spread to turn, so its controls are set `hidden`; without a rule of their own the
+   `display: flex` above out-specifies the attribute and a dead control would sit under every flat book. */
+.bookflip-nav[hidden] {
+  display: none;
 }
 
 .bookflip-turn {
@@ -96,7 +102,7 @@
     display: none !important;
   }
 
-  .bookflip-stage.bookflip-live > .book-page {
+  .bookflip-stage.bookflip-live .book-page {
     display: flex !important;
   }
 
