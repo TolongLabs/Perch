@@ -7,17 +7,21 @@
   background: var(--plate);
   min-height: 100vh;
   scroll-snap-type: y proximity;
-  counter-reset: page;
 
   /* A deckle edge, 90 by 12, flat along the top and ragged along the bottom, with both ends at the same height so it
      tiles seamlessly. Repeated at its own size rather than stretched, so the tear is the same coarseness on a
      342px picture and on a 1280px one; a single stretched mask reads as a smooth wave at spread width. */
   --tear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='12'%3E%3Cpath d='M0 0H90V6L86 9.5L82 5.5L78 10.5L74 7L70 11L66 6.5L62 9.5L58 5L54 10L50 6L46 11L42 7.5L38 9L34 5L30 10.5L26 6.5L22 9L18 5.5L14 10L10 7L6 9.5L2 5.5L0 6Z' fill='black'/%3E%3C/svg%3E");
   --tear-h: 12px;
+
+  /* The book's one page counter. It lives here rather than on the flipbook host, because the book is one book for
+     the whole trip: the host is the book's own box, and a reset on it put every page back at 1 (the counter's
+     shadow, the intake's own words). */
+  counter-reset: page;
 }
 
-/* `position: relative` is what pins the day's map to this spread rather than to the viewport: the Book scrolls, so
-   an unanchored absolute would let every pin drift to a corner of the screen instead of riding its own day. */
+/* The page the book sits on. The leaf is full white and is what separates a page from this spread: the book is the
+   spread's ground, the page is the sheet, and the border is what says the sheet has an edge. */
 .spread {
   position: relative;
   scroll-snap-align: start;
@@ -82,110 +86,18 @@
   font-size: 17px;
 }
 
-/* Day spreads */
+/* The book's spread */
 
-/* Everything in the head packs to the left. Pushed to the right edge the route button sat under the cluster island,
-   which is fixed at the top right of the viewport: the shell reserves the cluster's height for the first thing on a
-   page, but the Book scrolls, so every spread's head passes through that corner on its way up. Measured at 1440x900,
-   the cluster occupies 1266 to 1424 and covered the button for the whole of a spread's arrival. */
-.spread-head {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-start;
-  gap: var(--s3) var(--s5);
-  margin-bottom: var(--s5);
-}
-
-/* The band is 12px bold, which is not large text, so it needs 4.5:1 on the plate - and the full tints do not get
-   there in the light theme (day 3 measures 1.90:1, day 1 3.54:1). Mixing the day's tint with the ink keeps the hue
-   that says which day is held and lifts every day to 4.88:1 or better in light and 8.30:1 or better in dark. It is
-   the same tint-in-ink treatment the hover states below already use. */
-.spread-band {
-  color: color-mix(in oklab, var(--tint) 50%, var(--ink));
-}
-
-/* The band and the span are one block, so the head stays two things wide however many lines the left one runs to. */
-.spread-when {
+/* The book's one spread holds the whole trip: its pages, and the days' maps that follow them. A day is no longer a
+   spread of its own, so the day's identity rides with each destination as its when-line, and the maps keep the day
+   as a named run of their own. */
+.book-body {
   display: flex;
   flex-direction: column;
-  gap: var(--s2);
+  gap: var(--s7);
 }
 
-.spread-span {
-  color: var(--ink-muted);
-}
-
-.day-title {
-  margin: 0 0 var(--s5);
-}
-
-/* Pinned rather than printed. The tilt is the whole device: a note laid on the picture reads as the reader's own
-   mark about the day, where the same drawing set square beside it reads as a second illustration competing with it.
-   Paper, not glass: opaque, or the drawing is read through a photograph.
- *
-   No mat, no border: the map runs edge to edge. A plate-coloured frame around the tiles reads as a border the reader
-   wants removed, so the pin carries the map with nothing but the pin's own head above it. */
-.spread-pin {
-  position: absolute;
-  bottom: var(--s5);
-  right: var(--s5);
-  width: 140px;
-  margin: 0;
-  padding: 0;
-  background: var(--plate);
-  /* A loose tilt, not a set-square one: two to seven degrees is what a hand-pinned note actually sits at. */
-  transform: rotate(2.5deg);
-}
-
-.pin-head {
-  position: absolute;
-  top: -7px;
-  left: 50%;
-  width: 14px;
-  height: 14px;
-  margin-left: -7px;
-  border-radius: 999px;
-  background: radial-gradient(circle at 34% 30%, var(--plate) 0 2px, var(--tint) 3px 100%);
-  z-index: 1;
-}
-
-.plate-figure {
-  margin: 0;
-}
-
-.plate-svg {
-  width: 100%;
-  height: auto;
-  border-radius: var(--r-plate);
-}
-
-.plate-caption {
-  margin-top: var(--s2);
-  color: var(--ink-muted);
-}
-
-/* The caption repeats the day title verbatim, and the title is already set over this very picture. The drawing's
-   `aria-label` still names the stops in order, so nothing is lost but the duplicate. */
-.spread-pin .plate-caption {
-  display: none;
-}
-
-/* Aged cartography: the map is treated as a worn, western-chart plate. The filter lands on the tile images only and
-   never on the container, because the OpenStreetMap attribution lives in the same container and must stay clean and
-   legible - hiding or tinting the credit is not on the table. */
-.spread-pin .daymap-tiles .leaflet-tile {
-  filter: sepia(0.4) saturate(0.72) contrast(1.05) brightness(1.02);
-}
-
-/* Folios */
-
-/* The day's pages. Each spread holds the day's destinations two at a time, and the two facing pages of a spread are
-   `folio-left` and `folio-right`. The pages are direct children of the day's flipbook now, not nested in a folio:
-   on a phone they stack, at spread width they sit side by side across the gutter, and on a wide screen with motion
-   the BookFlip component turns them. It is the two-page arrangement that carries the intake's alternation. */
-
-/* The screen reader's ordered copy of the day's stops, from the same data as the folios and in visiting order. It is
+/* The screen reader's ordered copy of the trip's stops, from the same data as the folios and in visiting order. It is
    the only accessible version of the destinations - the visual pages are `aria-hidden` - so it must never reach the
    printed sheet, where those stops already appear as pictures. `sr-only` keeps it off screen at every size and under
    reduced motion, because it is static and the pages supply the picture. */
@@ -201,16 +113,69 @@
   }
 }
 
+/* The days' maps, after the book. Set in the flow rather than pinned: with one book there is no spread of a day to
+   pin a note to, and a note set square in the flow is a plate, which is what it is. */
+.book-maps {
+  display: grid;
+  gap: var(--s5);
+}
+
+.book-map {
+  position: relative;
+  margin: 0;
+  padding: var(--s3);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-plate);
+  background: var(--plate);
+}
+
+.book-map-title {
+  margin-bottom: var(--s2);
+}
+
+/* The day names itself once, by its own tint, on the figure's `data-day` attribute: tokens.css's generic
+   `[data-day="N"]` rule sets `--tint` and `--ground` there, and both inherit to the title below and to the
+   Plate fallback inside the map, because with one book the days' pages no longer carry the day's scope. */
+
+/* The band is 12px bold, which is not large text, so it needs 4.5:1 on the plate - and the full tints do not get
+   there in the light theme (day 3 measures 1.90:1, day 1 3.54:1). Mixing the day's tint with the ink keeps the hue
+   that says which day is held and lifts every day to 4.88:1 or better in light and 8.30:1 or better in dark. It is
+   the same tint-in-ink treatment the Book's controls use. */
+.book-map-title {
+  color: color-mix(in oklab, var(--tint) 50%, var(--ink));
+}
+
+/* The fallback plate's caption repeats the day title that is set above this very picture, and the canvas clips it
+   anyway: hide it rather than let a clipped line sit under the drawing. */
+.book-map .plate-caption {
+  display: none;
+}
+
+/* Aged cartography: the map is treated as a worn, western-chart plate. The filter lands on the tile images only and
+   never on the container, because the OpenStreetMap attribution lives in the same container and must stay clean and
+   legible - hiding or tinting the credit is not on the table. */
+.book-map .daymap-tiles .leaflet-tile {
+  filter: sepia(0.4) saturate(0.72) contrast(1.05) brightness(1.02);
+}
+
+/* Folios */
+
+/* The book's pages. Each spread holds two destinations at a time, and the two facing pages of a spread are
+   `folio-left` and `folio-right`. The pages are direct children of the book's flipbook, not nested in a folio:
+   on a phone they stack, at spread width they sit side by side across the gutter, and on a wide screen with motion
+   the BookFlip component turns them. It is the two-page arrangement that carries the intake's alternation. */
+
 /* Each facing page carries its own number, so the counter is incremented per page rather than per spread: the left
-   page takes the current count, the right page the next.
+   page takes the current count, the right page the next. The pages number 1..N across the whole book, because the
+   reset is on `.book` and there is no host to put it on again.
  *
  * On a phone the two facing pages stack, and the split that makes a spread read as two pages (photo left, words
  * right) would otherwise interleave the destinations: a photo, the next stop's words, this stop's words, the next
  * photo. `display: contents` lets the four destinations flow as one column instead, and the `order` below sets each
- * picture beside its own words - on the spread's own box, not the stage's, so a day with two spreads reads spread by
- * spread rather than interleaving the same-order children of every spread on the page. The page box carries no
- * semantics, so dropping it from the box tree loses nothing; the counter still increments on it. At spread width and
- * on paper the spread and the pages come back to being plain flow, as the two-column layout needs them. */
+ * picture beside its own words - on the spread's own box, not the stage's, so a book reads spread by spread rather
+ * than interleaving the same-order children of every spread on the page. The page box carries no semantics, so
+ * dropping it from the box tree loses nothing; the counter still increments on it. At spread width and on paper the
+ * spread and the pages come back to being plain flow, as the two-column layout needs them. */
 .folio-page {
   display: contents;
   counter-increment: page;
@@ -240,6 +205,25 @@
   display: contents;
 }
 
+/* A page's visible edge: ink, not a tint, because the page belongs to the book, not to a day, and the day is
+   already said by the when-line on it. The sheet's own ground — full white in every theme — is set where the pages
+   are owned, BookFlip.css, so the flat pages and the live clones carry the same white under either theme. */
+.book-page {
+  border: var(--outline) solid var(--ink);
+}
+
+/* The page is a box in the flat layouts: the phone's stack and the spread's grid both need it, and its padding is
+   the sheet's own margin, the space between the border and the first word. The phone stacks the pages, so the gap
+   is between the facing pages; at spread width the gutter is the grid's job. */
+@media (max-width: 1023px) {
+  .folio-page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s4);
+    padding: var(--s5);
+  }
+}
+
 /* Pushed to the foot of the page rather than trailing the last destination, so facing pages carry their numbers on
    one line however unequal their contents are. That is what makes a number readable as a page number. */
 .page-num {
@@ -250,30 +234,6 @@
 
 .page-num::before {
   content: counter(page);
-}
-
-/* Eighty percent, so the whole block recedes together and reads as a reserve rather than a fourth stop.
- *
- * Both lines are set in full ink rather than the muted role they would otherwise take, because opacity over a light
- * plate always moves the ink toward the plate: muted at 0.8 measured 3.50:1 light and 3.37:1 dark, and a 12px bold
- * label is not large text, so both failed AA. Full ink under the same fade measures 6.98:1 and 9.37:1. The block is
- * quiet because it is small, italic, below the folio and faded, not because it is hard to read. */
-.page-backup {
-  margin-top: var(--s6);
-  opacity: 0.8;
-}
-
-.backup-label {
-  color: var(--ink);
-  margin-bottom: var(--s2);
-}
-
-/* Two classes, not one: the sentence carries `.t-specimen`, and `base.css` is imported after the surfaces, so its
-   `--ink-muted` wins a single-class fight on position alone. That is #232; this stays correct after it lands. */
-.page-backup .backup-line {
-  margin: 0;
-  max-width: 46ch;
-  color: var(--ink);
 }
 
 /* A destination's two sides. The picture is the reel's own poster frame, cropped to a landscape window; the words are
@@ -325,10 +285,10 @@
 }
 
 /* The mobile reading order: each destination's picture, then its words, for the two stops on the spread. `order`
-   reaches the destinations only through the spread's flex column above - on the stage's own box the pages are
-   `contents` and the stage is no flex container, so these values are inert there. A single-destination spread simply
-   has no second pair, so it reads picture, words. Set after the destination and page-number rules so the
-   higher-specificity selectors follow the base ones. */
+   reaches the destinations only through the page's own flex column above - on the spread's box the pages are
+   `contents`, so these values are inert there. A single-destination spread simply has no second pair, so it reads
+   picture, words. Set after the destination and page-number rules so the higher-specificity selectors follow the
+   base ones. */
 .folio-left .dest-photo {
   order: 1;
 }
@@ -346,30 +306,6 @@
 }
 .folio-right .page-num {
   order: 6;
-}
-
-/* The one outbound link in the Book, and the team asked for a button rather than the underline it used to be: it is
-   the only thing on the page that leaves it, and a rule under some words did not read as somewhere to go.
- *
- * A button, but not a pill. `DESIGN.md` gives the Book zero radius as a mechanic rather than a preference - a printed
- * plate has no rounded corners - so it is square, and squareness is what tells a reader this button belongs to the
- * Book and not to the Desk. Hovering mixes the day's own tint into the ink, so the one control on a spread is
- * coloured by the day it belongs to. */
-.day-route {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: var(--s3) var(--s5);
-  border-radius: var(--r-plate);
-  background: var(--ink);
-  color: var(--plate);
-  text-decoration: none;
-  transition: background-color var(--motion-fade) var(--ease);
-}
-
-.day-route:hover,
-.day-route:focus-visible {
-  background: color-mix(in oklab, var(--tint) 34%, var(--ink));
 }
 
 /* Colophon */
@@ -400,14 +336,9 @@
     padding: var(--s7) 80px var(--s8);
   }
 
-  /* Top right on a spread, foot of the page on a phone. There is no spread in one column, so "top right of the
-     spread" has nowhere to be; in the flow it clears the title without cramping it into four lines. */
-  .spread-pin {
-    position: absolute;
-    top: var(--s6);
-    right: var(--s6);
-    bottom: auto;
-    width: 200px;
+  /* The days' maps sit side by side at spread width, because the pages already read as a row. */
+  .book-maps {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   }
 
   /* Two pages across, and the gutter between them is the 64px the spread geometry already names. The pages come back
@@ -425,7 +356,8 @@
   .bookflip-stage .folio-page {
     display: flex;
     flex-direction: column;
-    gap: var(--s5);
+    gap: var(--s4);
+    padding: var(--s5);
   }
 
   /* The book the reader sees is the host's clones, and the library decides each one's `display` inline: `block`
@@ -435,11 +367,15 @@
      flow in it with the same rhythm the page carries in every other layout, and its `height: 100%` pushes the page
      number to the foot of a fixed-height page. The authored pages keep the stage rule; the wrapper is `contents`
      there, so nothing about the flat layouts changes. */
+  /* The library's clone is the page, and the page needs its margin and its rhythm too: the sheet's own edge and
+     ground come with the clone from the page itself, but the padding and the column the destinations flow in live
+     on the wrapper, and the clone's wrapper is a fresh box the library seats. */
   .bookflip-host .book-page .book-page-inner {
     display: flex;
     flex-direction: column;
-    gap: var(--s5);
+    gap: var(--s4);
     height: 100%;
+    padding: var(--s5);
   }
 
   /* Two facing pages touch across the spine in the live book: the library seats its clones side by side with no
@@ -460,8 +396,8 @@
   }
 }
 
-/* The Book is the thing that prints, so a day is a printed page and nothing inside a destination may split across two.
-   Without `print-color-adjust` the day tint drops out, and the tint is the one colour on the page carrying
+/* The Book is the thing that prints, so a spread is a printed page and nothing inside a destination may split across
+   two. Without `print-color-adjust` the day tint drops out, and the tint is the one colour on the page carrying
    information: it says which day you are holding. */
 @media print {
   .book {
@@ -470,32 +406,31 @@
     min-height: 0;
   }
 
+  /* The sheet is the book's pages: the two-destination spreads, and the maps that follow them. Everything else -
+     the cover with its save control, the cold state, the colophon with its way back - is the screen's book, and a
+     reader holding the sheet wants only the destinations and the days' maps. */
+  .spread:not(.book-body) {
+    display: none;
+  }
+
   /* The spread is declared here rather than left to the 1024 breakpoint. An A4 landscape sheet with 14mm margins is
      1016px of content, eight pixels short of it, so a day printed as one narrow column with a third of the sheet
      empty on either side - a spread by name and a list on paper. Paper is not a viewport and should not be asked
      to behave like one. */
-  .spread {
-    break-after: page;
+  .book-body {
+    display: block;
     animation: none;
     max-width: none;
     padding: 0;
   }
 
-  /* The pin is set in the flow on paper, and the tilt is dropped: a sheet does not carry a leaning note. */
-  .spread-pin {
-    position: static;
-    width: 200px;
-    margin: 0 0 var(--s6);
-    transform: none;
-  }
-
-  /* Two pages across, as on screen: the day's pages sit side by side across the gutter. The pages come back to being
-     boxes, as at spread width, or the `contents` base would scatter the destinations across the sheet. The spread
-     resets to the base here because the sheet is 1016px of content - short of the `min-width` breakpoint that drops
-     the phone column, and inside it - so the `max-width` rule above would otherwise keep every spread a column and
-     the facing pages would stack down the sheet. This rule follows that one in source, and the two are otherwise
-     identical in specificity, so the reset wins. When the flipbook is built, BookFlip's own print rules do the same
-     job against the library's inline styles. */
+  /* Two pages across, as on screen: the book's pages sit side by side across the gutter. The pages come back to
+     being boxes, as at spread width, or the `contents` base would scatter the destinations across the sheet. The
+     spread resets to the base here because the sheet is 1016px of content - short of the `min-width` breakpoint
+     that drops the phone column, and inside it - so the `max-width` rule above would otherwise keep every spread a
+     column and the facing pages would stack down the sheet. This rule follows that one in source, and the two are
+     otherwise identical in specificity, so the reset wins. When the flipbook is built, BookFlip's own print rules
+     do the same job against the library's inline styles. */
   .folio-spread {
     display: contents;
   }
@@ -509,14 +444,27 @@
   .bookflip-stage .folio-page {
     display: flex;
     flex-direction: column;
-    gap: var(--s5);
+    gap: var(--s4);
+    padding: var(--s5);
   }
 
   .folio-right .page-num {
     text-align: right;
   }
 
-  .spread:last-child {
+  /* The maps run after the book, one per day, and a map that splits across a sheet is a map that is wrong. The
+     attribution is part of the map, so it stays on the page the map is on. */
+  .book-maps {
+    display: block;
+    margin-top: var(--s6);
+  }
+
+  .book-map {
+    break-inside: avoid;
+    margin-bottom: var(--s5);
+  }
+
+  .book-body:last-child {
     break-after: auto;
   }
 
@@ -530,21 +478,6 @@
      a 9:16 still, cropped above centre. */
   .dest-shot {
     aspect-ratio: 16 / 9;
-  }
-
-  /* The control that made the sheet has no business on it. */
-  .cover-save {
-    display: none;
-  }
-
-  /* On paper a slab of solid ink is the heaviest thing on the page, and it is a link nobody can follow. The words
-     stay, because a reader holding the Book should still know the day has a route; the ink does not. */
-  .day-route {
-    min-height: 0;
-    padding: 0;
-    background: none;
-    color: var(--ink);
-    border-bottom: 2px solid var(--tint);
   }
 }
 

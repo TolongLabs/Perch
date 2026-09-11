@@ -4,7 +4,7 @@ import type { Trip } from '../data/types'
 import { withMember, withoutMember } from '../state'
 import { load } from './store'
 import { hasFinished, tallyFor, votedIn } from './votes'
-import { castVote, closeVoting, finalizeVotingIfDue, votingDeadline } from './votingSession'
+import { castVote, closeVoting, finalizeVotingIfDue, skipRemaining, votingDeadline } from './votingSession'
 
 const now = new Date('2026-09-10T00:00:00Z')
 const placeId = Object.keys(trip.options)[0] ?? ''
@@ -41,6 +41,33 @@ describe('voting answers', () => {
     expect(next.votes[trip.ownerId]?.[placeId]).toBe('yes')
     expect(next.votes[trip.ownerId]?.[second]).toBe('must')
     expect(first.votes[trip.ownerId]?.[placeId]).toBe('must')
+  })
+
+  test('skip remaining fills the active voter with skips, keeps their answers, and leaves the others alone', () => {
+    const second = Object.keys(trip.options)[1] ?? ''
+    // Aisyah has answered two cards, yes and must, and the rest of the party has not voted at all.
+    let t = castVote(blank(), 'aisyah', placeId, true, now)
+    t = castVote(t, 'aisyah', second, 'must', now)
+    t = skipRemaining(t, 'aisyah', now)
+
+    expect(t.votes.aisyah?.[placeId]).toBe('yes')
+    expect(t.votes.aisyah?.[second]).toBe('must')
+    for (const id of Object.keys(t.options)) {
+      if (id !== placeId && id !== second) expect(t.votes.aisyah?.[id]).toBe('skip')
+    }
+    expect(hasFinished(t, 'aisyah')).toBe(true)
+    expect(Object.keys(t.votes)).toEqual(['aisyah'])
+    expect(t.votingClosedAt).toBeNull()
+    // The session is not frozen by the fill: the active voter can still change an answer.
+    expect(castVote(t, 'aisyah', placeId, false, now).votes.aisyah?.[placeId]).toBe('no')
+
+    // The fill is scoped to the active voter: another member cannot take it, and a member who is not current waits.
+    const quiet = blank()
+    expect(skipRemaining(quiet, 'farah', now)).toBe(quiet)
+    const asFarah = asMember(blank(), 'farah')
+    const skipped = skipRemaining(asFarah, 'farah', now)
+    expect(Object.keys(skipped.votes)).toEqual(['farah'])
+    expect(skipped.votes.farah).toEqual(Object.fromEntries(Object.keys(trip.options).map((id) => [id, 'skip'])))
   })
 
   test('unknown IDs and another member cannot cast a vote', () => {

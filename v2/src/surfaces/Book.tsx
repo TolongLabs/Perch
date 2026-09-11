@@ -3,11 +3,9 @@ import { BookFlip } from '../components/BookFlip'
 import { DayMap } from '../components/DayMap'
 import { transitMin } from '../data/travel'
 import type { Day, Place, Slot } from '../data/types'
-import { dayCostRM, tripCostRM } from '../lib/cost'
-import { clock, dayLabel, duration, money, price } from '../lib/format'
-import { transitRoute } from '../lib/mapsLink'
+import { tripCostRM } from '../lib/cost'
+import { dayLabel, duration, money, price } from '../lib/format'
 import { saveAsPdf } from '../lib/print'
-import { backupFor } from '../lib/schedule'
 import { useTrip } from '../state'
 import './Book.css'
 
@@ -22,7 +20,7 @@ const PERIOD: Record<Slot['period'], string> = {
 /** Two destinations to a spread, which is the composition the intake names and what fixes the page count. */
 const PER_PAGE = 2
 
-type Entry = { slot: Slot; place: Place; transit: number }
+type Entry = { slot: Slot; place: Place; transit: number; day: number }
 
 /**
  * The day's filled slots in visiting order, each carrying the transit from the one before it. A day whose slots are
@@ -34,7 +32,7 @@ const entriesOf = (day: Day, options: Record<string, Place>): Entry[] => {
     const place = slot.placeId ? options[slot.placeId] : undefined
     if (!place) continue
     const previous = entries[entries.length - 1]
-    entries.push({ slot, place, transit: previous ? transitMin(previous.place.id, place.id) : 0 })
+    entries.push({ slot, place, transit: previous ? transitMin(previous.place.id, place.id) : 0, day: day.index })
   }
   return entries
 }
@@ -52,10 +50,12 @@ const DestPhoto = ({ entry }: { entry: Entry }) => (
   </div>
 )
 
-/** The words side of a destination: when, name, blurb, and the specimen line. */
+/** The words side of a destination: which day and when, name, blurb, and the specimen line. */
 const DestDesc = ({ entry }: { entry: Entry }) => (
   <div className="dest dest-desc">
-    <p className="t-label dest-when">{PERIOD[entry.slot.period]}</p>
+    <p className="t-label dest-when">
+      Day {entry.day} &middot; {PERIOD[entry.slot.period]}
+    </p>
     <h3 className="t-name">{entry.place.name}</h3>
     <p className="t-prose dest-prose">{entry.place.blurb}</p>
     <p className="t-specimen">
@@ -69,18 +69,24 @@ const DestDesc = ({ entry }: { entry: Entry }) => (
  * The keepsake, and the shared link. Printed state only: there is no setting state here, no blank slot and no
  * awaiting-decision chip, because a plate prints what was settled.
  *
- * Each day is a run of two-page spreads, and every spread lays out two destinations across its facing pages,
- * alternating photo left / words right and words left / photo right. The alternation is the intake's own wording:
- * a photo on the top left page, its words on the top right, then the next destination's words on the bottom left
- * and its photo on the bottom right. A day is read forwards, so the destinations keep their visiting order.
+ * One book for the whole trip: the days' destinations run 1..N across a single flipbook, and the day travels with
+ * each destination as its own when-line rather than owning a section. A spread lays out two destinations across its
+ * facing pages, alternating photo left / words right and words left / photo right, read in the group's visiting
+ * order. The days' maps follow the book as a run of their own, because the map is the reader's note about a day
+ * and the day is the one thing the pages no longer carry.
  */
 export const Book = () => {
   const { trip } = useTrip()
   const owner = trip.party.find((p) => p.id === trip.ownerId)?.name ?? 'the owner'
-  // A cold visit reaches this page before anything is on the calendar, and the plates read the calendar: every day
+  // A cold visit reaches this page before anything is on the calendar, and the pages read the calendar: every day
   // drew as a bare title over white. A judge landing on the shared link deserves to be told why, not shown a book
   // with its pictures missing.
   const planned = trip.days.some((day) => day.slots.some((slot) => slot.placeId !== null))
+  const entries = trip.days.flatMap((day) => entriesOf(day, trip.options))
+  const folios = pagesOf(entries)
+  const mapped = trip.days
+    .map((day) => ({ day, stops: entriesOf(day, trip.options).map((e) => e.place) }))
+    .filter((entry) => entry.stops.length > 0)
 
   return (
     <main className="book">
@@ -94,8 +100,8 @@ export const Book = () => {
         </p>
 
         {/* On the cover, because a reader who wants the file should not have to read the whole book to find the
-            control. It prints nothing of itself: the sheet is the Book. Withheld until there is a book to save:
-            a control that hands back four blank sheets is worse than no control. */}
+            control. It prints nothing of itself: the sheet is the Book's pages. Withheld until there is a book to
+            save: a control that hands back four blank sheets is worse than no control. */}
         {planned && (
           <button
             type="button"
@@ -139,120 +145,66 @@ export const Book = () => {
         </article>
       )}
 
-      {planned &&
-        trip.days.map((day) => {
-          const entries = entriesOf(day, trip.options)
-          const folios = pagesOf(entries)
-          const route = transitRoute(entries.map((e) => e.place))
+      {planned && (
+        <article className="spread book-body">
+          {/* The screen reader's copy of the trip: every stop from the same ordered data, read in visiting order,
+            once. The visual pages are `aria-hidden`, so this list is the single accessible source and the two
+            cannot disagree. It is `sr-only`, so it shows nowhere on screen; print drops it because the sheet
+            already carries these stops as pages. */}
+          <ol className="day-stops sr-only">
+            {entries.map((entry) => (
+              <li key={entry.slot.id}>
+                <DestDesc entry={entry} />
+              </li>
+            ))}
+          </ol>
 
-          /* The day's reserve, and how far it is from the stop it is nearest. `backupFor` already guarantees the
-           place is voted in, unplaced anywhere in the trip, in the day's own cluster and within reach; the reader
-           needs the one number that says which stop to swap it for. */
-          const backup = backupFor(day, trip)
-          const nearest = backup
-            ? entries.reduce<{ place: Place; min: number } | null>((best, e) => {
-                const min = transitMin(e.place.id, backup.id)
-                return !best || min < best.min ? { place: e.place, min } : best
-              }, null)
-            : null
-
-          return (
-            <article key={day.index} className="spread day-spread" data-day={day.tint}>
-              <header className="spread-head">
-                <div className="spread-when">
-                  <p className="t-label spread-band">
-                    Day {day.index} &middot; {day.weekday} {dayLabel(day.date)} &middot;{' '}
-                    {money(dayCostRM(day, trip.options))}
-                  </p>
-
-                  {/* How long the day runs and when it ends, read from the same feasibility walk the Desk's chip is
-                    read from, so the two can never disagree. A day the scheduler has not walked has no span. */}
-                  {day.feasibility && (
-                    <p className="t-specimen spread-span">
-                      {duration(day.feasibility.daySpanMin)} &middot; ends {clock(day.feasibility.endMin)}
-                    </p>
-                  )}
-                </div>
-
-                {/* Day-level, like the band beside it, so the page number stays the last mark on the page. */}
-                {route && (
-                  <a className="t-label day-route" href={route} target="_blank" rel="noreferrer noopener">
-                    Open The Transit Route
-                  </a>
-                )}
-              </header>
-
-              <h2 className="t-plate-title day-title">{day.title}</h2>
-
-              {/* The screen reader's copy of the day: the same stops, from the same ordered data, read in visiting
-                order, once. The visual folios below are the printed object and are `aria-hidden`, so this list is the
-                single accessible source and the two cannot disagree. It is `sr-only`, so it shows nowhere on screen
-                and only in the tree; print drops it because the sheet already carries these stops as pictures. */}
-              <ol className="day-stops sr-only">
-                {entries.map((entry) => (
-                  <li key={entry.slot.id}>
-                    <DestDesc entry={entry} />
-                  </li>
-                ))}
-              </ol>
-
-              {/* Pinned rather than printed: the route is the reader's own note about the day, laid on the spread it
-                describes. The tilt is what pinning means; there is no shadow, per `DESIGN.md`. Day-level now that the
-                lead plate is gone, so it anchors to the spread rather than to one picture. */}
-              {entries.length > 1 && (
-                <figure className="spread-pin">
-                  <span className="pin-head" aria-hidden="true" />
-                  <DayMap day={day.index} title={day.title} stops={entries.map((e) => e.place)} />
-                </figure>
-              )}
-
-              <BookFlip>
-                {folios.map((folio) => {
-                  const [a, b] = folio
-                  if (!a) return null
-                  return (
-                    <div className="folio-spread" key={a.slot.id}>
-                      {/* The first destination of the spread sits photo left / words right; the second flips to words
-                        left / photo right. That is the alternation the intake names, and it is what makes a spread read
-                        as two facing pages rather than two stacked lists. On a wide screen with motion, BookFlip turns
-                        these pages with page-flip; everywhere else they are the day's flat pages, laid out by the
-                        Book's own rules. */}
-                      <div className="book-page folio-page folio-left">
-                        <div className="book-page-inner">
-                          <DestPhoto entry={a} />
-                          {b && <DestDesc entry={b} />}
-                          <p className="page-num t-specimen" aria-hidden="true" />
-                        </div>
-                      </div>
-                      <div className="book-page folio-page folio-right">
-                        <div className="book-page-inner">
-                          <DestDesc entry={a} />
-                          {b && <DestPhoto entry={b} />}
-                          <p className="page-num t-specimen" aria-hidden="true" />
-                        </div>
-                      </div>
+          {/* One flipbook for the whole book. Its page counter runs 1..N across every day, because the numbering is
+            the book's and a per-day host is what reset it to 1 on the second spread. */}
+          <BookFlip>
+            {folios.map((folio) => {
+              const [a, b] = folio
+              if (!a) return null
+              return (
+                <div className="folio-spread" key={a.slot.id}>
+                  {/* The first destination of the spread sits photo left / words right; the second flips to words
+                    left / photo right. That is the alternation the intake names, and it is what makes a spread read
+                    as two facing pages rather than two stacked lists. On a wide screen with motion, BookFlip turns
+                    these pages with page-flip; everywhere else they are the book's flat pages, laid out by the
+                    Book's own rules. */}
+                  <div className="book-page folio-page folio-left">
+                    <div className="book-page-inner">
+                      <DestPhoto entry={a} />
+                      {b && <DestDesc entry={b} />}
+                      <p className="page-num t-specimen" aria-hidden="true" />
                     </div>
-                  )
-                })}
-              </BookFlip>
+                  </div>
+                  <div className="book-page folio-page folio-right">
+                    <div className="book-page-inner">
+                      <DestDesc entry={a} />
+                      {b && <DestPhoto entry={b} />}
+                      <p className="page-num t-specimen" aria-hidden="true" />
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </BookFlip>
 
-              {/* Under the folios rather than inside the last page, and the difference is visible: inside the page it
-                pushed that page's folio 129px above its neighbour's, and two page numbers at different heights read
-                as a layout fault rather than as a book. Below the row it is still the last thing on the day.
-              *
-              * A day whose cluster is exhausted, or whose only unplaced neighbours are too far, says nothing at all:
-              * a reserve across the city is a second plan, not a backup. */}
-              {backup && nearest && (
-                <aside className="page-backup">
-                  <p className="t-label backup-label">If Plans Change</p>
-                  <p className="t-specimen backup-line">
-                    {backup.name} is {nearest.min} min from {nearest.place.name}, voted in and on no day.
-                  </p>
-                </aside>
-              )}
-            </article>
-          )
-        })}
+          {/* The days' maps, after the book: each day's stops in visiting order on the city the walk crosses. Set in
+            the flow rather than pinned, because with one book there is no spread of the day to pin a note to. */}
+          <section className="book-maps" aria-label="The Days' Maps">
+            {mapped.map(({ day, stops }) => (
+              <figure className="book-map" data-day={day.tint} key={day.index}>
+                <figcaption className="t-label book-map-title">
+                  Day {day.index} &middot; {day.weekday} {dayLabel(day.date)}
+                </figcaption>
+                <DayMap day={day.index} title={day.title} stops={stops} />
+              </figure>
+            ))}
+          </section>
+        </article>
+      )}
 
       {/* The Book shows the trip's destinations and nothing else: the checklist lives on the Desk, where it is set.
           What remains is the one way back, and it is the last mark in the book. */}

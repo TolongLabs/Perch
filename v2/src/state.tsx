@@ -4,12 +4,14 @@ import { withManualNote, withoutManualNote } from './lib/manualNotes'
 import { maxTripDays, planCapacity } from './lib/planCapacity'
 import { DAY_START, evaluateDay, MAX_DAY_START, MIN_DAY_START, scheduleTrip, withFeasibility } from './lib/schedule'
 import { load, reset, save } from './lib/store'
-import { castVote, closeVoting, finalizeVotingIfDue } from './lib/votingSession'
+import { castVote, closeVoting, finalizeVotingIfDue, skipRemaining } from './lib/votingSession'
 
 type Ctx = {
   trip: Trip
   /** A member's yes, no, Skip or Must Go on a place. Votes survive a date change. */
   swipe: (memberId: string, placeId: string, answer: boolean | 'must' | 'skip') => void
+  /** Answers every remaining unanswered reel as Skip for the active voter, without closing voting. */
+  skipAll: () => void
   endVoting: () => void
   /** Renames the party. Ids are kept where a row keeps its position, so votes keyed by member id survive. */
   /** Who this browser votes as. Ignored for an id that is not in the party. */
@@ -208,6 +210,10 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     setTrip((current) => closeVoting(current, current.currentMemberId))
   }, [])
 
+  const skipAll = useCallback(() => {
+    setTrip((current) => skipRemaining(current, current.currentMemberId))
+  }, [])
+
   const setCurrentMember = useCallback((memberId: string) => {
     setTrip((current) =>
       current.party.some((p) => p.id === memberId) ? { ...current, currentMemberId: memberId } : current
@@ -324,6 +330,7 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       trip,
       swipe,
+      skipAll,
       endVoting,
       setCurrentMember,
       renameMember,
@@ -346,6 +353,7 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     [
       trip,
       swipe,
+      skipAll,
       endVoting,
       setCurrentMember,
       renameMember,

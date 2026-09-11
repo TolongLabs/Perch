@@ -5,6 +5,7 @@
   --ink: #2e261f; /* Magpie-Robin, Copsychus saularis */
   --paper: #fbf8f2; /* The Desk ground */
   --plate: #f2ede0; /* Zebra Dove, Geopelia striata */
+  --page: #ffffff; /* The Book's leaf: a full-white printed page in every theme */
   --open: #0b777e; /* Bee-eater, Merops viridis */
   --decided: #3e7a3a; /* Green Broadbill, Calyptomena viridis */
   --at-risk: #c0342f; /* Crimson Sunbird, Aethopyga siparaja */
@@ -62,6 +63,7 @@
   --ink: #f4efe6;
   --paper: #1b1714;
   --plate: #26201b;
+  --page: #ffffff; /* the leaf stays a physical white page when the app goes dark */
   --ink-muted: #918679;
 
   --open: #38949b;
