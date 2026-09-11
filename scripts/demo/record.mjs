@@ -294,6 +294,15 @@ export async function recordDemo(options = {}) {
     }
     return locator
   }
+  // #349 gave Optimize Plan a two-press confirmation whenever unpinned placements are on the board: the first
+  // press opens the ask, "Yes, Optimize Plan" commits. A single press would film the question and leave the
+  // scheduler idle, so the follow-up is part of the press wherever placements exist.
+  const applyPlan = async () => {
+    await click(page.locator('.desk-apply'), 350)
+    const ask = page.locator('.desk-applyask')
+    if (await ask.isVisible().catch(() => false))
+      await click(ask.getByRole('button', { name: exactText('Yes, Optimize Plan') }), 500)
+  }
   const mark = async (name) => {
     const ms = elapsed()
     const span = segmentSpans.at(-1)
@@ -636,7 +645,7 @@ export async function recordDemo(options = {}) {
     await finishShot('shot-6', 12_000)
 
     await mark('shot-7')
-    await click(page.locator('.desk-apply'), 500)
+    await applyPlan()
     await page.locator('.card-placed').first().waitFor()
     await page.locator('.desk-dayhead .state-chip').first().waitFor()
     await pause(3_000)
@@ -717,7 +726,7 @@ export async function recordDemo(options = {}) {
     await must(sensoji, 'shot 8 Sensoji card')
     const pin = sensoji.locator('.card-act[aria-pressed]')
     await click(pin, 500)
-    await click(page.locator('.desk-apply'), 500)
+    await applyPlan()
     await page.locator('.card-placed[data-pinned="true"]').first().waitFor()
     await page.locator('.desk-dayhead .state-chip').first().waitFor()
     await pause(1_500)
