@@ -464,17 +464,23 @@ export async function recordDemo(options = {}) {
     // Other chip, so the chip is pressed first to reveal it: the same line, typed into the same field, only gated
     // behind a tap the shipped screen now asks for.
     const obSection = (legend) => page.locator('.ob-section').filter({ has: page.getByText(exactText(legend)) })
-    const whatYouWant = page.locator('input[placeholder="Tell Perch what else you want from this trip"]')
-    await scrollTo(obSection('What You Are After'))
-    await click(page.getByRole('button', { name: exactText('Other') }), 250)
+    // Scoped to the section: Onboarding carries an Other chip in both Activities and Destination, so a global
+    // name match is ambiguous and Playwright would refuse the click in strict mode.
+    const afterSection = obSection('What You Are After')
+    const otherChip = afterSection.getByRole('button', { name: exactText('Other') })
+    const whatYouWant = afterSection.locator('input[placeholder="Tell Perch what else you want from this trip"]')
+    await scrollTo(afterSection)
+    await click(otherChip, 250)
     await must(whatYouWant, 'shot 1 free-text field revealed by Other')
     await type(whatYouWant, 'temples and snacks, early starts')
     await click(page.getByRole('button', { name: exactText('Food') }))
     await click(page.getByRole('button', { name: exactText('Temples') }))
     await click(page.getByRole('button', { name: exactText('Shopping') }))
 
+    // #82 also made the city field conditional, and Tokyo is the preselected chip: the beat taps it rather than
+    // types a city that only exists under Other Destination.
     await scrollTo(obSection('Where'))
-    await type(page.locator('input[placeholder="Name a city"]'), 'Tokyo')
+    await click(obSection('Where').getByRole('button', { name: exactText('Tokyo') }))
     // Start Swiping really does navigate, to the deck, which belongs to shot-3 and is showing a reel that has not
     // finished loading. The beat is padded on the finished form before the press, and everything from the moment
     // onboarding is left until the dashboard is on screen is recorded as dead and cut from the film.
