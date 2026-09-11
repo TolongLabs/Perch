@@ -726,6 +726,26 @@ describe('demo automation follows the shipped interface', () => {
     expect(recorder).not.toContain('view()')
     expect(recorder).toContain('.bookflip-status')
   })
+
+  // Since #303 the free-text field only exists once the Other chip is pressed, and its placeholder changed. The
+  // recorder must scope both the chip and the field to the What You Are After section: Onboarding carries an Other
+  // chip in Activities and in Destination, and a global name match is refused in strict mode. The old unconditional
+  // selector must stay gone, or the take dies on shot 1 thirty seconds in the way the first v2-0.4.0 take did.
+  test('reveals the gated free-text field through the section-scoped Other chip', () => {
+    expect(recorder).toContain('input[placeholder="Tell Perch what else you want from this trip"]')
+    expect(recorder).not.toContain('Tell Perch what you want out of this trip')
+    expect(recorder).toContain("obSection('What You Are After')")
+    expect(recorder).toContain("getByRole('button', { name: exactText('Other') })")
+    expect(recorder).toMatch(/afterSection\.getByRole\('button'[\s\S]*?await click\(otherChip/)
+    expect(recorder).toMatch(/await must\(whatYouWant,/)
+  })
+
+  // #82 made the city field conditional too, and Tokyo ships preselected as the destination chip. The recorder
+  // taps the chip inside the Where section rather than typing into a field that only exists under Other.
+  test('selects the destination by the Tokyo chip, not a removed city field', () => {
+    expect(recorder).toContain("obSection('Where').getByRole('button', { name: exactText('Tokyo') })")
+    expect(recorder).not.toContain('input[placeholder="Name a city"]')
+  })
 })
 
 // narration.txt holds the spoken lines and record.mjs holds the beat budgets, in two files that must agree. They
