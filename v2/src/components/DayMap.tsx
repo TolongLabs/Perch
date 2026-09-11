@@ -112,3 +112,24 @@ export const DayMap = ({ day, title, stops }: { day: number; title: string; stop
     </>
   )
 }
+
+/**
+ * A small, non-interactive map of a day's stops: the drawn plate under the tiles, with no open-dialog button. The
+ * Book's per-page pin (#391) renders its minimap through this, so the pin shows the same city the full `DayMap`
+ * opens rather than a second, hand-drawn map.
+ */
+export const DayMapThumb = ({ day, title, stops }: { day: number; title: string; stops: Place[] }) => {
+  const tint = `var(--day-${day})`
+  const thumb = useMap(stops, tint, false)
+
+  if (stops.length === 0) return null
+
+  return (
+    <span className="daymap-canvas daymap-canvas-thumb">
+      <span className="daymap-under" aria-hidden="true">
+        <Plate day={day} title={title} stops={stops} />
+      </span>
+      <span className="daymap-tiles" ref={thumb} aria-hidden="true" />
+    </span>
+  )
+}
