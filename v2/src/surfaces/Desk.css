@@ -58,12 +58,17 @@
   color: var(--ink-muted);
 }
 
-/* The date panel */
-
+/* The date panel. #394 The Edit Trip's When section gives its picker a 544px column - 640 for the page, 24 of page
+   padding each side, 24 of section padding each side. The panel was full-width and the month stretched across the
+   whole page, so the panel takes the same 592 and the legend, the picker and the footer inherit the same 544
+   column, left-aligned with the rest of the Desk. */
 .desk-datepick {
   display: flex;
   flex-direction: column;
   gap: var(--s4);
+  width: 100%;
+  max-width: 592px;
+  align-self: flex-start;
   padding: var(--s5);
   border-radius: var(--r-desk);
   background: var(--ground-open);

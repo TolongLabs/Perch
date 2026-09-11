@@ -107,6 +107,13 @@ test('lays one book out for the whole trip: two destinations a spread, one flipb
   expect(html.match(/class="bookflip-stage" aria-hidden="true"/g)).toHaveLength(1)
   expect(html.match(/class="book-page folio-page folio-left"/g)).toHaveLength(6)
   expect(html.match(/class="book-page folio-page folio-right"/g)).toHaveLength(6)
+  // The numbers are set in JSX from the folio's index, because a CSS counter does not flow through the
+  // flipbook's clones: 1..12 across the one book, each exactly once.
+  for (let n = 1; n <= 12; n++) {
+    expect(html.match(new RegExp(`class="page-num t-specimen" aria-hidden="true">\\s*${n}\\s*</p>`, 'g'))).toHaveLength(
+      1
+    )
+  }
   // Every destination takes a picture on one page and its words on the other, across the whole book. The picture is
   // visual only (never in the screen-reader list), so it stays 12; the words appear once in the visual folio and once
   // in the `aria-hidden`-paired `.day-stops` list, so they double to 24 in the raw markup.

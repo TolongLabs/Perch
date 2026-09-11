@@ -27,6 +27,22 @@ describe('computeTally', () => {
     expect(entry?.percentage).toBe(22)
   })
 
+  test('votes counts only positive answers, one per member, and never the owner extra', () => {
+    const votes: Votes = { aisyah: { sensoji: 'yes' }, farah: { sensoji: 'must' } }
+    const entry = computeTally(votes, trip.options, trip.party, trip.ownerId).find((t) => t.placeId === 'sensoji')
+    // The owner's Keep and Farah's Must Go are two votes in favour even though her share is 1.5.
+    expect(entry?.votes).toBe(2)
+    // The percentage is still the weighted share: 2.5 of 4.5 is 56 percent, so the head count and the share are not
+    // the same number.
+    expect(entry?.percentage).toBe(56)
+  })
+
+  test('no and skip are not votes, so an answered place can show zero', () => {
+    const votes: Votes = { aisyah: { sensoji: 'no' }, farah: { sensoji: 'skip' }, hana: { sensoji: null } }
+    const entry = computeTally(votes, trip.options, trip.party, trip.ownerId).find((t) => t.placeId === 'sensoji')
+    expect(entry?.votes).toBe(0)
+  })
+
   test('zero weighted yes is eliminated and out of the ranked list', () => {
     const tally = tallyFor(trip)
     const hama = tally.find((t) => t.placeId === 'hama-rikyu-gardens')
@@ -82,6 +98,13 @@ describe('the votes fixture', () => {
 
   test('ranks enough places to fill twelve slots', () => {
     expect(votedIn(tally).length).toBeGreaterThanOrEqual(12)
+  })
+
+  test('the top row is a Must Go held by all four, so it reads four votes', () => {
+    const top = tally[0]
+    expect(top?.name).toBe('teamLab Planets')
+    // Three Keeps and Hana's Must Go: four members in favour, the largest head count in the seed.
+    expect(top?.votes).toBe(4)
   })
 })
 

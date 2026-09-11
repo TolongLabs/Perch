@@ -50,7 +50,15 @@ export const addDays = (start: string, days: number) => {
 
 type Cell = { key: string; value: string; day: number } | { key: string; value: null; day: null }
 
-export const DateRangePicker = ({ value, onChange }: { value: Range; onChange: (next: Range) => void }) => {
+type Props = {
+  value: Range
+  onChange: (next: Range) => void
+  /** #389 Once a start is chosen, days past start + (maxDays - 1) cannot extend the range. A stored range longer
+   * than the cap still renders and stays - refusing it is the caller's job, which already carries the reason. */
+  maxDays?: number
+}
+
+export const DateRangePicker = ({ value, onChange, maxDays }: Props) => {
   const [view, setView] = useState(() => {
     const anchor = value.start ? new Date(`${value.start}T00:00:00`) : new Date()
     return { year: anchor.getFullYear(), month: anchor.getMonth() }
@@ -93,6 +101,16 @@ export const DateRangePicker = ({ value, onChange }: { value: Range; onChange: (
     return day >= value.start && day <= value.end
   }
 
+  // #389 The cap bounds what is being picked, not what is held: a stored range longer than the cap still renders,
+  // so the end that exceeds it keeps its affordance and only days beyond it go grey.
+  const disabled = (day: string) => {
+    if (maxDays == null || !value.start) return false
+    const end = edge(day)
+    if (end === 'start' || end === 'end') return false
+    const last = addDays(value.start, maxDays - 1)
+    return day > last && (!value.end || day > value.end)
+  }
+
   return (
     <div className="dr">
       <div className="dr-bar">
@@ -122,12 +140,19 @@ export const DateRangePicker = ({ value, onChange }: { value: Range; onChange: (
           c.value === null ? (
             <span key={c.key} className="dr-cell" data-blank="true" />
           ) : (
-            <span key={c.key} className="dr-cell" data-in={within(c.value)} data-edge={edge(c.value)}>
+            <span
+              key={c.key}
+              className="dr-cell"
+              data-in={within(c.value)}
+              data-edge={edge(c.value)}
+              data-cap={disabled(c.value)}
+            >
               <button
                 type="button"
                 className="dr-num"
                 aria-label={label(c.value)}
                 aria-pressed={within(c.value)}
+                disabled={disabled(c.value)}
                 onClick={() => pick(c.value)}
               >
                 {c.day}

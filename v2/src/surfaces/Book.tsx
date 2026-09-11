@@ -185,10 +185,10 @@ export const Book = () => {
             ))}
           </ol>
 
-          {/* One flipbook for the whole book. Its page counter runs 1..N across every day, because the numbering is
+          {/* One flipbook for the whole book. Its page numbers run 1..N across every day, because the numbering is
             the book's and a per-day host is what reset it to 1 on the second spread. */}
           <BookFlip>
-            {folios.map((folio) => {
+            {folios.map((folio, i) => {
               const [a, b] = folio
               if (!a) return null
               const pinA = dayMap.get(a.day)
@@ -205,7 +205,9 @@ export const Book = () => {
                     <div className="book-page-inner">
                       <DestPhoto entry={a} />
                       {b && <DestDesc entry={b} />}
-                      <p className="page-num t-specimen" aria-hidden="true" />
+                      <p className="page-num t-specimen" aria-hidden="true">
+                        {i * 2 + 1}
+                      </p>
                     </div>
                     {pinA && <PagePin day={pinA.day} stops={pinA.stops} />}
                   </div>
@@ -213,7 +215,9 @@ export const Book = () => {
                     <div className="book-page-inner">
                       <DestDesc entry={a} />
                       {b && <DestPhoto entry={b} />}
-                      <p className="page-num t-specimen" aria-hidden="true" />
+                      <p className="page-num t-specimen" aria-hidden="true">
+                        {i * 2 + 2}
+                      </p>
                     </div>
                     {pinB && <PagePin day={pinB.day} stops={pinB.stops} />}
                   </div>

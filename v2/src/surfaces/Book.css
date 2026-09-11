@@ -13,11 +13,6 @@
      342px picture and on a 1280px one; a single stretched mask reads as a smooth wave at spread width. */
   --tear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='12'%3E%3Cpath d='M0 0H90V6L86 9.5L82 5.5L78 10.5L74 7L70 11L66 6.5L62 9.5L58 5L54 10L50 6L46 11L42 7.5L38 9L34 5L30 10.5L26 6.5L22 9L18 5.5L14 10L10 7L6 9.5L2 5.5L0 6Z' fill='black'/%3E%3C/svg%3E");
   --tear-h: 12px;
-
-  /* The book's one page counter. It lives here rather than on the flipbook host, because the book is one book for
-     the whole trip: the host is the book's own box, and a reset on it put every page back at 1 (the counter's
-     shadow, the intake's own words). */
-  counter-reset: page;
 }
 
 /* The page the book sits on. The leaf is full white and is what separates a page from this spread: the book is the
@@ -165,20 +160,19 @@
    on a phone they stack, at spread width they sit side by side across the gutter, and on a wide screen with motion
    the BookFlip component turns them. It is the two-page arrangement that carries the intake's alternation. */
 
-/* Each facing page carries its own number, so the counter is incremented per page rather than per spread: the left
-   page takes the current count, the right page the next. The pages number 1..N across the whole book, because the
-   reset is on `.book` and there is no host to put it on again.
+/* The page number is set in JSX from the folio's index rather than a CSS counter: the flipbook clones the page
+   and re-parents it, and a counter does not flow through the clone, so the live book restarted at 1 on every
+   spread (#392).
  *
  * On a phone the two facing pages stack, and the split that makes a spread read as two pages (photo left, words
  * right) would otherwise interleave the destinations: a photo, the next stop's words, this stop's words, the next
  * photo. `display: contents` lets the four destinations flow as one column instead, and the `order` below sets each
  * picture beside its own words - on the spread's own box, not the stage's, so a book reads spread by spread rather
  * than interleaving the same-order children of every spread on the page. The page box carries no semantics, so
- * dropping it from the box tree loses nothing; the counter still increments on it. At spread width and on paper the
+ * dropping it from the box tree loses nothing. At spread width and on paper the
  * spread and the pages come back to being plain flow, as the two-column layout needs them. */
 .folio-page {
   display: contents;
-  counter-increment: page;
 }
 
 /* The spread is a plain `div`, and a plain `div` is a box: left to its default it would sit in the two-column
@@ -201,8 +195,15 @@
    them and their flex parent. Only the live clones make it a box - the host rule below - because the flip
    library sets `display` inline on the page itself and reaches nothing beneath it, while a descendant rule
    reaches the wrapper without ever contesting the library's inline style. */
+
+/* The leaf is a physical white page in every theme, so the ink on it stays the light theme's ink in both: the
+   theme's own --ink is light in dark mode and sits on the white sheet unreadable (#387). Scoped to the wrapper
+   rather than the page's box, because the pin is a sibling of the wrapper and keeps the theme's own ink on its
+   plate. */
 .book-page-inner {
   display: contents;
+  --ink: #2e261f;
+  --ink-muted: #6a5f53;
 }
 
 /* A page's visible edge: ink, not a tint, because the page belongs to the book, not to a day, and the day is
@@ -210,7 +211,9 @@
    are owned, BookFlip.css, so the flat pages and the live clones carry the same white under either theme. */
 .book-page {
   position: relative;
-  border: var(--outline) solid var(--ink);
+  /* A hairline, not the 3px outline: the intake read the outlined page as a box, and the sheet's edge wants a
+     seam, not a frame (#388). */
+  border: 1px solid var(--ink);
 }
 
 /* The pinned day's note, in the top right of the page it belongs to: the city the day's stops cross, with the
@@ -296,10 +299,6 @@
   margin-top: auto;
   padding-top: var(--s5);
   color: var(--ink-muted);
-}
-
-.page-num::before {
-  content: counter(page);
 }
 
 /* A destination's two sides. The picture is the reel's own poster frame, cropped to a landscape window; the words are
