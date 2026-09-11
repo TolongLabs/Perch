@@ -170,10 +170,11 @@
   transition: background-color var(--motion-fade) var(--ease);
 }
 
-/* The theme switch. Outlined and paper-grounded rather than the top bar's borderless control, because it sits over
-   a photograph, not on an island: the ground keeps the icon legible against the bright sky in both themes, and paper
-   (not ink) leaves the CTA as the one solid button on the page. Pushed to the far edge of the top row, with the way in
-   after it. */
+/* The theme switch. The same solid ink as the way in, not a paper chip: the icon sits over a photograph, and the
+   opaque token fill (ink on paper, ~13:1) holds against the bright sky in both themes without depending on the photo
+   behind it, leaving the two controls reading as one family. The identical background and hover leave the CTA the
+   way in and the theme switch the theme switch by the icon alone. Pushed to the far edge of the top row, with the
+   way in after it. */
 .land-theme {
   display: grid;
   place-items: center;
@@ -181,23 +182,18 @@
   height: 44px;
   margin-left: auto;
   padding: 0;
-  border: var(--outline) solid color-mix(in oklab, var(--ink) 22%, transparent);
   border-radius: var(--r-pill);
-  /* A paper ground, not transparent: the icon sits on the photograph, and in dark mode the near-white icon over the
-     bright sky measured 1.29:1. Opaque rather than a veil, so the contrast is the token contrast (ink on paper,
-     ~13:1) in both themes instead of depending on the photo behind it. Paper inverts with the theme, so the same
-     rule is a light chip in light and a dark one in dark. */
-  background: var(--paper);
-  color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
   cursor: pointer;
   transition:
-    border-color var(--motion-fade) var(--ease),
-    background var(--motion-fade) var(--ease);
+    background var(--motion-fade) var(--ease),
+    color var(--motion-fade) var(--ease);
 }
 
 .land-theme:hover,
 .land-theme:focus-visible {
-  border-color: var(--ink);
+  background: color-mix(in oklab, var(--open) 34%, var(--ink));
 }
 
 .land-go:hover,
@@ -235,6 +231,22 @@
   margin: 0;
   max-width: 34ch;
   color: var(--ink);
+}
+
+/* The three blocks sit one per track, held to the content column rather than the viewport. The dd's `max-width`
+   caps each block well inside its `1fr` track, which would leave the last one hugging the left of an empty track and
+   the page lopsided; anchoring them to their own tracks - first start, middle centre, last to the far content edge -
+   keeps the composition level while the prose stays left-aligned inside each block. */
+.land-facts > div:nth-child(1) {
+  justify-self: start;
+}
+
+.land-facts > div:nth-child(2) {
+  justify-self: center;
+}
+
+.land-facts > div:nth-child(3) {
+  justify-self: end;
 }
 
 /* The five day tints, doing on the first screen exactly what they do on every screen after it. */

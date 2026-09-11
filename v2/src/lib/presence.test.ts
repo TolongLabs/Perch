@@ -1,4 +1,7 @@
 import { describe, expect, test } from 'bun:test'
+import { createElement } from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { Presence } from '../components/Presence'
 import { trip } from '../data/trip'
 import { nameList, standingLine, standings } from './presence'
 
@@ -21,6 +24,25 @@ describe('standings', () => {
     const partial = { ...trip, votes: { ...trip.votes, farah: half } }
     expect(standings(partial).find((s) => s.member.id === 'farah')?.reel).toBe(9)
   })
+})
+
+test('excludes the selected viewer rather than always excluding the owner', () => {
+  expect(standings(trip, 'farah').map((s) => s.member.id)).toEqual(['aisyah', 'hana', 'iman'])
+  expect(standings(trip, trip.ownerId)).toEqual(standings(trip))
+})
+
+test('marks only the actual viewer as you and renders every member once in the strip', () => {
+  for (const me of [trip.ownerId, 'farah']) {
+    const html = renderToStaticMarkup(createElement(Presence, { trip, me }))
+    const viewer = trip.party.find((member) => member.id === me)
+    expect(html).toContain(`${viewer?.name}, you`)
+    expect(html.match(/data-state="you"/g)).toHaveLength(1)
+    const list = html.slice(html.indexOf('<ul'), html.indexOf('</ul>'))
+    for (const member of trip.party) {
+      expect(list.match(new RegExp(member.name, 'g'))).toHaveLength(1)
+    }
+    expect(list.indexOf(`${viewer?.name}, you`)).toBeLessThan(list.indexOf('</li>'))
+  }
 })
 
 describe('standingLine', () => {

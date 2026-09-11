@@ -194,10 +194,31 @@
   color: var(--paper);
 }
 
-/* Under the heading, in the specimen line's own register: it is metadata about the screen rather than a thing to
-   act on, which is exactly what a specimen line is for. */
 .deck-as {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s2) var(--s4);
   margin: calc(var(--s5) * -1) 0 0;
+}
+
+.deck-as p {
+  margin: 0;
+}
+
+.deck-change {
+  min-height: 44px;
+  padding: var(--s2) var(--s3);
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.deck-change:hover {
+  background: var(--ink);
+  color: var(--paper);
 }
 
 /* Who Are You? A list of names, one per row, on the register the Deck's own answers use. */
@@ -383,6 +404,12 @@
     color-mix(in oklab, var(--decided) 55%, var(--plate)),
     transparent min(62%, 420px)
   );
+}
+
+/* The paper-softened light at 20% opacity disappears against the dark ground. */
+:root[data-theme="dark"] .deck-flash[data-flash="keep"] {
+  --flash-peak: 0.85;
+  background: linear-gradient(to left, var(--decided), transparent min(62%, 420px));
 }
 
 /* Dull, per the issue: a pass is the answer you give most often and it should not celebrate. */

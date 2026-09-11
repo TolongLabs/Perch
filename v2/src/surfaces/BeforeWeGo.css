@@ -38,8 +38,9 @@
   gap: var(--s4);
 }
 
-/* The one solid button, and outline-only while it is not yet earned. */
-.bwg-print {
+/* Both destinations use the Book control's colours; the shared disabled rule keeps their checklist gate visible. */
+.bwg-print,
+.bwg-handbook {
   padding: var(--s4) var(--s6);
   border: var(--outline) solid var(--ink);
   border-radius: var(--r-pill);
@@ -51,35 +52,18 @@
     border-color var(--motion-fade) var(--ease);
 }
 
-.bwg-print:disabled {
-  border-color: color-mix(in oklab, var(--ink) 22%, transparent);
-  background: transparent;
-  color: color-mix(in oklab, var(--ink) 46%, transparent);
-  cursor: not-allowed;
-}
-
-/* Outline, because Print The Book is the screen's one solid button. Same size and same gate, so the two read as a
-   pair of things the checklist unlocks rather than as a primary and an afterthought. */
-.bwg-handbook {
-  padding: var(--s4) var(--s6);
-  border: var(--outline) solid var(--ink);
-  border-radius: var(--r-pill);
-  background: transparent;
-  color: var(--ink);
-  transition:
-    background var(--motion-fade) var(--ease),
-    color var(--motion-fade) var(--ease),
-    border-color var(--motion-fade) var(--ease);
-}
-
+.bwg-print:hover:not(:disabled),
+.bwg-print:focus-visible:not(:disabled),
 .bwg-handbook:hover:not(:disabled),
 .bwg-handbook:focus-visible:not(:disabled) {
   background: var(--ink);
   color: var(--paper);
 }
 
+.bwg-print:disabled,
 .bwg-handbook:disabled {
   border-color: color-mix(in oklab, var(--ink) 22%, transparent);
+  background: transparent;
   color: color-mix(in oklab, var(--ink) 46%, transparent);
   cursor: not-allowed;
 }

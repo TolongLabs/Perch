@@ -151,6 +151,7 @@ export type ManualSection = 'takeCare' | 'packing'
 
 export type ManualNote = {
   id: string
+  title: string
   text: string
 }
 

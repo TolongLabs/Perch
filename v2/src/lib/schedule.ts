@@ -3,6 +3,8 @@ import type { ClusterId, Day, DayFeasibility, Period, Place, Trip } from '../dat
 import { tallyFor, votedIn } from './votes'
 
 export const DAY_START = 9 * 60
+export const MIN_DAY_START = 5 * 60
+export const MAX_DAY_START = 10 * 60
 export const DAY_END = 21 * 60
 export const GOLD_SLACK = 1.25
 

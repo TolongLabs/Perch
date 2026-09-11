@@ -402,9 +402,8 @@
 /* Wide enough for the four columns and the sidebar side by side. Below this the days stack, which is the same
    information in one column rather than a four-column grid squeezed to 85px a day. */
 @media (min-width: 900px) {
-  /* The calendar spans both rows on the right so Prototype Controls can sit at the foot of the left column while
-     being last in the DOM: on a phone the column comes first now, and scaffolding that says it is not part of the
-     product has no business between the waiting cards and the days. */
+  /* The calendar sits in the right column of row one only; row two belongs to Prototype Controls, which spans both
+     columns so the reset stays reachable at the foot of the page without riding over the pinned pool. */
   .desk-body {
     grid-template-columns: 260px 1fr;
     grid-template-rows: auto auto;
@@ -416,16 +415,11 @@
   }
 
   .desk-grid {
-    grid-area: 1 / 2 / span 2 / auto;
+    grid-area: 1 / 2;
   }
 
-  /* The pool pins at the top while the calendar scrolls, and on a long trip it lands on the Prototype Controls
-     below it in the same column - which is the control a live demo has to be able to reach. The panel is opaque,
-     so putting it above the pinned list reads as a panel over the cards and keeps the button clickable. */
   .desk-proto {
-    grid-area: 2 / 1;
-    position: relative;
-    z-index: 1;
+    grid-area: 2 / 1 / auto / -1;
   }
 
   .desk-grid {

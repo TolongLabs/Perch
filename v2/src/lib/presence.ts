@@ -11,14 +11,14 @@ export type Standing = {
  * being mid-swipe: a friend who has answered everything is still on the deck, and saying she is on reel nine would
  * contradict the Tally, which reads the same votes and says she has finished.
  *
- * The owner is left out because she is the one reading; her own position is the header's Reel N Of M.
+ * The viewer is left out; their own position is the header's Reel N Of M.
  */
-export const standings = (trip: Trip): Standing[] => {
+export const standings = (trip: Trip, viewerId = trip.ownerId): Standing[] => {
   // The places, not the owner's remaining queue: a joiner's deck is a different length from hers, and clamping a
   // friend's position to it reported her as further back than she is.
   const places = Object.keys(trip.options)
   return trip.party
-    .filter((member) => member.id !== trip.ownerId)
+    .filter((member) => member.id !== viewerId)
     .map((member) => {
       const answers = trip.votes[member.id] ?? {}
       const answered = places.filter((placeId) => answers[placeId] != null).length

@@ -170,6 +170,15 @@ describe('day start time', () => {
     expect(t.days[0]?.startMin).toBe(480)
   })
 
+  test('withDayStart accepts the boundary values and rejects outside them', () => {
+    // 300 and 600 are the floor and ceiling (5:00 and 10:00); the guard uses >= MIN and <= MAX.
+    expect(withDayStart(trip, 1, 300)).not.toBe(trip)
+    expect(withDayStart(trip, 1, 600)).not.toBe(trip)
+    // 299 is one step below; 601 is one step above.
+    expect(withDayStart(trip, 1, 299)).toBe(trip)
+    expect(withDayStart(trip, 1, 601)).toBe(trip)
+  })
+
   test('withDayStart is a no-op for an invalid day or time', () => {
     expect(withDayStart(trip, 0, 480)).toBe(trip)
     expect(withDayStart(trip, 99, 480)).toBe(trip)
@@ -259,12 +268,41 @@ describe('store migration', () => {
     const loaded = load()
     expect(loaded.budgetRM).toBe(777)
     expect(loaded.votes).toEqual(trip.votes)
-    expect(loaded.manualNotes).toEqual({ takeCare: [{ id: 'n1', text: 'A' }], packing: [{ id: 'n2', text: 'B' }] })
+    expect(loaded.manualNotes).toEqual({
+      takeCare: [{ id: 'n1', title: 'Trip Note', text: 'A' }],
+      packing: [{ id: 'n2', title: 'Trip Note', text: 'B' }]
+    })
     expect(loaded.days[0]?.startMin).toBe(480)
     expect(loaded.days[0]?.feasibility).toEqual(oldDays[0]?.feasibility)
     for (let i = 1; i < loaded.days.length; i += 1) {
       expect(loaded.days[i]?.startMin).toBe(540)
       expect(loaded.days[i]?.feasibility).not.toBeNull()
     }
+  })
+
+  test('load migrates legacy 0 and 1439 start times to DAY_START while preserving votes and notes', () => {
+    const oldDays: Trip['days'] = trip.days.map((d, i) => {
+      const startMin = i === 0 ? 0 : i === 1 ? 1439 : undefined
+      const slots = d.slots.map((s, j) => (j === 0 ? { ...s, placeId: 'sensoji' } : s))
+      const withStart = { ...d, startMin: startMin as number, slots, feasibility: null as Day['feasibility'] }
+      return withStart as unknown as Day
+    })
+    const old = {
+      ...trip,
+      days: oldDays,
+      manualNotes: { takeCare: [{ id: 'n1', text: 'X' }], packing: [] }
+    } as unknown as Trip
+    save(old)
+    const loaded = load()
+    // Votes and notes survive the migration.
+    expect(loaded.votes).toEqual(trip.votes)
+    expect(loaded.manualNotes).toEqual({ takeCare: [{ id: 'n1', title: 'Trip Note', text: 'X' }], packing: [] })
+    // Both legacy extremes migrate to DAY_START (540) with feasibility recomputed.
+    expect(loaded.days[0]?.startMin).toBe(540)
+    expect(loaded.days[0]?.feasibility).not.toBeNull()
+    expect(loaded.days[1]?.startMin).toBe(540)
+    expect(loaded.days[1]?.feasibility).not.toBeNull()
+    // Undefined stays 540.
+    expect(loaded.days[2]?.startMin).toBe(540)
   })
 })

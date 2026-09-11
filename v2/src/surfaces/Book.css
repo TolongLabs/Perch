@@ -442,6 +442,18 @@
     height: 100%;
   }
 
+  /* Two facing pages touch across the spine in the live book: the library seats its clones side by side with no
+     gutter of its own, so the flat stage's 64px column gap cannot reach them. The fold is set on the wrapper's
+     facing edge instead — padding comes out of the border-box, so height and width hold and the page number stays at
+     the foot — and each page answers on the side that meets the fold. */
+  .bookflip-host .book-page.folio-left .book-page-inner {
+    padding-right: var(--s6);
+  }
+
+  .bookflip-host .book-page.folio-right .book-page-inner {
+    padding-left: var(--s6);
+  }
+
   /* Facing pages: the left page numbers on the left, the right page on the right. */
   .folio-right .page-num {
     text-align: right;

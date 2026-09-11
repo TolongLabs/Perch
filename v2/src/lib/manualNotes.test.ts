@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from 'bun:test'
 import { PACKING, TAKE_CARE } from '../data/handbook'
 import { trip } from '../data/trip'
 import type { ManualNote, ManualSection, Trip } from '../data/types'
-import { MAX_NOTE_LENGTH, withManualNote, withoutManualNote } from './manualNotes'
+import { MAX_NOTE_LENGTH, MAX_NOTE_TITLE_LENGTH, withManualNote, withoutManualNote } from './manualNotes'
 import { load, reset, save } from './store'
 
 let originalDescriptor: PropertyDescriptor | undefined
@@ -39,7 +39,7 @@ afterEach(() => {
 describe('manual notes', () => {
   test('adds a trimmed note', () => {
     const next = withManualNote(trip, 'takeCare', '  Passport copies  ', 'n1')
-    expect(sectionNotes(next, 'takeCare')).toContainEqual({ id: 'n1', text: 'Passport copies' })
+    expect(sectionNotes(next, 'takeCare')).toContainEqual({ id: 'n1', title: 'Trip Note', text: 'Passport copies' })
   })
 
   test('blank text is a no-op', () => {
@@ -91,8 +91,38 @@ describe('manual notes', () => {
     save(t)
     const loaded = load()
     expect(loaded.budgetRM).toBe(777)
-    expect(loaded.manualNotes.takeCare).toEqual([{ id: 'n1', text: 'A' }])
-    expect(loaded.manualNotes.packing).toEqual([{ id: 'n2', text: 'B' }])
+    expect(loaded.manualNotes.takeCare).toEqual([{ id: 'n1', title: 'Trip Note', text: 'A' }])
+    expect(loaded.manualNotes.packing).toEqual([{ id: 'n2', title: 'Trip Note', text: 'B' }])
+  })
+
+  test('saves a trimmed title and content for every simulated member', () => {
+    const next = withManualNote(trip, 'packing', '  Bring two adapters.  ', 'n1', '  Chargers  ')
+    save({ ...next, currentMemberId: 'farah' })
+    const loaded = load()
+    expect(loaded.currentMemberId).toBe('farah')
+    expect(loaded.manualNotes.packing).toEqual([{ id: 'n1', title: 'Chargers', text: 'Bring two adapters.' }])
+  })
+
+  test('blank or oversized titles are rejected', () => {
+    expect(withManualNote(trip, 'packing', 'Content', 'n1', ' ')).toBe(trip)
+    expect(withManualNote(trip, 'packing', 'Content', 'n1', 'x'.repeat(MAX_NOTE_TITLE_LENGTH + 1))).toBe(trip)
+  })
+
+  test('legacy notes gain a title without losing their original content', () => {
+    localStorage.setItem(
+      'perch.trip.v1',
+      JSON.stringify({
+        ...trip,
+        manualNotes: {
+          takeCare: [{ id: 'old', text: 'Keep passport copies separate.' }],
+          packing: [{ id: 'named', title: 'Chargers', text: 'Bring two.' }]
+        }
+      })
+    )
+    expect(load().manualNotes).toEqual({
+      takeCare: [{ id: 'old', title: 'Trip Note', text: 'Keep passport copies separate.' }],
+      packing: [{ id: 'named', title: 'Chargers', text: 'Bring two.' }]
+    })
   })
 
   test('old stored trips without manualNotes get empty notes on load', () => {

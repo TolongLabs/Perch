@@ -175,3 +175,53 @@ test('pins the day map and keeps its TitleCase labels', () => {
   expect(html).toContain('That Evening')
   expect(html).toContain('The Book')
 })
+
+test('gives live flipbook pages an inner gutter at both facing edges', async () => {
+  store.setItem(KEY, JSON.stringify(planned))
+  const html = renderBook()
+
+  // The host clones the authored pages by these classes, so the gutter rules must target the same structure.
+  expect(html).toContain('class="book-page folio-page folio-left"')
+  expect(html).toContain('class="book-page folio-page folio-right"')
+
+  const css = await Bun.file(`${import.meta.dir}/Book.css`).text()
+  const mediaStart = css.indexOf('@media (min-width: 1024px) {')
+  expect(mediaStart).toBeGreaterThan(-1)
+  let depth = 0
+  let mediaEnd = mediaStart
+  for (let i = mediaStart; i < css.length; i++) {
+    if (css[i] === '{') depth++
+    if (css[i] === '}') {
+      depth--
+      if (depth === 0) {
+        mediaEnd = i
+        break
+      }
+    }
+  }
+  const wide = css.slice(mediaStart, mediaEnd + 1)
+
+  const ruleBody = (selector: string) => {
+    const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const match = wide.match(new RegExp(`${escaped}\\s*\\{([^}]*)\\}`))
+    return match?.[1]?.trim() ?? ''
+  }
+
+  const left = ruleBody('.bookflip-host .book-page.folio-left .book-page-inner')
+  const right = ruleBody('.bookflip-host .book-page.folio-right .book-page-inner')
+
+  expect(left).toContain('padding-right: var(--s6)')
+  expect(right).toContain('padding-left: var(--s6)')
+
+  // The gutter is internal to the wrapper, not a margin, gap or size override on the library-owned page box.
+  for (const rule of [left, right]) {
+    expect(rule).not.toContain('margin')
+    expect(rule).not.toContain('width:')
+    expect(rule).not.toContain('height:')
+    expect(rule).not.toContain('gap:')
+  }
+
+  // The flat stage keeps its external 64px gutter; the base host rule keeps the page number at the foot.
+  expect(wide).toContain('gap: var(--s5) 64px')
+  expect(ruleBody('.bookflip-host .book-page .book-page-inner')).toContain('height: 100%')
+})

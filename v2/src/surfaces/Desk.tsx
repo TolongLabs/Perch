@@ -18,11 +18,11 @@ import { Perch } from '../components/Perch'
 import { PlacedCard, PoolCard } from '../components/PlacedCard'
 import { type ChipState, StateChip } from '../components/StateChip'
 import { Heading, Info } from '../components/Ui'
-import type { Day, DayFeasibility, Period, Slot } from '../data/types'
+import type { Day, DayFeasibility, Period, Place, Slot } from '../data/types'
 import { dayCostRM } from '../lib/cost'
 import { clock, dayLabel, duration, money, price } from '../lib/format'
 import { planCapacity } from '../lib/planCapacity'
-import { CLUSTER_AREA } from '../lib/schedule'
+import { CLUSTER_AREA, MAX_DAY_START, MIN_DAY_START } from '../lib/schedule'
 import { nextReplacement, tallyFor, votedIn, waitingPlaces } from '../lib/votes'
 import { SLOTS_PER_PERIOD, useTrip } from '../state'
 import './Desk.css'
@@ -61,6 +61,11 @@ const FEASIBILITY: Record<DayFeasibility['status'], { label: string; state: Chip
   gold: { label: 'Fits But Runs Slow', state: 'gold' },
   red: { label: 'Overruns', state: 'at-risk' }
 }
+
+/** A red day reads Closed when any held stop is closed on that weekday, because a closure means the day cannot
+    happen at all rather than just running long; a pure overrun keeps the feasibility label. */
+const heldClosed = (day: Day, options: Record<string, Place>): boolean =>
+  day.slots.some((s) => (s.placeId ? options[s.placeId]?.closedOn.includes(day.weekday.toLowerCase()) : false))
 
 const ARROW: Record<string, { x: number; y: number }> = {
   ArrowRight: { x: 1, y: 0 },
@@ -372,7 +377,9 @@ export const Desk = () => {
                   {day.feasibility ? (
                     <span className="desk-fit">
                       <StateChip state={FEASIBILITY[day.feasibility.status].state}>
-                        {FEASIBILITY[day.feasibility.status].label}
+                        {day.feasibility.status === 'red' && heldClosed(day, trip.options)
+                          ? 'Closed'
+                          : FEASIBILITY[day.feasibility.status].label}
                       </StateChip>
                       <Info>{day.feasibility.rationale}</Info>
                     </span>
@@ -388,10 +395,10 @@ export const Desk = () => {
                   <button
                     type="button"
                     className="desk-slotact"
-                    disabled={day.startMin <= 0}
+                    disabled={day.startMin <= MIN_DAY_START}
                     title="Start the day thirty minutes earlier"
                     aria-label={`Start day ${day.index} thirty minutes earlier`}
-                    onClick={() => setDayStart(day.index, Math.max(0, day.startMin - 30))}
+                    onClick={() => setDayStart(day.index, Math.max(MIN_DAY_START, day.startMin - 30))}
                   >
                     &minus;
                   </button>
@@ -399,10 +406,10 @@ export const Desk = () => {
                   <button
                     type="button"
                     className="desk-slotact"
-                    disabled={day.startMin >= 1439}
+                    disabled={day.startMin >= MAX_DAY_START}
                     title="Start the day thirty minutes later"
                     aria-label={`Start day ${day.index} thirty minutes later`}
-                    onClick={() => setDayStart(day.index, Math.min(1439, day.startMin + 30))}
+                    onClick={() => setDayStart(day.index, Math.min(MAX_DAY_START, day.startMin + 30))}
                   >
                     +
                   </button>
