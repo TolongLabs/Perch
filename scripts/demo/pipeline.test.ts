@@ -715,6 +715,17 @@ describe('demo automation follows the shipped interface', () => {
     expect(videoScript).not.toContain('Every line here is earned')
     expect(`${spokenNarration}\n${videoScript}`).not.toMatch(/\b(?:The|the) Handbook\b|Print The Book/)
   })
+
+  // The Book's leaves turn by click since the 2D-book integration (#354): BookFlip turns the day's pages with
+  // page-flip on a desktop with motion, and the old scroll-driven `view()` turn is gone. Shot 10 films a real
+  // Next press, so the recorder has to assert the flipbook is live, turn it, and hold for the second spread.
+  test('films the shot 10 page turn through the live BookFlip controls', () => {
+    expect(recorder).toContain('.bookflip-host')
+    expect(recorder).toContain("'Spread 2 of 2'")
+    expect(recorder).toContain('bookflip-turn')
+    expect(recorder).not.toContain('view()')
+    expect(recorder).toContain('.bookflip-status')
+  })
 })
 
 // narration.txt holds the spoken lines and record.mjs holds the beat budgets, in two files that must agree. They

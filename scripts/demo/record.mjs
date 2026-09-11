@@ -804,11 +804,11 @@ export async function recordDemo(options = {}) {
     // head and pinned the plate on the photograph, so band, link, title, picture and plate now sit between 48 and
     // 522 of a spread 1470 tall. A second scroll is no longer merely unnecessary, it is wrong: it pushes both off
     // the top and points the camera at the stops.
-    // The camera scrolls rather than jumps, because since #284 the leaves turn on a scroll-driven `view()` timeline:
-    // the turn IS the scroll position, so an instant jump lands on the finished state and the film never sees a page
-    // move. It also cannot use scrollIntoViewIfNeeded, which scrolls the minimum that puts an element in view and,
-    // for a spread taller than the viewport, satisfies itself by leaving the top 193px above the fold -- link and
-    // plate off-screen with every count still passing. So: glide to each spread's own top, then hold on the plate.
+    // The camera scrolls rather than jumps, because the day plates are taller than the viewport: an instant
+    // scrollIntoViewIfNeeded would satisfy itself by leaving a spread's top above the fold, with link and plate
+    // off-screen while every count still passes. So: glide to each spread's own top, then hold on the plate.
+    // The plates are turned by BookFlip's controls now (#354), not by the scroll position; scrolling only frames
+    // them, and the turn below films on day one after the glide.
     const glideTo = async (locator, travelMs = 2_000, holdMs = 900) => {
       const to = await locator.evaluate((el) => el.getBoundingClientRect().top + window.scrollY)
       const from = await page.evaluate(() => window.scrollY)
@@ -823,9 +823,16 @@ export async function recordDemo(options = {}) {
     for (let i = 0; i < count; i += 1) {
       await glideTo(spreads.nth(i))
     }
+    // Each day is a page-flip book on this desktop context (#354): BookFlip clones the day's folios into a host and
+    // turns them with prev/next controls, while the authored pages hide. Nothing in the counts below distinguishes
+    // the live book from the flat fallback, so the film asserts the book itself: a host on every day, then a real
+    // Next press on day one that the camera watches land on the second spread. The nav sits under the host, at the
+    // foot of the spread, so the turn, the controls and the day plate are all in one frame.
     await claim('shot-10', 'four plates, each drawing its route, each with a Transit Route link', async () => {
       const rail = await railCollapsed()
       if (rail !== true) return rail
+      const live = await countOf('.day-spread:has(.bookflip-host)')
+      if (live !== 4) return `${live} days show the page-flip book, expected 4 -- the leaves filmed as the flat stack`
       const maps = await countOf('a.day-route[href*="google.com/maps"]')
       // Per day rather than a total, because the narration says each plate draws its own day. A global count of four
       // is also satisfied by one day drawing four lines and three drawing none. The route is the layer under the
@@ -849,6 +856,23 @@ export async function recordDemo(options = {}) {
       }
       return true
     })
+    // The turn films on day one, which the glide loop above has just left framed at its top. The book is 770px tall
+    // and the nav sits 24px under it, so a frame that seats the host's top at 48px holds both full facing pages and
+    // the controls in one 900px viewport -- measured, not assumed: bringing the nav in with scrollIntoViewIfNeeded
+    // instead lands the host's top 322px above the fold and films three quarters of the pages. Framed like this, the
+    // Next press is the reader's own gesture, and the film holds on "Spread 2 of 2" while the leaf settles.
+    const dayOne = page.locator('.day-spread').first()
+    const dayOneStatus = dayOne.locator('.bookflip-status')
+    const dayOneNext = dayOne.locator('.bookflip-turn[aria-label="Next Spread"]')
+    await glideTo(dayOne.locator('.bookflip-host'), 1_200, 500)
+    await must(dayOneNext, 'shot 10 day one Next Spread control')
+    await dayOneNext.click()
+    // page-flip animates the turn itself; the status flips at the flip event, the leaf finishes after, and a still
+    // mid-turn frame would show the page half off its hinge. Wait for the stated state, then hold past the motion.
+    await page.waitForFunction((el) => el.textContent === 'Spread 2 of 2', await dayOneStatus.elementHandle(), {
+      timeout
+    })
+    await pause(1_400)
     await finishShot('shot-10', 21_000)
 
     await showCard(
