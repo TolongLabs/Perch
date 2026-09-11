@@ -460,12 +460,14 @@ export async function recordDemo(options = {}) {
     await page.getByText('4 days, 3 nights').waitFor()
 
     // Scroll to the section by the legend it carries, not by its position. #167 inserted Who Is Coming between When
-    // and What You Are After, which moved both of these by one. The inputs are found by placeholder, so the typing
-    // stayed correct and only the camera was wrong: the beat would have filmed the wrong panel and still passed its
-    // claim check, which is the quietest way for this beat to break.
+    // and What You Are After, which moved both of these by one. #303 made the free-text field conditional on the
+    // Other chip, so the chip is pressed first to reveal it: the same line, typed into the same field, only gated
+    // behind a tap the shipped screen now asks for.
     const obSection = (legend) => page.locator('.ob-section').filter({ has: page.getByText(exactText(legend)) })
-    const whatYouWant = page.locator('input[placeholder="Tell Perch what you want out of this trip"]')
+    const whatYouWant = page.locator('input[placeholder="Tell Perch what else you want from this trip"]')
     await scrollTo(obSection('What You Are After'))
+    await click(page.getByRole('button', { name: exactText('Other') }), 250)
+    await must(whatYouWant, 'shot 1 free-text field revealed by Other')
     await type(whatYouWant, 'temples and snacks, early starts')
     await click(page.getByRole('button', { name: exactText('Food') }))
     await click(page.getByRole('button', { name: exactText('Temples') }))
