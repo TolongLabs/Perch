@@ -209,7 +209,73 @@
    already said by the when-line on it. The sheet's own ground — full white in every theme — is set where the pages
    are owned, BookFlip.css, so the flat pages and the live clones carry the same white under either theme. */
 .book-page {
+  position: relative;
   border: var(--outline) solid var(--ink);
+}
+
+/* The pinned day's note, in the top right of the page it belongs to: the city the day's stops cross, with the
+   day's transit route beneath it. With one book for the whole trip the day no longer owns a spread, so the pin
+   returns at page level, anchored to the page's box, which is what carries it into the live flipbook's clones —
+   a spread-level pin would never have reached the pages the book actually shows. Pinned rather than printed:
+   the tilt is what pinning means, and there is no shadow, per `DESIGN.md`. The figure carries the day's
+   attribute, so the head's dot and the fallback plate read the day's own tint. */
+.spread-pin {
+  position: absolute;
+  top: var(--s5);
+  right: var(--s5);
+  width: 120px;
+  margin: 0;
+  padding: 0;
+  background: var(--plate);
+  /* A loose tilt, not a set-square one: two to seven degrees is what a hand-pinned note actually sits at. */
+  transform: rotate(2.5deg);
+  /* The pin and the page's picture each make a stacking context (the tilt, the torn-edge mask), and in the flat
+     layout the picture would paint over the note and hide it, leaving only the head dot above the photo. The note
+     is the page's own mark, so it sits on top of everything on the page it belongs to. */
+  z-index: 1;
+}
+
+/* The head is the pin's own dot: a small bead in the day's tint, centred on the note's top edge. */
+.pin-head {
+  position: absolute;
+  top: -7px;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 34% 30%, var(--plate) 0 2px, var(--tint) 3px 100%);
+  z-index: 1;
+}
+
+/* The fallback plate's caption repeats the day title the page already says in its when-line, and the canvas
+   clips it anyway: hide it rather than let a clipped line sit under the drawing. */
+.spread-pin .plate-caption {
+  display: none;
+}
+
+/* Aged cartography: the map is treated as a worn, western-chart plate. The filter lands on the tile images only and
+   never on the container, because the OpenStreetMap attribution lives in the same container and must stay clean and
+   legible - hiding or tinting the credit is not on the table. */
+.spread-pin .daymap-tiles .leaflet-tile {
+  filter: sepia(0.4) saturate(0.72) contrast(1.05) brightness(1.02);
+}
+
+/* The day's transit route, beneath the map. A pointer-only link: `tabindex="-1"` in the markup keeps it out of the
+   tab order, because the pages are `aria-hidden` and a tab-reachable control inside hidden content is the trap the
+   flipbook otherwise keeps free of. */
+.pin-route {
+  display: block;
+  margin-top: var(--s2);
+  padding: var(--s2) 0;
+  color: color-mix(in oklab, var(--tint) 50%, var(--ink));
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.pin-route:hover,
+.pin-route:focus-visible {
+  color: var(--ink);
 }
 
 /* The page is a box in the flat layouts: the phone's stack and the spread's grid both need it, and its padding is
@@ -282,6 +348,14 @@
 
 .dest-desc > .t-specimen {
   margin-top: var(--s2);
+}
+
+/* The right page's top content is the first destination's words, and the pin sits in that page's top right: left to
+   their default the note would cover the name and the blurb. The words set in the margin to the left of the note
+   instead, the way a page carries marginalia. The width clears the pin (its width plus its offset, the note's tilt
+   taking the last few pixels); the left page needs none, because its top is a picture the note sits on. */
+.folio-right .dest-desc {
+  padding-right: 144px;
 }
 
 /* The mobile reading order: each destination's picture, then its words, for the two stops on the spread. `order`
@@ -394,6 +468,28 @@
   .folio-right .page-num {
     text-align: right;
   }
+
+  /* The page is wider at spread width, so the pin grows with it and eases off the edge. It stays top right: the
+     intake names the position, not a size. */
+  .spread-pin {
+    top: var(--s6);
+    right: var(--s6);
+    width: 200px;
+  }
+
+  /* The wider pin needs a wider margin: the right page's words clear it at spread width too, or the note would sit
+     on the name and the blurb. The value clears the pin's rotated bottom-left corner, not just its resting edge. */
+  .folio-right .dest-desc {
+    padding-right: 224px;
+  }
+
+  /* The book the reader turns is the host's clones, and a cloned Leaflet container is a stale tile patch: its size
+     was set for the authored page, and page-flip stretches the clone into a different box, so the tiles would crop
+     wrong. The drawn plate, by contrast, is pure SVG and scales cleanly, so the live pin shows the plate and the
+     tiles are kept for the flat and print layouts, where the page keeps its own size. */
+  .bookflip-host .spread-pin .daymap-tiles {
+    display: none;
+  }
 }
 
 /* The Book is the thing that prints, so a spread is a printed page and nothing inside a destination may split across
@@ -446,6 +542,13 @@
     flex-direction: column;
     gap: var(--s4);
     padding: var(--s5);
+  }
+
+  /* The pin is the screen's note, and the sheet already carries each day's map, named, in the run after the book:
+     a pin on every page would print the day's map once per page on top of the named run, with a route link that
+     opens nothing on paper. The map's job on the sheet is done by the run. */
+  .spread-pin {
+    display: none;
   }
 
   .folio-right .page-num {

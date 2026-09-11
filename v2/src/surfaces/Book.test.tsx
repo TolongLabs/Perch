@@ -177,23 +177,54 @@ test('alternates photo and description exactly as the intake names it', () => {
   expect(right).toContain('Day 1 · In The Morning')
 })
 
-test('sets the days after the book, as named maps on their own tints, with no pin to scuff', () => {
+test('sets the days after the book, as named maps, and pins a day map on every page', () => {
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
 
   // One map per day that has stops, named by its day, and each figure carries the day's attribute so the tint the
-  // title and the fallback plate read is the day's own. The pin is gone with the day's section: the map is the note,
-  // set square in the flow.
+  // title and the fallback plate read is the day's own.
   expect(html.match(/class="book-map"/g)).toHaveLength(4)
   expect(html.match(/class="daymap-thumb"/g)).toHaveLength(4)
   expect(html).toContain('data-day="1"')
   expect(html).toContain('data-day="4"')
   expect(html).toContain('Day 1 · Friday')
   expect(html).toContain('Day 4 · Monday')
-  expect(html).not.toContain('spread-pin')
-  expect(html).not.toContain('pin-head')
-  expect(html).not.toContain('Open The Transit Route')
+
+  // The pin is back at page level: one per page, twelve pages across six spreads, each anchored to the day that
+  // owns the page's picture, with its head and its transit route. Every day here holds three stops, so every pin
+  // carries a route.
+  expect(html.match(/class="spread-pin"/g)).toHaveLength(12)
+  expect(html.match(/class="pin-head"/g)).toHaveLength(12)
+  expect(html.match(/Open The Transit Route/g)).toHaveLength(12)
   expect(html).toContain('The Book')
+})
+
+test('withholds the transit route for a day with fewer than two stops', () => {
+  // Day one holds a single stop. A pin still belongs on its page, because the day's map holds one stop, but a
+  // route needs a start and an end, so the link is withheld there while the other days keep theirs.
+  const oneStop = {
+    ...planned,
+    days: planned.days.map((day) =>
+      day.index === 1
+        ? {
+            ...day,
+            slots: day.slots.map((slot) => ({ ...slot, placeId: slot.period === 'morning' ? 'sensoji' : null }))
+          }
+        : day
+    )
+  }
+  store.setItem(KEY, JSON.stringify(oneStop))
+  const html = renderBook()
+
+  const stageStart = html.indexOf('class="bookflip-stage" aria-hidden="true"')
+  const leftStart = html.indexOf('class="book-page folio-page folio-left"', stageStart)
+  const rightStart = html.indexOf('class="book-page folio-page folio-right"', leftStart)
+  const left = html.slice(leftStart, rightStart)
+  expect(left).toContain('class="spread-pin"')
+  expect(left).toContain('data-day="1"')
+  expect(left).not.toContain('Open The Transit Route')
+  // The rest of the book is untouched: the days with two or more stops still carry their route.
+  expect(html).toContain('Open The Transit Route')
 })
 
 test('gives live flipbook pages an inner gutter at both facing edges', async () => {

@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import { BookFlip } from '../components/BookFlip'
-import { DayMap } from '../components/DayMap'
+import { DayMap, DayMapThumb } from '../components/DayMap'
 import { transitMin } from '../data/travel'
 import type { Day, Place, Slot } from '../data/types'
 import { tripCostRM } from '../lib/cost'
 import { dayLabel, duration, money, price } from '../lib/format'
+import { transitRoute } from '../lib/mapsLink'
 import { saveAsPdf } from '../lib/print'
 import { useTrip } from '../state'
 import './Book.css'
@@ -21,6 +22,8 @@ const PERIOD: Record<Slot['period'], string> = {
 const PER_PAGE = 2
 
 type Entry = { slot: Slot; place: Place; transit: number; day: number }
+
+type MappedDay = { day: Day; stops: Place[] }
 
 /**
  * The day's filled slots in visiting order, each carrying the transit from the one before it. A day whose slots are
@@ -66,6 +69,28 @@ const DestDesc = ({ entry }: { entry: Entry }) => (
 )
 
 /**
+ * The pin set in the top right of a page, for the day that owns the page's photo: the day's stops drawn on the
+ * city they cross, with the day's transit route beneath. The route is withheld when the day has fewer than two
+ * stops, because a route needs a start and an end. The figure carries the day's attribute, so the head's dot and
+ * the fallback plate read the day's own tint.
+ */
+const PagePin = ({ day, stops }: { day: Day; stops: Place[] }) => {
+  const route = transitRoute(stops)
+  if (stops.length === 0) return null
+  return (
+    <figure className="spread-pin" data-day={day.index}>
+      <span className="pin-head" aria-hidden="true" />
+      <DayMapThumb day={day.index} title={day.title} stops={stops} />
+      {route && (
+        <a className="t-label pin-route" href={route} target="_blank" rel="noreferrer noopener" tabIndex={-1}>
+          Open The Transit Route
+        </a>
+      )}
+    </figure>
+  )
+}
+
+/**
  * The keepsake, and the shared link. Printed state only: there is no setting state here, no blank slot and no
  * awaiting-decision chip, because a plate prints what was settled.
  *
@@ -84,9 +109,10 @@ export const Book = () => {
   const planned = trip.days.some((day) => day.slots.some((slot) => slot.placeId !== null))
   const entries = trip.days.flatMap((day) => entriesOf(day, trip.options))
   const folios = pagesOf(entries)
-  const mapped = trip.days
+  const mapped: MappedDay[] = trip.days
     .map((day) => ({ day, stops: entriesOf(day, trip.options).map((e) => e.place) }))
     .filter((entry) => entry.stops.length > 0)
+  const dayMap = new Map(mapped.map((m) => [m.day.index, m]))
 
   return (
     <main className="book">
@@ -165,19 +191,23 @@ export const Book = () => {
             {folios.map((folio) => {
               const [a, b] = folio
               if (!a) return null
+              const pinA = dayMap.get(a.day)
+              const pinB = b ? dayMap.get(b.day) : undefined
               return (
                 <div className="folio-spread" key={a.slot.id}>
                   {/* The first destination of the spread sits photo left / words right; the second flips to words
                     left / photo right. That is the alternation the intake names, and it is what makes a spread read
                     as two facing pages rather than two stacked lists. On a wide screen with motion, BookFlip turns
                     these pages with page-flip; everywhere else they are the book's flat pages, laid out by the
-                    Book's own rules. */}
+                    Book's own rules. Each page carries the pin of the day that owns its picture, set in the page's
+                    top right. */}
                   <div className="book-page folio-page folio-left">
                     <div className="book-page-inner">
                       <DestPhoto entry={a} />
                       {b && <DestDesc entry={b} />}
                       <p className="page-num t-specimen" aria-hidden="true" />
                     </div>
+                    {pinA && <PagePin day={pinA.day} stops={pinA.stops} />}
                   </div>
                   <div className="book-page folio-page folio-right">
                     <div className="book-page-inner">
@@ -185,6 +215,7 @@ export const Book = () => {
                       {b && <DestPhoto entry={b} />}
                       <p className="page-num t-specimen" aria-hidden="true" />
                     </div>
+                    {pinB && <PagePin day={pinB.day} stops={pinB.stops} />}
                   </div>
                 </div>
               )
