@@ -746,6 +746,18 @@ describe('demo automation follows the shipped interface', () => {
     expect(recorder).toContain("obSection('Where').getByRole('button', { name: exactText('Tokyo') })")
     expect(recorder).not.toContain('input[placeholder="Name a city"]')
   })
+
+  // #349 put a confirmation in front of Optimize Plan whenever unpinned placements are on the board. The recorder
+  // commits through the ask via applyPlan(); a bare .desk-apply press would film the question and leave the
+  // scheduler idle, which is how the second v2-0.4.0 take died on shot 7.
+  test('commits the Optimize Plan confirmation instead of leaving it open', () => {
+    expect(recorder).toContain('.desk-applyask')
+    expect(recorder).toContain("exactText('Yes, Optimize Plan')")
+    expect(recorder).toMatch(/const applyPlan = /)
+    const barePresses = recorder.split("await click(page.locator('.desk-apply')").length - 1
+    expect(barePresses).toBe(1) // the one inside applyPlan itself
+    expect(recorder.match(/await applyPlan\(\)/g)?.length).toBe(2)
+  })
 })
 
 // narration.txt holds the spoken lines and record.mjs holds the beat budgets, in two files that must agree. They
