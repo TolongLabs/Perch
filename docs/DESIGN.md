@@ -345,12 +345,15 @@ Deck, in the perch drawer and on the Tally. The mechanic itself is untouched.
 3. **The Tally** - a place that falls to zero leaves the running order and the rows below step up
 4. **The calendar drag, on Apply** - a card flies into its slot, staggered 40ms, on the same easing as the perch
 
-**Everything else is a 120ms opacity cross-fade.** The Book's spreads cross-fade and scroll-snap. **Revised 9
-September:** the leader overrode the earlier no-page-turn line, and the Book now turns one leaf at a time, hinged on the
-gutter and scrubbed by the reader's own scroll through `animation-timeline: view()`, with no library and no JavaScript;
-the technique follows create-photo-flipbook-ui, MIT, credited in the README. Under reduced motion the leaf is flat and
-the cross-fade runs instead, which is why the earlier objection, that a flip breaks first at demo scale, no longer
-holds.
+**Other Motion.** Everything else is a 120ms opacity cross-fade, except the Book's authorised page turn. The leader
+replaced the earlier no-page-turn direction; #354 supersedes the scroll-driven experiment with a per-day, 2D DOM
+flipbook using `page-flip` 2.0.7 (MIT). Click, drag or the Previous Spread and Next Spread controls turn the leaf in
+760ms; scrolling frames the book but does not drive the turn.
+
+**The Book's Fallbacks.** The turn runs at desktop widths of at least 1024px with no reduced-motion preference. Mobile
+shows each photo before its description in visiting order; reduced-motion desktop stays flat and two-up. Print uses the
+authored pages and hides the flipbook hosts and controls. `create-photo-flipbook-ui` is a behavioural reference, not
+copied code or assets; the pinned reference and MIT notices ship in `v2/public/vendor/page-flip/LICENSE.txt`.
 
 `prefers-reduced-motion` removes the step-forward and the calendar drag, and leaves the cross-fade.
 
