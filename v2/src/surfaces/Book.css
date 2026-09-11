@@ -216,16 +216,28 @@
   counter-increment: page;
 }
 
-/* The spread's box while the pages flow as one column - a phone, and the stage wherever it is not a two-column
-   grid - and the thing the `order` below applies to. It is `contents` by default so that at spread width and on
-   paper it drops out of the box tree entirely and the two-column layouts see only the pages: a box here would break
-   both. The column only ever shows on a phone, where nothing else lays out the stage, so the `max-width` query
-   scopes it to exactly that case. */
+/* The spread is a plain `div`, and a plain `div` is a box: left to its default it would sit in the two-column
+   grids as one cell holding both pages, and the facing pages would stack instead of sitting side by side. The base
+   drops it out of the box tree so those grids see only the pages; the phone column below is the one place the
+   spread is a box, and the print reset after it keeps the sheet on the base. */
+.folio-spread {
+  display: contents;
+}
+
 @media (max-width: 1023px) {
   .folio-spread {
     display: flex;
     flex-direction: column;
   }
+}
+
+/* The page's contents sit in this wrapper, and it is `contents` in every flat layout: the phone `order` rules and
+   the two-column page rules address the page's destinations directly, and a box in between would stand between
+   them and their flex parent. Only the live clones make it a box - the host rule below - because the flip
+   library sets `display` inline on the page itself and reaches nothing beneath it, while a descendant rule
+   reaches the wrapper without ever contesting the library's inline style. */
+.book-page-inner {
+  display: contents;
 }
 
 /* Pushed to the foot of the page rather than trailing the last destination, so facing pages carry their numbers on
@@ -416,16 +428,18 @@
     gap: var(--s5);
   }
 
-  /* The book the reader sees is the host's clones, and the library sets each one's `display` inline as `block`, so
-     the rule above never reaches them: on the live book the destinations stack with no rhythm and the page number
-     sits against the last destination instead of the page's foot. `!important` is the only way to beat an inline
-     style; it wins on the live clones, and it is harmless to the authored pages, which the stage rule already lays
-     out the same way. */
-  .bookflip-host .book-page {
-    /* biome-ignore lint/complexity/noImportantStyles: the library sets `display` inline, so only `!important` reaches the live clones */
-    display: flex !important;
+  /* The book the reader sees is the host's clones, and the library decides each one's `display` inline: `block`
+     while a page is active, `none` while it waits. A rule on the page itself can never win that contest without
+     `!important`, and `!important` would also undo the `none` - which is how the inactive clones painted over the
+     live spread. The wrapper is the one place a plain descendant rule reaches inside the clone: the destinations
+     flow in it with the same rhythm the page carries in every other layout, and its `height: 100%` pushes the page
+     number to the foot of a fixed-height page. The authored pages keep the stage rule; the wrapper is `contents`
+     there, so nothing about the flat layouts changes. */
+  .bookflip-host .book-page .book-page-inner {
+    display: flex;
     flex-direction: column;
     gap: var(--s5);
+    height: 100%;
   }
 
   /* Facing pages: the left page numbers on the left, the right page on the right. */
@@ -464,8 +478,16 @@
   }
 
   /* Two pages across, as on screen: the day's pages sit side by side across the gutter. The pages come back to being
-     boxes, as at spread width, or the `contents` base would scatter the destinations across the sheet. When the
-     flipbook is built, BookFlip's own print rules do the same job against the library's inline styles. */
+     boxes, as at spread width, or the `contents` base would scatter the destinations across the sheet. The spread
+     resets to the base here because the sheet is 1016px of content - short of the `min-width` breakpoint that drops
+     the phone column, and inside it - so the `max-width` rule above would otherwise keep every spread a column and
+     the facing pages would stack down the sheet. This rule follows that one in source, and the two are otherwise
+     identical in specificity, so the reset wins. When the flipbook is built, BookFlip's own print rules do the same
+     job against the library's inline styles. */
+  .folio-spread {
+    display: contents;
+  }
+
   .bookflip-stage {
     display: grid;
     grid-template-columns: 1fr 1fr;

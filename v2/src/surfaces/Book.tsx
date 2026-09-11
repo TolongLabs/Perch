@@ -48,7 +48,7 @@ const pagesOf = (entries: Entry[]): Entry[][] => {
 /** The picture side of a destination: the reel's own poster frame, cropped to a landscape window. */
 const DestPhoto = ({ entry }: { entry: Entry }) => (
   <div className="dest dest-photo">
-    <img className="dest-shot" src={entry.place.reel.poster} alt="" loading="lazy" />
+    <img className="dest-shot" src={entry.place.reel.poster} alt="" />
   </div>
 )
 
@@ -218,14 +218,18 @@ export const Book = () => {
                         these pages with page-flip; everywhere else they are the day's flat pages, laid out by the
                         Book's own rules. */}
                       <div className="book-page folio-page folio-left">
-                        <DestPhoto entry={a} />
-                        {b && <DestDesc entry={b} />}
-                        <p className="page-num t-specimen" aria-hidden="true" />
+                        <div className="book-page-inner">
+                          <DestPhoto entry={a} />
+                          {b && <DestDesc entry={b} />}
+                          <p className="page-num t-specimen" aria-hidden="true" />
+                        </div>
                       </div>
                       <div className="book-page folio-page folio-right">
-                        <DestDesc entry={a} />
-                        {b && <DestPhoto entry={b} />}
-                        <p className="page-num t-specimen" aria-hidden="true" />
+                        <div className="book-page-inner">
+                          <DestDesc entry={a} />
+                          {b && <DestPhoto entry={b} />}
+                          <p className="page-num t-specimen" aria-hidden="true" />
+                        </div>
                       </div>
                     </div>
                   )
