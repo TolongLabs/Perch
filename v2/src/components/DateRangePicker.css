@@ -119,6 +119,18 @@
   background: color-mix(in oklab, var(--ink) 7%, transparent);
 }
 
+/* #389 A day the range cap excludes: muted to the ground, no hover, no pointer - it is not a choice, so it must not
+   look like one. The endpoint of a stored range longer than the cap is not here: it is held, and refusing it is the
+   caller's press, which already carries the reason. */
+.dr-num:disabled {
+  color: color-mix(in oklab, var(--ink) 28%, var(--paper));
+  cursor: default;
+}
+
+.dr-num:disabled:hover {
+  background: none;
+}
+
 .dr-cell[data-edge] .dr-num {
   border-color: var(--tint, var(--open));
   background: var(--paper);

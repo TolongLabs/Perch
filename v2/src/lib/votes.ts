@@ -25,6 +25,9 @@ export const computeTally = (
   const scored = Object.values(options).map((place, index) => {
     const yes = party.reduce((sum, p) => sum + (isYes(votes[p.id]?.[place.id]) ? weightOf(p.id, ownerId) : 0), 0)
     const mustBy = party.filter((p) => votes[p.id]?.[place.id] === 'must').map((p) => p.id)
+    // The head-count behind the row: a yes in favour, one per member. Unweighted, and it never touches the
+    // percentage, which stays the owner-weighted share the Voted In Rule is built on.
+    const inFavour = party.filter((p) => isYes(votes[p.id]?.[place.id])).length
     return {
       index,
       score: yes + mustBy.length * MUST_BONUS,
@@ -34,7 +37,8 @@ export const computeTally = (
         percentage: Math.round((yes / total) * 100),
         unanimous: party.every((p) => isYes(votes[p.id]?.[place.id])),
         eliminated: yes === 0,
-        mustBy
+        mustBy,
+        votes: inFavour
       }
     }
   })

@@ -219,7 +219,9 @@ test('says the days are the limit, not the places, when the content holds the pl
 
 test('says nothing about capacity when the plan can be filled', () => {
   const html = renderDesk(seeded(() => {}))
-  expect(html).not.toContain('covers 8 days at most')
+  // #393 The date panel's refusal now speaks of the voted-in places, and it is closed anyway: neither refusal
+  // sentence may surface on a fillable plan.
+  expect(html).not.toContain('voted-in places cover')
   expect(html).not.toContain('can fill only')
 })
 

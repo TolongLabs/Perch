@@ -190,4 +190,6 @@ export type TallyEntry = {
   eliminated: boolean
   /** Members who marked this place Must Go. */
   mustBy: string[]
+  /** Members whose answer is a yes in favour: a Keep or a Must Go. Unweighted, no and skip are not votes. */
+  votes: number
 }

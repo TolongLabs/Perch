@@ -3,6 +3,7 @@ import { trip } from '../data/trip'
 import type { Answer, Day, Trip } from '../data/types'
 import { maxTripDays, planCapacity } from './planCapacity'
 import { evaluateDay, scheduleTrip } from './schedule'
+import { tallyFor, votedIn } from './votes'
 
 const allVotes = (trip: Trip, answer: 'yes' | 'skip'): Trip['votes'] => {
   const votes: Record<string, Record<string, Answer>> = {}
@@ -36,9 +37,29 @@ describe('maxTripDays', () => {
 })
 
 describe('planCapacity', () => {
-  test('reports the content ceiling, required slots and available places', () => {
+  // #393 The ceiling the Desk offers is the voted-in pool's, three slots a day: the scheduler fills voted-in places
+  // only, so offering day-counts the pool cannot hold was the bug. The destination-content ceiling stays
+  // `maxTripDays`, the hard physical limit, and the two agree once every place is voted in.
+  test('maxDays is the voted-in basis, not the pool ceiling', () => {
     const capacity = planCapacity(trip)
-    expect(capacity.maxDays).toBe(maxTripDays(trip))
+    expect(capacity.maxDays).toBe(Math.floor(votedIn(tallyFor(trip)).length / 3))
+    expect(capacity.maxDays).toBe(4)
+    expect(maxTripDays(trip)).toBe(8)
+
+    expect(planCapacity({ ...trip, votes: allVotes(trip, 'skip') }).maxDays).toBe(0)
+    expect(planCapacity({ ...trip, votes: allVotes(trip, 'yes') }).maxDays).toBe(maxTripDays(trip))
+  })
+
+  test('maxDays grows as places get voted in', () => {
+    const all = Object.keys(trip.options)
+    const three = all.slice(0, 3)
+    const six = all.slice(0, 6)
+    expect(planCapacity({ ...trip, votes: dayVotes(trip, three) }).maxDays).toBe(1)
+    expect(planCapacity({ ...trip, votes: dayVotes(trip, six) }).maxDays).toBe(2)
+  })
+
+  test('reports the required slots and available places', () => {
+    const capacity = planCapacity(trip)
     expect(capacity.requiredPlaces).toBe(trip.days.reduce((sum, d) => sum + d.slots.length, 0))
     expect(capacity.availablePlaces).toBeGreaterThan(0)
   })

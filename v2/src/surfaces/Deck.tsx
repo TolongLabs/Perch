@@ -122,9 +122,6 @@ const Swiping = ({ me, changeVoter }: { me: string; changeVoter: () => void }) =
         </p>
       </header>
 
-      {/* The other three, on the deck at the same time and as far through it as their votes say they are. */}
-      <Presence trip={trip} me={me} />
-
       {/* Outside the stack and fixed to the viewport, because the answer is light entering from the edge of the
           screen the card was thrown at. Inside the stack it was a 36px halo on the reel's own edge, which is what
           intake 2 saw as barely registering. */}
@@ -202,6 +199,11 @@ const Swiping = ({ me, changeVoter }: { me: string; changeVoter: () => void }) =
           Change Voter
         </button>
       </div>
+
+      {/* The other three, on the deck at the same time and as far through it as their votes say they are. At the
+          foot of the column on a phone, out of the reel's height budget, so the card can be bigger while the party
+          still reads (#390). */}
+      <Presence trip={trip} me={me} />
     </main>
   )
 }

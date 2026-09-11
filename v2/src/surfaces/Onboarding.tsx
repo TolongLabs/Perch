@@ -3,6 +3,7 @@ import { Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { addDays, DateRangePicker, nightsBetween, type Range } from '../components/DateRangePicker'
 import { ChipGroup, Field, Heading } from '../components/Ui'
 import { isJoiner } from '../lib/joiner'
+import { maxTripDays } from '../lib/planCapacity'
 import { MAX_PARTY, useTrip } from '../state'
 import './Onboarding.css'
 
@@ -117,7 +118,9 @@ export const Onboarding = () => {
 
       <section className="ob-section" data-state={datesSet ? 'decided' : 'open'}>
         <p className="t-label ob-legend">When</p>
-        <DateRangePicker value={range} onChange={setRange} />
+        {/* The pool ceiling, not the voted-in one: the trip may hold up to its full content, and #389 only needs to
+            stop a range that could never be scheduled, not one that is waiting for more votes. */}
+        <DateRangePicker value={range} onChange={setRange} maxDays={maxTripDays(trip)} />
         <p className="t-specimen ob-count">
           {datesSet
             ? `${nights + 1} days, ${nights} ${nights === 1 ? 'night' : 'nights'}`

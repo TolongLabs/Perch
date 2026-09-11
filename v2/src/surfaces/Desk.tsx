@@ -175,8 +175,9 @@ export const Desk = () => {
   }, [trip])
 
   const tally = useMemo(() => tallyFor(trip), [trip])
-  // The scheduler's own ceiling, computed the way the scheduler computes it: one place per slot, three slots a day.
-  // The surface asks before it promises, so a date the content cannot hold is refused with a reason.
+  // The scheduler's own ceiling, computed the way the scheduler computes it: one voted-in place per slot, three
+  // slots a day, so the ceiling grows as places get voted in. #393 The surface asks before it promises, so a date
+  // the pool cannot hold is refused with a reason.
   const capacity = useMemo(() => planCapacity(trip), [trip])
   const placed = new Set(trip.days.flatMap((d) => d.slots.map((s) => s.placeId).filter((id): id is string => !!id)))
   const pool = votedIn(tally).filter((t) => !placed.has(t.placeId))
@@ -281,11 +282,11 @@ export const Desk = () => {
             <p className="t-specimen desk-pinnote">Optimizing reorders every day. Pinned stops keep their slot.</p>
           )}
 
-          {/* Two different refusals, two different sentences: the content may not hold the plan, or the content may
-              hold it and the days may not. availablePlaces counts the places that may be used, not the slots the
-              scheduler can fill, so the first refusal says how many places are eligible, not how many slots fill -
-              a single eligible place closed on its days fills zero of twelve. The day-count ceiling belongs to the
-              date panel, which says it when the dates exceed it. #313 */}
+          {/* Two different refusals, two different sentences: the voted-in places may not hold the plan, or the
+              places may hold it and the days may not. availablePlaces counts the places that may be used, not the
+              slots the scheduler can fill, so the first refusal says how many places are eligible, not how many
+              slots fill - a single eligible place closed on its days fills zero of twelve. The day-count ceiling
+              belongs to the date panel, which says it when the dates exceed it. #313 */}
           {!capacity.canFill && (
             <p className="t-specimen desk-capnote">
               {capacity.availablePlaces < capacity.requiredPlaces
@@ -312,11 +313,11 @@ export const Desk = () => {
         {datesOpen && (
           <section className="desk-datepick">
             <p className="t-label desk-legend">Change The Dates</p>
-            <DateRangePicker value={range} onChange={setRange} />
+            <DateRangePicker value={range} onChange={setRange} maxDays={capacity.maxDays} />
             <div className="desk-datefoot">
               <p className="t-specimen">
                 {capped
-                  ? `The destination’s content covers ${capacity.maxDays} days at most, so these dates cannot be set. Pick a range of at most ${capacity.maxDays} days.`
+                  ? `The voted-in places cover ${capacity.maxDays} days at most, so these dates cannot be set. Pick a range of at most ${capacity.maxDays} days.`
                   : nights > 0
                     ? `${nights + 1} days, ${nights} nights. Votes stay, they are on places.`
                     : 'Tap the first day, then the last.'}

@@ -151,6 +151,16 @@
   min-width: 0;
 }
 
+/* The head count behind the name: a secondary fact, so it takes the row's muted secondary ink and stays out of the
+   name's weight. Tabular so a column of rows does not jitter as ballots change. */
+.tally-votes {
+  flex: none;
+  color: color-mix(in oklab, var(--ink-muted) 80%, var(--ink));
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
 .tally-line {
   color: color-mix(in oklab, var(--ink-muted) 80%, var(--ink));
 }

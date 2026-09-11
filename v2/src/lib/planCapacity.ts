@@ -5,16 +5,18 @@ import { tallyFor, votedIn } from './votes'
 export const maxTripDays = (trip: Trip): number => Math.floor(Object.keys(trip.options).length / 3)
 
 /**
- * Capacity and fill check for the current trip. `availablePlaces` counts distinct voted-in places plus pinned slots
- * that reference a known option. `canFill` is the result of running the actual scheduler and verifying that every
- * requested slot is occupied by a known venue with no repeated placeId. It is not a guarantee that opening hours or
- * the 21:00 day-end rule are satisfied: a pinned closed venue stays pinned and the warning remains visible through
- * `Day.feasibility`.
+ * Capacity and fill check for the current trip. `maxDays` is the voted-in pool's day ceiling - what Optimize Plan
+ * can actually fill at three slots a day, and what the date picker offers - while `maxTripDays` keeps the
+ * destination-content ceiling as the hard physical limit. #393 `availablePlaces` counts distinct voted-in places
+ * plus pinned slots that reference a known option. `canFill` is the result of running the actual scheduler and
+ * verifying that every requested slot is occupied by a known venue with no repeated placeId. It is not a guarantee
+ * that opening hours or the 21:00 day-end rule are satisfied: a pinned closed venue stays pinned and the warning
+ * remains visible through `Day.feasibility`.
  */
 export const planCapacity = (
   trip: Trip
 ): { maxDays: number; availablePlaces: number; requiredPlaces: number; canFill: boolean } => {
-  const maxDays = maxTripDays(trip)
+  const maxDays = Math.floor(votedIn(tallyFor(trip)).length / 3)
 
   const available = new Set<string>()
   for (const entry of votedIn(tallyFor(trip))) {
