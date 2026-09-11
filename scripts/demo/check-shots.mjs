@@ -89,8 +89,8 @@ export async function runShotChecks(options = {}) {
     await check(
       'landing',
       'The hero clip is playing, not merely present',
-      'video.land-frame',
-      page.locator('video.land-frame'),
+      'video.hero-frame',
+      page.locator('video.hero-frame'),
       async (locator) => {
         await page.waitForTimeout(3_000)
         return locator
