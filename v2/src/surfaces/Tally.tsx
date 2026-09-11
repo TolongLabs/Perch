@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { CopyLink } from '../components/CopyLink'
 import { PlateThumb } from '../components/PlateThumb'
 import { StateChip } from '../components/StateChip'
-import { Heading } from '../components/Ui'
+import { Heading, Info } from '../components/Ui'
 import { Voters } from '../components/Voters'
 import { duration, price } from '../lib/format'
 import { isJoiner } from '../lib/joiner'
@@ -105,16 +105,14 @@ export const Tally = () => {
                       {mustVoters.length > 0 && (
                         <span className="tally-musts">
                           {mustVoters.map((voter) => (
-                            <span
-                              key={voter.id}
-                              className="tally-must"
-                              data-must-heart
-                              data-must-voter={voter.id}
-                              role="img"
-                              aria-label={`Must Go by ${voter.name}`}
-                              title={`Must Go by ${voter.name}`}
-                            >
-                              <Heart size={18} strokeWidth={2} aria-hidden="true" />
+                            <span key={voter.id} data-must-heart data-must-voter={voter.id}>
+                              <Info
+                                label={`Must Go by ${voter.name}`}
+                                triggerClassName="tally-must"
+                                trigger={<Heart size={18} strokeWidth={2} aria-hidden="true" />}
+                              >
+                                {voter.name} voted for {place.name} as Must Go.
+                              </Info>
                             </span>
                           ))}
                         </span>

@@ -35,7 +35,7 @@ test('renders scannable guide titles before smaller descriptions and gives News 
   expect(html).toContain('not a live forecast')
 })
 
-test('offers separate browser-local personal note forms for Take Care and Packing', () => {
+test('offers titled trip note forms and explains the browser-local sharing boundary', () => {
   const html = renderManual()
 
   expect(html.match(/class="hb-note-form"/g)).toHaveLength(2)
@@ -44,5 +44,10 @@ test('offers separate browser-local personal note forms for Take Care and Packin
   expect(html).toContain('aria-label="Add A Packing Note"')
   expect(html.match(/maxLength="1000"/g)).toHaveLength(2)
   expect(html.match(/>Add Note<\/button>/g)).toHaveLength(2)
-  expect(html.match(/Saved only in this browser\./g)).toHaveLength(2)
+  expect(html.match(/maxLength="80"/g)).toHaveLength(2)
+  expect(html.match(/>Note Title<\/label>/g)).toHaveLength(2)
+  expect(html.match(/>Note Content<\/label>/g)).toHaveLength(2)
+  expect(html).toContain('Trip notes stay visible when you switch members in this browser')
+  expect(html).toContain('Cross-device sharing is not connected')
+  expect(html).not.toContain('Personal.')
 })

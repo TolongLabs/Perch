@@ -2,7 +2,7 @@ import { createContext, type ReactNode, useCallback, useContext, useEffect, useM
 import type { Day, ManualSection, Period, Person, Slot, Trip } from './data/types'
 import { withManualNote, withoutManualNote } from './lib/manualNotes'
 import { maxTripDays, planCapacity } from './lib/planCapacity'
-import { evaluateDay, scheduleTrip, withFeasibility } from './lib/schedule'
+import { DAY_START, evaluateDay, MAX_DAY_START, MIN_DAY_START, scheduleTrip, withFeasibility } from './lib/schedule'
 import { load, reset, save } from './lib/store'
 import { castVote, closeVoting, finalizeVotingIfDue } from './lib/votingSession'
 
@@ -38,9 +38,9 @@ type Ctx = {
   /** Closes a period's second slot, only while it is empty. The first slot of a period never goes. */
   removeSlot: (dayIndex: number, slotId: string) => void
   restart: () => void
-  /** Adds a personal note to a handbook section. */
-  addManualNote: (section: ManualSection, text: string) => void
-  /** Removes a personal note by id. */
+  /** Adds a trip note to a Manual section, shared by simulated members in this browser. */
+  addManualNote: (section: ManualSection, text: string, title?: string) => void
+  /** Removes a trip note by id. */
   removeManualNote: (section: ManualSection, id: string) => void
 }
 
@@ -61,7 +61,7 @@ const emptyDays = (startDate: string, nights: number, titles: string[]): Day[] =
       tint: ((i % 5) + 1) as Day['tint'],
       title: titles[i] ?? `Day ${index}`,
       slots: PERIODS.map((period): Slot => ({ id: `d${index}-${period}`, period, placeId: null, pinned: false })),
-      startMin: 540,
+      startMin: DAY_START,
       feasibility: null
     }
   })
@@ -95,7 +95,7 @@ export const withDates = (trip: Trip, startDate: string, nights: number): Trip =
 export const withDayStart = (trip: Trip, dayIndex: number, startMin: number): Trip => {
   const day = trip.days.find((d) => d.index === dayIndex)
   if (!day) return trip
-  if (!Number.isInteger(startMin) || startMin < 0 || startMin > 1439) return trip
+  if (!Number.isInteger(startMin) || startMin < MIN_DAY_START || startMin > MAX_DAY_START) return trip
   if (day.startMin === startMin) return trip
   return {
     ...trip,
@@ -311,9 +311,9 @@ export const TripProvider = ({ children }: { children: ReactNode }) => {
     setTrip(finalizeVotingIfDue(load()))
   }, [])
 
-  const addManualNote = useCallback((section: ManualSection, text: string) => {
+  const addManualNote = useCallback((section: ManualSection, text: string, title?: string) => {
     const id = window.crypto.randomUUID()
-    setTrip((current) => withManualNote(current, section, text, id))
+    setTrip((current) => withManualNote(current, section, text, id, title))
   }, [])
 
   const removeManualNote = useCallback((section: ManualSection, id: string) => {

@@ -4,7 +4,7 @@ import { Heading } from '../components/Ui'
 import { handbookFor } from '../data/handbook'
 import type { HandbookEntry, ManualNote, ManualSection, NewsItem } from '../data/types'
 import { dayLabel } from '../lib/format'
-import { MAX_NOTE_LENGTH } from '../lib/manualNotes'
+import { MAX_NOTE_LENGTH, MAX_NOTE_TITLE_LENGTH } from '../lib/manualNotes'
 import { saveAsPdf } from '../lib/print'
 import { useTrip } from '../state'
 import './Handbook.css'
@@ -59,43 +59,49 @@ const GuideList = ({ entries, explain = false }: { entries: HandbookEntry[]; exp
   </ul>
 )
 
-type PersonalNotesProps = {
+type TripNotesProps = {
   section: ManualSection
   heading: string
   notes: ManualNote[]
-  onAdd: (section: ManualSection, text: string) => void
+  onAdd: (section: ManualSection, text: string, title: string) => void
   onRemove: (section: ManualSection, id: string) => void
 }
 
-const PersonalNotes = ({ section, heading, notes, onAdd, onRemove }: PersonalNotesProps) => {
+const TripNotes = ({ section, heading, notes, onAdd, onRemove }: TripNotesProps) => {
+  const [title, setTitle] = useState('')
   const [text, setText] = useState('')
   const fieldId = `hb-${section}-note`
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    if (!text.trim()) return
-    onAdd(section, text)
+    if (!title.trim() || !text.trim()) return
+    onAdd(section, text, title)
+    setTitle('')
     setText('')
   }
 
   return (
-    <div className="hb-personal" data-empty={notes.length === 0}>
-      <div className="hb-personal-head">
-        <h3 className="t-label">Your Notes</h3>
-        <p className="t-specimen">Personal. Saved only in this browser.</p>
-      </div>
-
-      <div className="hb-personal-list" aria-live="polite">
+    <div className="hb-trip-notes" data-empty={notes.length === 0}>
+      <h3 className="t-label">Trip Notes</h3>
+      <div className="hb-trip-note-list" aria-live="polite">
         {notes.length === 0 ? (
-          <p className="t-specimen hb-note-empty">No personal notes yet.</p>
+          <p className="hb-note-empty">Add a reminder for everyone on this trip.</p>
         ) : (
-          <ul aria-label={`${heading} Personal Notes`}>
+          <ul className="hb-list" aria-label={`${heading} Trip Notes`}>
             {notes.map((note) => (
-              <li key={note.id} className="hb-personal-note">
-                <p className="t-prose">{note.text}</p>
-                <button type="button" className="t-label hb-note-remove" onClick={() => onRemove(section, note.id)}>
-                  Remove Note
-                </button>
+              <li key={note.id} className="hb-item hb-trip-note">
+                <div className="hb-note-heading">
+                  <h4 className="hb-item-title">{note.title}</h4>
+                  <button
+                    type="button"
+                    className="t-label hb-note-remove"
+                    aria-label={`Remove ${note.title}`}
+                    onClick={() => onRemove(section, note.id)}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <p className="hb-item-description">{note.text}</p>
               </li>
             ))}
           </ul>
@@ -103,19 +109,32 @@ const PersonalNotes = ({ section, heading, notes, onAdd, onRemove }: PersonalNot
       </div>
 
       <form className="hb-note-form" aria-label={`Add A ${heading} Note`} onSubmit={submit}>
+        <label className="t-label hb-note-label" htmlFor={`${fieldId}-title`}>
+          Note Title
+        </label>
+        <input
+          id={`${fieldId}-title`}
+          name={`${section}-note-title`}
+          value={title}
+          maxLength={MAX_NOTE_TITLE_LENGTH}
+          required
+          placeholder={section === 'takeCare' ? 'Meeting point' : 'Phone charger'}
+          onChange={(event) => setTitle(event.target.value)}
+        />
         <label className="t-label hb-note-label" htmlFor={fieldId}>
-          Add A Note
+          Note Content
         </label>
         <textarea
           id={fieldId}
           name={`${section}-note`}
           value={text}
           maxLength={MAX_NOTE_LENGTH}
-          rows={2}
-          placeholder="Add a reminder for this trip"
+          required
+          rows={3}
+          placeholder="What should the group know?"
           onChange={(event) => setText(event.target.value)}
         />
-        <button type="submit" className="t-label hb-note-add" disabled={!text.trim()}>
+        <button type="submit" className="t-label hb-note-add" disabled={!title.trim() || !text.trim()}>
           Add Note
         </button>
       </form>
@@ -134,10 +153,13 @@ export const Handbook = () => {
         <Heading as="h1">
           <span className="t-display">The Manual</span>
         </Heading>
-        <p className="t-prose hb-lede">
+        <p className="hb-lede">
           {trip.destination}, {dayLabel(trip.startDate)} to{' '}
-          {dayLabel(trip.days[trip.days.length - 1]?.date ?? trip.startDate)}. Sourced advice follows the trip; your own
-          notes stay separate and on this browser.
+          {dayLabel(trip.days[trip.days.length - 1]?.date ?? trip.startDate)}. Advice and reminders for the whole group.
+        </p>
+        <p className="hb-sharing">
+          Trip notes stay visible when you switch members in this browser. Cross-device sharing is not connected in this
+          prototype.
         </p>
       </header>
 
@@ -150,7 +172,7 @@ export const Handbook = () => {
             <p className="t-label hb-kind">Sourced Advice</p>
             <GuideList entries={takeCare} />
             <Sources of={takeCare} />
-            <PersonalNotes
+            <TripNotes
               section="takeCare"
               heading="Take Care"
               notes={trip.manualNotes.takeCare}
@@ -169,7 +191,7 @@ export const Handbook = () => {
             <p className="t-label hb-kind">Sourced Advice</p>
             <GuideList entries={packing} explain />
             <Sources of={packing} />
-            <PersonalNotes
+            <TripNotes
               section="packing"
               heading="Packing"
               notes={trip.manualNotes.packing}

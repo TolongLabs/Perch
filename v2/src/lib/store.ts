@@ -1,6 +1,6 @@
 import { trip as seed } from '../data/trip'
 import type { ManualNote, ManualSection, Trip } from '../data/types'
-import { evaluateDay } from './schedule'
+import { DAY_START, evaluateDay, MAX_DAY_START, MIN_DAY_START } from './schedule'
 
 const KEY = 'perch.trip.v1'
 
@@ -9,13 +9,17 @@ const KEY = 'perch.trip.v1'
  * fails this and the seed is used, which is the same path as a first visit.
  */
 
-const isManualNote = (value: unknown): value is ManualNote => {
+type StoredManualNote = Omit<ManualNote, 'title'> & { title?: string }
+
+const isManualNote = (value: unknown): value is StoredManualNote => {
   if (typeof value !== 'object' || value === null) return false
-  const n = value as Partial<ManualNote>
-  return typeof n.id === 'string' && typeof n.text === 'string'
+  const n = value as Partial<StoredManualNote>
+  return (
+    typeof n.id === 'string' && typeof n.text === 'string' && (n.title === undefined || typeof n.title === 'string')
+  )
 }
 
-const isManualNotes = (value: unknown): value is Record<ManualSection, ManualNote[]> => {
+const isManualNotes = (value: unknown): value is Record<ManualSection, StoredManualNote[]> => {
   if (typeof value !== 'object' || value === null) return false
   const m = value as Partial<Record<ManualSection, ManualNote[]>>
   return (
@@ -58,8 +62,11 @@ export const load = (): Trip => {
     // Old stored days may be missing startMin or have an invalid one; migrate to 09:00 and recompute feasibility.
     const days = parsed.days.map((day) => {
       const valid =
-        typeof day.startMin === 'number' && Number.isInteger(day.startMin) && day.startMin >= 0 && day.startMin <= 1439
-      const startMin = valid ? day.startMin : 540
+        typeof day.startMin === 'number' &&
+        Number.isInteger(day.startMin) &&
+        day.startMin >= MIN_DAY_START &&
+        day.startMin <= MAX_DAY_START
+      const startMin = valid ? day.startMin : DAY_START
       const withStart = { ...day, startMin }
       return {
         ...withStart,
@@ -70,7 +77,15 @@ export const load = (): Trip => {
       ...parsed,
       currentMemberId: parsed.currentMemberId ?? parsed.ownerId,
       votingClosedAt: parsed.votingClosedAt ?? null,
-      manualNotes: isManualNotes(parsed.manualNotes) ? parsed.manualNotes : { takeCare: [], packing: [] },
+      manualNotes: isManualNotes(parsed.manualNotes)
+        ? {
+            takeCare: parsed.manualNotes.takeCare.map((note) => ({
+              ...note,
+              title: note.title?.trim() || 'Trip Note'
+            })),
+            packing: parsed.manualNotes.packing.map((note) => ({ ...note, title: note.title?.trim() || 'Trip Note' }))
+          }
+        : { takeCare: [], packing: [] },
       days
     }
   } catch {

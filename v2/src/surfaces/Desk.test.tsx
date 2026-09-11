@@ -72,22 +72,20 @@ test('shows the daily start time on each day, defaulting to 09:00', () => {
 })
 
 test('shows the stored start time when a day has been moved, and disables the spent step', () => {
-  // Day 1 has been stepped to 08:00 and day 2 to first light at 00:00: the clock reads the stored startMin, the
-  // two untouched days keep 09:00, and a day that already starts at 00:00 has spent its earlier step, so only that
-  // button disables. On this empty calendar no other control is disabled, so the count is exact.
+  // Both boundary controls disable at their limits; the other days retain their stored starts.
   const html = renderDesk(
     seeded((trip) => {
       slotOf(trip, 0, 0).day.startMin = 480
-      slotOf(trip, 1, 0).day.startMin = 0
+      slotOf(trip, 1, 0).day.startMin = 300
+      slotOf(trip, 2, 0).day.startMin = 600
     })
   )
   expect(html.match(/>08:00</g)).toHaveLength(1)
-  expect(html.match(/>00:00</g)).toHaveLength(1)
-  expect(html.match(/>09:00</g)).toHaveLength(2)
-  // Day 2 starts at 00:00, so its earlier step is the spent one: the disabled attribute sits between the class and
-  // the title in the render, so it is exact to match the pair rather than count a word across the page.
+  expect(html.match(/>05:00</g)).toHaveLength(1)
+  expect(html.match(/>10:00</g)).toHaveLength(1)
+  expect(html.match(/>09:00</g)).toHaveLength(1)
   expect(html).toContain('disabled="" title="Start the day thirty minutes earlier"')
-  expect(html).not.toContain('disabled="" title="Start the day thirty minutes later"')
+  expect(html).toContain('disabled="" title="Start the day thirty minutes later"')
 })
 
 test('keeps the unanimous mark on a card once it is placed in a slot', () => {
@@ -113,6 +111,20 @@ test('marks in red a card placed on a day the place is closed', () => {
     '<article class="card card-placed" data-dragging="false" data-pinned="false" data-flying="false" data-unanimous="false" data-closed="true"'
   )
   expect(html).toContain('Closed This Day')
+})
+
+test('a feasibility chip reads Closed when the day is red because a held stop is closed on that weekday', () => {
+  // Shinjuku Gyoen is closed on Mondays; day 4 is Monday. evaluateDay makes this a red day with reason=closed.
+  // The chip renders "Closed" rather than the default "Overruns" label, without changing evaluateDay itself.
+  const html = renderDesk(
+    seeded((trip) => {
+      slotOf(trip, 3, 0).slot.placeId = 'shinjuku-gyoen'
+      const day = slotOf(trip, 3, 0).day
+      day.feasibility = evaluateDay(day, trip.options)
+    })
+  )
+  // Day 4 shows Closed in the state chip.
+  expect(html).toContain('>Closed<')
 })
 
 test('a placed card that is both unanimous and closed shows the closed warning', () => {
@@ -216,6 +228,25 @@ test('does not ask for confirmation on an empty calendar', () => {
   const html = renderDesk(seeded(() => {}))
   expect(html).not.toContain('Yes, Optimize Plan')
   expect(html).not.toContain('Keep This Plan')
+})
+
+test('Proto Controls follows the pool and grid in a separate full-width desktop row', async () => {
+  const html = renderDesk(seeded(() => {}))
+  // Proto is a direct child of desk-body alongside pool and grid, not nested under pool.
+  // The three children appear in pool → grid → proto order in the JSX.
+  const poolIdx = html.indexOf('class="desk-pool"')
+  const gridIdx = html.indexOf('class="desk-grid"')
+  const protoIdx = html.indexOf('class="desk-proto"')
+  expect(poolIdx).toBeGreaterThan(-1)
+  expect(gridIdx).toBeGreaterThan(poolIdx)
+  expect(protoIdx).toBeGreaterThan(gridIdx)
+  expect(html).toContain('Prototype Controls')
+
+  const css = await Bun.file(new URL('./Desk.css', import.meta.url)).text()
+  const desktop = css.slice(css.indexOf('@media (min-width: 900px)'))
+  expect(desktop).toMatch(/\.desk-grid\s*\{\s*grid-area:\s*1 \/ 2;/)
+  expect(desktop).toMatch(/\.desk-proto\s*\{\s*grid-area:\s*2 \/ 1 \/ auto \/ -1;/)
+  expect(desktop).not.toContain('grid-area: 1 / 2 / span 2')
 })
 
 test('renders no literal entity text', () => {

@@ -11,14 +11,14 @@ import './Presence.css'
  * Every mark here is read from the votes, which is what the Tally reads. A strip that animated activity the data
  * says is finished would be the same lie as a drawer saying nothing is left while cards wait in the pool.
  */
-export const Presence = ({ trip }: { trip: Trip }) => {
-  const standing = standings(trip)
+export const Presence = ({ trip, me }: { trip: Trip; me: string }) => {
+  const standing = standings(trip, me)
   const line = standingLine(standing)
   if (!line) return null
 
-  const owner = trip.party.find((p) => p.id === trip.ownerId)
+  const viewer = trip.party.find((p) => p.id === me)
   const rows = [
-    ...(owner ? [{ member: owner, reel: null, you: true }] : []),
+    ...(viewer ? [{ member: viewer, reel: null, you: true }] : []),
     ...standing.map((s) => ({ ...s, you: false }))
   ]
 
@@ -27,9 +27,7 @@ export const Presence = ({ trip }: { trip: Trip }) => {
       <h2 className="sr-only" id="presence-head">
         Who Is On The Deck
       </h2>
-      {/* The owner first, so the reader finds herself in the same place every time she looks, and then the party's
-          own order. One letter, not two: two letters of a first name spell an acronym as often as a monogram, and
-          the party's own initial was reading as AI. The name itself is in the line beside each disc. */}
+      {/* Viewer first, then party order. A single initial avoids reading a first-name pair as an acronym. */}
       <ul className="presence-list">
         {rows.map(({ member, reel, you }, index) => (
           <li

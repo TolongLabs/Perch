@@ -23,7 +23,7 @@ const FLASH_MS = 760
  * mount and a member who is chosen after that would be handed the previous one's remaining reels; mounting this
  * fresh per voter is what makes "each member sees their own" true rather than merely intended.
  */
-const Swiping = ({ me }: { me: string }) => {
+const Swiping = ({ me, changeVoter }: { me: string; changeVoter: () => void }) => {
   const navigate = useNavigate()
   const { trip, swipe } = useTrip()
 
@@ -43,15 +43,22 @@ const Swiping = ({ me }: { me: string }) => {
    * nothing, and feedback tied to it would be gone before it was seen; here the answer stays on screen for the same
    * window whether or not it animated getting there.
    */
-  const commit = useCallback((s: Swipe) => {
-    if (committing.current) return
-    committing.current = true
-    setLeaving(s)
-    setFlash(s)
-    setFlashId((n) => n + 1)
-    clearTimeout(flashTimer.current)
-    flashTimer.current = setTimeout(() => setFlash(null), FLASH_MS)
-  }, [])
+  const commit = useCallback(
+    (s: Swipe) => {
+      if (committing.current) return
+      const place = queue[index]
+      if (!place) return
+      committing.current = true
+      // Commit before the exit animation: navigating away must not discard an accepted answer.
+      swipe(me, place.id, s === 'must' || s === 'skip' ? s : s === 'keep')
+      setLeaving(s)
+      setFlash(s)
+      setFlashId((n) => n + 1)
+      clearTimeout(flashTimer.current)
+      flashTimer.current = setTimeout(() => setFlash(null), FLASH_MS)
+    },
+    [index, me, queue, swipe]
+  )
 
   useEffect(() => () => clearTimeout(flashTimer.current), [])
 
@@ -59,11 +66,6 @@ const Swiping = ({ me }: { me: string }) => {
   // has to guess its length. `prefers-reduced-motion` collapses the animation to nothing and this still fires.
   const gone = (e: AnimationEvent<HTMLDivElement>) => {
     if (e.target !== e.currentTarget || !leaving) return
-    const place = queue[index]
-    if (place) {
-      const answer = leaving === 'must' || leaving === 'skip' ? leaving : leaving === 'keep'
-      swipe(me, place.id, answer)
-    }
     setIndex((i) => i + 1)
     setLeaving(null)
     committing.current = false
@@ -88,6 +90,10 @@ const Swiping = ({ me }: { me: string }) => {
       <main className="deck">
         <section className="deck-done">
           <Heading as="h1">Every Reel Is Swiped</Heading>
+          <p className="t-specimen">Voting as {trip.party.find((m) => m.id === me)?.name}</p>
+          <button type="button" className="deck-change t-label" onClick={changeVoter}>
+            Change Voter
+          </button>
           <p className="t-specimen">
             You have finished &middot; {finished} of {trip.party.length} have finished
           </p>
@@ -109,11 +115,14 @@ const Swiping = ({ me }: { me: string }) => {
       </header>
 
       {/* The other three, on the deck at the same time and as far through it as their votes say they are. */}
-      <Presence trip={trip} />
+      <Presence trip={trip} me={me} />
 
-      {/* Only where it is in doubt. Someone who came in through the invite link chose a name a moment ago and the
-          rest of the screen never says it back to them; the owner opened her own trip and does not need telling. */}
-      {isJoiner() && <p className="t-specimen deck-as">Voting as {trip.party.find((m) => m.id === me)?.name}</p>}
+      <div className="deck-as">
+        <p className="t-specimen">Voting as {trip.party.find((m) => m.id === me)?.name}</p>
+        <button type="button" className="deck-change t-label" onClick={changeVoter}>
+          Change Voter
+        </button>
+      </div>
 
       {/* Outside the stack and fixed to the viewport, because the answer is light entering from the edge of the
           screen the card was thrown at. Inside the stack it was a 36px halo on the reel's own edge, which is what
@@ -126,7 +135,7 @@ const Swiping = ({ me }: { me: string }) => {
         ) : (
           <button type="button" className="deck-direction" data-side="must" onClick={() => commit('must')}>
             <ArrowUp size={20} strokeWidth={2} aria-hidden="true" />
-            <span className="t-label deck-hint-label">Must Go One Only</span>
+            <span className="t-label deck-hint-label">Must Go &middot; One Only</span>
           </button>
         )}
 
@@ -198,21 +207,12 @@ const storedVoter = (party: { id: string }[]): string | null => {
   }
 }
 
-/**
- * Who is swiping. The invite link is the same link for everyone, so a tab that opened it has no idea which member
- * it belongs to and used to vote as the owner: a friend following the link cast their answers into her column and
- * could never start their own. The owner never sees this, because she opened her own trip.
- */
 export const Deck = () => {
   const navigate = useNavigate()
   const { trip, setCurrentMember } = useTrip()
-  const joiner = isJoiner()
-  const [voter, setVoter] = useState<string | null>(() => (joiner ? storedVoter(trip.party) : null))
-  const me = joiner ? voter : trip.ownerId
+  const [me, setVoter] = useState<string | null>(() => storedVoter(trip.party) ?? (isJoiner() ? null : trip.ownerId))
 
-  // The choice is the trip's as well as the tab's, because the Tally and the dashboard read who is voting from the
-  // trip. The owner's tab puts it back to her, so a friend's pick in another tab cannot follow her into her own
-  // walkthrough through the store they share.
+  // Keep the selected identity consistent on the Deck, Tally and dashboard.
   useEffect(() => {
     if (trip.votingClosedAt === null && me && me !== trip.currentMemberId) setCurrentMember(me)
   }, [me, trip.currentMemberId, trip.votingClosedAt, setCurrentMember])
@@ -271,5 +271,5 @@ export const Deck = () => {
   }
 
   // Keyed, so choosing a name mounts a queue built from that member's own unanswered places.
-  return <Swiping key={me} me={me} />
+  return <Swiping key={me} me={me} changeVoter={() => setVoter(null)} />
 }

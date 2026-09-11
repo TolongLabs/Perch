@@ -19,11 +19,20 @@ test('offers every swipe direction as an accessible control without a duplicate 
   const html = renderDeck()
 
   expect(html.match(/class="deck-direction/g)).toHaveLength(4)
-  expect(html).toContain('Must Go One Only')
+  expect(html).toContain('Must Go · One Only')
+  expect(html).toContain('Voting as Aisyah')
+  expect(html).toContain('>Change Voter</button>')
   expect(html).toContain('>Pass</span>')
   expect(html).toContain('>Keep</span>')
   expect(html).toContain('>Skip</span>')
   expect(html).not.toContain('class="deck-acts"')
+})
+
+test('strengthens only the dark Keep flash without changing its timing', async () => {
+  const css = await Bun.file(new URL('./Deck.css', import.meta.url)).text()
+  expect(css).toMatch(/:root\[data-theme="dark"\] \.deck-flash\[data-flash="keep"\]\s*\{\s*--flash-peak: 0\.85;/)
+  expect(css).toContain('to left, var(--decided), transparent min(62%, 420px)')
+  expect(css).toContain('animation: flash-out var(--flash) var(--ease-expo) forwards;')
 })
 
 test('announces reel progress after each answer', () => {

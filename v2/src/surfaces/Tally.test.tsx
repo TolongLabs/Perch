@@ -52,6 +52,9 @@ test('places accessible Must Go hearts beside destination names instead of verdi
   expect(html).toContain('aria-label="Must Go by Hana"')
   expect(html).toContain('aria-label="Must Go by Iman"')
   expect(html).not.toContain('Must Go ·')
+  expect(html).not.toContain('title="Must Go')
+  expect(html.match(/class="info-dot tally-must"/g)).toHaveLength(3)
+  expect(html).toContain('aria-expanded="false"')
 })
 
 test('preserves distinct member identities when Must Go voters share a name', () => {

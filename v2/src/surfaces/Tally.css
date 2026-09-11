@@ -162,9 +162,11 @@
   gap: 2px;
 }
 
-.tally-must {
-  display: inline-flex;
-  color: var(--gold);
+.tally-must,
+.tally-must:hover,
+.tally-must:focus-visible {
+  border-color: transparent;
+  color: var(--at-risk);
   line-height: 0;
 }
 

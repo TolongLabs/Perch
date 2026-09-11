@@ -6,7 +6,17 @@ import './Ui.css'
  * beside the heading rather than under it. Opens on hover and on focus, because a caption only a mouse can read is a
  * caption half the readers never get.
  */
-export const Info = ({ children, label = 'What this is' }: { children: ReactNode; label?: string }) => {
+export const Info = ({
+  children,
+  label = 'What this is',
+  trigger = 'i',
+  triggerClassName = ''
+}: {
+  children: ReactNode
+  label?: string
+  trigger?: ReactNode
+  triggerClassName?: string
+}) => {
   const id = useId()
   const dot = useRef<HTMLButtonElement>(null)
   const [at, setAt] = useState<{ left: number; top: number; below: boolean } | null>(null)
@@ -33,7 +43,7 @@ export const Info = ({ children, label = 'What this is' }: { children: ReactNode
       <button
         type="button"
         ref={dot}
-        className="info-dot"
+        className={`info-dot${triggerClassName ? ` ${triggerClassName}` : ''}`}
         aria-label={label}
         aria-describedby={at ? id : undefined}
         aria-expanded={at !== null}
@@ -41,9 +51,12 @@ export const Info = ({ children, label = 'What this is' }: { children: ReactNode
         onMouseLeave={close}
         onFocus={place}
         onBlur={close}
-        onClick={() => (at ? close() : place())}
+        onClick={place}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape') close()
+        }}
       >
-        i
+        {trigger}
       </button>
       {at && (
         <span
