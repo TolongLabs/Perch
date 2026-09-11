@@ -57,7 +57,7 @@ const renderBook = () => {
   )
 }
 
-/** Every day filled, so the Book prints one spread per day. Day one is the intake's own example: Sensoji, then
+/** Every day filled, so the book holds three destinations a day. Day one is the intake's own example: Sensoji, then
     Nakamise. `votingClosedAt` is set so `finalizeVotingIfDue` cannot rewrite the trip under the test. */
 const fill: Record<number, Record<'morning' | 'afternoon' | 'evening', string>> = {
   1: { morning: 'sensoji', afternoon: 'nakamise', evening: 'kappabashi' },
@@ -97,82 +97,102 @@ test('prints the destinations and nothing else: the checklist stays on the Desk'
   expect(html).not.toContain('colophon-list')
 })
 
-test('lays each spread out as two facing pages, two destinations a spread', () => {
+test('lays one book out for the whole trip: two destinations a spread, one flipbook', () => {
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
 
-  // Three filled slots a day: two destinations on the first spread, one on the second, for four days. Each day's
-  // pages sit directly in its flipbook's stage, two facing pages a spread.
-  expect(html.match(/class="bookflip-stage" aria-hidden="true"/g)).toHaveLength(4)
-  expect(html.match(/class="book-page folio-page folio-left"/g)).toHaveLength(8)
-  expect(html.match(/class="book-page folio-page folio-right"/g)).toHaveLength(8)
-  // Every destination takes a picture on one page and its words on the other, across all four days. The picture is
+  // Twelve filled slots, three a day across four days, two destinations a spread: six spreads in the trip's one
+  // flipbook, each spread a pair of facing pages. One host is the whole book, which is also why the page number runs
+  // 1..N instead of restarting at one on day two's first spread.
+  expect(html.match(/class="bookflip-stage" aria-hidden="true"/g)).toHaveLength(1)
+  expect(html.match(/class="book-page folio-page folio-left"/g)).toHaveLength(6)
+  expect(html.match(/class="book-page folio-page folio-right"/g)).toHaveLength(6)
+  // Every destination takes a picture on one page and its words on the other, across the whole book. The picture is
   // visual only (never in the screen-reader list), so it stays 12; the words appear once in the visual folio and once
   // in the `aria-hidden`-paired `.day-stops` list, so they double to 24 in the raw markup.
   expect(html.match(/class="dest dest-photo"/g)).toHaveLength(12)
   expect(html.match(/class="dest dest-desc"/g)).toHaveLength(24)
 })
 
-test('exposes the day in visiting order to the screen reader, once, and hides the visual folio', () => {
+test('keeps the day with each destination as its when-line, in visiting order', () => {
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
 
-  // The visual pages are the printed object and are hidden from the accessibility tree; the `.day-stops` list is the
-  // single accessible copy, and it lives outside the hidden stage, in the day article beside it. Each day gets
-  // exactly one list.
-  expect(html.match(/class="bookflip-stage" aria-hidden="true"/g)).toHaveLength(4)
-  expect(html.match(/class="day-stops sr-only"/g)).toHaveLength(4)
+  // The day no longer owns a section, so it must ride with each destination: twelve when-lines for twelve
+  // destinations, and the book's ordered list says every day at least once.
+  expect(html.match(/class="t-label dest-when"/g)).toHaveLength(24)
+  for (const day of ['Day 1 ·', 'Day 2 ·', 'Day 3 ·', 'Day 4 ·']) {
+    expect(html).toContain(day)
+  }
+  // The list runs the whole trip in visiting order, and the screen-reader copy is one list, not one per day.
+  expect(html.match(/class="day-stops sr-only"/g)).toHaveLength(1)
+  const at = (name: string) => html.indexOf(`<h3 class="t-name">${name}</h3>`)
+  const first = at('Sensoji')
+  const last = at('Toyosu Market')
+  expect(first).toBeGreaterThan(-1)
+  expect(last).toBeGreaterThan(first)
+})
 
-  // Day one's stops, in the order the reader visits them, each heading exactly once in the list. The visual folio
-  // interleaves these (Nakamise's words sit before Sensoji's), which is the whole reason the list exists. Bound the
-  // slice at the list's own `</ol>` so the folios after it do not count against it.
-  const day1 = html.slice(html.indexOf('data-day="1"'), html.indexOf('data-day="2"'))
-  const list = day1.slice(day1.indexOf('<ol class="day-stops sr-only"'), day1.indexOf('</ol>'))
+test('exposes the trip to the screen reader once, and hides the visual folio', () => {
+  store.setItem(KEY, JSON.stringify(planned))
+  const html = renderBook()
+
+  // The visual pages are the printed object and are hidden from the accessibility tree; the one `.day-stops` list is
+  // the single accessible copy. Day one's stops, in the order the reader visits them, each heading exactly once in
+  // the list, bounded at the list's own `</ol>` so the folios after it do not count against it.
+  const list = html.slice(html.indexOf('<ol class="day-stops sr-only"'), html.indexOf('</ol>'))
   const at = (name: string) => list.indexOf(`<h3 class="t-name">${name}</h3>`)
   const sensoji = at('Sensoji')
   const nakamise = at('Nakamise')
   const kappabashi = at('Kappabashi')
+  const meiji = at('Meiji Jingu')
   expect(sensoji).toBeGreaterThan(-1)
   expect(nakamise).toBeGreaterThan(sensoji)
   expect(kappabashi).toBeGreaterThan(nakamise)
-  expect(list.match(/<h3 class="t-name">/g)).toHaveLength(3)
+  expect(meiji).toBeGreaterThan(kappabashi)
+  expect(list.match(/<h3 class="t-name">/g)).toHaveLength(12)
 })
 
 test('alternates photo and description exactly as the intake names it', () => {
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
-  const day1 = html.slice(html.indexOf('data-day="1"'), html.indexOf('data-day="2"'))
 
-  // The first spread's two facing pages, bounded at the next spread's left page so the day's second spread cannot
-  // bleed in. The first destination of the spread: picture on the left page, its words on the right. The second
-  // flips: its words drop to the left page and its picture to the right. The `when` label travels with the words.
-  const stageStart = day1.indexOf('class="bookflip-stage" aria-hidden="true"')
-  const leftStart = day1.indexOf('class="book-page folio-page folio-left"', stageStart)
-  const rightStart = day1.indexOf('class="book-page folio-page folio-right"', leftStart)
-  const nextLeft = day1.indexOf('class="book-page folio-page folio-left"', rightStart)
+  // The book's first spread, bounded at the second spread's left page so the later pages cannot bleed in. The first
+  // destination of the spread: picture on the left page, its words on the right. The second flips: its words drop to
+  // the left page and its picture to the right. The day travels with each destination as its when-line.
+  const stageStart = html.indexOf('class="bookflip-stage" aria-hidden="true"')
+  const leftStart = html.indexOf('class="book-page folio-page folio-left"', stageStart)
+  const rightStart = html.indexOf('class="book-page folio-page folio-right"', leftStart)
+  const nextLeft = html.indexOf('class="book-page folio-page folio-left"', rightStart)
   expect(leftStart).toBeGreaterThan(-1)
   expect(rightStart).toBeGreaterThan(leftStart)
   expect(nextLeft).toBeGreaterThan(rightStart)
-  const left = day1.slice(leftStart, rightStart)
-  const right = day1.slice(rightStart, nextLeft)
+  const left = html.slice(leftStart, rightStart)
+  const right = html.slice(rightStart, nextLeft)
   expect(left).toContain('class="dest dest-photo"')
   expect(left).toContain('Nakamise')
-  expect(left).toContain('In The Afternoon')
+  expect(left).toContain('Day 1 · In The Afternoon')
   expect(right).toContain('class="dest dest-photo"')
   expect(right).toContain('Sensoji')
-  expect(right).toContain('In The Morning')
+  expect(right).toContain('Day 1 · In The Morning')
 })
 
-test('pins the day map and keeps its TitleCase labels', () => {
+test('sets the days after the book, as named maps on their own tints, with no pin to scuff', () => {
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
 
-  expect(html).toContain('class="spread-pin"')
-  expect(html).toContain('class="daymap-thumb"')
-  expect(html).toContain('Open The Transit Route')
-  expect(html).toContain('In The Morning')
-  expect(html).toContain('In The Afternoon')
-  expect(html).toContain('That Evening')
+  // One map per day that has stops, named by its day, and each figure carries the day's attribute so the tint the
+  // title and the fallback plate read is the day's own. The pin is gone with the day's section: the map is the note,
+  // set square in the flow.
+  expect(html.match(/class="book-map"/g)).toHaveLength(4)
+  expect(html.match(/class="daymap-thumb"/g)).toHaveLength(4)
+  expect(html).toContain('data-day="1"')
+  expect(html).toContain('data-day="4"')
+  expect(html).toContain('Day 1 · Friday')
+  expect(html).toContain('Day 4 · Monday')
+  expect(html).not.toContain('spread-pin')
+  expect(html).not.toContain('pin-head')
+  expect(html).not.toContain('Open The Transit Route')
   expect(html).toContain('The Book')
 })
 
@@ -221,7 +241,7 @@ test('gives live flipbook pages an inner gutter at both facing edges', async () 
     expect(rule).not.toContain('gap:')
   }
 
-  // The flat stage keeps its external 64px gutter; the base host rule keeps the page number at the foot.
+  // The flat stage keeps its external 64px gutter; the single host rule keeps the page number at the foot.
   expect(wide).toContain('gap: var(--s5) 64px')
   expect(ruleBody('.bookflip-host .book-page .book-page-inner')).toContain('height: 100%')
 })

@@ -74,3 +74,18 @@ export const castVote = (
   prior[placeId] = toAnswer(answer)
   return { ...finalized, votes: { ...finalized.votes, [memberId]: prior } }
 }
+
+/** Answers every unanswered reel as 'skip' for one member, leaving their existing answers intact. It is the same fill
+ *  closing voting applies, but scoped to the active voter and without freezing the session. */
+export const skipRemaining = (trip: Trip, memberId: string, now: Date = new Date()): Trip => {
+  if (memberId !== trip.currentMemberId) return trip
+  if (!trip.party.some((p) => p.id === memberId)) return trip
+  const finalized = finalizeVotingIfDue(trip, now)
+  if (finalized.votingClosedAt !== null) return finalized
+  const existing = finalized.votes[memberId]
+  const memberVotes: Record<string, Answer> = existing ? { ...existing } : {}
+  for (const placeId of Object.keys(finalized.options)) {
+    if (memberVotes[placeId] == null) memberVotes[placeId] = 'skip'
+  }
+  return { ...finalized, votes: { ...finalized.votes, [memberId]: memberVotes } }
+}

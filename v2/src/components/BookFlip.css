@@ -1,6 +1,7 @@
-/* The day's page-flip book. It reuses the Book's plate language — zero radius, the 4px scale, full ink — and adds no
-   new design tokens: the page box, the gutter and the fold shadow are sized from the Book's existing spread geometry.
-   The page-turn motion itself comes from the page-flip library; this file only seats the book in the plate system. */
+/* The trip's page-flip book: one host for the whole trip, and one page counter that runs 1..N across every day. It
+   reuses the Book's plate language — zero radius, the 4px scale, full ink — and adds no new design tokens: the page
+   box, the gutter and the fold shadow are sized from the Book's existing spread geometry. The page-turn motion
+   itself comes from the page-flip library; this file only seats the book in the plate system. */
 /* biome-ignore-all lint/complexity/noImportantStyles: the print overrides must beat the library's inline display, transform and size styles */
 
 .bookflip {
@@ -13,10 +14,11 @@
   position: relative;
 }
 
-/* The host is the box page-flip stretches into, so its width drives the spread. The plate is the page ground, so a
-   page reads as paper rather than as a card on top of the plate. The `page` counter is reset here rather than
-   inherited: the host holds clones of the day's pages, and without a reset they would continue counting from the
-   hidden originals behind them and number from the middle of the day instead of its first spread. */
+/* The host is the box page-flip stretches into, so its width drives the spread. It is transparent: the page's own
+   ground, the page token, is what makes a spread read as paper over the book's plate. The `page` counter is reset
+   here because this is the book's one host: it holds clones of the whole trip's pages, and without a reset they
+   would continue counting from the hidden originals behind them and number from the middle of the book instead of
+   its first spread. A reset on a per-day host is exactly what started day two's numbering at 1 again. */
 .bookflip-host,
 .bookflip-host .stf__wrapper,
 .bookflip-host .stf__block {
@@ -28,11 +30,12 @@
   counter-reset: page;
 }
 
-/* A page is the plate. Square, like everything on it; the library positions the pages itself, so no radius is ever
-   applied here. The gutter between a spread's two pages is the fold, and it is left as the plate so the two pages
-   read as one open sheet. */
+/* A page is the leaf: full white in every theme, so the live flip reads in the dark too - `--plate` is near-black
+   there and a near-black page over a near-black host is the stuck, unresponsive flip the intake saw. Square, like
+   everything on the book; the library positions the pages itself, so no radius is ever applied here. The gutter
+   between a spread's two pages is the fold, and the host behind it is transparent so it shows the Book's own plate. */
 .book-page {
-  background: var(--plate);
+  background: var(--page);
   border-radius: var(--r-plate);
   overflow: hidden;
 }

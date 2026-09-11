@@ -25,7 +25,7 @@ const FLASH_MS = 760
  */
 const Swiping = ({ me, changeVoter }: { me: string; changeVoter: () => void }) => {
   const navigate = useNavigate()
-  const { trip, swipe } = useTrip()
+  const { trip, swipe, skipAll } = useTrip()
 
   // Fixed at mount. Recomputing as votes land would shrink the queue under the swiper's finger and make the count lie.
   const [queue] = useState(() => Object.values(trip.options).filter((p) => trip.votes[me]?.[p.id] == null))
@@ -61,6 +61,14 @@ const Swiping = ({ me, changeVoter }: { me: string; changeVoter: () => void }) =
   )
 
   useEffect(() => () => clearTimeout(flashTimer.current), [])
+
+  // Skip All answers the rest for this voter and jumps the deck to its finished state, the same fill closing voting
+  // applies but without freezing the session.
+  const skipRest = () => {
+    skipAll()
+    setIndex(queue.length)
+    setLeaving(null)
+  }
 
   // The card that left tells us when it has gone, so the queue advances on the animation rather than on a timer that
   // has to guess its length. `prefers-reduced-motion` collapses the animation to nothing and this still fires.
@@ -116,13 +124,6 @@ const Swiping = ({ me, changeVoter }: { me: string; changeVoter: () => void }) =
 
       {/* The other three, on the deck at the same time and as far through it as their votes say they are. */}
       <Presence trip={trip} me={me} />
-
-      <div className="deck-as">
-        <p className="t-specimen">Voting as {trip.party.find((m) => m.id === me)?.name}</p>
-        <button type="button" className="deck-change t-label" onClick={changeVoter}>
-          Change Voter
-        </button>
-      </div>
 
       {/* Outside the stack and fixed to the viewport, because the answer is light entering from the edge of the
           screen the card was thrown at. Inside the stack it was a 36px halo on the reel's own edge, which is what
@@ -188,6 +189,17 @@ const Swiping = ({ me, changeVoter }: { me: string; changeVoter: () => void }) =
         <button type="button" className="deck-direction" data-side="skip" onClick={() => commit('skip')}>
           <ArrowDown size={20} strokeWidth={2} aria-hidden="true" />
           <span className="t-label deck-hint-label">Skip</span>
+        </button>
+
+        <button type="button" className="deck-skip-all t-label" onClick={skipRest}>
+          Skip All
+        </button>
+      </div>
+
+      <div className="deck-as">
+        <p className="t-specimen">Voting as {trip.party.find((m) => m.id === me)?.name}</p>
+        <button type="button" className="deck-change t-label" onClick={changeVoter}>
+          Change Voter
         </button>
       </div>
     </main>

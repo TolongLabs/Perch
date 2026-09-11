@@ -36,7 +36,7 @@
 /* The row is one centred object: 44px controls, equal gaps, then the 9:16 reel. The reel pays when a phone runs out
    of width, instead of shifting sideways to save one affordance and losing the other beyond the viewport. */
 .deck-row {
-  --deck-chrome: 165px;
+  --deck-chrome: 217px;
   --deck-floor: 24px;
   --deck-reel: min(
     420px,
@@ -58,7 +58,7 @@
 }
 
 .shell[data-islands="true"] .deck-row {
-  --deck-chrome: calc(165px + var(--cluster-clear));
+  --deck-chrome: calc(217px + var(--cluster-clear));
 }
 
 @media (max-width: 899px) {
@@ -67,7 +67,7 @@
   }
 
   .shell[data-islands="true"] .deck-row {
-    --deck-chrome: calc(165px + var(--cluster-clear) + 56px);
+    --deck-chrome: calc(217px + var(--cluster-clear) + 56px);
   }
 }
 
@@ -198,8 +198,8 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  justify-content: center;
   gap: var(--s2) var(--s4);
-  margin: calc(var(--s5) * -1) 0 0;
 }
 
 .deck-as p {
@@ -219,6 +219,24 @@
 .deck-change:hover {
   background: var(--ink);
   color: var(--paper);
+}
+
+/* One press for a voter who does not want to finish. Muted ghost, not a direction: it finishes the reel without
+   answering a single card, so it reads as an escape hatch rather than a fifth choice. */
+.deck-skip-all {
+  min-height: 44px;
+  padding: var(--s2) var(--s5);
+  border: var(--outline) solid transparent;
+  border-radius: var(--r-pill);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+
+.deck-skip-all:hover,
+.deck-skip-all:focus-visible {
+  border-color: var(--ink-muted);
+  color: var(--ink);
 }
 
 /* Who Are You? A list of names, one per row, on the register the Deck's own answers use. */
