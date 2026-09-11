@@ -1,0 +1,112 @@
+/* The day's page-flip book. It reuses the Book's plate language — zero radius, the 4px scale, full ink — and adds no
+   new design tokens: the page box, the gutter and the fold shadow are sized from the Book's existing spread geometry.
+   The page-turn motion itself comes from the page-flip library; this file only seats the book in the plate system. */
+/* biome-ignore-all lint/complexity/noImportantStyles: the print overrides must beat the library's inline display, transform and size styles */
+
+.bookflip {
+  margin: 0;
+}
+
+/* The stage is the box the authored pages sit in on a phone and a reduced-motion screen (the Book's own rules lay
+   them out). The library's own box is the host, appended beside it only while a book is being turned. */
+.bookflip-stage {
+  position: relative;
+}
+
+/* The host is the box page-flip stretches into, so its width drives the spread. The plate is the page ground, so a
+   page reads as paper rather than as a card on top of the plate. The `page` counter is reset here rather than
+   inherited: the host holds clones of the day's pages, and without a reset they would continue counting from the
+   hidden originals behind them and number from the middle of the day instead of its first spread. */
+.bookflip-host,
+.bookflip-host .stf__wrapper,
+.bookflip-host .stf__block {
+  width: 100%;
+  background: transparent;
+}
+
+.bookflip-host {
+  counter-reset: page;
+}
+
+/* A page is the plate. Square, like everything on it; the library positions the pages itself, so no radius is ever
+   applied here. The gutter between a spread's two pages is the fold, and it is left as the plate so the two pages
+   read as one open sheet. */
+.book-page {
+  background: var(--plate);
+  border-radius: var(--r-plate);
+  overflow: hidden;
+}
+
+/* While the book is showing, the authored pages it duplicates on screen step aside. The selector must out-specify the
+   Book's own `@media(min-width:1024px) .bookflip-stage .folio-page { display:flex }`, which otherwise wins on source
+   order and leaves the flat originals showing alongside the flipbook. The print sheet reads the authored pages
+   directly, and its `!important` rule below wins over this, so the hide is screen-only in effect. */
+.bookflip-stage.bookflip-live .book-page {
+  display: none;
+}
+
+/* The prev/next controls sit under the book, at its foot, and are the only interactive part of it. Square plate-on-
+   ink, like the cover's one action, so they read as the Book's own. The day's tint answers on hover, the same
+   tint-in-ink treatment the Book's other controls use. */
+.bookflip-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+  margin-top: var(--s5);
+}
+
+/* The flat book has no spread to turn, so its controls are set `hidden`; without a rule of their own the
+   `display: flex` above out-specifies the attribute and a dead control would sit under every flat book. */
+.bookflip-nav[hidden] {
+  display: none;
+}
+
+.bookflip-turn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  min-height: 44px;
+  border: var(--outline) solid var(--ink);
+  border-radius: var(--r-plate);
+  background: var(--ink);
+  color: var(--plate);
+  cursor: pointer;
+  transition: background-color var(--motion-fade) var(--ease);
+}
+
+.bookflip-turn:disabled {
+  opacity: 0.34;
+  cursor: default;
+}
+
+.bookflip-turn:not(:disabled):hover,
+.bookflip-turn:focus-visible {
+  background: color-mix(in oklab, var(--tint) 34%, var(--ink));
+}
+
+/* The status line is the reader's place in the day: which spread of how many. Muted, because it is position, not
+   content. */
+.bookflip-status {
+  margin: 0;
+  color: var(--ink-muted);
+}
+
+/* The printed sheet reads the authored pages, not the book: the whole host is the screen device, and while it is on
+   screen it has the authored pages hidden, so on paper the pages come back as the day's full, static pages — exactly
+   the fallback the mobile stack already is. The `!important` beats the `bookflip-live` hide, which the reader would
+   otherwise leave in place for the sheet. */
+@media print {
+  .bookflip-host {
+    display: none !important;
+  }
+
+  .bookflip-stage.bookflip-live .book-page {
+    display: flex !important;
+  }
+
+  .bookflip-nav {
+    display: none;
+  }
+}
