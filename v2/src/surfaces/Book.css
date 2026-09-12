@@ -259,7 +259,8 @@
 /* Aged cartography: the map is treated as a worn, western-chart plate. The filter lands on the tile images only and
    never on the container, because the OpenStreetMap attribution lives in the same container and must stay clean and
    legible - hiding or tinting the credit is not on the table. */
-.spread-pin .daymap-tiles .leaflet-tile {
+.spread-pin .daymap-tiles .leaflet-tile,
+.giantmap-canvas .daymap-tiles .leaflet-tile {
   filter: sepia(0.4) saturate(0.72) contrast(1.05) brightness(1.02);
 }
 
@@ -529,31 +530,60 @@
      column and the facing pages would stack down the sheet. This rule follows that one in source, and the two are
      otherwise identical in specificity, so the reset wins. When the flipbook is built, BookFlip's own print rules
      do the same job against the library's inline styles. */
-  .folio-spread {
-    display: contents;
+  .bookflip-stage {
+    display: block !important;
   }
 
-  .bookflip-stage {
-    display: grid;
+  /* Each page in the print preview displays the corresponding 2-page spread of the storybook (#108).
+     A 2-page spread sits across two columns on one landscape sheet, breaking to a new sheet for the next spread. */
+  .folio-spread {
+    display: grid !important;
     grid-template-columns: 1fr 1fr;
-    gap: var(--s6) 32px;
+    gap: 32px;
+    box-sizing: border-box;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    break-after: page;
+    page-break-after: always;
+    min-height: 170mm;
+    max-height: 182mm;
+    overflow: hidden;
+  }
+
+  .folio-spread:last-of-type {
+    break-after: auto;
+    page-break-after: auto;
   }
 
   .bookflip-stage .folio-page {
+    display: flex !important;
+    flex-direction: column;
+    gap: var(--s3);
+    padding: var(--s4);
+    position: relative;
+    box-sizing: border-box;
+    border: 1px solid var(--ink);
+    background: var(--page);
+    height: 100%;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    overflow: hidden;
+  }
+
+  .bookflip-stage .folio-page .book-page-inner {
     display: flex;
     flex-direction: column;
-    gap: var(--s4);
-    padding: var(--s5);
-    position: relative;
+    gap: var(--s3);
+    height: 100%;
   }
 
   /* Minimap pinned note is visible on printed sheets (#108). The transit route web link is hidden on paper. */
   .spread-pin {
     display: block;
     position: absolute;
-    top: var(--s5);
-    right: var(--s5);
-    width: 140px;
+    top: var(--s4);
+    right: var(--s4);
+    width: 130px;
     z-index: 2;
   }
 
@@ -562,18 +592,19 @@
   }
 
   .folio-right .dest-desc {
-    padding-right: 154px;
+    padding-right: 140px;
   }
 
   .folio-right .page-num {
     text-align: right;
   }
 
-  /* The maps run after the book, one per day, and a map that splits across a sheet is a map that is wrong. The
-     attribution is part of the map, so it stays on the page the map is on. */
+  /* The maps run after the book, one per day, each starting on its own sheet cleanly. */
   .book-maps {
     display: block;
     margin-top: var(--s6);
+    break-before: page;
+    page-break-before: always;
   }
 
   .book-map {
