@@ -55,9 +55,18 @@ const useMap = (stops: Place[], tint: string, live: boolean) => {
     })
     L.tileLayer(TILES, { attribution: CREDIT, maxZoom: 19 }).addTo(map)
     const points: [number, number][] = stops.map((s) => [s.lat, s.lng])
-    L.polyline(points, { color: tint, weight: 3, opacity: 0.9 }).addTo(map)
+    if (points.length > 1) {
+      L.polyline(points, { color: tint, weight: 3.5, opacity: 0.95, lineCap: 'round', lineJoin: 'round' }).addTo(map)
+    }
     for (const [i, s] of stops.entries()) L.marker([s.lat, s.lng], { icon: marker(i + 1, tint) }).addTo(map)
-    map.fitBounds(L.latLngBounds(points), { padding: live ? [40, 40] : [18, 18] })
+    if (points.length === 1 && points[0]) {
+      map.setView(points[0], 14)
+    } else {
+      map.fitBounds(L.latLngBounds(points).pad(0.18), {
+        padding: live ? [40, 40] : [12, 12],
+        maxZoom: live ? 16 : 14
+      })
+    }
     return () => {
       map.remove()
     }
@@ -87,14 +96,14 @@ const useFullTripMap = (days: MappedDay[], live: boolean) => {
       const tint = dayTint(d.day.index)
       const points: [number, number][] = d.stops.map((s) => [s.lat, s.lng])
       if (points.length > 1) {
-        L.polyline(points, { color: tint, weight: 3, opacity: 0.9 }).addTo(map)
+        L.polyline(points, { color: tint, weight: 3.5, opacity: 0.95, lineCap: 'round', lineJoin: 'round' }).addTo(map)
       }
       for (const [i, s] of d.stops.entries()) {
         L.marker([s.lat, s.lng], { icon: marker(i + 1, tint) }).addTo(map)
       }
     }
 
-    map.fitBounds(L.latLngBounds(allPoints), { padding: live ? [40, 40] : [18, 18] })
+    map.fitBounds(L.latLngBounds(allPoints).pad(0.12), { padding: live ? [40, 40] : [20, 20], maxZoom: 14 })
     return () => {
       map.remove()
     }
@@ -219,8 +228,16 @@ export const FullTripMap = ({ days, title }: { days: MappedDay[]; title?: string
  * Because page-flip operates on DOM clones, React hooks cannot mount to them directly;
  * this attaches Leaflet with OpenStreetMap tiles, polylines, and pins to every cloned map container.
  */
+type HostMapEntry = {
+  map: L.Map
+  bounds: L.LatLngBounds
+  points: [number, number][]
+  padding: [number, number]
+  maxZoom: number
+}
+
 export const initHostMaps = (host: HTMLElement, onFlip?: (cb: () => void) => void): (() => void) => {
-  const maps: L.Map[] = []
+  const entries: HostMapEntry[] = []
 
   // 1. Pinned day minimaps
   const pinNodes = host.querySelectorAll<HTMLElement>('.spread-pin .daymap-tiles')
@@ -250,13 +267,26 @@ export const initHostMaps = (host: HTMLElement, onFlip?: (cb: () => void) => voi
       L.tileLayer(TILES, { attribution: CREDIT, maxZoom: 19 }).addTo(map)
       const points: [number, number][] = stops.map((s) => [s.lat, s.lng])
       if (points.length > 1) {
-        L.polyline(points, { color: tint, weight: 3, opacity: 0.9 }).addTo(map)
+        L.polyline(points, { color: tint, weight: 3.5, opacity: 0.95, lineCap: 'round', lineJoin: 'round' }).addTo(map)
       }
       for (const [i, s] of stops.entries()) {
         L.marker([s.lat, s.lng], { icon: marker(i + 1, tint) }).addTo(map)
       }
-      map.fitBounds(L.latLngBounds(points), { padding: [18, 18] })
-      maps.push(map)
+
+      const bounds = L.latLngBounds(points)
+      if (points.length === 1 && points[0]) {
+        map.setView(points[0], 14)
+      } else {
+        map.fitBounds(bounds.pad(0.18), { padding: [10, 10], maxZoom: 14 })
+      }
+
+      entries.push({
+        map,
+        bounds,
+        points,
+        padding: [10, 10],
+        maxZoom: 14
+      })
     } catch {
       // ignore
     }
@@ -290,41 +320,68 @@ export const initHostMaps = (host: HTMLElement, onFlip?: (cb: () => void) => voi
         const tint = dayTint(d.day)
         const pts: [number, number][] = d.stops.map((s) => [s.lat, s.lng])
         if (pts.length > 1) {
-          L.polyline(pts, { color: tint, weight: 3, opacity: 0.9 }).addTo(map)
+          L.polyline(pts, { color: tint, weight: 3.5, opacity: 0.95, lineCap: 'round', lineJoin: 'round' }).addTo(map)
         }
         for (const [i, s] of d.stops.entries()) {
           L.marker([s.lat, s.lng], { icon: marker(i + 1, tint) }).addTo(map)
         }
       }
-      map.fitBounds(L.latLngBounds(allPoints), { padding: [24, 24] })
-      maps.push(map)
+
+      const bounds = L.latLngBounds(allPoints)
+      map.fitBounds(bounds.pad(0.12), { padding: [24, 24], maxZoom: 14 })
+
+      entries.push({
+        map,
+        bounds,
+        points: allPoints,
+        padding: [24, 24],
+        maxZoom: 14
+      })
     } catch {
       // ignore
     }
   })
 
-  const invalidate = () => {
-    for (const m of maps) {
+  const fitAll = () => {
+    for (const entry of entries) {
       try {
-        m.invalidateSize()
+        entry.map.invalidateSize()
+        if (entry.points.length === 1 && entry.points[0]) {
+          entry.map.setView(entry.points[0], 14)
+        } else if (entry.bounds.isValid()) {
+          entry.map.fitBounds(entry.bounds.pad(0.18), {
+            padding: entry.padding,
+            maxZoom: entry.maxZoom,
+            animate: false
+          })
+        }
       } catch {
         // ignore
       }
     }
   }
 
-  const t1 = setTimeout(invalidate, 120)
-  const t2 = setTimeout(invalidate, 400)
+  const t0 = setTimeout(fitAll, 50)
+  const t1 = setTimeout(fitAll, 150)
+  const t2 = setTimeout(fitAll, 400)
+  const t3 = setTimeout(fitAll, 800)
+
   if (onFlip) {
-    onFlip(invalidate)
+    onFlip(() => {
+      fitAll()
+      setTimeout(fitAll, 60)
+      setTimeout(fitAll, 250)
+    })
   }
 
   return () => {
+    clearTimeout(t0)
     clearTimeout(t1)
     clearTimeout(t2)
-    for (const m of maps) {
+    clearTimeout(t3)
+    for (const entry of entries) {
       try {
-        m.remove()
+        entry.map.remove()
       } catch {
         // ignore
       }

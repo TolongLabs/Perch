@@ -35,6 +35,13 @@ test('strengthens only the dark Keep flash without changing its timing', async (
   expect(css).toContain('animation: flash-out var(--flash) var(--ease-expo) forwards;')
 })
 
+test('applies red glow to Pass flash using Crimson Sunbird token (#108)', async () => {
+  const css = await Bun.file(new URL('./Deck.css', import.meta.url)).text()
+  expect(css).toContain('.deck-flash[data-flash="pass"]')
+  expect(css).toContain('var(--at-risk)')
+  expect(css).toMatch(/:root\[data-theme="dark"\] \.deck-flash\[data-flash="pass"\]\s*\{\s*--flash-peak: 0\.85;/)
+})
+
 test('announces reel progress after each answer', () => {
   const html = renderDeck()
 

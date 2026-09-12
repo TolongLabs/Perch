@@ -127,6 +127,9 @@ export const BookFlip = ({ children }: Props) => {
       el.after(hostEl)
       mapCleanup.current = initHostMaps(hostEl, (onFlipCb) => {
         book.on('flip', onFlipCb)
+        book.on('changeState', (event) => {
+          if (event.data === 'read') onFlipCb()
+        })
       })
       // Two pages form one spread, and a single spread has nowhere to turn, so the controls appear only from the
       // third page on: a lone spread still turns nothing.
