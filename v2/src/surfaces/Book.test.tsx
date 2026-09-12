@@ -208,33 +208,37 @@ test('sets the days after the book, as named maps, and pins one day map per spre
   expect(html).toContain('Day 1 · Friday')
   expect(html).toContain('Day 4 · Monday')
 
-  // The pin is one per spread when same-day, and dual-pinned (left and right) on cross-day spreads (#108).
+  // The minimap of each day is only shown on the last segment of each day (#108).
   // With 4 days (3 stops each = 12 destinations = 6 spreads):
-  // Spread 1: Day 1 morning, afternoon -> same-day, 1 pin on right
-  // Spread 2: Day 1 evening, Day 2 morning -> cross-day, 2 pins (Day 1 on left, Day 2 on right)
-  // Spread 3: Day 2 afternoon, evening -> same-day, 1 pin on right
-  // Spread 4: Day 3 morning, afternoon -> same-day, 1 pin on right
-  // Spread 5: Day 3 evening, Day 4 morning -> cross-day, 2 pins (Day 3 on left, Day 4 on right)
-  // Spread 6: Day 4 afternoon, evening -> same-day, 1 pin on right
-  // Total pins: 1 + 2 + 1 + 1 + 2 + 1 = 8 pins.
-  expect(html.match(/class="spread-pin"/g)).toHaveLength(8)
-  expect(html.match(/class="pin-head"/g)).toHaveLength(8)
-  expect(html.match(/Open The Transit Route/g)).toHaveLength(8)
+  // Spread 1: Day 1 morning, afternoon -> 0 pins (evening is last)
+  // Spread 2: Day 1 evening (left), Day 2 morning (right) -> 1 pin on left (Day 1 evening is last of Day 1)
+  // Spread 3: Day 2 afternoon (left), Day 2 evening (right) -> 1 pin on right (Day 2 evening is last of Day 2)
+  // Spread 4: Day 3 morning, afternoon -> 0 pins (evening is last)
+  // Spread 5: Day 3 evening (left), Day 4 morning (right) -> 1 pin on left (Day 3 evening is last of Day 3)
+  // Spread 6: Day 4 afternoon (left), Day 4 evening (right) -> 1 pin on right (Day 4 evening is last of Day 4)
+  // Total pins: exactly 4 pins (one per day).
+  expect(html.match(/class="spread-pin"/g)).toHaveLength(4)
+  expect(html.match(/class="pin-head"/g)).toHaveLength(4)
+  expect(html.match(/Open The Transit Route/g)).toHaveLength(4)
   expect(html).toContain('The Book')
 })
 
-test('pins minimap on both pages for cross-day spreads (#108)', () => {
+test('pins minimap only on the last segment of each day (#108)', () => {
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
 
-  // Spread 2 spans Day 1 (Evening at Kappabashi) on left, Day 2 (Morning at Meiji Jingu) on right.
-  // Left page must carry Day 1 minimap pinned at top right; right page must carry Day 2 minimap pinned at top right.
+  // Spread 1: Day 1 morning (Sensoji), afternoon (Nakamise) -> neither is last segment of Day 1 -> no pin.
+  // Spread 2: Day 1 evening (Kappabashi, last segment of Day 1) on left, Day 2 morning (Meiji Jingu) on right.
+  // Left page must carry Day 1 minimap pinned at top right; right page has no pin because Day 2 is not finished yet.
   const stageStart = html.indexOf('class="bookflip-stage" aria-hidden="true"')
   const spread1Left = html.indexOf('class="book-page folio-page folio-left"', stageStart)
   const spread1Right = html.indexOf('class="book-page folio-page folio-right"', spread1Left)
   const spread2Left = html.indexOf('class="book-page folio-page folio-left"', spread1Right)
   const spread2Right = html.indexOf('class="book-page folio-page folio-right"', spread2Left)
   const spread3Left = html.indexOf('class="book-page folio-page folio-left"', spread2Right)
+
+  const spread1 = html.slice(spread1Left, spread2Left)
+  expect(spread1).not.toContain('class="spread-pin"')
 
   const left2 = html.slice(spread2Left, spread2Right)
   const right2 = html.slice(spread2Right, spread3Left)
@@ -244,8 +248,7 @@ test('pins minimap on both pages for cross-day spreads (#108)', () => {
   expect(left2).toContain('data-day="1"')
 
   expect(right2).toContain('Meiji Jingu')
-  expect(right2).toContain('class="spread-pin"')
-  expect(right2).toContain('data-day="2"')
+  expect(right2).not.toContain('class="spread-pin"')
 })
 
 test('withholds the transit route for a day with fewer than two stops', () => {
@@ -277,11 +280,8 @@ test('withholds the transit route for a day with fewer than two stops', () => {
   expect(left).toContain('data-day="1"')
   expect(left).not.toContain('Open The Transit Route')
 
-  // Day 2's pin on right page has transit route link
-  expect(right).toContain('class="spread-pin"')
-  expect(right).toContain('data-day="2"')
-  expect(right).toContain('Open The Transit Route')
-  // The rest of the book is untouched: the days with two or more stops still carry their route.
+  // The rest of the book is untouched: days with two or more stops still carry their transit route on their last segment
+  expect(html).toContain('data-day="2"')
   expect(html).toContain('Open The Transit Route')
 })
 

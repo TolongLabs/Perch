@@ -143,19 +143,23 @@ const TripNotes = ({ section, heading, notes, onAdd, onRemove }: TripNotesProps)
   )
 }
 
-/** Predicted weather for the destination during the trip window. */
+/** Predicted weather, season and rain level for the destination during the trip window. */
 const predictedWeatherFor = (destination: string) => {
   if (destination.toLowerCase().includes('tokyo')) {
     return {
       temp: '16°C',
       feelsLike: '14°C',
-      condition: 'Mostly Clear'
+      condition: 'Mostly Clear',
+      season: 'Late Autumn',
+      rainLevel: 'Low Rain'
     }
   }
   return {
     temp: '28°C',
     feelsLike: '33°C',
-    condition: 'Partly Cloudy'
+    condition: 'Partly Cloudy',
+    season: 'Tropical',
+    rainLevel: 'Moderate Rain'
   }
 }
 
@@ -178,6 +182,14 @@ export const Handbook = () => {
               <span className="hb-weather-temp">{weather.temp}</span>
               <div className="hb-weather-meta">
                 <span className="hb-weather-condition">{weather.condition}</span>
+                <span className="hb-weather-dot" aria-hidden="true">
+                  &middot;
+                </span>
+                <span className="hb-weather-season">Season: {weather.season}</span>
+                <span className="hb-weather-dot" aria-hidden="true">
+                  &middot;
+                </span>
+                <span className="hb-weather-rain">Rain Level: {weather.rainLevel}</span>
                 <span className="hb-weather-dot" aria-hidden="true">
                   &middot;
                 </span>

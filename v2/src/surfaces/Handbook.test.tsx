@@ -23,13 +23,15 @@ test('uses The Manual consistently in the surface and navigation', () => {
   expect(manual?.label).toBe('The Manual')
 })
 
-test('renders predicted temperature and weather in the header row', () => {
+test('renders predicted temperature, weather, season, and rain level in the header row', () => {
   const html = renderManual()
 
   expect(html).toContain('class="hb-weather"')
   expect(html).toContain('16°C')
   expect(html).toContain('Feels like 14°C')
   expect(html).toContain('Mostly Clear')
+  expect(html).toContain('Season: Late Autumn')
+  expect(html).toContain('Rain Level: Low Rain')
 })
 
 test('renders scannable guide titles before smaller descriptions and gives News its own panel', () => {

@@ -56,6 +56,19 @@
   background: var(--plate);
 }
 
+@media print {
+  .shell {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    background: transparent !important;
+  }
+
+  .app-foot {
+    display: none !important;
+  }
+}
+
 .foot-inner {
   display: grid;
   gap: var(--s3);
