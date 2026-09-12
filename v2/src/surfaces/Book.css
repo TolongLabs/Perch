@@ -7,12 +7,6 @@
   background: var(--plate);
   min-height: 100vh;
   scroll-snap-type: y proximity;
-
-  /* A deckle edge, 90 by 12, flat along the top and ragged along the bottom, with both ends at the same height so it
-     tiles seamlessly. Repeated at its own size rather than stretched, so the tear is the same coarseness on a
-     342px picture and on a 1280px one; a single stretched mask reads as a smooth wave at spread width. */
-  --tear: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='12'%3E%3Cpath d='M0 0H90V6L86 9.5L82 5.5L78 10.5L74 7L70 11L66 6.5L62 9.5L58 5L54 10L50 6L46 11L42 7.5L38 9L34 5L30 10.5L26 6.5L22 9L18 5.5L14 10L10 7L6 9.5L2 5.5L0 6Z' fill='black'/%3E%3C/svg%3E");
-  --tear-h: 12px;
 }
 
 /* The page the book sits on. The leaf is full white and is what separates a page from this spread: the book is the
@@ -68,7 +62,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--s6);
-  margin: var(--s7) 0;
+  /* The facts are the cover's last line, so their bottom margin is dead space before the book's first page: it used
+     to run s7 on both sides and read as a wide cream band between the cover and the folios (#108). */
+  margin: var(--s6) 0 var(--s4);
 }
 
 .cover-facts dt {
@@ -199,11 +195,14 @@
 /* The leaf is a physical white page in every theme, so the ink on it stays the light theme's ink in both: the
    theme's own --ink is light in dark mode and sits on the white sheet unreadable (#387). Scoped to the wrapper
    rather than the page's box, because the pin is a sibling of the wrapper and keeps the theme's own ink on its
-   plate. */
+   plate. `color` is set here, not left to inherit from the body, because `.t-name` and `.t-prose` carry no colour
+   of their own and would otherwise inherit the body's light-on-dark ink straight through the overridden custom
+   property, which only the elements that name `var(--ink)` themselves ever see (#108). */
 .book-page-inner {
   display: contents;
   --ink: #2e261f;
   --ink-muted: #6a5f53;
+  color: var(--ink);
 }
 
 /* A page's visible edge: ink, not a tint, because the page belongs to the book, not to a day, and the day is
@@ -308,7 +307,8 @@
 }
 
 /* A 9:16 reel still is far too tall for a page you read across, so it is cropped to a landscape window rather than
-   shown whole, with the deckle edge the Book already tears into its pictures. */
+   shown whole. Square-cornered, like everything on the plate: the deckle edge the Book used to tear into its
+   pictures read as a scuffed cut against the clean sheet (#108). */
 .dest-shot {
   display: block;
   width: 100%;
@@ -316,14 +316,6 @@
   object-fit: cover;
   object-position: 50% 34%;
   background: var(--ground);
-  mask-image: linear-gradient(black 0 0), var(--tear);
-  mask-size:
-    100% calc(100% - var(--tear-h)),
-    90px var(--tear-h);
-  mask-position:
-    top left,
-    bottom left;
-  mask-repeat: no-repeat, repeat-x;
 }
 
 .dest-desc {
@@ -461,6 +453,15 @@
 
   .bookflip-host .book-page.folio-right .book-page-inner {
     padding-left: var(--s6);
+  }
+
+  /* The live page is a fixed height, and the picture's 4:3 crop keeps its box tall: left to its default the photo's
+     flex item could not shrink below that height, so the picture overflowed its wrapper and painted over the page
+     number at the foot (#108). The wrapper may now shrink and clips the overflow, so the number always keeps its
+     line at the foot of the page. The flat stage is natural height and never overflows, so it is untouched. */
+  .bookflip-host .book-page .dest.dest-photo {
+    min-height: 0;
+    overflow: hidden;
   }
 
   /* Facing pages: the left page numbers on the left, the right page on the right. */
