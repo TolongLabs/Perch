@@ -1,6 +1,7 @@
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { type FlipCorner, PageFlip, type SizeType } from 'page-flip'
 import { useEffect, useRef } from 'react'
+import { initHostMaps } from './DayMap'
 import './BookFlip.css'
 
 type Props = {
@@ -39,6 +40,7 @@ export const BookFlip = ({ children }: Props) => {
   const status = useRef<HTMLParagraphElement>(null)
   const flip = useRef<PageFlip | null>(null)
   const count = useRef(0)
+  const mapCleanup = useRef<(() => void) | null>(null)
 
   useEffect(() => {
     const el = stage.current
@@ -59,6 +61,8 @@ export const BookFlip = ({ children }: Props) => {
     }
 
     const teardown = () => {
+      mapCleanup.current?.()
+      mapCleanup.current = null
       flip.current?.destroy()
       flip.current = null
       count.current = 0
@@ -121,6 +125,9 @@ export const BookFlip = ({ children }: Props) => {
       // Appended after the stage rather than inside it: at 1024px the stage is a two-column grid, and a grid item
       // would halve the book's width.
       el.after(hostEl)
+      mapCleanup.current = initHostMaps(hostEl, (onFlipCb) => {
+        book.on('flip', onFlipCb)
+      })
       // Two pages form one spread, and a single spread has nowhere to turn, so the controls appear only from the
       // third page on: a lone spread still turns nothing.
       navEl.hidden = count.current <= 2

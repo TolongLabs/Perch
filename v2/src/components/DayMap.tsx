@@ -173,7 +173,13 @@ export const DayMapThumb = ({ day, title, stops }: { day: number; title: string;
       <span className="daymap-under" aria-hidden="true">
         <Plate day={day} title={title} stops={stops} />
       </span>
-      <span className="daymap-tiles" ref={thumb} aria-hidden="true" />
+      <span
+        className="daymap-tiles"
+        ref={thumb}
+        data-day={day}
+        data-stops={JSON.stringify(stops.map((s) => ({ lat: s.lat, lng: s.lng })))}
+        aria-hidden="true"
+      />
     </span>
   )
 }
@@ -192,7 +198,136 @@ export const FullTripMap = ({ days, title }: { days: MappedDay[]; title?: string
       <span className="daymap-under" aria-hidden="true">
         <FullTripPlate days={days} />
       </span>
-      <div className="daymap-tiles" ref={thumb} aria-hidden="true" />
+      <div
+        className="daymap-tiles"
+        ref={thumb}
+        data-full-trip="true"
+        data-days={JSON.stringify(
+          days.map((d) => ({
+            day: d.day.index,
+            stops: d.stops.map((s) => ({ lat: s.lat, lng: s.lng }))
+          }))
+        )}
+        aria-hidden="true"
+      />
     </section>
   )
+}
+
+/**
+ * Initializes live Leaflet maps on cloned tiles containers inside the page-flip host.
+ * Because page-flip operates on DOM clones, React hooks cannot mount to them directly;
+ * this attaches Leaflet with OpenStreetMap tiles, polylines, and pins to every cloned map container.
+ */
+export const initHostMaps = (host: HTMLElement, onFlip?: (cb: () => void) => void): (() => void) => {
+  const maps: L.Map[] = []
+
+  // 1. Pinned day minimaps
+  const pinNodes = host.querySelectorAll<HTMLElement>('.spread-pin .daymap-tiles')
+  pinNodes.forEach((node) => {
+    const stopsJson = node.dataset.stops
+    const dayStr = node.dataset.day
+    if (!stopsJson || !dayStr) return
+    try {
+      const stops: { lat: number; lng: number }[] = JSON.parse(stopsJson)
+      if (stops.length === 0) return
+      const day = Number(dayStr)
+      const tint = dayTint(day)
+
+      node.innerHTML = ''
+      delete (node as unknown as Record<string, unknown>)._leaflet_id
+
+      const map = L.map(node, {
+        attributionControl: false,
+        zoomControl: false,
+        dragging: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        touchZoom: false,
+        keyboard: false
+      })
+      L.tileLayer(TILES, { attribution: CREDIT, maxZoom: 19 }).addTo(map)
+      const points: [number, number][] = stops.map((s) => [s.lat, s.lng])
+      if (points.length > 1) {
+        L.polyline(points, { color: tint, weight: 3, opacity: 0.9 }).addTo(map)
+      }
+      for (const [i, s] of stops.entries()) {
+        L.marker([s.lat, s.lng], { icon: marker(i + 1, tint) }).addTo(map)
+      }
+      map.fitBounds(L.latLngBounds(points), { padding: [18, 18] })
+      maps.push(map)
+    } catch {
+      // ignore
+    }
+  })
+
+  // 2. Master atlas giant map
+  const giantNodes = host.querySelectorAll<HTMLElement>('.giantmap-canvas .daymap-tiles')
+  giantNodes.forEach((node) => {
+    const daysJson = node.dataset.days
+    if (!daysJson) return
+    try {
+      const daysData: { day: number; stops: { lat: number; lng: number }[] }[] = JSON.parse(daysJson)
+      const allPoints: [number, number][] = daysData.flatMap((d) => d.stops.map((s) => [s.lat, s.lng]))
+      if (allPoints.length === 0) return
+
+      node.innerHTML = ''
+      delete (node as unknown as Record<string, unknown>)._leaflet_id
+
+      const map = L.map(node, {
+        attributionControl: false,
+        zoomControl: false,
+        dragging: false,
+        scrollWheelZoom: false,
+        doubleClickZoom: false,
+        boxZoom: false,
+        touchZoom: false,
+        keyboard: false
+      })
+      L.tileLayer(TILES, { attribution: CREDIT, maxZoom: 19 }).addTo(map)
+      for (const d of daysData) {
+        const tint = dayTint(d.day)
+        const pts: [number, number][] = d.stops.map((s) => [s.lat, s.lng])
+        if (pts.length > 1) {
+          L.polyline(pts, { color: tint, weight: 3, opacity: 0.9 }).addTo(map)
+        }
+        for (const [i, s] of d.stops.entries()) {
+          L.marker([s.lat, s.lng], { icon: marker(i + 1, tint) }).addTo(map)
+        }
+      }
+      map.fitBounds(L.latLngBounds(allPoints), { padding: [24, 24] })
+      maps.push(map)
+    } catch {
+      // ignore
+    }
+  })
+
+  const invalidate = () => {
+    for (const m of maps) {
+      try {
+        m.invalidateSize()
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  const t1 = setTimeout(invalidate, 120)
+  const t2 = setTimeout(invalidate, 400)
+  if (onFlip) {
+    onFlip(invalidate)
+  }
+
+  return () => {
+    clearTimeout(t1)
+    clearTimeout(t2)
+    for (const m of maps) {
+      try {
+        m.remove()
+      } catch {
+        // ignore
+      }
+    }
+  }
 }

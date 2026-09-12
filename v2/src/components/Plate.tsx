@@ -13,7 +13,17 @@ export type MappedDay = {
  * visited, so each plate is the shape of that day and no two are alike. A decorative plate would have been a device
  * carrying no information, which is the thing `AGENTS.md` rules out.
  */
-export const Plate = ({ day, title, stops }: { day: number; title: string; stops: Place[] }) => {
+export const Plate = ({
+  day,
+  title,
+  stops,
+  withRoute = false
+}: {
+  day: number
+  title: string
+  stops: Place[]
+  withRoute?: boolean
+}) => {
   const W = 400
   const H = 260
   const PAD = 46
@@ -60,16 +70,17 @@ export const Plate = ({ day, title, stops }: { day: number; title: string; stops
           />
         ))}
 
-        {points.length > 1 && (
+        {withRoute && points.length > 1 && (
           <path d={`M ${line}`} fill="none" stroke="var(--tint)" strokeWidth="3" strokeLinecap="round" />
         )}
 
-        {points.map((p) => (
-          <g key={p.name}>
-            <circle cx={p.x} cy={p.y} r="7" fill="var(--plate)" />
-            <circle cx={p.x} cy={p.y} r="7" fill="none" stroke="var(--tint)" strokeWidth="3" />
-          </g>
-        ))}
+        {withRoute &&
+          points.map((p) => (
+            <g key={p.name}>
+              <circle cx={p.x} cy={p.y} r="7" fill="var(--plate)" />
+              <circle cx={p.x} cy={p.y} r="7" fill="none" stroke="var(--tint)" strokeWidth="3" />
+            </g>
+          ))}
       </svg>
       <figcaption className="t-specimen plate-caption">
         Plate {day} &middot; {title}
@@ -82,7 +93,7 @@ export const Plate = ({ day, title, stops }: { day: number; title: string; stops
  * A combined field-guide plate for the whole trip: routes from every day plotted together, each in its day's tint,
  * over shared topographic contours.
  */
-export const FullTripPlate = ({ days }: { days: MappedDay[] }) => {
+export const FullTripPlate = ({ days, withRoute = false }: { days: MappedDay[]; withRoute?: boolean }) => {
   const W = 400
   const H = 260
   const PAD = 36
@@ -121,24 +132,25 @@ export const FullTripPlate = ({ days }: { days: MappedDay[] }) => {
           />
         ))}
 
-        {days.map(({ day, stops }) => {
-          const points = stops.map((s) => ({ ...toCoord(s.lat, s.lng), name: s.name }))
-          const line = points.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ')
-          const tint = `var(--day-${((day.index - 1) % 7) + 1})`
-          return (
-            <g key={day.index}>
-              {points.length > 1 && (
-                <path d={`M ${line}`} fill="none" stroke={tint} strokeWidth="2.5" strokeLinecap="round" />
-              )}
-              {points.map((p) => (
-                <g key={p.name}>
-                  <circle cx={p.x} cy={p.y} r="5" fill="var(--plate)" />
-                  <circle cx={p.x} cy={p.y} r="5" fill="none" stroke={tint} strokeWidth="2" />
-                </g>
-              ))}
-            </g>
-          )
-        })}
+        {withRoute &&
+          days.map(({ day, stops }) => {
+            const points = stops.map((s) => ({ ...toCoord(s.lat, s.lng), name: s.name }))
+            const line = points.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ')
+            const tint = `var(--day-${((day.index - 1) % 7) + 1})`
+            return (
+              <g key={day.index}>
+                {points.length > 1 && (
+                  <path d={`M ${line}`} fill="none" stroke={tint} strokeWidth="2.5" strokeLinecap="round" />
+                )}
+                {points.map((p) => (
+                  <g key={p.name}>
+                    <circle cx={p.x} cy={p.y} r="5" fill="var(--plate)" />
+                    <circle cx={p.x} cy={p.y} r="5" fill="none" stroke={tint} strokeWidth="2" />
+                  </g>
+                ))}
+              </g>
+            )
+          })}
       </svg>
     </figure>
   )

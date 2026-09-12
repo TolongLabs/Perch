@@ -198,10 +198,14 @@ export const Book = () => {
             {folios.map((folio, i) => {
               const [a, b] = folio
               if (!a) return null
-              // One pin per spread, on the second page. The second page sets the first destination's words at its top
-              // (the pin sits in that page's top right, beside them), so the pin is anchored to the day that owns
-              // those words.
-              const pinned = dayMap.get(a.day)
+
+              // On page spreads spanning across two days (e.g. Day 1 Evening and Day 2 Morning), the minimap for the
+              // first day is pinned at the top right of the first page, and the minimap for the second day is pinned
+              // at the top right of the second page (#108). On same-day spreads, the pin stays on the second page.
+              const isCrossDay = Boolean(b && a.day !== b.day)
+              const pinLeft = isCrossDay ? dayMap.get(a.day) : null
+              const pinRight = isCrossDay && b ? dayMap.get(b.day) : dayMap.get(a.day)
+
               return (
                 <div className="folio-spread" key={a.slot.id}>
                   {/* Each page follows a top-down structure: the left page carries the first destination's photo
@@ -215,6 +219,7 @@ export const Book = () => {
                         {i * 2 + 1}
                       </p>
                     </div>
+                    {pinLeft && <PagePin day={pinLeft.day} stops={pinLeft.stops} />}
                   </div>
                   <div className="book-page folio-page folio-right">
                     <div className="book-page-inner">
@@ -224,7 +229,7 @@ export const Book = () => {
                         {i * 2 + 2}
                       </p>
                     </div>
-                    {pinned && <PagePin day={pinned.day} stops={pinned.stops} />}
+                    {pinRight && <PagePin day={pinRight.day} stops={pinRight.stops} />}
                   </div>
                 </div>
               )
