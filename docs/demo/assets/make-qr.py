@@ -1,4 +1,4 @@
-"""Deck QRs: the two links on the closing slide, with the Perch seal in the middle.
+"""Deck QRs: the two links on the closing slide, each with its own mark in the middle.
 
 Adapted from the same approach MyTakziah's deck uses. Correction level H tolerates
 roughly 30 per cent damage, so a centre patch at 28 per cent of the width is well
@@ -6,13 +6,16 @@ inside budget. The script decodes its own output before writing and refuses to
 write a code it cannot read back, because a QR that does not scan on a projector
 is worse than no QR at all.
 
-The seal is drawn here rather than loaded, so this script has no asset
-dependency: it is the same geometry as the inline <svg> in slides.html.
+The Perch seal is drawn here rather than loaded: it is the same geometry as the
+inline <svg> in slides.html. The GitHub code carries GitHub's own mark instead,
+from github-mark.svg - Primer octicons `mark-github`, GitHub's own icon library -
+rasterised to github-mark.png beside this file, because PIL cannot read SVG.
 
     python make-qr.py
 """
 
 import sys
+from pathlib import Path
 
 import cv2
 import numpy as np
@@ -30,8 +33,8 @@ PATCH = 0.28   # knockout width as a fraction of the full image
 LOGO = 0.225   # seal width as a fraction of the full image
 
 TARGETS = [
-    ("https://prototype-yskhynz4la-as.a.run.app", "qr-prototype.png"),
-    ("https://github.com/TolongLabs/Perch", "qr-github.png"),
+    ("https://prototype-yskhynz4la-as.a.run.app", "qr-prototype.png", "perch"),
+    ("https://github.com/TolongLabs/Perch", "qr-github.png", "github"),
 ]
 
 
@@ -47,7 +50,22 @@ def seal(side: int) -> Image.Image:
     return img
 
 
-def build(url: str, out: str) -> None:
+def octocat(side: int) -> Image.Image:
+    """GitHub's own mark on the same dark tile the Perch seal uses, so the pair reads as a pair."""
+    s = side / 168.0
+    img = Image.new("RGBA", (side, side), (0, 0, 0, 0))
+    ImageDraw.Draw(img).rounded_rectangle([0, 0, side - 1, side - 1], radius=int(28 * s), fill=(*INK, 255))
+    glyph = Image.open(Path(__file__).with_name("github-mark.png")).convert("RGBA")
+    box = int(side * 0.66)
+    glyph = glyph.resize((box, box), Image.LANCZOS)
+    img.alpha_composite(glyph, ((side - box) // 2, (side - box) // 2))
+    return img
+
+
+MARKS = {"perch": seal, "github": octocat}
+
+
+def build(url: str, out: str, mark: str) -> None:
     p = cv2.QRCodeEncoder_Params()
     p.correction_level = cv2.QRCodeEncoder_CORRECT_LEVEL_H
     m = cv2.QRCodeEncoder_create(p).encode(url)
@@ -69,7 +87,7 @@ def build(url: str, out: str) -> None:
     img.paste(Image.new("RGBA", (patch, patch), (*PAPER, 255)), (x0, x0))
 
     side = int(w * LOGO)
-    img.alpha_composite(seal(side), ((w - side) // 2, (w - side) // 2))
+    img.alpha_composite(MARKS[mark](side), ((w - side) // 2, (w - side) // 2))
 
     check = cv2.cvtColor(np.array(img.convert("RGB")), cv2.COLOR_RGB2BGR)
     decoded, _, _ = cv2.QRCodeDetector().detectAndDecode(check)
@@ -80,5 +98,5 @@ def build(url: str, out: str) -> None:
     print(f"{out}: matrix {n}x{n} (v{(n - 17) // 4}), module {scale}px, image {w}px, decoded ok")
 
 
-for url, out in TARGETS:
-    build(url, out)
+for url, out, mark in TARGETS:
+    build(url, out, mark)
