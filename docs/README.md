@@ -37,13 +37,56 @@
 <details>
   <summary>Expand</summary>
   <ol>
-    <li><a href="#1-project-overview">Project Overview</a></li>
-    <li><a href="#2-ideation--process">Ideation & Process</a></li>
-    <li><a href="#3-design--prototype">Design & Prototype</a></li>
-    <li><a href="#4-what-makes-it-different">What Makes It Different</a></li>
-    <li><a href="#5-technical-architecture--feasibility">Technical Architecture & Feasibility</a></li>
-    <li><a href="#6-repository-layout--documentation">Repository Layout & Documentation</a></li>
-    <li><a href="#team">Team</a></li>
+    <li>
+      <a href="#1-project-overview">Project Overview</a>
+      <ol>
+        <li><a href="#11-the-problem">The Problem</a></li>
+        <li><a href="#12-similar-apps-and-where-they-fall-short">Similar Apps And Where They Fall Short</a></li>
+        <li><a href="#13-target-group-alignment-and-scalability">Target Group Alignment And Scalability</a></li>
+        <li><a href="#14-our-solution">Our Solution</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#2-ideation--process">Ideation & Process</a>
+      <ol>
+        <li><a href="#21-ideas-we-considered">Ideas We Considered</a></li>
+        <li><a href="#22-ideation-boards">Ideation Boards</a></li>
+        <li><a href="#23-mentor-consultation">Mentor Consultation</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#3-design--prototype">Design & Prototype</a>
+      <ol>
+        <li><a href="#31-core-interface-walkthrough">Core Interface Walkthrough</a></li>
+        <li><a href="#32-design-principles">Design Principles</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#4-what-makes-it-different">What Makes It Different</a>
+      <ol>
+        <li><a href="#41-five-novel-twists">Five Novel Twists</a></li>
+        <li><a href="#42-competitor-comparison">Competitor Comparison</a></li>
+        <li><a href="#43-boundaries-and-uncertainties">Boundaries And Uncertainties</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#5-technical-architecture--feasibility">Technical Architecture & Feasibility</a>
+      <ol>
+        <li><a href="#51-system-architecture">System Architecture</a></li>
+        <li><a href="#52-tech-stack">Tech Stack</a></li>
+        <li><a href="#53-deployment-and-hosting">Deployment And Hosting</a></li>
+        <li><a href="#54-prototype-constraints--guarantees">Prototype Constraints & Guarantees</a></li>
+        <li><a href="#55-three-week-build-plan">Three-Week Build Plan</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#6-repository-layout--documentation">Repository Layout & Documentation</a>
+      <ol>
+        <li><a href="#61-project-structure">Project Structure</a></li>
+        <li><a href="#62-documentation-index">Documentation Index</a></li>
+      </ol>
+    </li>
+    <li><a href="#7-team">Team</a></li>
   </ol>
 </details>
 
@@ -51,7 +94,11 @@
 
 ## 1. Project Overview
 
-### The Problem
+### 1.1 The Problem
+
+<p align="center">
+  <img src="assets/problem-6koma.png" alt="Six-panel manga comic illustrating group travel planning breakdowns and the Perch solution" width="100%" />
+</p>
 
 The competition brief identifies the core friction directly: _"when something changes mid-trip, there's rarely any real
 help from existing platforms in adjusting."_
@@ -75,7 +122,7 @@ negotiating thirty opinions in chat into a coherent itinerary:
 | **The Group Members** | Disengage without skin in the game, feeling detached from fixed itineraries          |
 | **The Financier**     | Fronts large deposits and absorbs payment reconciliation delays                      |
 
-### Similar Apps And Where They Fall Short
+### 1.2 Similar Apps And Where They Fall Short
 
 Competitor evaluations in [`research/market/`](research/market/) demonstrate why existing stacks fail collaborative
 travel:
@@ -90,7 +137,7 @@ travel:
 
 > Every tool a group already uses can produce a plan. **None of them owns the plan afterwards.**
 
-### Target Group Alignment And Scalability
+### 1.3 Target Group Alignment And Scalability
 
 The beachhead target is **urban Malaysian Gen-Z friend groups (3-4 travellers)** taking short-haul self-guided trips.
 One organiser carries the planning burden across chat groups, while friends disengage until arrival. Perch gives the
@@ -102,7 +149,7 @@ Growth scales through a dual viral loop:
 2. **Outbound keepsake loop**: Completed trips produce shareable digital spreads and printable keepsake books with QR
    codes that seed new trip creation.
 
-### Our Solution
+### 1.4 Our Solution
 
 The group swipes on short video reels of curated places. The organiser drags consensus winners onto a three-slot daily
 desk, where a deterministic heuristic orders the route and highlights feasibility in colour. Completed itineraries
@@ -201,9 +248,9 @@ The prototype is publicly deployed on Google Cloud Run:
 | **Interactive Prototype**    | **https://prototype-yskhynz4la-as.a.run.app**          | Public, incognito-friendly, no account required   |
 | **Figma Wireframes & Mocks** | Documented in [`DESIGN.md`](DESIGN.md#the-figma-files) | Component designs and design token specifications |
 
-### Core Interface Walkthrough
+### 3.1 Core Interface Walkthrough
 
-The user journey spans nine responsive surfaces across mobile and desktop viewports:
+The user journey spans nine core surfaces, standardized and captured across desktop (1440×900) viewports:
 
 |                                         Landing                                         |                                            Dashboard                                             |                                            Onboarding                                            |
 | :-------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |
@@ -215,12 +262,12 @@ The user journey spans nine responsive surfaces across mobile and desktop viewpo
 | [![The Deck](assets/screens/04-deck.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/swipe) | [![The Tally](assets/screens/05-tally.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/votes) | [![The Desk](assets/screens/06-desk.png)](https://prototype-yskhynz4la-as.a.run.app/desk) |
 |                              <sub>Zero-install swipe reels with Must Go.</sub>                              |                           <sub>Group consensus tally with 1.5× owner weight.</sub>                            |                <sub>Drag-and-drop calendar with heuristic ordering.</sub>                 |
 
-|                                                    Before We Go                                                    |                                               The Book                                                |                                                  The Handbook                                                  |
-| :----------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: |
-| [![Before We Go](assets/screens/07-before-we-go.png)](https://prototype-yskhynz4la-as.a.run.app/desk/before-we-go) | [![The Book](assets/screens/08-book.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026) | [![The Handbook](assets/screens/09-handbook.png)](https://prototype-yskhynz4la-as.a.run.app/desk/before-we-go) |
-|                               <sub>Pre-trip checklist unlocking final exports.</sub>                               |                            <sub>Keepsake flipbook with drawn routes.</sub>                            |                            <sub>Dynamic packing list and cultural etiquette.</sub>                             |
+|                                                    Before We Go                                                    |                                               The Book                                                |                                                      The Handbook                                                      |
+| :----------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
+| [![Before We Go](assets/screens/07-before-we-go.png)](https://prototype-yskhynz4la-as.a.run.app/desk/before-we-go) | [![The Book](assets/screens/08-book.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026) | [![The Handbook](assets/screens/09-handbook.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/handbook) |
+|                               <sub>Pre-trip checklist unlocking final exports.</sub>                               |                            <sub>Keepsake flipbook with drawn routes.</sub>                            |                                <sub>Dynamic packing list and cultural etiquette.</sub>                                 |
 
-### Design Principles
+### 3.2 Design Principles
 
 - **Field guide aesthetic**: Typography and palette derive from historical botanical and specimen guides rather than
   templated travel brochures.
@@ -237,7 +284,7 @@ The user journey spans nine responsive surfaces across mobile and desktop viewpo
 
 Perch focuses on a single defensible innovation chain: turning collective preferences into a durable, feasible schedule.
 
-### Five Novel Twists
+### 4.1 Five Novel Twists
 
 | Twist                                  | What Makes It Original                                                                                                          |
 | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -247,7 +294,7 @@ Perch focuses on a single defensible innovation chain: turning collective prefer
 | **Transparent day feasibility**        | Days report route feasibility using simple colour codes and plain-language travel warnings, never disguised as magical AI       |
 | **Invite deck to keepsake book**       | Friends engage via zero-friction mobile reels; their reward is a beautifully bound, permanent keepsake artifact                 |
 
-### Competitor Comparison
+### 4.2 Competitor Comparison
 
 | Capability                               | Wanderlog | Roadtrippers | SwipeSights | Google Maps + WhatsApp |  Perch  |
 | ---------------------------------------- | :-------: | :----------: | :---------: | :--------------------: | :-----: |
@@ -259,7 +306,7 @@ Perch focuses on a single defensible innovation chain: turning collective prefer
 | Zero-install frictionless voting         |    No     |      No      |     No      |        **Yes**         | **Yes** |
 | Generated keepsake publication           |    No     |      No      |     No      |           No           | **Yes** |
 
-### Boundaries And Uncertainties
+### 4.3 Boundaries And Uncertainties
 
 We deliberately avoid unsubstantiated claims. We do not claim proprietary map data, AI-generated routing miracles, or
 revolutionary social networking. Our explicit product boundaries are detailed in
@@ -274,13 +321,13 @@ updates; if Troupe ships automated calendar synthesis, our differentiation pivot
 
 ## 5. Technical Architecture & Feasibility
 
-### System Architecture
+### 5.1 System Architecture
 
 The prototype executes entirely client-side with deterministic data contracts and zero external runtime dependencies:
 
-![Perch System Architecture](assets/architecture.svg)
+![Perch System Architecture](assets/architecture.png)
 
-### Tech Stack
+### 5.2 Tech Stack
 
 | Layer            | Choice                                         | Rationale & Tradeoffs                                                |
 | ---------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
@@ -295,13 +342,13 @@ The prototype executes entirely client-side with deterministic data contracts an
 | **Hosting**      | Google Cloud Run (`asia-southeast1`)           | Containerized serverless delivery with auto-scaling to zero          |
 | **CI/CD**        | GitHub Actions                                 | Automated build, test, and container deployment on merge to `main`   |
 
-### Deployment And Hosting
+### 5.3 Deployment And Hosting
 
 Deployed on Google Cloud Run via a multi-stage `Dockerfile` (Bun compile + Nginx Alpine static web server). Cloud Run
 avoids free-tier collaborator limits while providing uniform zero-secret deployments via Workload Identity Federation.
 Full developer instructions reside in [`DEVELOPMENT.md`](DEVELOPMENT.md).
 
-### Prototype Constraints & Guarantees
+### 5.4 Prototype Constraints & Guarantees
 
 - **Seeded Tokyo fixtures**: 24 curated attractions with a pre-computed 24×24 travel time matrix (details in
   [`ARCHITECTURE.md`](ARCHITECTURE.md#3-data-fixtures-and-spatial-matrix)).
@@ -310,7 +357,7 @@ Full developer instructions reside in [`DEVELOPMENT.md`](DEVELOPMENT.md).
 - **Pure CSS 3D mechanics**: Keepsake flipbook uses hardware-accelerated CSS 3D transforms without Three.js or WebGL
   overhead.
 
-### Three-Week Build Plan
+### 5.5 Three-Week Build Plan
 
 During the building phase (21 September – 11 October), Perch expands from a client prototype to a collaborative cloud
 service:
@@ -330,7 +377,7 @@ service:
 
 <a id="layout"></a>
 
-### Project Structure
+### 6.1 Project Structure
 
 ```
 docs/
@@ -362,7 +409,7 @@ nginx.conf               Production web server configuration with SPA routing fa
 vite.config.ts           Vite configuration rooting application in v2/
 ```
 
-### Documentation Index
+### 6.2 Documentation Index
 
 | Document                             | Purpose & Primary Audience                                          |
 | ------------------------------------ | ------------------------------------------------------------------- |
@@ -379,7 +426,7 @@ vite.config.ts           Vite configuration rooting application in v2/
 
 ---
 
-## Team
+## 7. Team
 
 Built by **TolongLabs**.
 
