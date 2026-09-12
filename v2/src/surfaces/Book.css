@@ -62,9 +62,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--s6);
-  /* The facts are the cover's last line, so their bottom margin is dead space before the book's first page: it used
-     to run s7 on both sides and read as a wide cream band between the cover and the folios (#108). */
-  margin: var(--s6) 0 var(--s4);
+  /* The facts are the cover's last line, so closing their bottom margin removes the dead cream gap
+     before the book's first page (#108). */
+  margin: var(--s6) 0 0;
 }
 
 .cover-facts dt {
@@ -268,9 +268,11 @@
    flipbook otherwise keeps free of. */
 .pin-route {
   display: block;
+  width: 100%;
   margin-top: var(--s2);
   padding: var(--s2) 0;
   color: color-mix(in oklab, var(--tint) 50%, var(--ink));
+  text-align: center;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -394,11 +396,19 @@
 }
 
 @media (min-width: 1024px) {
-  /* 1440 rather than 1280, with 80px outer margins. At 1280 the content box measured 1120 against 1280 of columns,
-     the outer margin resolved to 0 and anything narrower scrolled sideways. */
+  /* 1080 rather than 1440: 1440 caused the flipbook to stretch excessively wide and tall, leaving large
+     dead space regions at the bottom of the page (#108). 1080 keeps the spread tight and well-proportioned. */
   .spread {
-    max-width: 1440px;
-    padding: var(--s7) 80px var(--s8);
+    max-width: 1080px;
+    padding: var(--s6) 48px var(--s7);
+  }
+
+  .cover {
+    padding-bottom: var(--s3);
+  }
+
+  .book-body {
+    padding-top: var(--s3);
   }
 
   /* The days' maps sit side by side at spread width, because the pages already read as a row. */
@@ -472,15 +482,15 @@
   /* The page is wider at spread width, so the pin grows with it and eases off the edge. It stays top right: the
      intake names the position, not a size. */
   .spread-pin {
-    top: var(--s6);
-    right: var(--s6);
-    width: 200px;
+    top: var(--s5);
+    right: var(--s5);
+    width: 160px;
   }
 
   /* The wider pin needs a wider margin: the right page's words clear it at spread width too, or the note would sit
      on the name and the blurb. The value clears the pin's rotated bottom-left corner, not just its resting edge. */
   .folio-right .dest-desc {
-    padding-right: 224px;
+    padding-right: 184px;
   }
 
   /* The book the reader turns is the host's clones, and a cloned Leaflet container is a stale tile patch: its size

@@ -18,6 +18,51 @@
   margin-bottom: var(--s7);
 }
 
+.hb-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s3);
+}
+
+.hb-weather {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s2) var(--s4);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 24%, var(--paper));
+  border-radius: var(--r-pill);
+  background: var(--plate);
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.hb-weather-icon {
+  color: var(--day-3);
+  flex: none;
+}
+
+.hb-weather-temp {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.hb-weather-dot {
+  color: var(--ink-muted);
+}
+
+.hb-weather-feels {
+  color: var(--ink-muted);
+}
+
+.hb-weather-condition {
+  color: var(--ink);
+  font-weight: 600;
+}
+
 .hb-lede {
   max-width: 65ch;
   margin: var(--s3) 0 0;

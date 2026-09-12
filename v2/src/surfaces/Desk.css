@@ -58,20 +58,32 @@
   color: var(--ink-muted);
 }
 
-/* The date panel. #394 The Edit Trip's When section gives its picker a 544px column - 640 for the page, 24 of page
-   padding each side, 24 of section padding each side. The panel was full-width and the month stretched across the
-   whole page, so the panel takes the same 592 and the legend, the picker and the footer inherit the same 544
-   column, left-aligned with the rest of the Desk. */
+.desk-dates-anchor {
+  position: relative;
+}
+
+/* The date panel. Formatted as a dropdown protruding from the Dates button (#108). */
 .desk-datepick {
   display: flex;
   flex-direction: column;
   gap: var(--s4);
   width: 100%;
-  max-width: 592px;
   align-self: flex-start;
   padding: var(--s5);
   border-radius: var(--r-desk);
   background: var(--ground-open);
+}
+
+.desk-datepick-dropdown {
+  position: absolute;
+  top: calc(100% + var(--s2));
+  left: 0;
+  z-index: 50;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  border: var(--outline) solid var(--ink);
+  background: var(--plate);
 }
 
 .desk-datefoot {
@@ -213,7 +225,16 @@
 .desk-fit {
   display: inline-flex;
   align-items: center;
-  gap: var(--s2);
+  gap: var(--s1);
+  min-width: 0;
+  max-width: 100%;
+  flex-wrap: wrap;
+}
+
+.desk-fit .state-chip {
+  font-size: 11px;
+  padding: 2px var(--s2);
+  min-width: 0;
 }
 
 /* The day's start, in the words the day is already written in: the label, the current answer, and the thirty-minute
@@ -408,15 +429,20 @@
    information in one column rather than a four-column grid squeezed to 85px a day. */
 @media (min-width: 900px) {
   /* The calendar sits in the right column of row one only; row two belongs to Prototype Controls, which spans both
-     columns so the reset stays reachable at the foot of the page without riding over the pinned pool. */
+     columns so the reset stays reachable at the foot of the page without riding over the pool. */
   .desk-body {
     grid-template-columns: 260px 1fr;
     grid-template-rows: auto auto;
-    align-items: start;
+    align-items: stretch;
   }
 
   .desk-pool {
     grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
   }
 
   .desk-grid {
@@ -431,17 +457,13 @@
     grid-template-columns: repeat(4, 1fr);
   }
 
-  .desk-pool {
-    position: sticky;
-    top: var(--s5);
-  }
-
-  /* The viewport, not the calendar. Matching the calendar exactly needs a grid row sized by a spanning sibling,
-     which loses to the taller item in the same row: the list's fourteen cards drove the row to 1903px and the
-     column ran further past the days than before. This ends the column at the fold, which is where the eye stops
-     anyway, and keeps Prototype Controls out of frame. */
+  /* Limit the vertical size of the Voted In card to the same height as the day cards on its right (#108).
+     The pool list scrolls internally and never overlaps with Prototype Controls. */
   .desk-poollist {
-    max-height: calc(100vh - 260px);
+    flex: 1 1 0;
+    min-height: 0;
+    max-height: none;
+    overflow-y: auto;
   }
 }
 

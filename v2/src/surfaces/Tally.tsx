@@ -118,7 +118,7 @@ export const Tally = () => {
                         </span>
                       )}
                       <span className="tally-votes">
-                        {entry.votes} {entry.votes === 1 ? 'vote' : 'votes'}
+                        {entry.votes} {entry.votes === 1 ? 'vote to keep' : 'votes to keep'}
                       </span>
                     </div>
                     <div className="tally-verdict">
