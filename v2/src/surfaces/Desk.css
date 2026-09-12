@@ -77,10 +77,11 @@
 .desk-datepick-dropdown {
   position: absolute;
   top: calc(100% + var(--s2));
-  left: 0;
+  right: 0;
+  left: auto;
   z-index: 50;
   width: 380px;
-  max-width: calc(100vw - 32px);
+  max-width: min(380px, calc(100vw - var(--s5) * 2));
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
   border: var(--outline) solid var(--ink);
   background: var(--plate);
