@@ -13,3 +13,11 @@ icon already carries its own numeral and goal title, which is why the deck gives
 own.
 
 The icons are used on slides 01 and 18 to state which goals Perch aligns with. They are not a claim of UN endorsement.
+
+## The GitHub mark
+
+`github-mark.svg` is `mark-github` from [Primer octicons](https://github.com/primer/octicons)
+v19.15.1, GitHub's own icon library, MIT licensed. `github-mark.png` is that file
+rasterised to 800&nbsp;px in Chrome, because PIL cannot read SVG; `make-qr.py`
+composites it into the centre of `qr-github.png`. The prototype code keeps the
+Perch seal.
