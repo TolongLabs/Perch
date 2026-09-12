@@ -61,6 +61,16 @@ rather than from a summary.
 **A direct competitor had the ranking in its hands and spent it on a different problem.** That is a better originality
 argument than "nobody does this", and unlike that claim it is checkable.
 
+### Target Group Alignment And Scalability
+
+**The beachhead target is urban Malaysian Gen-Z friend groups (3-4 travellers) taking short-haul self-guided trips.**
+One organiser carries the planning burden across WhatsApp chats, while friends disengage until arrival. Perch gives the
+organiser a decision tool and friends a zero-friction swipe deck requiring no accounts or app installations.
+
+**Scalability operates through a dual viral loop.** Each new trip immediately invites three new peer users into the Deck
+without onboarding friction. Upon completion, trips produce shareable digital spreads and printable keepsake books
+bearing QR links that seed organic trip creation across new traveller cohorts.
+
 ### Our Solution
 
 **The group swipes on reels of places, the owner drags what won onto a three-slot-a-day calendar, a heuristic orders
@@ -176,23 +186,27 @@ notes in [`DESIGN.md`](DESIGN.md#the-figma-files), which is where the design spe
 judged without visual direction leaking into it, and so a structural problem and a styling problem never get argued
 about at the same time.
 
-### Nine Screens From The Running Build
+### Nine Key Screens From The Running Build
 
-| Screen                                               | What Happens Here                                                                                                                                                                                                                                                               |
-| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![The landing screen](assets/screens/01-landing.png) | The one screen before committing to anything. It states the core mechanism and offers two ways in: start a plan, or open a book already shared with you                                                                                                                         |
-| ![The dashboard](assets/screens/02-dashboard.png)    | Aisyah sees the trip, who has already swiped, and the link to send to remaining friends. The card reads the trip's state: Open The Deck while reels remain, See The Tally once complete, and Edit Trip when dates or party details change                                       |
-| ![Onboarding](assets/screens/03-onboarding.png)      | The user sets dates by tapping a drawn month twice, then specifies trip intent in free text before tapping suggestion chips. Only Tokyo can be selected, with the screen explaining why                                                                                         |
-| ![The Deck](assets/screens/04-deck.png)              | The invite link opens on a phone with no account or sign-up: each friend selects their name and swipes (right to keep, left to pass, up for Must Go). With three friends pre-swiped, the tally is never blocked waiting on everyone at once                                     |
-| ![The Tally](assets/screens/05-tally.png)            | Every place displays a weighted vote percentage, where the owner's swipe counts 1.5. Unanimous picks earn the gold mark; places nobody wanted are greyed out. Active voter status is displayed transparently                                                                    |
-| ![The Desk](assets/screens/06-desk.png)              | Cards are dragged into day slots, and Optimize Plan arranges the schedule around pinned items. Here Day 1 runs 12h 32m, triggering the Overruns chip with inline rationale. Plus and minus toggles expand or collapse extra period stops, accommodating up to six stops per day |
-| ![Before We Go](assets/screens/07-before-we-go.png)  | Six contextual checklist items derived directly from trip facts (such as passport expiry rules, specific teamLab booking dates, and yen gate totals). Print The Book and The Handbook unlock only when all six are ticked                                                       |
-| ![The Book](assets/screens/08-book.png)              | The keepsake spread: the lead stop fills the full width with a pinned hand-drawn route map, followed by two-up torn-plate stops with dwell times and dual pricing (MYR and JPY). A direct action opens transit directions in Google Maps                                        |
-| ![The Handbook](assets/screens/09-handbook.png)      | The companion guide unlocked by the checklist. Left: dynamic packing list; Right: cultural etiquette and seasonal forecasts. Advice is strictly filtered by trip facts; trips without temples never display temple etiquette                                                    |
+The core flow moves across nine responsive surfaces, displayed in order below:
 
-**The flow is Landing, Dashboard, Onboarding, The Deck, The Tally, The Desk, Before We Go, and The Book and Handbook.**
-Every step is a real, interactive surface in the deployed prototype rather than a static concept. Captured frames
-reflect the live release; ongoing control refinements may appear on the public URL.
+|                                         Landing                                         |                                            Dashboard                                             |                                            Onboarding                                            |
+| :-------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |
+| [![Landing](assets/screens/01-landing.png)](https://prototype-yskhynz4la-as.a.run.app/) | [![Dashboard](assets/screens/02-dashboard.png)](https://prototype-yskhynz4la-as.a.run.app/trips) | [![Onboarding](assets/screens/03-onboarding.png)](https://prototype-yskhynz4la-as.a.run.app/new) |
+|                     Stated mechanism with two instant entry points                      |                        Trip status card and remaining-friend invite link                         |                             Drawn month picker and free-text intent                              |
+
+|                                                  The Deck                                                   |                                                   The Tally                                                   |                                         The Desk                                          |
+| :---------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------: |
+| [![The Deck](assets/screens/04-deck.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/swipe) | [![The Tally](assets/screens/05-tally.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/votes) | [![The Desk](assets/screens/06-desk.png)](https://prototype-yskhynz4la-as.a.run.app/desk) |
+|                                    Zero-install swipe reels with Must Go                                    |                                   Weighted group tally with 1.5× owner bias                                   |                      Drag-and-drop calendar with heuristic ordering                       |
+
+|                                                    Before We Go                                                    |                                               The Book                                                |                                                  The Handbook                                                  |
+| :----------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------: |
+| [![Before We Go](assets/screens/07-before-we-go.png)](https://prototype-yskhynz4la-as.a.run.app/desk/before-we-go) | [![The Book](assets/screens/08-book.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026) | [![The Handbook](assets/screens/09-handbook.png)](https://prototype-yskhynz4la-as.a.run.app/desk/before-we-go) |
+|                                   Contextual checklist unlocking export surfaces                                   |                            Seven-spread keepsake flipbook with drawn route                            |                                Dynamic packing list and trip-filtered etiquette                                |
+
+**Every step is a real, interactive surface in the deployed prototype rather than a static concept.** Captured frames
+reflect the live release; ongoing control refinements appear on the public URL.
 
 **The six phone screens are captured at 390 by 844 and the three desktop screens at 1440 by 900.** Every screen is
 rendered at double scale for high-density clarity. Proportions differ by design to match user context.
@@ -279,42 +293,24 @@ The application is deployed on **Google Cloud Run** in `asia-southeast1` via aut
 
 ### System Architecture
 
-```mermaid
-flowchart TD
-  subgraph Client["Browser Client (React 19 SPA)"]
-    Surfaces["Surfaces (Deck, Desk, Book, Handbook)"]
-    State["Local State Context (localStorage Sync)"]
-    Scheduler["Deterministic Heuristic Engine (schedule.ts)"]
-    Surfaces <--> State
-    Surfaces <--> Scheduler
-  end
+The prototype uses a deterministic, client-first architecture compiled and verified via Archify.
 
-  subgraph Hosting["Google Cloud Run (asia-southeast1)"]
-    Nginx["Nginx Container (Alpine Linux)"]
-    SPA["Compiled Bundle (/dist) and Static Mockup (/v1)"]
-    Nginx --> SPA
-  end
+[![Perch System Architecture](assets/architecture.svg)](assets/architecture.html)
 
-  subgraph External["Static Media Assets"]
-    GCS["Google Cloud Storage (Public Reels and Hero Video)"]
-    OSM["OpenStreetMap (Public Tile Server)"]
-  end
-
-  Client <-->|"HTTP / Static Delivery"| Nginx
-  Client -->|"Video Stream"| GCS
-  Client -->|"Map Tiles"| OSM
-```
+_System map generated with [Archify](https://github.com/tt-a1i/archify). Click diagram to open the interactive,
+searchable HTML artifact with live route tracing._
 
 ### Prototype Constraints & Execution Guarantees
 
-- **Data fixtures**: 24 hand-authored Tokyo places across 4 distinct clusters with an embedded 24x24 travel duration
-  matrix.
-- **Voting closure**: Session closure is evaluated client-side in the browser session. Skip is treated as an answered
-  abstention, keeping the full-party denominator consistent (see [`TRD.md`](TRD.md#voting-session)).
-- **Media provenance**: Hero background footage was generated using Google Gemini Videos (9 Sept 2026) with no
-  third-party media. Reels are curated and credited in [`v2/src/data/reels.json`](../v2/src/data/reels.json).
-- **Page flip technique**: The Book's CSS transform technique adopts the CSS `rotateY` perspective principles from
-  `create-photo-flipbook-ui` (MIT) with a clean zero-dependency CSS implementation.
+- **Committed place fixtures**: 24 hand-authored Tokyo places across four distinct clusters with an embedded 24×24
+  travel duration matrix (see [`ARCHITECTURE.md`](ARCHITECTURE.md#3-data-fixtures-and-spatial-matrix)).
+- **Deterministic session closure**: Client-side evaluation records unvoted cards as skipped abstentions, keeping the
+  full-party denominator intact (see [`TRD.md`](TRD.md#voting-session)).
+- **Zero third-party media**: Dawn aerial hero loop was generated with Google Gemini Videos. Curated reels are
+  attributed in [`v2/src/data/reels.json`](../v2/src/data/reels.json) (see
+  [`ARCHITECTURE.md`](ARCHITECTURE.md#4-media-provenance-and-assets)).
+- **Pure CSS 3D mechanics**: The Book's page turn adapts `create-photo-flipbook-ui` (MIT) principles in CSS without
+  Three.js or WebGL runtime dependencies (see [`ARCHITECTURE.md`](ARCHITECTURE.md#5-css-3d-flipbook-mechanics)).
 
 ### Build Phase Additions
 
@@ -349,13 +345,14 @@ conversational AI chatbot assistants.
 ```
 docs/
   README.md              This file: submission deliverable and project landing page
+  ARCHITECTURE.md        Technical architecture, media provenance, CSS mechanics, and data contracts
   DEVELOPMENT.md         Local developer setup, test suites, and deployment reference
   PRODUCT.md             Product spine: user problem, thesis, demo moments, and scope ladder
   PRD.md                 Product requirements, user stories, and acceptance criteria
   TRD.md                 Technical reference: data models, scheduler algorithm, and contracts
   DESIGN.md              Design system: field-guide palette, tokens, and typography
   brief.md               CodeNection 2026 competition brief, rules, and rubric bands
-  assets/                Captured interface screens and ideation mindmap SVGs
+  assets/                Captured interface screens, Archify architecture map, and ideation SVGs
   research/              Ideation notebook: dated turns, market scans, user research, and dropped ideas
   source/                Verbatim organiser material, kickoff transcripts, and mentor logs
   demo/                  Slide deck PDF, video script, and demo recording assets
@@ -377,16 +374,17 @@ vite.config.ts           Vite configuration rooting application in v2/
 
 ### Documentation Guide
 
-| Document                           | Focus And Audience                                                                   |
-| ---------------------------------- | ------------------------------------------------------------------------------------ |
-| [`DEVELOPMENT.md`](DEVELOPMENT.md) | **Developers**: Setup, local commands, linting, test suites, and git contribution    |
-| [`PRODUCT.md`](PRODUCT.md)         | **Product Strategy**: User persona, core thesis, scope ladder, and non-claims        |
-| [`PRD.md`](PRD.md)                 | **Requirements**: User stories, functional requirements, and acceptance criteria     |
-| [`TRD.md`](TRD.md)                 | **Technical Reference**: Data schemas, scheduler specification, and state contracts  |
-| [`DESIGN.md`](DESIGN.md)           | **Design System**: Field-guide aesthetics, color tokens, and typography studies      |
-| [`research/`](research/)           | **Ideation Notebook**: 50+ dated turns, dropped concepts, and competitor evaluations |
-| [`brief.md`](brief.md)             | **Competition Brief**: Rules, deadlines, deliverables, and judging rubric criteria   |
-| [`source/`](source/)               | **Organiser Sources**: Verbatim transcripts and official kickoff documentation       |
+| Document                             | Focus And Audience                                                                     |
+| ------------------------------------ | -------------------------------------------------------------------------------------- |
+| [`DEVELOPMENT.md`](DEVELOPMENT.md)   | **Developers**: Setup, local commands, linting, test suites, and git contribution      |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md) | **Architecture**: System boundaries, media provenance, CSS 3D mechanics, and contracts |
+| [`PRODUCT.md`](PRODUCT.md)           | **Product Strategy**: User persona, core thesis, scope ladder, and non-claims          |
+| [`PRD.md`](PRD.md)                   | **Requirements**: User stories, functional requirements, and acceptance criteria       |
+| [`TRD.md`](TRD.md)                   | **Technical Reference**: Data schemas, scheduler specification, and state contracts    |
+| [`DESIGN.md`](DESIGN.md)             | **Design System**: Field-guide aesthetics, color tokens, and typography studies        |
+| [`research/`](research/)             | **Ideation Notebook**: 50+ dated turns, dropped concepts, and competitor evaluations   |
+| [`brief.md`](brief.md)               | **Competition Brief**: Rules, deadlines, deliverables, and judging rubric criteria     |
+| [`source/`](source/)                 | **Organiser Sources**: Verbatim transcripts and official kickoff documentation         |
 
 ---
 
