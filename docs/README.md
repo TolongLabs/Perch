@@ -41,9 +41,10 @@
       <a href="#1-project-overview">Project Overview</a>
       <ol>
         <li><a href="#11-the-problem">The Problem</a></li>
-        <li><a href="#12-similar-apps-and-where-they-fall-short">Similar Apps And Where They Fall Short</a></li>
-        <li><a href="#13-target-group-alignment-and-scalability">Target Group Alignment And Scalability</a></li>
-        <li><a href="#14-our-solution">Our Solution</a></li>
+        <li><a href="#12-aims--objectives">Aims & Objectives</a></li>
+        <li><a href="#13-target-users">Target Users</a></li>
+        <li><a href="#14-similar-apps-and-where-they-fall-short">Similar Apps And Where They Fall Short</a></li>
+        <li><a href="#15-our-solution">Our Solution</a></li>
       </ol>
     </li>
     <li>
@@ -122,7 +123,36 @@ negotiating thirty opinions in chat into a coherent itinerary:
 | **The Group Members** | Disengage without skin in the game, feeling detached from fixed itineraries          |
 | **The Financier**     | Fronts large deposits and absorbs payment reconciliation delays                      |
 
-### 1.2 Similar Apps And Where They Fall Short
+### 1.2 Aims & Objectives
+
+Perch transforms how small travel groups decide, assemble, and remember their shared journeys. Rather than generating
+static text blocks, Perch solves the breakdown between consensus and executable logistics.
+
+| Target Area             | Core Objective                                                                                 |
+| ----------------------- | ---------------------------------------------------------------------------------------------- |
+| **Frictionless Intake** | Collect group preferences via zero-install mobile web reels without requiring accounts         |
+| **Deterministic Days**  | Synthesize weighted group votes into feasible daily routes using transparent transit intervals |
+| **Dynamic Continuity**  | Cache runner-up choices to enable instant, dispute-free stop replacement when disruptions hit  |
+| **Tangible Keepsakes**  | Publish finalized itineraries as interactive digital flipbooks and printable souvenir guides   |
+
+### 1.3 Target Users
+
+The beachhead market is **urban Malaysian Gen-Z friend groups (3–4 travellers)** undertaking self-guided short-haul
+trips across East and Southeast Asia.
+
+| User Persona            | Role & Behaviour                                                                             |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| **The Organiser**       | Initiates trip setup, resolves schedule trade-offs, and holds a 1.5× tie-breaker vote        |
+| **The Group Member**    | Swipes binary Yes/No on curated reels from group chat links with zero onboarding barrier     |
+| **The Extended Circle** | Views exported keepsakes post-trip, driving viral organic adoption through embedded QR links |
+
+Growth scales through a dual viral loop:
+
+1. **Inbound invite loop**: Each trip invites 3+ friends into The Deck via WhatsApp with no account creation.
+2. **Outbound keepsake loop**: Completed trips generate shareable digital flipbooks and printable PDFs that seed new
+   trip creation.
+
+### 1.4 Similar Apps And Where They Fall Short
 
 Competitor evaluations in [`research/market/`](research/market/) demonstrate why existing stacks fail collaborative
 travel:
@@ -137,19 +167,7 @@ travel:
 
 > Every tool a group already uses can produce a plan. **None of them owns the plan afterwards.**
 
-### 1.3 Target Group Alignment And Scalability
-
-The beachhead target is **urban Malaysian Gen-Z friend groups (3-4 travellers)** taking short-haul self-guided trips.
-One organiser carries the planning burden across chat groups, while friends disengage until arrival. Perch gives the
-organiser a structured decision tool and friends a zero-install swipe deck.
-
-Growth scales through a dual viral loop:
-
-1. **Inbound invite loop**: Each new trip invites 3+ peer users directly into The Deck without account creation.
-2. **Outbound keepsake loop**: Completed trips produce shareable digital spreads and printable keepsake books with QR
-   codes that seed new trip creation.
-
-### 1.4 Our Solution
+### 1.5 Our Solution
 
 The group swipes on short video reels of curated places. The organiser drags consensus winners onto a three-slot daily
 desk, where a deterministic heuristic orders the route and highlights feasibility in colour. Completed itineraries
@@ -224,13 +242,13 @@ research assets are catalogued below:
 
 ### 2.3 Mentor Consultation
 
-| Date        | Mentor                                                                                         | Feedback Received                                                                                                                                                      | What Was Changed                                                                                                 |
-| ----------- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| 7 Sept 2026 | **Zach Khong**<br /><sub>Full Stack Engineer, Solana Foundation; Cursor Hackathon Winner</sub> | _"All these features right, like one to six, is stuff that people will already build... the way how you represent the voting feature is what makes your app special."_ | Rebuilt voting as visual swipe reels focusing on media over text, establishing "vibe-based planning"             |
-| 7 Sept 2026 | **Zach Khong**                                                                                 | _"I have to click a lot and I have to know what I want. The data collection could be just unstructured text."_                                                         | Replaced multi-step forms with single-screen free-text input and destination shortcuts                           |
-| 7 Sept 2026 | **Zach Khong**                                                                                 | _"I feel like the voting part is a bit stiff... Actively thinking is harder than just deciding yes or no."_                                                            | Assigned 1.5× tie-breaker weighting to trip organiser; transformed voting to binary Yes/No decisions             |
-| 7 Sept 2026 | **Zach Khong**                                                                                 | _"Being specific can definitely be your strength... plan to that level of cultural detail."_                                                                           | Grounded prototype in authentic Tokyo places with realistic inter-neighbourhood transit intervals                |
-| 7 Sept 2026 | **Zach Khong**                                                                                 | _"Voting doesn't have to be yes or no. You could be like, oh, I like this place like maybe 65 percent."_                                                               | **Logged for build phase**: Kept binary cards for prototype speed; logged continuous preference slider for build |
+| Date        | Mentor         | Feedback Received                                                                                                                                                      | What Was Changed                                                                                                 |
+| ----------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 7 Sept 2026 | **Zach Khong** | _"All these features right, like one to six, is stuff that people will already build... the way how you represent the voting feature is what makes your app special."_ | Rebuilt voting as visual swipe reels focusing on media over text, establishing "vibe-based planning"             |
+| 7 Sept 2026 | **Zach Khong** | _"I have to click a lot and I have to know what I want. The data collection could be just unstructured text."_                                                         | Replaced multi-step forms with single-screen free-text input and destination shortcuts                           |
+| 7 Sept 2026 | **Zach Khong** | _"I feel like the voting part is a bit stiff... Actively thinking is harder than just deciding yes or no."_                                                            | Assigned 1.5× tie-breaker weighting to trip organiser; transformed voting to binary Yes/No decisions             |
+| 7 Sept 2026 | **Zach Khong** | _"Being specific can definitely be your strength... plan to that level of cultural detail."_                                                                           | Grounded prototype in authentic Tokyo places with realistic inter-neighbourhood transit intervals                |
+| 7 Sept 2026 | **Zach Khong** | _"Voting doesn't have to be yes or no. You could be like, oh, I like this place like maybe 65 percent."_                                                               | **Logged for build phase**: Kept binary cards for prototype speed; logged continuous preference slider for build |
 
 Verbatim transcripts and discussion notes are available in
 [`source/mentor-session-1-transcript.md`](source/mentor-session-1-transcript.md).
@@ -252,20 +270,20 @@ The prototype is publicly deployed on Google Cloud Run:
 
 The user journey spans nine core surfaces, standardized and captured across desktop (1440×900) viewports:
 
-|                                         Landing                                         |                                            Dashboard                                             |                                            Onboarding                                            |
-| :-------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |
-| [![Landing](assets/screens/01-landing.png)](https://prototype-yskhynz4la-as.a.run.app/) | [![Dashboard](assets/screens/02-dashboard.png)](https://prototype-yskhynz4la-as.a.run.app/trips) | [![Onboarding](assets/screens/03-onboarding.png)](https://prototype-yskhynz4la-as.a.run.app/new) |
-|                 <sub>Two instant entry points into trip planning.</sub>                 |                    <sub>Trip status card with one-click friend invite.</sub>                     |                       <sub>Drawn month picker and free-text intent.</sub>                        |
+|                                             Landing                                             |                                                Dashboard                                                 |                                                Onboarding                                                |
+| :---------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: |
+| [![Landing](assets/screens/desktop-01-landing.png)](https://prototype-yskhynz4la-as.a.run.app/) | [![Dashboard](assets/screens/desktop-02-dashboard.png)](https://prototype-yskhynz4la-as.a.run.app/trips) | [![Onboarding](assets/screens/desktop-03-onboarding.png)](https://prototype-yskhynz4la-as.a.run.app/new) |
+|                     <sub>Two instant entry points into trip planning.</sub>                     |                        <sub>Trip status card with one-click friend invite.</sub>                         |                           <sub>Drawn month picker and free-text intent.</sub>                            |
 
-|                                                  The Deck                                                   |                                                   The Tally                                                   |                                         The Desk                                          |
-| :---------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------: |
-| [![The Deck](assets/screens/04-deck.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/swipe) | [![The Tally](assets/screens/05-tally.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/votes) | [![The Desk](assets/screens/06-desk.png)](https://prototype-yskhynz4la-as.a.run.app/desk) |
-|                              <sub>Zero-install swipe reels with Must Go.</sub>                              |                           <sub>Group consensus tally with 1.5× owner weight.</sub>                            |                <sub>Drag-and-drop calendar with heuristic ordering.</sub>                 |
+|                                                      The Deck                                                       |                                                       The Tally                                                       |                                             The Desk                                              |
+| :-----------------------------------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------: |
+| [![The Deck](assets/screens/desktop-04-deck.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/swipe) | [![The Tally](assets/screens/desktop-05-tally.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/votes) | [![The Desk](assets/screens/desktop-06-desk.png)](https://prototype-yskhynz4la-as.a.run.app/desk) |
+|                                  <sub>Zero-install swipe reels with Must Go.</sub>                                  |                               <sub>Group consensus tally with 1.5× owner weight.</sub>                                |                    <sub>Drag-and-drop calendar with heuristic ordering.</sub>                     |
 
-|                                                    Before We Go                                                    |                                               The Book                                                |                                                      The Handbook                                                      |
-| :----------------------------------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------------------------------------: |
-| [![Before We Go](assets/screens/07-before-we-go.png)](https://prototype-yskhynz4la-as.a.run.app/desk/before-we-go) | [![The Book](assets/screens/08-book.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026) | [![The Handbook](assets/screens/09-handbook.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/handbook) |
-|                               <sub>Pre-trip checklist unlocking final exports.</sub>                               |                            <sub>Keepsake flipbook with drawn routes.</sub>                            |                                <sub>Dynamic packing list and cultural etiquette.</sub>                                 |
+|                                                        Before We Go                                                        |                                                   The Book                                                    |                                                          The Handbook                                                          |
+| :------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------: |
+| [![Before We Go](assets/screens/desktop-07-before-we-go.png)](https://prototype-yskhynz4la-as.a.run.app/desk/before-we-go) | [![The Book](assets/screens/desktop-08-book.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026) | [![The Handbook](assets/screens/desktop-09-handbook.png)](https://prototype-yskhynz4la-as.a.run.app/t/tokyo-nov-2026/handbook) |
+|                                   <sub>Pre-trip checklist unlocking final exports.</sub>                                   |                                <sub>Keepsake flipbook with drawn routes.</sub>                                |                                    <sub>Dynamic packing list and cultural etiquette.</sub>                                     |
 
 ### 3.2 Design Principles
 
