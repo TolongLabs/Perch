@@ -1,14 +1,14 @@
-![Perch - a field-guide plate of a volcanic landscape in the specimen palette, with the Perch seal and wordmark set on the empty left third](assets/hero.jpg)
+![Perch - A field-guide plate of a volcanic landscape in the specimen palette, with the Perch seal and wordmark set on the empty left third](assets/hero.jpg)
 
 # Perch, By TolongLabs
 
-|                         |                                                                                         |
-| ----------------------- | --------------------------------------------------------------------------------------- |
-| **Team**                | TolongLabs, four members. **Names to be filled by the team leader before submission**   |
-| **Problem Statement**   | Travel Planner, Track 1: Lifestyle & Personal Productivity                              |
-| **Live Prototype**      | **https://prototype-yskhynz4la-as.a.run.app** - opens in incognito, no account          |
-| **Video Presentation**  | Not recorded yet. Tracked in [issue #10](https://github.com/TolongLabs/Perch/issues/10) |
-| **Presentation Slides** | [`demo/slides.pdf`](demo/slides.pdf), 18 pages, one per rubric band and then some       |
+| Submission Field        | Detail                                                                                                                                                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Team**                | **TolongLabs**: `@AlaskanTuna` (Fullstack, DevOps, Deployment), `@chaosiris` (Frontend, Backend, Design), `@DrxgClanPC` (Ideation, Prototyping, Testing), `@Doraemon-00` (Documentation, Research, Testing) |
+| **Problem Statement**   | Travel Planner, Track 1: Lifestyle & Personal Productivity                                                                                                                                                  |
+| **UI Prototype**        | **https://prototype-yskhynz4la-as.a.run.app** (public, opens in incognito, no account required)                                                                                                             |
+| **Video Presentation**  | [Unlisted YouTube Link] _(Video walkthrough; mastering and final edit in progress)_                                                                                                                         |
+| **Presentation Slides** | [`demo/slides.pdf`](demo/slides.pdf) (18 pages, structured directly against the judging rubric)                                                                                                             |
 
 > **Every tool a group already uses can produce a plan. None of them turns the group's decision into days. Perch does,
 > and prints them.**
@@ -23,8 +23,8 @@
 real help from existing platforms in adjusting."_
 
 **The symptom is that planning a trip is a hassle. The causes are four, and only the fourth is unserved.** We are not
-competing with Wanderlog; we are competing with the stack of free apps a group already has, WhatsApp, Google Maps and a
-money tool, which is why the first three rows are not ours.
+competing with Wanderlog; we are competing with the stack of free apps a group already has (WhatsApp, Google Maps, and a
+money tool), which is why the first three rows are not ours.
 
 | Cause                                                       | Who Serves It Today                                             | Ours?             |
 | ----------------------------------------------------------- | --------------------------------------------------------------- | ----------------- |
@@ -64,21 +64,22 @@ argument than "nobody does this", and unlike that claim it is checkable.
 ### Our Solution
 
 **The group swipes on reels of places, the owner drags what won onto a three-slot-a-day calendar, a heuristic orders
-each day and colours it by how well the route holds, and the finished trip prints as The Book.** The decision the group
-makes in swipes survives intact to a printed keepsake, and the only hands it passes through are the organiser's,
-dragging. One chain, and the feature list below is that chain in order.
+each day and colours it by how well the route holds, and the finished trip prints as The Book.**
 
-| Feature          | What It Does                                                                                                                                              |
-| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Onboarding**   | A drawn month tapped twice for the dates, activity and destination chips, and a free-text field that appears only under Other; only Tokyo continues       |
-| **The Deck**     | The invite link. Each place is a reel; friends swipe yes or no with no account and no install                                                             |
-| **The Tally**    | A percentage per place. The owner's swipe weighs 1.5; unanimous places go gold, places nobody wanted are greyed                                           |
-| **The Desk**     | Four days, three to six slots each. She drags what won into slots, pins what must not move, and Optimize Plan orders every day around it                  |
-| **Feasibility**  | Each day is green, gold or red with a stated reason: it holds, it holds but the order is slow, or a stop is outside hours                                 |
-| **The Perch**    | Remove a card and the drawer offers the next-ranked voted-in place for that slot, so the trip cannot empty                                                |
-| **Before We Go** | A checklist derived from the trip itself, and all of it ticked is what unlocks the Book and the Handbook                                                  |
-| **The Book**     | The shared link and the keepsake. A day is a spread: two stops to a page, the poster frames as torn plates, the day's drawn route pinned on the first one |
-| **The Handbook** | The other thing the checklist unlocks. Customs and packing derived from trip facts and authored news triggers; displayed news is filtered to trip dates   |
+The decision the group makes in swipes survives intact to a printed keepsake, passing only through the organiser's
+hands. One unbroken chain, and the feature list below reflects that sequence in order.
+
+| Feature          | What It Does                                                                                                                                       |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Onboarding**   | A drawn month tapped twice for dates, activity and destination chips, and a free-text field that appears only under Other; only Tokyo continues    |
+| **The Deck**     | The invite link. Each place is a reel; friends swipe yes or no with no account and no install                                                      |
+| **The Tally**    | A percentage per place. The owner's swipe weighs 1.5; unanimous places go gold, places nobody wanted are greyed                                    |
+| **The Desk**     | Four days, three to six slots each. She drags what won into slots, pins what must not move, and Optimize Plan orders every day around it           |
+| **Feasibility**  | Each day is green, gold, or red with a stated reason: it holds, it holds but the order is slow, or a stop is outside hours                         |
+| **The Perch**    | Remove a card and the drawer offers the next-ranked voted-in place for that slot, so the trip cannot empty                                         |
+| **Before We Go** | A checklist derived from the trip itself; completing all items unlocks the Book and the Handbook                                                   |
+| **The Book**     | The shared link and keepsake. A day is a spread: two stops to a page, poster frames as torn plates, the day's drawn route pinned on the first page |
+| **The Handbook** | Customs and packing derived from trip facts and authored news triggers; displayed news is filtered strictly to trip dates                          |
 
 **The scheduler is a heuristic and the copy never calls it AI**: cluster by area per day, order by best period and
 opening hours, nearest neighbour within the day. Its colours are the explanation, and every red carries the reason.
@@ -93,8 +94,8 @@ file is linked so a reviewer can read the original rather than our summary of it
 
 ### 2.1 Ideas We Considered
 
-**Chosen first, then the directions we dropped.** Reasons are the notebook's own words, not a tidier version written
-afterwards.
+**Chosen ideas are listed first, followed by the directions we dropped.** Reasons quote the notebook's own words, not a
+tidier version written afterwards.
 
 | Idea                                                                          | Kept Or Dropped | Why                                                                                                                                                                                                                                                                                                   |
 | ----------------------------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -112,9 +113,9 @@ afterwards.
 | **Bill splitting**                                                            | **Dropped**     | Every panel answer said the arithmetic is fine and **the collection is the problem**. Solving the half that already works                                                                                                                                                                             |
 | **A mascot copilot**                                                          | **Dropped**     | It makes the plan feel authored, when its whole value is that it is derived                                                                                                                                                                                                                           |
 
-**Two of those were dropped after being built and working**, and both write-ups say what it cost us to drop them.
-[`research/decisions/dropped.md`](research/decisions/dropped.md) carries them in full, including the cost paragraph for
-each.
+**Two of those directions were dropped after being built and working**, and both write-ups state what it cost us to drop
+them. [`research/decisions/dropped.md`](research/decisions/dropped.md) records them in full, including the cost
+breakdown for each.
 
 ### 2.2 Ideation Boards
 
@@ -129,8 +130,8 @@ decisions log.
 **What a group actually does, stage 0 to stage 8**, and the loop back from "it broke" to "the plan re-derives". The
 mindmap shows how the thinking moved; this shows the product it produced.
 
-**Both are exports.** The Obsidian Canvas sources live in [`research/diagrams/`](research/diagrams/), alongside the
-Python that renders them, so either can be regenerated rather than redrawn.
+**Both diagrams are exports.** The Obsidian Canvas sources live in [`research/diagrams/`](research/diagrams/), alongside
+the Python script that renders them, so either can be regenerated rather than redrawn.
 
 **The written trail underneath them is the substance**, and it is longer than two pictures.
 
@@ -154,13 +155,11 @@ Python that renders them, so either can be regenerated rather than redrawn.
 
 **The full session is transcribed verbatim** at
 [`source/mentor-session-1-transcript.md`](source/mentor-session-1-transcript.md): 38 minutes, Whisper-transcribed with
-timestamps preserved, with a table of the quotes most likely to be cited. It was booked through
-[issue #23](https://github.com/TolongLabs/Perch/issues/23).
+timestamps preserved, alongside a curated index of the core architectural quotes.
 
-**What the session did not endorse is recorded too.** He proposed a group chat with an AI reading it, and drawing on a
-map; both are in the transcript and neither was adopted, because a chat panel invites the "why not ChatGPT" comparison
-and a canvas does not survive a five-minute demo. The Fruit Ninja slice vote was our idea, and he was _"not sure about a
-slashing thing"_; it was dropped on the call.
+**What the session did not endorse is recorded too.** He proposed a group chat with an AI reading it and drawing on a
+map. Both appear in the transcript and neither was adopted: a chat panel invites the "why not ChatGPT" comparison, and a
+canvas does not survive a five-minute demo. A Fruit Ninja slice gesture was also dropped during the call.
 
 ---
 
@@ -179,36 +178,34 @@ about at the same time.
 
 ### Nine Screens From The Running Build
 
-| Screen                                               | What Happens Here                                                                                                                                                                                                                                                                                                                                                                                                       |
-| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![The landing screen](assets/screens/01-landing.png) | The one screen before you commit to anything. It states the mechanism rather than the benefit, and offers two ways in: start a plan, or open a book someone has already shared with you                                                                                                                                                                                                                                 |
-| ![The dashboard](assets/screens/02-dashboard.png)    | Aisyah sees the trip, who has already swiped, and the link to send the ones who have not. The card reads the trip's own state: Open The Deck while she has reels left, See The Tally once she is finished, and Edit Trip whenever the dates or the party need changing                                                                                                                                                  |
-| ![Onboarding](assets/screens/03-onboarding.png)      | She sets the dates by tapping a drawn month twice, then says what she wants out of the trip in her own words before she taps any of the suggestions. Only Tokyo can be picked, and the screen says why instead of letting her find out later                                                                                                                                                                            |
-| ![The Deck](assets/screens/04-deck.png)              | The invite link opens here, on a phone, with no account and no sign-up: everyone picks which of the four they are, then swipes. Right to keep, left to pass, up to spend the one Must Go they get, and the count comes down. Her three friends swiped when she sent the link, so the tally is never waiting on everyone at once                                                                                         |
-| ![The Tally](assets/screens/05-tally.png)            | Every place carries a percentage of the group's weighted vote, where the owner's swipe counts one and a half. Places everyone said yes to take the gold mark; places nobody wanted are greyed and drop out of the running order. While someone is still swiping the page says so, and says why their silence holds a place down rather than leaving it out                                                              |
-| ![The Desk](assets/screens/06-desk.png)              | She drags a card into a slot and Optimize Plan orders every day around whatever she has pinned. Here she has put Day 1 back in her own order and pinned it, so the scheduler kept it and the day now runs 12 hours 32 and ends at 21:32: the chip says Overruns and the line beside it says why, with no tooltip to open. A plus and a minus on each period heading open and close a second stop, up to six stops a day |
-| ![Before We Go](assets/screens/07-before-we-go.png)  | Six things read off the trip rather than written beside it. The passport date is six months past her last day, the teamLab row names the day that place actually falls on, and the yen figure is the gate total of what is on the calendar. Both Print The Book and The Handbook stay shut until all six are ticked                                                                                                     |
-| ![The Book](assets/screens/08-book.png)              | What the group keeps, and a day is a spread. The first stop's picture runs the full width and the drawing of the day's real route is pinned on it; the rest run two to a page beneath, torn-edged, with the dwell, the ringgit and the yen under every entry. The one link that leaves the page opens the day as transit directions in Google Maps                                                                      |
-| ![The Handbook](assets/screens/09-handbook.png)      | The other thing the checklist unlocks. A packing list on the left, and on the right the customs and the forecast that earned it. Nothing here is general travel advice: every line is filtered by a fact the trip established, so a trip with no temple on its calendar never sees temple etiquette, and the three lines this trip earned say what earned them                                                          |
+| Screen                                               | What Happens Here                                                                                                                                                                                                                                                               |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![The landing screen](assets/screens/01-landing.png) | The one screen before committing to anything. It states the core mechanism and offers two ways in: start a plan, or open a book already shared with you                                                                                                                         |
+| ![The dashboard](assets/screens/02-dashboard.png)    | Aisyah sees the trip, who has already swiped, and the link to send to remaining friends. The card reads the trip's state: Open The Deck while reels remain, See The Tally once complete, and Edit Trip when dates or party details change                                       |
+| ![Onboarding](assets/screens/03-onboarding.png)      | The user sets dates by tapping a drawn month twice, then specifies trip intent in free text before tapping suggestion chips. Only Tokyo can be selected, with the screen explaining why                                                                                         |
+| ![The Deck](assets/screens/04-deck.png)              | The invite link opens on a phone with no account or sign-up: each friend selects their name and swipes (right to keep, left to pass, up for Must Go). With three friends pre-swiped, the tally is never blocked waiting on everyone at once                                     |
+| ![The Tally](assets/screens/05-tally.png)            | Every place displays a weighted vote percentage, where the owner's swipe counts 1.5. Unanimous picks earn the gold mark; places nobody wanted are greyed out. Active voter status is displayed transparently                                                                    |
+| ![The Desk](assets/screens/06-desk.png)              | Cards are dragged into day slots, and Optimize Plan arranges the schedule around pinned items. Here Day 1 runs 12h 32m, triggering the Overruns chip with inline rationale. Plus and minus toggles expand or collapse extra period stops, accommodating up to six stops per day |
+| ![Before We Go](assets/screens/07-before-we-go.png)  | Six contextual checklist items derived directly from trip facts (such as passport expiry rules, specific teamLab booking dates, and yen gate totals). Print The Book and The Handbook unlock only when all six are ticked                                                       |
+| ![The Book](assets/screens/08-book.png)              | The keepsake spread: the lead stop fills the full width with a pinned hand-drawn route map, followed by two-up torn-plate stops with dwell times and dual pricing (MYR and JPY). A direct action opens transit directions in Google Maps                                        |
+| ![The Handbook](assets/screens/09-handbook.png)      | The companion guide unlocked by the checklist. Left: dynamic packing list; Right: cultural etiquette and seasonal forecasts. Advice is strictly filtered by trip facts; trips without temples never display temple etiquette                                                    |
 
-**The flow is Landing, Dashboard, Onboarding, The Deck, The Tally, The Desk, Before We Go, and then The Book and The
-Handbook, which the same checklist unlocks together**, and every step is a real click in the deployed prototype. Nothing
-here is a static mock-up of a screen that does not exist. The captures record the build as it stood when they were
-taken, so controls still being integrated may differ on the live URL.
+**The flow is Landing, Dashboard, Onboarding, The Deck, The Tally, The Desk, Before We Go, and The Book and Handbook.**
+Every step is a real, interactive surface in the deployed prototype rather than a static concept. Captured frames
+reflect the live release; ongoing control refinements may appear on the public URL.
 
-**The six phone screens are captured at 390 by 844 and the three desktop screens at 1440 by 900, every one rendered at
-double scale so it stays sharp on a high-density display**, which is why their proportions differ. The Desk, the Book
-and the Handbook are the three built for a wider screen: four day columns and a sidebar cannot be read at phone width,
-and a spread with two pages side by side has nowhere to put the second one. The story the product tells has the group
-swiping on their phones from a link and the owner shaping the days at a desk.
+**The six phone screens are captured at 390 by 844 and the three desktop screens at 1440 by 900.** Every screen is
+rendered at double scale for high-density clarity. Proportions differ by design to match user context.
 
-**The Prototype Controls block on The Desk is deliberate and is labelled as not part of the product.** The trip lives in
-one browser with no account behind it, so there is no other way to put the fixture back between runs, and a demo that
-can only be reset by opening developer tools is a demo that cannot be handed to anyone.
+The Desk, The Book, and The Handbook are built for wide displays: four day columns and two-page spreads require visual
+air. The product story has friends swiping on phones from an invite link while the organiser shapes the days at a desk.
 
-**The design direction is a field guide, not a travel brochure**, and [`DESIGN.md`](DESIGN.md) records where every part
-of it came from - including the two live registers that were looked at and rejected, and the measurements taken off a
-real bird guide and off four Japanese sites read directly. The eight studies behind it are in [`design/`](design/).
+**The Prototype Controls block on The Desk is labelled as test instrumentation.** The trip lives in browser state
+without accounts, so fixture reset controls ensure reliable reviewer evaluation without developer tools.
+
+**The design direction is a field guide, not a travel brochure.** [`DESIGN.md`](DESIGN.md) documents its typography,
+proportions, and palette, drawn from historical specimen guides and direct Japanese source studies in
+[`design/`](design/).
 
 ---
 
@@ -221,27 +218,27 @@ real bird guide and off four Japanese sites read directly. The eight studies beh
 | **The Swipes Become The Calendar**                        | SwipeSights computes a ranked group preference and spends it on how long you stay. **We Spend It On The Days**: the tally is the scheduler's pool, with the owner's pins the only bypass |
 | **The losing swipes are kept and spent**                  | Every voting product discards what lost. The ranked voted-in list survives as the Perch drawer, so removing a card offers the next place the group already said yes to                   |
 | **Owner Vote Weight And Pins**                            | The owner's swipe weighs 1.5, only 33 percent of the four-person seed, so their vote alone cannot carry a place in. **A pin can still place a card -- a Desk act, not a vote**           |
-| **The day explains itself in colour**                     | Green, gold or red per day with the reason stated: the order is slow by so many minutes, or this stop is shut on Monday. **A heuristic that says what it did, never called AI**          |
+| **The day explains itself in colour**                     | Green, gold, or red per day with the reason stated: the order is slow by so many minutes, or this stop is shut on Monday. **A heuristic that says what it did, never called AI**         |
 | **The invite link is the deck, the keepsake is the book** | Friends land on reels and swipe with nothing installed; what they get back is a printed book of the trip they chose. **The book is not a reward at the end, it is why they swipe**       |
 
 ### Against The Products We Named
 
-|                                          | Wanderlog | Roadtrippers | SwipeSights | Google Maps + WhatsApp | **Perch** |
-| ---------------------------------------- | :-------: | :----------: | :---------: | :--------------------: | :-------: |
-| Builds an itinerary                      |    Yes    |     Yes      |     Yes     |           No           |    Yes    |
-| Combines group preferences               |    No     |      No      |   **Yes**   |       Poll only        |    Yes    |
-| **Keeps the losing preferences**         |    No     |      No      |   **No**    |           No           |  **Yes**  |
-| **Schedules the votes into routed days** |    No     |      No      |     No      |           No           |  **Yes**  |
-| **Says in colour whether a day holds**   |    No     |      No      |     No      |           No           |  **Yes**  |
-| Works with no account and no install     |    No     |      No      |     No      |        **Yes**         |  **Yes**  |
+| Feature Capability                       | Wanderlog | Roadtrippers | SwipeSights | Google Maps + WhatsApp |  Perch  |
+| ---------------------------------------- | :-------: | :----------: | :---------: | :--------------------: | :-----: |
+| Builds an itinerary                      |    Yes    |     Yes      |     Yes     |           No           |   Yes   |
+| Combines group preferences               |    No     |      No      |   **Yes**   |       Poll only        |   Yes   |
+| **Keeps the losing preferences**         |    No     |      No      |   **No**    |           No           | **Yes** |
+| **Schedules the votes into routed days** |    No     |      No      |     No      |           No           | **Yes** |
+| **Says in colour whether a day holds**   |    No     |      No      |     No      |           No           | **Yes** |
+| Works with no account and no install     |    No     |      No      |     No      |        **Yes**         | **Yes** |
 
 **What we do not claim** is as important, and [`PRODUCT.md`](PRODUCT.md#what-we-claim-and-what-we-do-not) lists six
-non-claims with the reason for each: not better suggestions, not that generating an itinerary is hard, not a new layout,
-not clever routing, not novel group voting, and not photo spots.
+non-claims with the rationale for each: not better suggestions, not that generating an itinerary is hard, not a new
+layout, not clever routing, not novel group voting, and not photo spots.
 
 **The honest risk:** Troupe ships ranked group voting and **we have not read it**. If it already turns its votes into a
-scheduled calendar, the originality claim is gone. It is named as the biggest hole in [`PRD.md`](PRD.md#market-fit)
-rather than assumed away.
+scheduled calendar, the originality claim is gone. It is named as the primary uncertainty in
+[`PRD.md`](PRD.md#market-fit) rather than assumed away.
 
 ---
 
@@ -249,227 +246,150 @@ rather than assumed away.
 
 ### Tech Stack
 
-| Layer         | Choice                                           | Why, And What It Costs                            |
-| ------------- | ------------------------------------------------ | ------------------------------------------------- |
-| **Frontend**  | Vite 8, React 19, react-router-dom 7             | No SSR need, so no framework tax                  |
-| **Language**  | TypeScript 7 strict, `noUncheckedIndexedAccess`  | Catches the bug class a committed fixture hides   |
-| **Tooling**   | Bun                                              | Package manager and script runner                 |
-| **Styling**   | Plain CSS custom properties, no framework        | One tokens file, one CSS file per surface         |
-| **Fonts**     | Quicksand and Newsreader, self-hosted woff2      | No CDN call the demo can fail on                  |
-| **State**     | One React context mirrored to `localStorage`     | Validated at the boundary, not cast               |
-| **Data**      | Committed TypeScript fixtures                    | Versioned with the code, reviewable in a PR       |
-| **Drag**      | `@dnd-kit/core`, the one new dependency          | Accessible drag for the calendar slots            |
-| **Backend**   | **None, by design, for the prototype**           | Nothing in the Must tier writes to a server       |
-| **APIs**      | **None. No key exists**                          | The demo cannot fail on someone else's rate limit |
-| **Reels**     | Small muted MP4s from a public GCS bucket        | One of the few network calls on stage             |
-| **Hero Clip** | One 10-second loop from the same bucket          | The landing's ground, AI-generated. See below     |
-| **Hosting**   | Google Cloud Run, `asia-southeast1`              | Scales to zero, so free at our traffic            |
-| **CI/CD**     | GitHub Actions on every merge to `main`          | Workload Identity Federation, no stored key       |
-| **Container** | Two-stage `Dockerfile`: Bun builds, nginx serves | The build happens inside the image                |
+| Layer         | Choice                                           | Why, And What It Costs                             |
+| ------------- | ------------------------------------------------ | -------------------------------------------------- |
+| **Frontend**  | Vite 8, React 19, react-router-dom 7             | No SSR need, eliminating server rendering overhead |
+| **Language**  | TypeScript strict, `noUncheckedIndexedAccess`    | Catches runtime boundary edge cases at compile     |
+| **Tooling**   | Bun                                              | High-performance package manager and test runner   |
+| **Styling**   | Plain CSS custom properties, zero CSS frameworks | One tokens file, scoped stylesheets per surface    |
+| **Fonts**     | Quicksand and Newsreader, self-hosted woff2      | Zero external CDN dependencies during evaluation   |
+| **State**     | React context synchronized to `localStorage`     | Validated with runtime type guards at boundaries   |
+| **Data**      | Committed TypeScript fixtures                    | Versioned with the code, reviewable in git history |
+| **Drag**      | `@dnd-kit/core`                                  | Accessible drag-and-drop for calendar slots        |
+| **Backend**   | **None, by design, for the prototype**           | Zero server dependencies for deterministic demo    |
+| **APIs**      | **None. Zero API keys**                          | Immune to external rate limits or token failures   |
+| **Reels**     | Muted MP4 reels from public GCS bucket           | Fast media streaming for mobile swipe cards        |
+| **Hero Clip** | Gemini-generated 10-second dawn loop             | Clean visual backdrop without third-party footage  |
+| **Hosting**   | Google Cloud Run, `asia-southeast1`              | Containerized serverless delivery, scales to zero  |
+| **CI/CD**     | GitHub Actions automated pipeline                | Automatic build and deploy on merges to `main`     |
+| **Container** | Two-stage `Dockerfile`: Bun builds, nginx serves | Isolated reproducible image compilation            |
 
-**Why not Vercel**, since it is the obvious choice: its Hobby tier only builds commits authored by the account owner, so
-a teammate's merge would not ship. Cloud Run has no such rule, and no one person holds the keys.
+<a id="deployment"></a>
 
-**The Constraints On Stage.** Committed place data; external media from a public GCS bucket and OpenStreetMap tiles; no
-backend, no auth, no API key. The demo is one city, Tokyo; the data model carries legs, so multi-area Japan is a README
-claim backed by a type rather than a screen. Place data is hand-authored for now: 24 places across four clusters and a
-24 x 24 travel matrix, both committed.
+### Deployment And Hosting
 
-Voting closure is browser-local and evaluated while the browser runs or opens, not by a server. Skip is an answered
-abstention; unanswered cards and Skip both remain in the full-party denominator. See [TRD.md](TRD.md#voting-session) for
-the closure contract.
+The application is deployed on **Google Cloud Run** in `asia-southeast1` via automated continuous integration.
 
-**Controls Still Pending.** The data contracts for manual notes, day start times and plan capacity are in code while
-their visible controls are still being integrated; the existing Deck controls remain. `apply` leaves the plan untouched
-when the scheduler cannot fill every slot. Older stored trips are migrated on load.
+- **Container build**: Two-stage `Dockerfile` uses Bun for compilation and Nginx 1.27 Alpine for static delivery.
+- **Routing fallback**: `nginx.conf` routes legacy `/v1/` mockups directly and directs all SPA routes (`/t/<trip>`) to
+  `index.html`.
+- **Security**: Deployments use Google Cloud Workload Identity Federation with zero long-lived repository secrets.
+- **Why not Vercel**: Vercel's free hobby tier restricts automatic builds to repository owner commits, blocking
+  collaborative team deployments. Cloud Run serves all team commits uniformly.
 
-The Handbook adds every non-null authored news trigger to its packing facts, even outside the trip dates; only the
-displayed news is date-filtered. See [TRD.md](TRD.md#known-limitations).
+### System Architecture
 
-**One piece of prior work is in the repo, and it ships nothing to a user.** `scripts/demo/` is the recorder that films
-the deployed site, dubs it and burns in subtitles for the submission video. It was written for `TolongLabs/MakanLah` on
-28-30 August 2026, ported into `MUBA-M1KU/Cekgu` on 5 September 2026 by the same author, Hee Zi Jie, hardened there, and
-carried in here on 8 September 2026. Its README declares the same. Nothing else predates 30 August.
+```mermaid
+flowchart TD
+  subgraph Client["Browser Client (React 19 SPA)"]
+    Surfaces["Surfaces (Deck, Desk, Book, Handbook)"]
+    State["Local State Context (localStorage Sync)"]
+    Scheduler["Deterministic Heuristic Engine (schedule.ts)"]
+    Surfaces <--> State
+    Surfaces <--> Scheduler
+  end
 
-**The landing's hero clip is AI-generated and contains no third-party footage.** It is a 10-second aerial drift over
-Tokyo at dawn, generated with **Google Gemini Videos** on 9 September 2026 from a prompt written by the team, and served
-from the same bucket as the reels as `hero-2.webm`, `hero-2.mp4` and a poster frame. It is cropped from the generated
-frame: the original carried the generator's four-pointed sparkle on the riverbank in the lower right, and the crop
-removes it rather than painting over it.
+  subgraph Hosting["Google Cloud Run (asia-southeast1)"]
+    Nginx["Nginx Container (Alpine Linux)"]
+    SPA["Compiled Bundle (/dist) and Static Mockup (/v1)"]
+    Nginx --> SPA
+  end
 
-**A second clip runs with it**, four sparrows on a bare branch at dawn in the same warm haze, generated the same way on
-the same date and served as `hero-birds.webm`, `hero-birds.mp4` and a poster frame. It is 16:7 rather than 16:9 because
-the strip along its bottom carried the same sparkle and cropping it was cleaner than painting over the branch. The two
-clips cross-fade at the loop point; neither contains third-party footage. It carries no audio, loops muted, and is
-replaced by the poster frame alone when the reader's system asks for reduced motion. The reels themselves are a
-different matter and are credited individually in the manifest at [`v2/src/data/reels.json`](../v2/src/data/reels.json),
-each with its platform, creator and source link.
+  subgraph External["Static Media Assets"]
+    GCS["Google Cloud Storage (Public Reels and Hero Video)"]
+    OSM["OpenStreetMap (Public Tile Server)"]
+  end
 
-**The Book's page turn follows an MIT-licensed reference and copies none of its code.** The approach — a perspective on
-the book, a transform-origin on the fold and a `rotateY` on the leaf — is taken from
-[`create-photo-flipbook-ui`](https://github.com/HaichaoLihc/create-photo-flipbook-ui), MIT. Its own readers are built on
-WebGL and Three.js, which is a dependency the Book does not need in order to turn a page, so the technique is borrowed
-and the implementation is ours, in CSS, with no library added.
+  Client <-->|"HTTP / Static Delivery"| Nginx
+  Client -->|"Video Stream"| GCS
+  Client -->|"Map Tiles"| OSM
+```
 
-**Onboarding's free text and activity chips are captured on the screen and inform nothing downstream.** Turning them
-into tag weights is specified in [`TRD.md`](TRD.md) under Specified, Not Yet Built, and is build-phase work.
+### Prototype Constraints & Execution Guarantees
+
+- **Data fixtures**: 24 hand-authored Tokyo places across 4 distinct clusters with an embedded 24x24 travel duration
+  matrix.
+- **Voting closure**: Session closure is evaluated client-side in the browser session. Skip is treated as an answered
+  abstention, keeping the full-party denominator consistent (see [`TRD.md`](TRD.md#voting-session)).
+- **Media provenance**: Hero background footage was generated using Google Gemini Videos (9 Sept 2026) with no
+  third-party media. Reels are curated and credited in [`v2/src/data/reels.json`](../v2/src/data/reels.json).
+- **Page flip technique**: The Book's CSS transform technique adopts the CSS `rotateY` perspective principles from
+  `create-photo-flipbook-ui` (MIT) with a clean zero-dependency CSS implementation.
 
 ### Build Phase Additions
 
-The build phase adds, and only adds, the following to a stack that already works:
+The building phase (21 September - 11 October) introduces focused backend capabilities to the proven prototype:
 
-- **Supabase** for auth, votes and realtime
-- **Place seeding** from OpenStreetMap, Wikidata and Wikimedia Commons, not Google Places, whose terms cap caching at 30
-  days and forbid storing photos
-- **Google only** for Maps deep links and a Routes call
-- **An LLM only** for parsing free text intent and writing rationale sentences, never for a scheduling decision
-- **Cloud Run hosting** stays as is
+- **Supabase**: Realtime multi-user voting synchronization and persistent trip records.
+- **Seeded place database**: Automated data ingestion from OpenStreetMap, Wikidata, and Wikimedia Commons.
+- **Transit integration**: Google Routes API for live transit duration validation.
+- **Natural language intent**: LLM-assisted intent extraction for free-text onboarding inputs (heuristic scheduler
+  remains strictly deterministic).
 
 ### Build Plan & Scope
 
-**Three weeks, 21 September to 11 October.** The build phase takes the prototype from fixture to product: Supabase
-replaces the fixture for auth and votes, seeded place data replaces the hand-authored set behind the same shape, and the
-Routes call plus the LLM rationale land last.
+| Week                         | Focus Area                 | Scope And Deliverables                                                                                           |
+| ---------------------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Week 1 (21 - 27 Sept)**    | Supabase Integration       | Schema deployment, multi-user auth, and realtime vote synchronization across invite links.                       |
+| **Week 2 (28 Sept - 4 Oct)** | Automated Place Seeding    | OpenStreetMap and Wikidata ingestion pipeline replacing static JSON fixtures with validated geographic data.     |
+| **Week 3 (5 - 11 Oct)**      | Routing & Intent Parsing   | Google Routes API integration for transit legs, plus LLM-based onboarding intent parsing and schedule rationale. |
+| **Freeze (12 - 31 Oct)**     | Deployment & Bug Hardening | Strict bug fixes and performance optimization only. No major feature additions per competition rules.            |
 
-**What it will not build:** multi-area Japan beyond the legs type, native apps, and any surface outside the route table
-in [`PRD.md`](PRD.md). The Interview and the old Desk were deleted on 8 September, not kept behind a flag.
-
-**Deployment phase, 12 to 31 October, is bug fixes only.** Landing a major feature in it is grounds for
-disqualification, so scope freezes at the end of week three and does not reopen.
-
----
-
-## The Research Notebook
-
-**Ideation lived on a separate branch until 8 September, and now lives in [`research/`](research/).** It was moved onto
-`main` whole so that every file section 2 quotes is one click from this page, and so the repo that gets submitted holds
-the trail rather than pointing at a branch a reviewer would have to fetch. Nothing in it was edited in the move.
-[`PRODUCT.md`](PRODUCT.md), [`PRD.md`](PRD.md) and [`TRD.md`](TRD.md) are written from what it established and cite it.
+**Explicitly out of scope for the build phase**: native mobile apps, international destinations outside Japan, and
+conversational AI chatbot assistants.
 
 ---
 
-## For The Team
+## 6. Repository Layout & Documentation Index
 
-### Start Here
+<a id="layout"></a>
 
-| File                           | What's In It                                                                         |
-| ------------------------------ | ------------------------------------------------------------------------------------ |
-| [`brief.md`](brief.md)         | The whole competition: phases, rules, deliverables, judging, mentors, judges         |
-| [`PRODUCT.md`](PRODUCT.md)     | **The spine.** Who Perch is for, the one sentence, the demo moment, the scope ladder |
-| [`PRD.md`](PRD.md)             | Problem, objectives, users, market fit, then requirements and acceptance criteria    |
-| [`TRD.md`](TRD.md)             | **Canonical on anything under `src/`.** Architecture, data model, the scheduler      |
-| [`DESIGN.md`](DESIGN.md)       | The design system: the field-guide direction, palette, type, radius, motion          |
-| [`../AGENTS.md`](../AGENTS.md) | Project instructions for agentic tools, and humans                                   |
-
-Work in progress lives in the [Issues board](https://github.com/TolongLabs/Perch/issues), not in a checklist here.
-
-### Source Material From The Organisers
-
-Verbatim, append-only. We cite these instead of relying on memory.
-
-| File                                                                         | Source                                                          |
-| ---------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [`source/kickoff-day-transcript.md`](source/kickoff-day-transcript.md)       | Kick-Off Day recording, 30 Aug. Whisper transcript              |
-| [`source/kickoff-day-slides.md`](source/kickoff-day-slides.md)               | Kick-Off Day deck, 30 slides. Authoritative on dates and rubric |
-| [`source/problem-statements.md`](source/problem-statements.md)               | The two problem statements and the general stipulations         |
-| [`source/prototype-judging-rubrics.md`](source/prototype-judging-rubrics.md) | The prototype rubric, band by band                              |
-| [`source/submission-template.md`](source/submission-template.md)             | The organisers' README template and video outline               |
-
-### Getting Started
-
-```bash
-bun install                  # dependencies and the husky git hooks
-cp .env.example .env         # empty of keys today; the prototype calls no keyed API
-bun run dev                  # the prototype, on http://localhost:5173
-```
-
-| Command             | Does                                        |
-| ------------------- | ------------------------------------------- |
-| `bun run dev`       | Vite dev server                             |
-| `bun run build`     | Production build into `dist/`               |
-| `bun run preview`   | Serve that build on 8080, as Cloud Run does |
-| `bun run lint`      | Biome check, then Prettier check            |
-| `bun run format`    | Both formatters, writing in place           |
-| `bun run typecheck` | `tsc --noEmit`                              |
-| `gh issue list`     | The TODO board                              |
-
-Biome covers JS, TS, JSON, CSS and HTML; Prettier covers the Markdown and YAML it cannot, wrapping prose at 120 to match
-`biome.json`'s `lineWidth`. There is no `.prettierignore`, so every Markdown file is formatted.
-
-### How Work Ships
-
-**`main` is PR-gated.** Branch as `<type>/<slug>`, open a PR with `gh pr create`, merge with
-`gh pr merge --squash --delete-branch`. Anyone may merge, agents included - **the PR is there to make a change
-reviewable and revertable, not to make it wait.** The notebook under `research/` follows the same rule now that it is on
-`main`.
-
-**The gate is enforced client-side, for now.** GitHub only offers branch protection on a private repo under a paid plan,
-so today the rule is held up by `.claude/hooks/guard-git.sh`, which blocks a direct or force push to `main`. **That
-stops an agent, not a determined human.** Protection becomes free the moment the repo goes public, which it must before
-submission anyway - tracked in [issue #13](https://github.com/TolongLabs/Perch/issues/13).
-
-### Layout
+### Repository Layout
 
 ```
 docs/
-  README.md              this file. The submission surface, and the GitHub landing page
-  brief.md               competition facts, the single source of truth
-  PRODUCT.md             who, why, the demo moment
-  PRD.md                 problem, objectives, users, market fit, requirements
-  TRD.md                 how: architecture, contracts, schemas. Canonical
-  DESIGN.md              the design system
-  design/                the eight studies DESIGN.md is drawn from
-  assets/screens/        the screens in section 3, captured from the running build
-  assets/ideation/       the two diagram exports in section 2.2, copied from research/diagrams/exports/
-  research/              the ideation notebook: decisions, market scans, personas, diagrams, dropped ideas
-  source/                organiser material, append-only
-  demo/                  video script, slides, assets
-v1/                      the slide-deck mockup this replaced. Static HTML, served at /v1/
+  README.md              This file: submission deliverable and project landing page
+  DEVELOPMENT.md         Local developer setup, test suites, and deployment reference
+  PRODUCT.md             Product spine: user problem, thesis, demo moments, and scope ladder
+  PRD.md                 Product requirements, user stories, and acceptance criteria
+  TRD.md                 Technical reference: data models, scheduler algorithm, and contracts
+  DESIGN.md              Design system: field-guide palette, tokens, and typography
+  brief.md               CodeNection 2026 competition brief, rules, and rubric bands
+  assets/                Captured interface screens and ideation mindmap SVGs
+  research/              Ideation notebook: dated turns, market scans, user research, and dropped ideas
+  source/                Verbatim organiser material, kickoff transcripts, and mentor logs
+  demo/                  Slide deck PDF, video script, and demo recording assets
+v1/                      Legacy static HTML mockup, preserved at /v1/
 v2/
-  index.html             the Vite entry
-  public/                static assets copied verbatim: the mark and the self-hosted fonts
+  index.html             Vite application entry point
+  public/                Self-hosted fonts (Quicksand, Newsreader) and brand marks
   src/
-    data/                types, the place fixture, the seeded trip
-    lib/                 the tally, the scheduler and feasibility, persistence, cost, formatting, with tests
-    surfaces/            one file per route: Landing, Sign In, Dashboard, Onboarding, Deck, Tally, Desk, Before We Go, Book
-    components/          the reel card, the placed card, the Perch drawer, the state chip, the plate, shared UI
-    styles/              tokens.css and base.css, the DESIGN.md system in CSS
-scripts/demo/            the demo recorder. Prior work, declared above and in its own README; not in package.json
-vite.config.ts           roots the build at v2/ and writes dist/
-Dockerfile               two stages. Bun builds v2, nginx serves dist/ and v1/ on 8080
-nginx.conf               static config: /v1/ resolves first, then the SPA fallback
-.github/workflows/       deploy.yml, which builds and ships on every merge
+    data/                Data models, Tokyo place fixtures, and seeded trip state
+    lib/                 Deterministic scheduler, tally logic, persistence, and tests
+    surfaces/            Application surfaces: Landing, Dashboard, Onboarding, Deck, Tally, Desk, Book, Handbook
+    components/          Modular UI components: ReelCard, PlacedCard, Drawer, StateChip
+    styles/              Design tokens (`tokens.css`) and surface stylesheets (`base.css`)
+scripts/demo/            Demo recorder pipeline and audio narration scripts
+Dockerfile               Two-stage multiplatform build (Bun compile + Nginx static server)
+nginx.conf               Production web server configuration with SPA routing fallback
+vite.config.ts           Vite configuration rooting application in v2/
 ```
 
-### Deployment
+### Documentation Guide
 
-**Every merge to `main` redeploys**, whoever pushed. No manual step, and no one person holding the keys.
-
-|             |                                                                                            |
-| ----------- | ------------------------------------------------------------------------------------------ |
-| **Live**    | [prototype-yskhynz4la-as.a.run.app](https://prototype-yskhynz4la-as.a.run.app)             |
-| **Trigger** | Any push to `main`. **No path filter on purpose** - a filter means a change lands silently |
-| **Auth**    | Workload Identity Federation. **No service-account key exists**, in the repo or in Secrets |
-| **Project** | `codenection-2026`, region `asia-southeast1`                                               |
-
-**The prototype is built, not copied.** The first stage of `Dockerfile` runs `bun run build` and nginx serves the
-resulting `dist/`. **`v2/public/` is Vite's static asset folder**, holding the mark and the fonts; everything else comes
-from `v2/src/`.
-
-**v1 ships in the same image, at [`/v1/`](https://prototype-yskhynz4la-as.a.run.app/v1/).** It is static HTML rather
-than routes, so `nginx.conf` resolves it before the SPA fallback - without that ordering every path under it would
-render v2 instead.
-
-**The shared link needs the SPA fallback.** `/t/<trip>` is a real path with no file behind it, so `nginx.conf` falls
-every unknown path back to `index.html`. Delete that line and the link at the centre of the product returns a 404.
+| Document                           | Focus And Audience                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------------------------ |
+| [`DEVELOPMENT.md`](DEVELOPMENT.md) | **Developers**: Setup, local commands, linting, test suites, and git contribution    |
+| [`PRODUCT.md`](PRODUCT.md)         | **Product Strategy**: User persona, core thesis, scope ladder, and non-claims        |
+| [`PRD.md`](PRD.md)                 | **Requirements**: User stories, functional requirements, and acceptance criteria     |
+| [`TRD.md`](TRD.md)                 | **Technical Reference**: Data schemas, scheduler specification, and state contracts  |
+| [`DESIGN.md`](DESIGN.md)           | **Design System**: Field-guide aesthetics, color tokens, and typography studies      |
+| [`research/`](research/)           | **Ideation Notebook**: 50+ dated turns, dropped concepts, and competitor evaluations |
+| [`brief.md`](brief.md)             | **Competition Brief**: Rules, deadlines, deliverables, and judging rubric criteria   |
+| [`source/`](source/)               | **Organiser Sources**: Verbatim transcripts and official kickoff documentation       |
 
 ---
 
-**This README is the submission.** Asked at Kick-Off Day what the format is, the organisers answered that the Google
-Form takes a public repo URL and _"everything must live in the README of your repo - project overview, a link to your
-visual presentation, your ideation and process assets, and your design and prototype artifacts."_
-
-It lives in `docs/` rather than the repo root and still renders as the landing page: **GitHub surfaces a README from the
-root, `.github/` or `docs/`.** There is exactly one README and this is it, so keep its links relative to `docs/`. Its
-five numbered sections follow the organisers' own template, transcribed at
-[`source/submission-template.md`](source/submission-template.md).
+**Submission Note.** This `README.md` is the primary submission surface for **CodeNection 2026 (Track 1: Lifestyle &
+Personal Productivity)**. All assets, ideation records, design artifacts, and technical specifications are linked
+directly within this repository.
