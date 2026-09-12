@@ -11,7 +11,7 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core'
-import { type ReactNode, useMemo, useState } from 'react'
+import { type ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { addDays, DateRangePicker, nightsBetween, type Range } from '../components/DateRangePicker'
 import { Perch } from '../components/Perch'
@@ -131,6 +131,25 @@ export const Desk = () => {
     start: trip.startDate,
     end: addDays(trip.startDate, trip.nights)
   }))
+  const datesAnchorRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!datesOpen) return
+    const handleClick = (e: MouseEvent) => {
+      if (datesAnchorRef.current && !datesAnchorRef.current.contains(e.target as Node)) {
+        setDatesOpen(false)
+      }
+    }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setDatesOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClick)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [datesOpen])
 
   /**
    * The keyboard sensor is not an extra, it is what makes the grip's own words true. dnd-kit puts `role="button"`,
@@ -262,14 +281,42 @@ export const Desk = () => {
           </Heading>
 
           <div className="desk-acts">
-            <button
-              type="button"
-              className="desk-dates t-label"
-              onClick={() => setDatesOpen((v) => !v)}
-              aria-expanded={datesOpen}
-            >
-              Dates
-            </button>
+            <div className="desk-dates-anchor" ref={datesAnchorRef}>
+              <button
+                type="button"
+                className="desk-dates t-label"
+                onClick={() => setDatesOpen((v) => !v)}
+                aria-expanded={datesOpen}
+              >
+                Dates
+              </button>
+              {datesOpen && (
+                <section className="desk-datepick desk-datepick-dropdown">
+                  <p className="t-label desk-legend">Change The Dates</p>
+                  <DateRangePicker value={range} onChange={setRange} maxDays={capacity.maxDays} />
+                  <div className="desk-datefoot">
+                    <p className="t-specimen">
+                      {capped
+                        ? `The voted-in places cover ${capacity.maxDays} days at most, so these dates cannot be set. Pick a range of at most ${capacity.maxDays} days.`
+                        : nights > 0
+                          ? `${nights + 1} days, ${nights} nights. Votes stay, they are on places.`
+                          : 'Tap the first day, then the last.'}
+                    </p>
+                    <button
+                      type="button"
+                      className="desk-dateset t-label"
+                      disabled={nights < 1 || capped}
+                      onClick={() => {
+                        if (range.start && nights > 0) setDates(range.start, nights)
+                        setDatesOpen(false)
+                      }}
+                    >
+                      Set Dates
+                    </button>
+                  </div>
+                </section>
+              )}
+            </div>
             <button type="button" className="desk-apply t-label" onClick={onApply}>
               Optimize Plan
             </button>
@@ -305,33 +352,6 @@ export const Desk = () => {
               </button>
               <button type="button" className="desk-dates t-label" onClick={() => setConfirmOptimize(false)}>
                 Keep This Plan
-              </button>
-            </div>
-          </section>
-        )}
-
-        {datesOpen && (
-          <section className="desk-datepick">
-            <p className="t-label desk-legend">Change The Dates</p>
-            <DateRangePicker value={range} onChange={setRange} maxDays={capacity.maxDays} />
-            <div className="desk-datefoot">
-              <p className="t-specimen">
-                {capped
-                  ? `The voted-in places cover ${capacity.maxDays} days at most, so these dates cannot be set. Pick a range of at most ${capacity.maxDays} days.`
-                  : nights > 0
-                    ? `${nights + 1} days, ${nights} nights. Votes stay, they are on places.`
-                    : 'Tap the first day, then the last.'}
-              </p>
-              <button
-                type="button"
-                className="desk-dateset t-label"
-                disabled={nights < 1 || capped}
-                onClick={() => {
-                  if (range.start && nights > 0) setDates(range.start, nights)
-                  setDatesOpen(false)
-                }}
-              >
-                Set Dates
               </button>
             </div>
           </section>

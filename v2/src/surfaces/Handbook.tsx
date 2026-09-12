@@ -1,3 +1,4 @@
+import { CloudSun } from 'lucide-react'
 import { type FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Heading } from '../components/Ui'
@@ -142,17 +143,48 @@ const TripNotes = ({ section, heading, notes, onAdd, onRemove }: TripNotesProps)
   )
 }
 
+/** Predicted weather for the destination during the trip window. */
+const predictedWeatherFor = (destination: string) => {
+  if (destination.toLowerCase().includes('tokyo')) {
+    return {
+      temp: '16°C',
+      feelsLike: '14°C',
+      condition: 'Mostly Clear'
+    }
+  }
+  return {
+    temp: '28°C',
+    feelsLike: '33°C',
+    condition: 'Partly Cloudy'
+  }
+}
+
 export const Handbook = () => {
   const navigate = useNavigate()
   const { trip, addManualNote, removeManualNote } = useTrip()
   const { takeCare, news, packing } = handbookFor(trip)
+  const weather = predictedWeatherFor(trip.destination)
 
   return (
     <main className="handbook">
       <header className="hb-head">
-        <Heading as="h1">
-          <span className="t-display">The Manual</span>
-        </Heading>
+        <div className="hb-title-row">
+          <Heading as="h1">
+            <span className="t-display">The Manual</span>
+          </Heading>
+          <div className="hb-weather">
+            <CloudSun className="hb-weather-icon" size={18} aria-hidden="true" />
+            <span className="hb-weather-temp">{weather.temp}</span>
+            <span className="hb-weather-dot" aria-hidden="true">
+              &middot;
+            </span>
+            <span className="hb-weather-feels">Feels like {weather.feelsLike}</span>
+            <span className="hb-weather-dot" aria-hidden="true">
+              &middot;
+            </span>
+            <span className="hb-weather-condition">{weather.condition}</span>
+          </div>
+        </div>
         <p className="hb-lede">
           {trip.destination}, {dayLabel(trip.startDate)} to{' '}
           {dayLabel(trip.days[trip.days.length - 1]?.date ?? trip.startDate)}. Advice and reminders for the whole group.

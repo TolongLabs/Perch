@@ -90,8 +90,8 @@ export const BookFlip = ({ children }: Props) => {
         hostEl.appendChild(page.cloneNode(true))
       })
       const book = new PageFlip(hostEl, {
-        width: 600,
-        height: 780,
+        width: 500,
+        height: 600,
         size: 'stretch' as SizeType,
         minWidth: 1,
         maxWidth: 2400,
