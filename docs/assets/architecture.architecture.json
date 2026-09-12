@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "Perch Travel Planner",
+    "subtitle": "System Architecture — Prototype Runtime & Planned Build-Phase Services",
+    "output": "docs/assets/architecture.html",
+    "quality_profile": "showcase",
+    "visual_preset": "editorial",
+    "views": [
+      {
+        "id": "prototype-runtime",
+        "label": "Prototype Runtime",
+        "focus": ["client-spa", "client-state", "core-logic", "web-server", "media-storage", "map-services"],
+        "note": "Deterministic client-first prototype with zero server sync during evaluation."
+      },
+      {
+        "id": "build-phase",
+        "label": "Build Phase Roadmap",
+        "focus": ["client-spa", "supabase", "routes-api", "osm-ingestion", "map-services"],
+        "note": "Planned production services adding live multi-party voting and real-time transit routing."
+      }
+    ]
+  },
+  "components": [
+    {
+      "id": "client-spa",
+      "type": "frontend",
+      "label": "Client Browser (React 19)",
+      "sublabel": "Landing · Deck · Tally · Desk · Book · Handbook",
+      "tag": "Zero-server runtime",
+      "brand": "react",
+      "pos": [295, 140],
+      "size": [230, 70]
+    },
+    {
+      "id": "client-state",
+      "type": "database",
+      "label": "LocalStorage Context",
+      "sublabel": "Typed runtime guards",
+      "tag": "Zero server sync",
+      "pos": [40, 80],
+      "size": [170, 60]
+    },
+    {
+      "id": "core-logic",
+      "type": "backend",
+      "label": "Deterministic Engine",
+      "sublabel": "schedule.ts: clustering & TSP",
+      "tag": "Slack evaluator",
+      "pos": [40, 210],
+      "size": [170, 60]
+    },
+    {
+      "id": "web-server",
+      "type": "cloud",
+      "label": "Nginx on Cloud Run",
+      "sublabel": "asia-southeast1 · WIF auth",
+      "tag": "SPA fallback /t/<trip>",
+      "brand": "google-cloud",
+      "pos": [620, 80],
+      "size": [180, 60]
+    },
+    {
+      "id": "media-storage",
+      "type": "cloud",
+      "label": "Google Cloud Storage",
+      "sublabel": "Reels MP4s & Dawn hero video",
+      "tag": "Public static CDN",
+      "brand": "google-cloud",
+      "pos": [620, 210],
+      "size": [180, 60]
+    },
+    {
+      "id": "map-services",
+      "type": "external",
+      "label": "OpenStreetMap Server",
+      "sublabel": "Leaflet client-side tiles",
+      "tag": "Cartographic tiles",
+      "pos": [900, 145],
+      "size": [160, 60]
+    },
+    {
+      "id": "supabase",
+      "type": "database",
+      "label": "Supabase",
+      "sublabel": "Auth & Realtime Votes",
+      "tag": "PostgreSQL + RLS",
+      "brand": "supabase",
+      "pos": [140, 390],
+      "size": [180, 60]
+    },
+    {
+      "id": "routes-api",
+      "type": "cloud",
+      "label": "Google Routes API",
+      "sublabel": "Transit duration matrix",
+      "tag": "Walking polylines",
+      "brand": "google-cloud",
+      "pos": [450, 390],
+      "size": [180, 60]
+    },
+    {
+      "id": "osm-ingestion",
+      "type": "backend",
+      "label": "Wikidata / OSM Ingestion",
+      "sublabel": "Automated place seeding",
+      "tag": "Curated venue catalog",
+      "pos": [760, 390],
+      "size": [190, 60]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Client Browser Environment (React 19 SPA)",
+      "wraps": ["client-spa", "client-state", "core-logic"]
+    },
+    {
+      "kind": "region",
+      "label": "Cloud & Static Delivery (Prototype Infrastructure)",
+      "wraps": ["web-server", "media-storage", "map-services"]
+    },
+    {
+      "kind": "security-group",
+      "label": "Planned Build Phase Services (21 Sept – 11 Oct)",
+      "wraps": ["supabase", "routes-api", "osm-ingestion"]
+    }
+  ],
+  "connections": [
+    {
+      "id": "spa-to-state",
+      "from": "client-spa",
+      "to": "client-state",
+      "label": "state sync",
+      "variant": "emphasis",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "spa-to-logic",
+      "from": "client-spa",
+      "to": "core-logic",
+      "label": "clustering & TSP",
+      "variant": "emphasis",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "server-to-spa",
+      "from": "web-server",
+      "to": "client-spa",
+      "label": "SPA bundle",
+      "variant": "emphasis",
+      "fromSide": "left",
+      "toSide": "right"
+    },
+    {
+      "id": "spa-to-storage",
+      "from": "client-spa",
+      "to": "media-storage",
+      "label": "stream video",
+      "variant": "default",
+      "fromSide": "right",
+      "toSide": "left"
+    },
+    {
+      "id": "spa-to-maps",
+      "from": "client-spa",
+      "to": "map-services",
+      "label": "fetch tiles",
+      "variant": "default",
+      "fromSide": "top",
+      "toSide": "top",
+      "via": [[410, 40], [980, 40]]
+    },
+    {
+      "id": "spa-to-supabase",
+      "from": "client-spa",
+      "to": "supabase",
+      "label": "auth & votes",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "spa-to-routes",
+      "from": "client-spa",
+      "to": "routes-api",
+      "label": "transit matrix",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "ingestion-to-osm",
+      "from": "osm-ingestion",
+      "to": "map-services",
+      "label": "OSM queries",
+      "variant": "dashed",
+      "fromSide": "top",
+      "toSide": "bottom"
+    },
+    {
+      "id": "ingestion-to-supabase",
+      "from": "osm-ingestion",
+      "to": "supabase",
+      "label": "seed catalog",
+      "variant": "dashed",
+      "fromSide": "bottom",
+      "toSide": "bottom",
+      "via": [[855, 490], [230, 490]]
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Client-First SPA Architecture",
+      "items": [
+        "React 19 single-page app with 6 core surfaces (Landing, Deck, Tally, Desk, Book, Handbook)",
+        "LocalStorage context with runtime type guards for zero-backend prototype reliability",
+        "Deterministic heuristic engine (clustering + TSP sequencing + slack evaluator) running in-browser"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Cloud & Static Delivery",
+      "items": [
+        "Google Cloud Run container running Nginx Alpine for static bundle delivery and /t/<trip> SPA routing",
+        "Google Cloud Storage CDN hosting Reels vertical videos and Gemini dawn aerial video",
+        "OpenStreetMap public tile server delivering vector/raster tiles directly to Leaflet"
+      ]
+    },
+    {
+      "dot": "amber",
+      "title": "Planned Build Phase (Roadmap)",
+      "items": [
+        "Supabase integration for multi-party live voting sync and persistent user accounts",
+        "Google Routes API for real-time transit duration matrix and walking polyline overlays",
+        "Automated Wikidata / OSM ingestion pipeline seeding curated venue coordinates and metadata"
+      ]
+    }
+  ]
+}
