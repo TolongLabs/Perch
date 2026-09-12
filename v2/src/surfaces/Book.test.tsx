@@ -160,13 +160,13 @@ test('exposes the trip to the screen reader once, and hides the visual folio', (
   expect(list.match(/<h3 class="t-name">/g)).toHaveLength(12)
 })
 
-test('alternates photo and description exactly as the intake names it', () => {
+test('arranges photo and description in top-down structure per destination', () => {
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
 
   // The book's first spread, bounded at the second spread's left page so the later pages cannot bleed in. The first
-  // destination of the spread: picture on the left page, its words on the right. The second flips: its words drop to
-  // the left page and its picture to the right. The day travels with each destination as its when-line.
+  // destination of the spread: picture at top left, its words at bottom left. The second: its words at top right
+  // (clearing the pinned map) and picture at bottom right (#108).
   const stageStart = html.indexOf('class="bookflip-stage" aria-hidden="true"')
   const leftStart = html.indexOf('class="book-page folio-page folio-left"', stageStart)
   const rightStart = html.indexOf('class="book-page folio-page folio-right"', leftStart)
@@ -177,11 +177,11 @@ test('alternates photo and description exactly as the intake names it', () => {
   const left = html.slice(leftStart, rightStart)
   const right = html.slice(rightStart, nextLeft)
   expect(left).toContain('class="dest dest-photo"')
-  expect(left).toContain('Nakamise')
-  expect(left).toContain('Day 1 · In The Afternoon')
+  expect(left).toContain('Sensoji')
+  expect(left).toContain('Day 1 · In The Morning')
   expect(right).toContain('class="dest dest-photo"')
-  expect(right).toContain('Sensoji')
-  expect(right).toContain('Day 1 · In The Morning')
+  expect(right).toContain('Nakamise')
+  expect(right).toContain('Day 1 · In The Afternoon')
 })
 
 test('sets the days after the book, as named maps, and pins one day map per spread', () => {

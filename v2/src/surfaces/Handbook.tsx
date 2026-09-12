@@ -173,16 +173,17 @@ export const Handbook = () => {
             <span className="t-display">The Manual</span>
           </Heading>
           <div className="hb-weather">
-            <CloudSun className="hb-weather-icon" size={18} aria-hidden="true" />
-            <span className="hb-weather-temp">{weather.temp}</span>
-            <span className="hb-weather-dot" aria-hidden="true">
-              &middot;
-            </span>
-            <span className="hb-weather-feels">Feels like {weather.feelsLike}</span>
-            <span className="hb-weather-dot" aria-hidden="true">
-              &middot;
-            </span>
-            <span className="hb-weather-condition">{weather.condition}</span>
+            <CloudSun className="hb-weather-icon" size={28} aria-hidden="true" />
+            <div className="hb-weather-details">
+              <span className="hb-weather-temp">{weather.temp}</span>
+              <div className="hb-weather-meta">
+                <span className="hb-weather-condition">{weather.condition}</span>
+                <span className="hb-weather-dot" aria-hidden="true">
+                  &middot;
+                </span>
+                <span className="hb-weather-feels">Feels like {weather.feelsLike}</span>
+              </div>
+            </div>
           </div>
         </div>
         <p className="hb-lede">

@@ -269,8 +269,8 @@
 .pin-route {
   display: block;
   width: 100%;
-  margin-top: var(--s2);
-  padding: var(--s2) 0;
+  margin-top: 0;
+  padding: 4px 0 var(--s1);
   color: color-mix(in oklab, var(--tint) 50%, var(--ink));
   text-align: center;
   text-decoration: underline;
@@ -359,13 +359,13 @@
 .folio-left .dest-photo {
   order: 1;
 }
-.folio-right .dest-desc {
+.folio-left .dest-desc {
   order: 2;
 }
 .folio-right .dest-photo {
   order: 3;
 }
-.folio-left .dest-desc {
+.folio-right .dest-desc {
   order: 4;
 }
 .folio-left .page-num {

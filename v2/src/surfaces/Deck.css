@@ -68,13 +68,31 @@
    used to hold off the reel is its own and it sits below the reel, so it is charged to the floor instead. The inset
    tightens to --s4 because a phone's reel pays in height, not width. */
 @media (max-width: 899px) {
+  .deck {
+    max-width: none;
+    padding: var(--s2) var(--s2) var(--s5);
+    gap: var(--s3);
+  }
+
   .deck-row {
-    --deck-floor: calc(var(--dock-clear) + 56px);
-    --deck-inset: var(--s4);
+    --deck-control: 28px;
+    --deck-floor: calc(var(--dock-clear) + 16px);
+    --deck-inset: var(--s2);
+    gap: var(--s1);
   }
 
   .shell[data-islands="true"] .deck-row {
-    --deck-chrome: calc(116px + var(--cluster-clear));
+    --deck-chrome: calc(72px + var(--cluster-clear));
+  }
+
+  .deck-direction[data-side="pass"],
+  .deck-direction[data-side="keep"] {
+    width: var(--deck-control);
+    min-width: var(--deck-control);
+  }
+
+  .deck-direction .deck-hint-label {
+    display: none;
   }
 }
 

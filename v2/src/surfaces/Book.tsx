@@ -204,15 +204,13 @@ export const Book = () => {
               const pinned = dayMap.get(a.day)
               return (
                 <div className="folio-spread" key={a.slot.id}>
-                  {/* The first destination of the spread sits photo left / words right; the second flips to words
-                    left / photo right. That is the alternation the intake names, and it is what makes a spread read
-                    as two facing pages rather than two stacked lists. On a wide screen with motion, BookFlip turns
-                    these pages with page-flip; everywhere else they are the book's flat pages, laid out by the
-                    Book's own rules. The spread's one pin sits in the second page's top right. */}
+                  {/* Each page follows a top-down structure: the left page carries the first destination's photo
+                    at top and description at bottom; the facing right page carries the second destination's words at top
+                    (clearing the pinned map) and photo at bottom (#108). */}
                   <div className="book-page folio-page folio-left">
                     <div className="book-page-inner">
                       <DestPhoto entry={a} />
-                      {b && <DestDesc entry={b} />}
+                      <DestDesc entry={a} />
                       <p className="page-num t-specimen" aria-hidden="true">
                         {i * 2 + 1}
                       </p>
@@ -220,7 +218,7 @@ export const Book = () => {
                   </div>
                   <div className="book-page folio-page folio-right">
                     <div className="book-page-inner">
-                      <DestDesc entry={a} />
+                      {b && <DestDesc entry={b} />}
                       {b && <DestPhoto entry={b} />}
                       <p className="page-num t-specimen" aria-hidden="true">
                         {i * 2 + 2}
