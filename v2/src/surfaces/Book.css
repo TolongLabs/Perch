@@ -499,37 +499,40 @@
    two. Without `print-color-adjust` the day tint drops out, and the tint is the one colour on the page carrying
    information: it says which day you are holding. */
 @media print {
+  .shell {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    background: transparent !important;
+  }
+
+  /* In print, the sheet is exclusively the storybook spreads: each page in the print preview
+     displays the corresponding 2-page spread of the storybook with the minimap pinned (#108).
+     The cover, colophon, and bottom maps are excluded so the exported PDF is clean and cohesive. */
+  .spread:not(.book-body),
+  .book-maps,
+  .app-foot,
+  .island,
+  .island-scrim {
+    display: none !important;
+  }
+
   .book {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
     min-height: 0;
+    margin: 0;
+    padding: 0;
   }
 
-  /* The sheet is the book's pages: the two-destination spreads, and the maps that follow them. Everything else -
-     the cover with its save control, the cold state, the colophon with its way back - is the screen's book, and a
-     reader holding the sheet wants only the destinations and the days' maps. */
-  .spread:not(.book-body) {
-    display: none;
-  }
-
-  /* The spread is declared here rather than left to the 1024 breakpoint. An A4 landscape sheet with 14mm margins is
-     1016px of content, eight pixels short of it, so a day printed as one narrow column with a third of the sheet
-     empty on either side - a spread by name and a list on paper. Paper is not a viewport and should not be asked
-     to behave like one. */
   .book-body {
     display: block;
     animation: none;
     max-width: none;
     padding: 0;
+    margin: 0;
   }
 
-  /* Two pages across, as on screen: the book's pages sit side by side across the gutter. The pages come back to
-     being boxes, as at spread width, or the `contents` base would scatter the destinations across the sheet. The
-     spread resets to the base here because the sheet is 1016px of content - short of the `min-width` breakpoint
-     that drops the phone column, and inside it - so the `max-width` rule above would otherwise keep every spread a
-     column and the facing pages would stack down the sheet. This rule follows that one in source, and the two are
-     otherwise identical in specificity, so the reset wins. When the flipbook is built, BookFlip's own print rules
-     do the same job against the library's inline styles. */
   .bookflip-stage {
     display: block !important;
   }
@@ -545,8 +548,8 @@
     page-break-inside: avoid;
     break-after: page;
     page-break-after: always;
-    min-height: 170mm;
-    max-height: 182mm;
+    height: 178mm;
+    max-height: 178mm;
     overflow: hidden;
   }
 
@@ -577,6 +580,30 @@
     height: 100%;
   }
 
+  /* Alternating structure in print: left page has photo at top and words at bottom;
+     right page has words at top (clearing the pinned minimap) and photo at bottom. */
+  .folio-left .dest-photo {
+    order: 1;
+  }
+  .folio-left .dest-desc {
+    order: 2;
+  }
+  .folio-left .page-num {
+    order: 3;
+  }
+
+  .folio-right .dest-desc {
+    order: 1;
+    padding-right: 165px;
+  }
+  .folio-right .dest-photo {
+    order: 2;
+  }
+  .folio-right .page-num {
+    order: 3;
+    text-align: right;
+  }
+
   /* Minimap pinned note is visible on printed sheets (#108). The transit route web link is hidden on paper. */
   .spread-pin {
     display: block;
@@ -591,41 +618,16 @@
     display: none;
   }
 
-  .folio-right .dest-desc {
-    padding-right: 140px;
-  }
-
-  .folio-right .page-num {
-    text-align: right;
-  }
-
-  /* The maps run after the book, one per day, each starting on its own sheet cleanly. */
-  .book-maps {
-    display: block;
-    margin-top: var(--s6);
-    break-before: page;
-    page-break-before: always;
-  }
-
-  .book-map {
-    break-inside: avoid;
-    margin-bottom: var(--s5);
-  }
-
-  .book-body:last-child {
-    break-after: auto;
-  }
-
   .folio-page,
   .dest {
     break-inside: avoid;
   }
 
-  /* A sheet is 687px of content against a screen that scrolls, so the pictures come down to fit rather than pushing
-     every second destination onto a page of its own. The crop changes, not the frame: they stay landscape windows on
-     a 9:16 still, cropped above centre. */
+  /* Pictures are constrained to a landscape aspect ratio and bounded height so they fit cleanly within the 178mm spread height. */
   .dest-shot {
     aspect-ratio: 16 / 9;
+    max-height: 72mm;
+    object-fit: cover;
   }
 }
 

@@ -42,6 +42,12 @@ test('applies red glow to Pass flash using Crimson Sunbird token (#108)', async 
   expect(css).toMatch(/:root\[data-theme="dark"\] \.deck-flash\[data-flash="pass"\]\s*\{\s*--flash-peak: 0\.85;/)
 })
 
+test('sizes the desktop reel immersively up to 440px (#108)', async () => {
+  const css = await Bun.file(new URL('./Deck.css', import.meta.url)).text()
+  expect(css).toContain('max-width: 620px;')
+  expect(css).toContain('min(\n    440px,\n    max(340px')
+})
+
 test('announces reel progress after each answer', () => {
   const html = renderDeck()
 

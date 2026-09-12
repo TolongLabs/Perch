@@ -120,6 +120,16 @@ export const Book = () => {
     .map((day) => ({ day, stops: entriesOf(day, trip.options).map((e) => e.place) }))
     .filter((entry) => entry.stops.length > 0)
   const dayMap = new Map(mapped.map((m) => [m.day.index, m]))
+  // The minimap of each day is only shown on the last segment of each day (e.g. Day 1 evening,
+  // Day 2 evening, Day 3 evening) to avoid visual clutter (#108).
+  const lastSegmentByDay = new Map<number, string>()
+  for (const day of trip.days) {
+    const dayEntries = entriesOf(day, trip.options)
+    if (dayEntries.length > 0) {
+      const last = dayEntries[dayEntries.length - 1]
+      if (last) lastSegmentByDay.set(day.index, last.slot.id)
+    }
+  }
 
   return (
     <main className="book">
@@ -199,12 +209,9 @@ export const Book = () => {
               const [a, b] = folio
               if (!a) return null
 
-              // On page spreads spanning across two days (e.g. Day 1 Evening and Day 2 Morning), the minimap for the
-              // first day is pinned at the top right of the first page, and the minimap for the second day is pinned
-              // at the top right of the second page (#108). On same-day spreads, the pin stays on the second page.
-              const isCrossDay = Boolean(b && a.day !== b.day)
-              const pinLeft = isCrossDay ? dayMap.get(a.day) : null
-              const pinRight = isCrossDay && b ? dayMap.get(b.day) : dayMap.get(a.day)
+              // The minimap of each day is only shown on the last segment of that day (#108).
+              const pinLeft = a && lastSegmentByDay.get(a.day) === a.slot.id ? dayMap.get(a.day) : null
+              const pinRight = b && lastSegmentByDay.get(b.day) === b.slot.id ? dayMap.get(b.day) : null
 
               return (
                 <div className="folio-spread" key={a.slot.id}>
