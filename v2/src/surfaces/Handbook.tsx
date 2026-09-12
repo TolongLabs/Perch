@@ -176,27 +176,39 @@ export const Handbook = () => {
           <Heading as="h1">
             <span className="t-display">The Manual</span>
           </Heading>
-          <div className="hb-weather">
-            <CloudSun className="hb-weather-icon" size={28} aria-hidden="true" />
-            <div className="hb-weather-details">
-              <span className="hb-weather-temp">{weather.temp}</span>
-              <div className="hb-weather-meta">
-                <span className="hb-weather-condition">{weather.condition}</span>
-                <span className="hb-weather-dot" aria-hidden="true">
-                  &middot;
-                </span>
-                <span className="hb-weather-season">Season: {weather.season}</span>
-                <span className="hb-weather-dot" aria-hidden="true">
-                  &middot;
-                </span>
-                <span className="hb-weather-rain">Rain Level: {weather.rainLevel}</span>
-                <span className="hb-weather-dot" aria-hidden="true">
-                  &middot;
-                </span>
-                <span className="hb-weather-feels">Feels like {weather.feelsLike}</span>
+          <aside className="hb-weather" aria-label={`Current weather: ${weather.temp}, ${weather.condition}`}>
+            <div className="hb-weather-primary">
+              <CloudSun className="hb-weather-icon" size={24} aria-hidden="true" />
+              <div className="hb-weather-temp-block">
+                <span className="hb-weather-temp">{weather.temp}</span>
+                <div className="hb-weather-condition-group">
+                  <span className="hb-weather-condition">{weather.condition}</span>
+                  <span className="hb-weather-feels">Feels like {weather.feelsLike}</span>
+                </div>
               </div>
             </div>
-          </div>
+            <div className="hb-weather-divider" aria-hidden="true" />
+            <div className="hb-weather-secondary">
+              <div className="hb-weather-metric">
+                <span className="hb-weather-season">Season: {weather.season}</span>
+              </div>
+              <div className="hb-weather-metric hb-weather-rain-block">
+                <span className="hb-weather-rain">Rain Level: {weather.rainLevel}</span>
+                <div className="hb-rain-meter" aria-hidden="true">
+                  <div
+                    className="hb-rain-meter-fill"
+                    style={{
+                      width: weather.rainLevel.toLowerCase().includes('low')
+                        ? '30%'
+                        : weather.rainLevel.toLowerCase().includes('mod')
+                          ? '65%'
+                          : '95%'
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </aside>
         </div>
         <p className="hb-lede">
           {trip.destination}, {dayLabel(trip.startDate)} to{' '}

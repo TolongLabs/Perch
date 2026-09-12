@@ -381,9 +381,18 @@
 /* The Book shows the trip's destinations and nothing else: the checklist lives on the Desk. What remains is the one
    way back. It is plate on ink, and nothing in the colophon may overrule that colour - a muted label on an ink button
    is the low-contrast fault this used to have. */
+.colophon {
+  padding-top: 0;
+  margin-top: 0;
+}
+
+.book-body {
+  padding-bottom: var(--s3);
+}
+
 .colophon-back {
   display: inline-block;
-  margin-top: var(--s7);
+  margin-top: var(--s2);
   padding: var(--s3) var(--s5);
   background: var(--ink);
   color: var(--plate);
@@ -410,6 +419,11 @@
 
   .book-body {
     padding-top: var(--s3);
+    padding-bottom: var(--s3);
+  }
+
+  .colophon {
+    padding-top: 0;
   }
 
   /* The days' maps sit side by side at spread width, because the pages already read as a row. */

@@ -9,7 +9,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--s5);
-  max-width: 620px;
+  max-width: 720px;
   margin: 0 auto;
   /* 16 at the top, not 32: the shell already reserves 88px above this for the cluster, and the two together were
      pushing the direction controls under the dock on a 390x844 phone. The reel and all four answers must stay visible
@@ -35,14 +35,14 @@
 
 /* The row is one centred object: 44px controls, equal gaps, then the 9:16 reel. The reel is sized from the height it
    is given -- chrome above, floor below -- and `--deck-inset` is how close the chevrons may sit to the screen edge.
-   On desktop the reel scales immersively up to 440px wide so it fills the screen comfortably (#108). */
+   On desktop the reel scales immersively up to 520px wide so it fills the screen comfortably (#108). */
 .deck-row {
-  --deck-chrome: 180px;
+  --deck-chrome: 130px;
   --deck-floor: 24px;
   --deck-inset: var(--s6);
   --deck-reel: min(
-    440px,
-    max(340px, calc((100dvh - var(--deck-chrome) - var(--deck-floor)) * 9 / 16)),
+    520px,
+    max(420px, calc((100dvh - var(--deck-chrome) - var(--deck-floor)) * 9 / 16)),
     calc(100vw - var(--deck-inset) - var(--deck-control) * 2 - var(--s2) * 2)
   );
   position: relative;
@@ -60,7 +60,7 @@
 }
 
 .shell[data-islands="true"] .deck-row {
-  --deck-chrome: calc(180px + var(--cluster-clear));
+  --deck-chrome: calc(130px + var(--cluster-clear));
 }
 
 .deck-hint-label {

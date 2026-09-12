@@ -133,7 +133,7 @@ const Swiping = ({ me, changeVoter }: { me: string; changeVoter: () => void }) =
         ) : (
           <button type="button" className="deck-direction" data-side="must" onClick={() => commit('must')}>
             <ArrowUp size={20} strokeWidth={2} aria-hidden="true" />
-            <span className="t-label deck-hint-label">Must Go &middot; One Only</span>
+            <span className="t-label deck-hint-label">Must Go &middot; 1 Only</span>
           </button>
         )}
 

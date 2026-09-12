@@ -96,6 +96,12 @@ test('prints the destinations and nothing else: the checklist stays on the Desk'
   expect(html).not.toContain('colophon-list')
 })
 
+test('removes the dead margin between the days maps and Back to Before We Go button (#108)', async () => {
+  const css = await Bun.file(new URL('./Book.css', import.meta.url)).text()
+  expect(css).toContain('.colophon {\n  padding-top: 0;\n  margin-top: 0;\n}')
+  expect(css).toContain('.colophon-back {\n  display: inline-block;\n  margin-top: var(--s2);')
+})
+
 test('lays one book out for the whole trip: two destinations a spread, one flipbook', () => {
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
@@ -273,7 +279,6 @@ test('withholds the transit route for a day with fewer than two stops', () => {
   const rightStart = html.indexOf('class="book-page folio-page folio-right"', leftStart)
   const nextLeft = html.indexOf('class="book-page folio-page folio-left"', rightStart)
   const left = html.slice(leftStart, rightStart)
-  const right = html.slice(rightStart, nextLeft)
 
   // Day 1's pin on left page has no transit route link
   expect(left).toContain('class="spread-pin"')

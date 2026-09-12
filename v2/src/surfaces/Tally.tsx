@@ -117,7 +117,7 @@ export const Tally = () => {
                           ))}
                         </span>
                       )}
-                      <span className="tally-votes">{entry.votes} voted to keep</span>
+                      <span className="tally-votes">{entry.votes} Keep Votes</span>
                     </div>
                     <div className="tally-verdict">
                       <p className="tally-pct">{entry.percentage}%</p>
