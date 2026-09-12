@@ -3,8 +3,10 @@ import 'leaflet/dist/leaflet.css'
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import type { Place } from '../data/types'
-import { Plate } from './Plate'
+import { FullTripPlate, type MappedDay, Plate } from './Plate'
 import './DayMap.css'
+
+export type { MappedDay }
 
 /**
  * OpenStreetMap through Leaflet, which needs no key and asks only that the attribution stays on the tile. That is
@@ -12,6 +14,11 @@ import './DayMap.css'
  */
 const TILES = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
 const CREDIT = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+
+/**
+ * The CSS custom property for a day's bird tint, cycling across the 7 defined day colors.
+ */
+export const dayTint = (day: number) => `var(--day-${((day - 1) % 7) + 1})`
 
 /**
  * The stop's place in the day, drawn as the marker. Numbers on a route are the one case `AGENTS.md` allows them:
@@ -58,9 +65,46 @@ const useMap = (stops: Place[], tint: string, live: boolean) => {
   return host
 }
 
+const useFullTripMap = (days: MappedDay[], live: boolean) => {
+  const host = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const node = host.current
+    const allPoints: [number, number][] = days.flatMap((d) => d.stops.map((s) => [s.lat, s.lng]))
+    if (!node || allPoints.length === 0) return
+    const map = L.map(node, {
+      attributionControl: true,
+      zoomControl: live,
+      dragging: live,
+      scrollWheelZoom: live,
+      doubleClickZoom: live,
+      boxZoom: live,
+      touchZoom: live,
+      keyboard: live
+    })
+    L.tileLayer(TILES, { attribution: CREDIT, maxZoom: 19 }).addTo(map)
+
+    for (const d of days) {
+      const tint = dayTint(d.day.index)
+      const points: [number, number][] = d.stops.map((s) => [s.lat, s.lng])
+      if (points.length > 1) {
+        L.polyline(points, { color: tint, weight: 3, opacity: 0.9 }).addTo(map)
+      }
+      for (const [i, s] of d.stops.entries()) {
+        L.marker([s.lat, s.lng], { icon: marker(i + 1, tint) }).addTo(map)
+      }
+    }
+
+    map.fitBounds(L.latLngBounds(allPoints), { padding: live ? [40, 40] : [18, 18] })
+    return () => {
+      map.remove()
+    }
+  }, [days, live])
+  return host
+}
+
 export const DayMap = ({ day, title, stops }: { day: number; title: string; stops: Place[] }) => {
   const [open, setOpen] = useState(false)
-  const tint = `var(--day-${day})`
+  const tint = dayTint(day)
   const thumb = useMap(stops, tint, false)
   const full = useMap(open ? stops : [], tint, true)
 
@@ -119,7 +163,7 @@ export const DayMap = ({ day, title, stops }: { day: number; title: string; stop
  * opens rather than a second, hand-drawn map.
  */
 export const DayMapThumb = ({ day, title, stops }: { day: number; title: string; stops: Place[] }) => {
-  const tint = `var(--day-${day})`
+  const tint = dayTint(day)
   const thumb = useMap(stops, tint, false)
 
   if (stops.length === 0) return null
@@ -131,5 +175,24 @@ export const DayMapThumb = ({ day, title, stops }: { day: number; title: string;
       </span>
       <span className="daymap-tiles" ref={thumb} aria-hidden="true" />
     </span>
+  )
+}
+
+/**
+ * A giant map combining the routes for all days in the trip, plotted together across the entire city.
+ * Used as the master atlas spread at the end of the Book (#108).
+ */
+export const FullTripMap = ({ days, title }: { days: MappedDay[]; title?: string }) => {
+  const thumb = useFullTripMap(days, false)
+
+  if (days.length === 0) return null
+
+  return (
+    <section className="giantmap-canvas" aria-label={title ?? 'The Complete Route Map'}>
+      <span className="daymap-under" aria-hidden="true">
+        <FullTripPlate days={days} />
+      </span>
+      <div className="daymap-tiles" ref={thumb} aria-hidden="true" />
+    </section>
   )
 }

@@ -492,14 +492,6 @@
   .folio-right .dest-desc {
     padding-right: 184px;
   }
-
-  /* The book the reader turns is the host's clones, and a cloned Leaflet container is a stale tile patch: its size
-     was set for the authored page, and page-flip stretches the clone into a different box, so the tiles would crop
-     wrong. The drawn plate, by contrast, is pure SVG and scales cleanly, so the live pin shows the plate and the
-     tiles are kept for the flat and print layouts, where the page keeps its own size. */
-  .bookflip-host .spread-pin .daymap-tiles {
-    display: none;
-  }
 }
 
 /* The Book is the thing that prints, so a spread is a printed page and nothing inside a destination may split across
@@ -552,13 +544,25 @@
     flex-direction: column;
     gap: var(--s4);
     padding: var(--s5);
+    position: relative;
   }
 
-  /* The pin is the screen's note, and the sheet already carries each day's map, named, in the run after the book:
-     a pin on every page would print the day's map once per page on top of the named run, with a route link that
-     opens nothing on paper. The map's job on the sheet is done by the run. */
+  /* Minimap pinned note is visible on printed sheets (#108). The transit route web link is hidden on paper. */
   .spread-pin {
+    display: block;
+    position: absolute;
+    top: var(--s5);
+    right: var(--s5);
+    width: 140px;
+    z-index: 2;
+  }
+
+  .spread-pin .pin-route {
     display: none;
+  }
+
+  .folio-right .dest-desc {
+    padding-right: 154px;
   }
 
   .folio-right .page-num {
@@ -633,4 +637,108 @@
 .book-cold-go:hover,
 .book-cold-go:focus-visible {
   background: color-mix(in oklab, var(--tint, var(--open)) 34%, var(--ink));
+}
+
+/* The Complete Route giant map and itinerary legend spread (#108). */
+.giantmap-page .book-page-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s4);
+  height: 100%;
+}
+
+.giantmap-intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+
+.giantmap-legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s2);
+  margin-top: var(--s2);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.giantmap-legend-title {
+  color: var(--ink-muted);
+}
+
+.giantmap-days {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s3);
+}
+
+.giantmap-day-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: var(--s2);
+  border-bottom: 1px solid color-mix(in oklab, var(--ink) 10%, transparent);
+}
+
+.giantmap-day-badge {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+}
+
+.giantmap-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.giantmap-day-title {
+  font-family: var(--face-sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.giantmap-day-stops {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-muted);
+  line-height: 1.35;
+}
+
+.giantmap-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s1);
+}
+
+.giantmap-canvas {
+  position: relative;
+  flex: 1;
+  min-height: 360px;
+  border-radius: var(--r-card, 6px);
+  overflow: hidden;
+  background: var(--plate);
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, transparent);
+}
+
+.giantmap-canvas .daymap-tiles {
+  position: absolute;
+  inset: 0;
+}
+
+.giantmap-plate {
+  width: 100%;
+  height: 100%;
+}
+
+.giantmap-plate svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }

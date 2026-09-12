@@ -16,6 +16,8 @@
   --day-3: #e0a32c; /* Yellow-vented Bulbul, Pycnonotus goiavier */
   --day-4: #6e4a8e; /* Violet Cuckoo, Chrysococcyx xanthorhynchus */
   --day-5: #b0567e; /* Pink-necked Green Pigeon, Treron vernans */
+  --day-6: #2d7f6e; /* Emerald Dove, Chalcophaps indica */
+  --day-7: #8c4a2d; /* Chestnut-breasted Malkoha, Phaenicophaeus curvirostris */
 
   /* Muted ink, for specimen lines and secondary labels. Held above 4.5:1 on paper and plate. */
   --ink-muted: #6a5f53;
@@ -78,6 +80,8 @@
   --day-3: #e0a32c;
   --day-4: #9d78bf;
   --day-5: #c66a92;
+  --day-6: #429e8c;
+  --day-7: #b56844;
 
   color-scheme: dark;
 }
@@ -99,6 +103,8 @@
   --ground-day-3: color-mix(in oklab, var(--day-3) 26%, var(--paper));
   --ground-day-4: color-mix(in oklab, var(--day-4) 26%, var(--paper));
   --ground-day-5: color-mix(in oklab, var(--day-5) 26%, var(--paper));
+  --ground-day-6: color-mix(in oklab, var(--day-6) 26%, var(--paper));
+  --ground-day-7: color-mix(in oklab, var(--day-7) 26%, var(--paper));
 }
 
 /* A day sets --tint and --ground once, and everything inside it reads those two. This is the wayfinding device. */
@@ -121,6 +127,14 @@
 [data-day="5"] {
   --tint: var(--day-5);
   --ground: var(--ground-day-5);
+}
+[data-day="6"] {
+  --tint: var(--day-6);
+  --ground: var(--ground-day-6);
+}
+[data-day="7"] {
+  --tint: var(--day-7);
+  --ground: var(--ground-day-7);
 }
 
 [data-state="open"] {

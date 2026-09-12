@@ -1,4 +1,9 @@
-import type { Place } from '../data/types'
+import type { Day, Place } from '../data/types'
+
+export type MappedDay = {
+  day: Day
+  stops: Place[]
+}
 
 /**
  * A field-guide plate, drawn rather than photographed. `DESIGN.md` argues the drawn specimen over the destination hero
@@ -69,6 +74,72 @@ export const Plate = ({ day, title, stops }: { day: number; title: string; stops
       <figcaption className="t-specimen plate-caption">
         Plate {day} &middot; {title}
       </figcaption>
+    </figure>
+  )
+}
+
+/**
+ * A combined field-guide plate for the whole trip: routes from every day plotted together, each in its day's tint,
+ * over shared topographic contours.
+ */
+export const FullTripPlate = ({ days }: { days: MappedDay[] }) => {
+  const W = 400
+  const H = 260
+  const PAD = 36
+
+  const allStops = days.flatMap((d) => d.stops)
+  if (allStops.length === 0) return null
+
+  const lats = allStops.map((s) => s.lat)
+  const lngs = allStops.map((s) => s.lng)
+  const spanLat = Math.max(...lats) - Math.min(...lats) || 0.01
+  const spanLng = Math.max(...lngs) - Math.min(...lngs) || 0.01
+  const minLat = Math.min(...lats)
+  const minLng = Math.min(...lngs)
+
+  const toCoord = (lat: number, lng: number) => ({
+    x: PAD + ((lng - minLng) / spanLng) * (W - PAD * 2),
+    y: H - PAD - ((lat - minLat) / spanLat) * (H - PAD * 2)
+  })
+
+  return (
+    <figure className="plate-figure giantmap-plate">
+      <svg className="plate-svg" viewBox={`0 0 ${W} ${H}`} role="img" aria-label="The Complete Route">
+        <rect width={W} height={H} fill="var(--plate)" />
+
+        {[0, 1, 2, 3].map((i) => (
+          <ellipse
+            key={i}
+            cx={W / 2}
+            cy={H / 2}
+            rx={72 + i * 44}
+            ry={46 + i * 28}
+            fill="none"
+            stroke="var(--day-1)"
+            strokeWidth="1"
+            opacity={0.12 - i * 0.02}
+          />
+        ))}
+
+        {days.map(({ day, stops }) => {
+          const points = stops.map((s) => ({ ...toCoord(s.lat, s.lng), name: s.name }))
+          const line = points.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ')
+          const tint = `var(--day-${((day.index - 1) % 7) + 1})`
+          return (
+            <g key={day.index}>
+              {points.length > 1 && (
+                <path d={`M ${line}`} fill="none" stroke={tint} strokeWidth="2.5" strokeLinecap="round" />
+              )}
+              {points.map((p) => (
+                <g key={p.name}>
+                  <circle cx={p.x} cy={p.y} r="5" fill="var(--plate)" />
+                  <circle cx={p.x} cy={p.y} r="5" fill="none" stroke={tint} strokeWidth="2" />
+                </g>
+              ))}
+            </g>
+          )
+        })}
+      </svg>
     </figure>
   )
 }
