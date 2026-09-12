@@ -28,7 +28,8 @@ INK = (0x2E, 0x26, 0x1F)
 PAPER = (0xFB, 0xF8, 0xF2)
 
 QUIET = 4      # modules; 4 is the spec minimum
-TARGET = 1200  # px
+TARGET = 520   # px; the deck draws these at 214, and a PNG four times
+               # its display size is paid for again inside the PDF
 PATCH = 0.28   # knockout width as a fraction of the full image
 LOGO = 0.225   # seal width as a fraction of the full image
 
