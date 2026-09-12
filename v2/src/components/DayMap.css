@@ -51,7 +51,7 @@
   height: 22px;
   border: 2px solid var(--paper);
   border-radius: var(--r-pill);
-  background: var(--pin);
+  background: var(--pin, var(--tint, #2a4c9b));
   color: var(--paper);
   font-family: var(--face-sans);
   font-size: 11px;

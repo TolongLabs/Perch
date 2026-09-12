@@ -63,6 +63,11 @@
   --deck-chrome: calc(217px + var(--cluster-clear));
 }
 
+.deck-hint-label {
+  font-size: 11px;
+  text-transform: none;
+}
+
 /* On a phone the reel is height-constrained, so the chrome must be the space above it that actually exists: the
    cluster plus the measured head, gap and Must-Go row (116), not the desktop 217 plus a guess. The 56 the Presence
    used to hold off the reel is its own and it sits below the reel, so it is charged to the floor instead. The inset
@@ -383,11 +388,6 @@
   display: grid;
   place-items: center;
   max-width: 34ch;
-}
-
-.deck-hint-label {
-  font-size: 11px;
-  text-transform: none;
 }
 
 /* The filled heart is the one celebratory mark on the Deck. It begins at the reel's foot, then rises through the

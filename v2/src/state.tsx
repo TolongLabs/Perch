@@ -60,7 +60,7 @@ const emptyDays = (startDate: string, nights: number, titles: string[]): Day[] =
       index,
       date: d.toISOString().slice(0, 10),
       weekday: WEEKDAYS[d.getUTCDay()] ?? 'Sunday',
-      tint: ((i % 5) + 1) as Day['tint'],
+      tint: ((i % 7) + 1) as Day['tint'],
       title: titles[i] ?? `Day ${index}`,
       slots: PERIODS.map((period): Slot => ({ id: `d${index}-${period}`, period, placeId: null, pinned: false })),
       startMin: DAY_START,

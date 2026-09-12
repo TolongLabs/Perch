@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { BookFlip } from '../components/BookFlip'
-import { DayMap, DayMapThumb } from '../components/DayMap'
+import { DayMap, DayMapThumb, dayTint, FullTripMap } from '../components/DayMap'
 import { transitMin } from '../data/travel'
 import type { Day, Place, Slot } from '../data/types'
 import { tripCostRM } from '../lib/cost'
@@ -229,13 +229,67 @@ export const Book = () => {
                 </div>
               )
             })}
+
+            {/* Final 2-page spread: The Complete Route giant map combining all days of the trip (#108). */}
+            <div className="folio-spread" key="spread-giant-map">
+              <div className="book-page folio-page folio-left giantmap-page giantmap-page-legend">
+                <div className="book-page-inner">
+                  <div className="giantmap-intro">
+                    <p className="t-label giantmap-when">The Whole Journey</p>
+                    <h3 className="t-name">The Complete Route</h3>
+                    <p className="t-prose dest-summary">
+                      All {trip.days.length} days and {entries.length} destinations plotted across the city, from{' '}
+                      {entries[0]?.place.name} to {entries[entries.length - 1]?.place.name}.
+                    </p>
+                  </div>
+                  <div className="giantmap-legend">
+                    <p className="t-label giantmap-legend-title">Itinerary By Day</p>
+                    <ul className="giantmap-days">
+                      {mapped.map(({ day, stops }) => (
+                        <li key={day.index} className="giantmap-day-row" data-day={((day.index - 1) % 7) + 1}>
+                          <div className="giantmap-day-badge">
+                            <span
+                              className="giantmap-swatch"
+                              style={{ background: dayTint(day.index) }}
+                              aria-hidden="true"
+                            />
+                            <span className="t-label">
+                              Day {day.index} &middot; {day.weekday}
+                            </span>
+                          </div>
+                          <div className="giantmap-day-info">
+                            <strong className="giantmap-day-title">{day.title}</strong>
+                            <span className="t-specimen giantmap-day-stops">{stops.map((s) => s.name).join(', ')}</span>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <p className="page-num t-specimen" aria-hidden="true">
+                    {folios.length * 2 + 1}
+                  </p>
+                </div>
+              </div>
+              <div className="book-page folio-page folio-right giantmap-page giantmap-page-map">
+                <div className="book-page-inner">
+                  <div className="giantmap-header">
+                    <p className="t-label giantmap-when">Master Atlas</p>
+                    <h3 className="t-name">City Transit &amp; Walking Routes</h3>
+                  </div>
+                  <FullTripMap days={mapped} title="The Complete Route" />
+                  <p className="page-num t-specimen" aria-hidden="true">
+                    {folios.length * 2 + 2}
+                  </p>
+                </div>
+              </div>
+            </div>
           </BookFlip>
 
           {/* The days' maps, after the book: each day's stops in visiting order on the city the walk crosses. Set in
             the flow rather than pinned, because with one book there is no spread of the day to pin a note to. */}
           <section className="book-maps" aria-label="The Days' Maps">
             {mapped.map(({ day, stops }) => (
-              <figure className="book-map" data-day={day.tint} key={day.index}>
+              <figure className="book-map" data-day={((day.index - 1) % 7) + 1} key={day.index}>
                 <figcaption className="t-label book-map-title">
                   Day {day.index} &middot; {day.weekday} {dayLabel(day.date)}
                 </figcaption>
@@ -249,8 +303,8 @@ export const Book = () => {
       {/* The Book shows the trip's destinations and nothing else: the checklist lives on the Desk, where it is set.
           What remains is the one way back, and it is the last mark in the book. */}
       <article className="spread colophon">
-        <Link className="colophon-back t-label" to="/desk">
-          Back To The Desk
+        <Link className="colophon-back t-label" to="/desk/before-we-go">
+          Back To Before We Go
         </Link>
       </article>
     </main>

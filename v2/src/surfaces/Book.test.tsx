@@ -80,7 +80,7 @@ test('shows the cold state and the one way back when nothing is on the calendar'
   const html = renderBook()
 
   expect(html).toContain('Open The Desk')
-  expect(html).toContain('Back To The Desk')
+  expect(html).toContain('Back To Before We Go')
   expect(html).not.toContain('class="book-page"')
   expect(html).not.toContain('Save As PDF')
 })
@@ -89,10 +89,9 @@ test('prints the destinations and nothing else: the checklist stays on the Desk'
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
 
-  expect(html).toContain('Back To The Desk')
+  expect(html).toContain('Back To Before We Go')
   expect(html).toContain('class="colophon-back t-label"')
   expect(html).toContain('Save As PDF')
-  expect(html).not.toContain('Before We Go')
   expect(html).not.toContain('What This Trip Needs')
   expect(html).not.toContain('colophon-list')
 })
@@ -101,15 +100,15 @@ test('lays one book out for the whole trip: two destinations a spread, one flipb
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
 
-  // Twelve filled slots, three a day across four days, two destinations a spread: six spreads in the trip's one
-  // flipbook, each spread a pair of facing pages. One host is the whole book, which is also why the page number runs
-  // 1..N instead of restarting at one on day two's first spread.
+  // Twelve filled slots, three a day across four days, two destinations a spread: six destination spreads plus
+  // one final Complete Route giant map spread in the trip's one flipbook (seven spreads total, 14 facing pages).
+  // One host is the whole book, which is also why the page number runs 1..N instead of restarting at one on day two.
   expect(html.match(/class="bookflip-stage" aria-hidden="true"/g)).toHaveLength(1)
-  expect(html.match(/class="book-page folio-page folio-left"/g)).toHaveLength(6)
-  expect(html.match(/class="book-page folio-page folio-right"/g)).toHaveLength(6)
+  expect(html.match(/class="book-page folio-page folio-left/g)).toHaveLength(7)
+  expect(html.match(/class="book-page folio-page folio-right/g)).toHaveLength(7)
   // The numbers are set in JSX from the folio's index, because a CSS counter does not flow through the
-  // flipbook's clones: 1..12 across the one book, each exactly once.
-  for (let n = 1; n <= 12; n++) {
+  // flipbook's clones: 1..14 across the one book, each exactly once.
+  for (let n = 1; n <= 14; n++) {
     expect(html.match(new RegExp(`class="page-num t-specimen" aria-hidden="true">\\s*${n}\\s*</p>`, 'g'))).toHaveLength(
       1
     )
@@ -119,6 +118,18 @@ test('lays one book out for the whole trip: two destinations a spread, one flipb
   // in the `aria-hidden`-paired `.day-stops` list, so they double to 24 in the raw markup.
   expect(html.match(/class="dest dest-photo"/g)).toHaveLength(12)
   expect(html.match(/class="dest dest-desc"/g)).toHaveLength(24)
+})
+
+test('renders the giant complete route map and itinerary legend as the final spread in the storybook', () => {
+  store.setItem(KEY, JSON.stringify(planned))
+  const html = renderBook()
+
+  expect(html).toContain('The Complete Route')
+  expect(html).toContain('The Whole Journey')
+  expect(html).toContain('Master Atlas')
+  expect(html).toContain('class="giantmap-canvas"')
+  expect(html).toContain('class="giantmap-legend"')
+  expect(html).toContain('Itinerary By Day')
 })
 
 test('keeps the day with each destination as its when-line, in visiting order', () => {

@@ -71,7 +71,7 @@ export type Day = {
   date: string
   weekday: string
   /** The bird that tints this day. Matches --day-N in tokens.css. */
-  tint: 1 | 2 | 3 | 4 | 5
+  tint: 1 | 2 | 3 | 4 | 5 | 6 | 7
   title: string
   /** In period order, morning then afternoon then evening; three by default, and each period may hold two. */
   slots: Slot[]
