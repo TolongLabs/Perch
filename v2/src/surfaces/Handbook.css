@@ -26,16 +26,23 @@
   gap: var(--s3);
 }
 
+/* Meteorological status bar: crisp segmented plate with weather condition, temperature, season, and rain meter (#108). */
 .hb-weather {
   display: inline-flex;
   align-items: center;
-  gap: var(--s3);
+  gap: var(--s4);
   padding: var(--s2) var(--s4);
-  border: var(--outline) solid color-mix(in oklab, var(--ink) 24%, var(--paper));
-  border-radius: var(--r-pill);
+  border: var(--outline) solid color-mix(in oklab, var(--ink) 18%, transparent);
+  border-radius: var(--r-plate);
   background: var(--plate);
   color: var(--ink);
   line-height: 1.2;
+}
+
+.hb-weather-primary {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
 }
 
 .hb-weather-icon {
@@ -43,42 +50,103 @@
   flex: none;
 }
 
-.hb-weather-details {
+.hb-weather-temp-block {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  gap: var(--s2);
 }
 
 .hb-weather-temp {
-  font-size: clamp(26px, 5.5vw, 36px);
+  font-size: clamp(24px, 4.5vw, 30px);
   font-weight: 300;
   line-height: 1.05;
   letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
 }
 
-.hb-weather-meta {
+.hb-weather-condition-group {
   display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--s1);
-  font-size: 12px;
-  line-height: 1.3;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.hb-weather-dot {
-  color: var(--ink-muted);
+.hb-weather-condition {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.2;
 }
 
 .hb-weather-feels {
   color: var(--ink-muted);
+  font-size: 11px;
+  line-height: 1.2;
 }
 
-.hb-weather-condition,
-.hb-weather-season,
+.hb-weather-divider {
+  width: 1px;
+  height: 32px;
+  background: color-mix(in oklab, var(--ink) 14%, transparent);
+  flex: none;
+}
+
+.hb-weather-secondary {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.hb-weather-metric {
+  display: flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.hb-weather-season {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 11px;
+  background: color-mix(in oklab, var(--tint, var(--day-2)) 16%, var(--plate));
+  padding: 1px 7px;
+  border-radius: var(--r-pill);
+}
+
+.hb-weather-rain-block {
+  gap: var(--s2);
+}
+
 .hb-weather-rain {
   color: var(--ink);
   font-weight: 600;
+  font-size: 11px;
+}
+
+.hb-rain-meter {
+  width: 42px;
+  height: 5px;
+  background: color-mix(in oklab, var(--ink) 14%, transparent);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.hb-rain-meter-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--day-4);
+  transition: width var(--motion-fade) var(--ease);
+}
+
+@media (max-width: 640px) {
+  .hb-weather {
+    flex-wrap: wrap;
+    gap: var(--s3);
+  }
+
+  .hb-weather-divider {
+    display: none;
+  }
 }
 
 .hb-lede {

@@ -57,14 +57,14 @@ test('places accessible Must Go hearts beside destination names instead of verdi
   expect(html).toContain('aria-expanded="false"')
 })
 
-test('shows the vote head count on every row, top row reading four voted to keep', () => {
+test('shows the vote head count on every row, top row reading four keep votes', () => {
   const html = renderTally()
 
   // One count on each of the twenty-four rows.
   expect(html.match(/class="tally-votes"/g)).toHaveLength(24)
   // The seed's top row is a Must Go all four members are in favour of, so it reads four votes.
-  expect(html).toContain('<span class="tally-votes">4 voted to keep</span>')
-  expect(html).toContain('<span class="tally-votes">1 voted to keep</span>')
+  expect(html).toContain('<span class="tally-votes">4 Keep Votes</span>')
+  expect(html).toContain('<span class="tally-votes">1 Keep Votes</span>')
 })
 
 test('preserves distinct member identities when Must Go voters share a name', () => {

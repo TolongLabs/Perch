@@ -19,7 +19,7 @@ test('offers every swipe direction as an accessible control without a duplicate 
   const html = renderDeck()
 
   expect(html.match(/class="deck-direction/g)).toHaveLength(4)
-  expect(html).toContain('Must Go · One Only')
+  expect(html).toContain('Must Go · 1 Only')
   expect(html).toContain('Voting as Aisyah')
   expect(html).toContain('>Change Voter</button>')
   expect(html).toContain('>Pass</span>')
@@ -42,10 +42,10 @@ test('applies red glow to Pass flash using Crimson Sunbird token (#108)', async 
   expect(css).toMatch(/:root\[data-theme="dark"\] \.deck-flash\[data-flash="pass"\]\s*\{\s*--flash-peak: 0\.85;/)
 })
 
-test('sizes the desktop reel immersively up to 440px (#108)', async () => {
+test('sizes the desktop reel immersively up to 520px (#108)', async () => {
   const css = await Bun.file(new URL('./Deck.css', import.meta.url)).text()
-  expect(css).toContain('max-width: 620px;')
-  expect(css).toContain('min(\n    440px,\n    max(340px')
+  expect(css).toContain('max-width: 720px;')
+  expect(css).toContain('min(\n    520px,\n    max(420px')
 })
 
 test('announces reel progress after each answer', () => {
