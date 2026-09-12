@@ -21,6 +21,10 @@ const PERIOD: Record<Slot['period'], string> = {
 /** Two destinations to a spread, which is the composition the intake names and what fixes the page count. */
 const PER_PAGE = 2
 
+/** Below this many settled destinations the book is a single scuffed spread with a lone dot on each day map, so it
+    shows the cold state instead: a keepsake needs a few stops to read as a book rather than two pages. */
+const MIN_DESTINATIONS = 4
+
 type Entry = { slot: Slot; place: Place; transit: number; day: number }
 
 type MappedDay = { day: Day; stops: Place[] }
@@ -69,10 +73,11 @@ const DestDesc = ({ entry }: { entry: Entry }) => (
 )
 
 /**
- * The pin set in the top right of a page, for the day that owns the page's photo: the day's stops drawn on the
- * city they cross, with the day's transit route beneath. The route is withheld when the day has fewer than two
- * stops, because a route needs a start and an end. The figure carries the day's attribute, so the head's dot and
- * the fallback plate read the day's own tint.
+ * The pin set in the top right of a spread's second page, for the day that owns that page's photo: the day's stops
+ * drawn on the city they cross, with the day's transit route beneath. One per spread rather than per page, because
+ * two pinned maps across a gutter read as noise over one, and a second map on the facing page says the same thing
+ * twice. The route is withheld when the day has fewer than two stops, because a route needs a start and an end. The
+ * figure carries the day's attribute, so the head's dot and the fallback plate read the day's own tint.
  */
 const PagePin = ({ day, stops }: { day: Day; stops: Place[] }) => {
   const route = transitRoute(stops)
@@ -106,8 +111,10 @@ export const Book = () => {
   // A cold visit reaches this page before anything is on the calendar, and the pages read the calendar: every day
   // drew as a bare title over white. A judge landing on the shared link deserves to be told why, not shown a book
   // with its pictures missing.
-  const planned = trip.days.some((day) => day.slots.some((slot) => slot.placeId !== null))
   const entries = trip.days.flatMap((day) => entriesOf(day, trip.options))
+  // A book needs a few settled destinations to read as a book rather than one scuffed spread: two dots on a day map
+  // and a page or two is not a keepsake, so below the threshold the cold state shows instead of a thin book.
+  const planned = entries.length >= MIN_DESTINATIONS
   const folios = pagesOf(entries)
   const mapped: MappedDay[] = trip.days
     .map((day) => ({ day, stops: entriesOf(day, trip.options).map((e) => e.place) }))
@@ -191,16 +198,17 @@ export const Book = () => {
             {folios.map((folio, i) => {
               const [a, b] = folio
               if (!a) return null
-              const pinA = dayMap.get(a.day)
-              const pinB = b ? dayMap.get(b.day) : undefined
+              // One pin per spread, on the second page. The second page sets the first destination's words at its top
+              // (the pin sits in that page's top right, beside them), so the pin is anchored to the day that owns
+              // those words.
+              const pinned = dayMap.get(a.day)
               return (
                 <div className="folio-spread" key={a.slot.id}>
                   {/* The first destination of the spread sits photo left / words right; the second flips to words
                     left / photo right. That is the alternation the intake names, and it is what makes a spread read
                     as two facing pages rather than two stacked lists. On a wide screen with motion, BookFlip turns
                     these pages with page-flip; everywhere else they are the book's flat pages, laid out by the
-                    Book's own rules. Each page carries the pin of the day that owns its picture, set in the page's
-                    top right. */}
+                    Book's own rules. The spread's one pin sits in the second page's top right. */}
                   <div className="book-page folio-page folio-left">
                     <div className="book-page-inner">
                       <DestPhoto entry={a} />
@@ -209,7 +217,6 @@ export const Book = () => {
                         {i * 2 + 1}
                       </p>
                     </div>
-                    {pinA && <PagePin day={pinA.day} stops={pinA.stops} />}
                   </div>
                   <div className="book-page folio-page folio-right">
                     <div className="book-page-inner">
@@ -219,7 +226,7 @@ export const Book = () => {
                         {i * 2 + 2}
                       </p>
                     </div>
-                    {pinB && <PagePin day={pinB.day} stops={pinB.stops} />}
+                    {pinned && <PagePin day={pinned.day} stops={pinned.stops} />}
                   </div>
                 </div>
               )

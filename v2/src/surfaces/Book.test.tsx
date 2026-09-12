@@ -184,7 +184,7 @@ test('alternates photo and description exactly as the intake names it', () => {
   expect(right).toContain('Day 1 · In The Morning')
 })
 
-test('sets the days after the book, as named maps, and pins a day map on every page', () => {
+test('sets the days after the book, as named maps, and pins one day map per spread', () => {
   store.setItem(KEY, JSON.stringify(planned))
   const html = renderBook()
 
@@ -197,18 +197,20 @@ test('sets the days after the book, as named maps, and pins a day map on every p
   expect(html).toContain('Day 1 · Friday')
   expect(html).toContain('Day 4 · Monday')
 
-  // The pin is back at page level: one per page, twelve pages across six spreads, each anchored to the day that
-  // owns the page's picture, with its head and its transit route. Every day here holds three stops, so every pin
-  // carries a route.
-  expect(html.match(/class="spread-pin"/g)).toHaveLength(12)
-  expect(html.match(/class="pin-head"/g)).toHaveLength(12)
-  expect(html.match(/Open The Transit Route/g)).toHaveLength(12)
+  // The pin is one per spread, not per page: two pinned maps across a gutter read as noise over one, and the
+  // facing page says the same thing twice. Six spreads, so six pins, each on the second page and anchored to the
+  // day that owns the words it sits beside, with its head and its transit route. Every day here holds three stops,
+  // so every pin carries a route.
+  expect(html.match(/class="spread-pin"/g)).toHaveLength(6)
+  expect(html.match(/class="pin-head"/g)).toHaveLength(6)
+  expect(html.match(/Open The Transit Route/g)).toHaveLength(6)
   expect(html).toContain('The Book')
 })
 
 test('withholds the transit route for a day with fewer than two stops', () => {
-  // Day one holds a single stop. A pin still belongs on its page, because the day's map holds one stop, but a
-  // route needs a start and an end, so the link is withheld there while the other days keep theirs.
+  // Day one holds a single stop. Its spread still carries a pin, because the pin is anchored to the day that owns
+  // the spread's first destination and that day's map holds one stop, but a route needs a start and an end, so the
+  // link is withheld there while the other days keep theirs.
   const oneStop = {
     ...planned,
     days: planned.days.map((day) =>
@@ -223,13 +225,16 @@ test('withholds the transit route for a day with fewer than two stops', () => {
   store.setItem(KEY, JSON.stringify(oneStop))
   const html = renderBook()
 
+  // The first spread's pin sits on its second page, which holds the first destination's words at its top. Bounded
+  // at the second spread's left page so the later spreads cannot bleed in.
   const stageStart = html.indexOf('class="bookflip-stage" aria-hidden="true"')
   const leftStart = html.indexOf('class="book-page folio-page folio-left"', stageStart)
   const rightStart = html.indexOf('class="book-page folio-page folio-right"', leftStart)
-  const left = html.slice(leftStart, rightStart)
-  expect(left).toContain('class="spread-pin"')
-  expect(left).toContain('data-day="1"')
-  expect(left).not.toContain('Open The Transit Route')
+  const nextLeft = html.indexOf('class="book-page folio-page folio-left"', rightStart)
+  const right = html.slice(rightStart, nextLeft)
+  expect(right).toContain('class="spread-pin"')
+  expect(right).toContain('data-day="1"')
+  expect(right).not.toContain('Open The Transit Route')
   // The rest of the book is untouched: the days with two or more stops still carry their route.
   expect(html).toContain('Open The Transit Route')
 })
