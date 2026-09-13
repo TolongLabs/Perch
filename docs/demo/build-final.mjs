@@ -1,5 +1,5 @@
 /**
- * Builds concise-slides.html from slides.html.
+ * Builds final-slides.html from slides.html - the deck that is actually presented.
  *
  * The full deck is the submission: every scored band gets its own slide, and the
  * two ideation canvases are the 8% Visual Diagrams evidence, so nothing there can
@@ -72,5 +72,5 @@ const out = head
   kept.join('') +
   tail
 
-writeFileSync(join(here, 'concise-slides.html'), out)
-console.log(`concise-slides.html: ${total} slides from ${parts.length}, ${(out.length / 1024).toFixed(0)} KB`)
+writeFileSync(join(here, 'final-slides.html'), out)
+console.log(`final-slides.html: ${total} slides from ${parts.length}, ${(out.length / 1024).toFixed(0)} KB`)
