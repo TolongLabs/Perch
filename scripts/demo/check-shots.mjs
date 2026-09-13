@@ -306,17 +306,17 @@ export async function runShotChecks(options = {}) {
     // on placeholder plates.
     await check(
       10,
-      'A drawn route, a painted map and a Transit Route link per day',
-      'a.day-route (4) + .day-spread:has(.daymap-under path) (4) + tiles loaded',
-      page.locator('.day-spread'),
+      'Four day maps, each drawn, each painted, each with a Transit Route link',
+      '.book-map (4) + .leaflet-overlay-pane path + tiles loaded + a.pin-route',
+      page.locator('.book-map'),
       async () => {
-        // Tiles arrive from OpenStreetMap after the spread does, so the count has to be taken once Leaflet has caught
-        // up rather than the moment .day-spread turns visible. Swallowed rather than thrown: a timeout here is a
+        // Tiles arrive from OpenStreetMap after the row does, so the count has to be taken once Leaflet has caught
+        // up rather than the moment .book-map turns visible. Swallowed rather than thrown: a timeout here is a
         // finding to report as ABSENT, not a crash.
         await page
           .waitForFunction(
             () =>
-              [...document.querySelectorAll('.day-spread .leaflet-container')].every((map) => {
+              [...document.querySelectorAll('.book-map .daymap-tiles')].every((map) => {
                 const asked = map.querySelectorAll('.leaflet-tile').length
                 return asked > 0 && map.querySelectorAll('.leaflet-tile-loaded').length === asked
               }),
@@ -324,31 +324,36 @@ export async function runShotChecks(options = {}) {
             { timeout }
           )
           .catch(() => {})
-        const maps = await page.locator('a.day-route[href*="google.com/maps"]').count()
         // Per day, not a total: four paths spread across fewer than four days would satisfy a global count while
-        // some plate on screen drew nothing. The route lives under the tiles, so it survives a tile that never came.
-        const drawing = await page.locator('.day-spread:has(.daymap-under path)').count()
-        // The tiles come from OpenStreetMap at view time. Asking Leaflet whether what it requested has painted is
-        // the only reading that separates a working map from a plate of bare tint.
-        const painted = await page.locator('.day-spread').evaluateAll(
-          (spreads) =>
-            spreads.filter((spread) => {
-              const asked = spread.querySelectorAll('.leaflet-tile').length
-              return asked > 0 && spread.querySelectorAll('.leaflet-tile-loaded').length === asked
-            }).length
-        )
-        return maps === 4 && drawing === 4 && painted === 4
+        // some map on screen drew nothing. The line is a Leaflet overlay, not the `.daymap-under` plate - that plate
+        // is the fallback, drawn from a rect and four ellipses, and has never held a path to count.
+        const drawing = await page.locator('.book-map:has(.leaflet-overlay-pane path)').count()
+        const painted = await page
+          .locator('.book-map')
+          .evaluateAll(
+            (maps) =>
+              maps.filter((map) => {
+                const asked = map.querySelectorAll('.leaflet-tile').length
+                return asked > 0 && map.querySelectorAll('.leaflet-tile-loaded').length === asked
+              }).length
+          )
+        // The links live on the spreads, one per day that has two stops or more, and the flipbook clones its pages,
+        // so this counts at least four rather than exactly four.
+        const links = await page.locator('a.pin-route[href*="google.com/maps"]').count()
+        return drawing === 4 && painted === 4 && links >= 4
       }
     )
     await check(
       10,
-      'Book page heading and four day sections',
-      '.cover-title (Tokyo) + .day-spread (4)',
+      'Book heading, and one flipbook the reader can turn',
+      ".cover-title (Tokyo) + .bookflip-host (1) + 'Spread 1 of N'",
       page.locator('.cover-title'),
       async (locator) => {
         const title = await locator.textContent()
-        const dayCount = await page.locator('.day-spread').count()
-        return title === 'Tokyo' && dayCount === 4
+        const books = await page.locator('.bookflip-host').count()
+        const status = (await page.locator('.bookflip-status').first().textContent()) ?? ''
+        const spreads = status.trim().match(/^Spread 1 of (\d+)$/)
+        return title === 'Tokyo' && books === 1 && Boolean(spreads) && Number(spreads[1]) >= 2
       }
     )
   } finally {
