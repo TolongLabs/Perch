@@ -22,5 +22,18 @@ shot-7 | 38743 | That's the whole idea. Not a clever schedule, an honest one, th
 shot-8 | 400 | One more move. She pins Sensoji so it can never drift, then presses Optimize Plan again, the rest of that day rebuilds around it, and Sensoji doesn't move an inch.
 shot-9 | 400 | One gate before The Book. Six items, pulled straight from the trip itself: a teamLab ticket, the JR Pass already ticked off, because this trip never leaves Tokyo. She ticks the rest, and both unlock: The Book, and The Manual, the same calendar's packing list and advice.
 shot-10 | 400 | And then, The Book. Four plates, one per day, each one drawing that day's actual route, the real line between the real stops, not a stock map. Every plate carries a Transit Route link straight into Google Maps. This is what gets shared back into the group chat: not a screenshot of a plan, the whole trip, printed and done.
-stack | 400 | React nineteen, React Router, dnd-kit, TypeScript and Vite, on Cloud Run, no backend, no API key, just the reel video streamed in. Real multi-user voting is build-phase work, and it's Supabase. Three weeks: twenty-first of September to the eleventh of October.
+stack-1 | 400 | Here is the whole stack. The point of it is how little there is.
+stack-2 | 400 | Frontend: React nineteen, React Router, Vite, TypeScript. One context mirrored to local storage, and twenty-four places with their transit times, committed.
+stack-3 | 400 | No backend. No auth server. No API key. No database. Nothing on that list can fail while we are on stage.
+stack-4 | 400 | Two network calls in the whole thing: the reel video from a public bucket, and map tiles from OpenStreetMap.
+stack-5 | 400 | The build adds four. Supabase carries auth, votes and realtime: that is the database. Place seeding. Google Routes, one call per trip. And a model that writes the rationale line and never schedules.
+stack-6 | 400 | Hosting is Cloud Run in Singapore, a two stage container, redeployed by GitHub Actions on every merge to main.
+plan-1 | 400 | Then the plan. Three weeks of building, and then scope freezes.
+plan-2 | 400 | Building runs the twenty first of September to the eleventh of October. After that, deployment and bug fixes only.
+plan-3 | 400 | Week one: Supabase replaces the committed data, for auth and for votes.
+plan-4 | 400 | Week two: seeded place data, behind exactly the same shape.
+plan-5 | 400 | Week three: the Routes call, and the one line rationale per day.
+plan-6 | 400 | What we will not build: multi area Japan, native apps, or any screen beyond the nine we already have.
+plan-7 | 400 | Four members, three weeks, one toolchain. Cloud Run scales to zero, so the hosting costs nothing.
+plan-8 | 400 | Three weeks. Nine screens. Nothing added after the freeze.
 close | 400 | This isn't built for students. It's built for the one friend who always ends up planning. After Perch, the group spends two minutes swiping, and the only hands the plan passes through are hers, dragging. We're TolongLabs. This is Perch.
