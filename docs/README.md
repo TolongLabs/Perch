@@ -19,7 +19,7 @@
 ![Leaflet](https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=leaflet&logoColor=white)
 ![dnd kit](https://img.shields.io/badge/@dnd--kit-C792EA?style=for-the-badge)
 
-[Live Prototype](https://prototype-yskhynz4la-as.a.run.app) · [Slides](demo/slides.pdf) · [PRODUCT](PRODUCT.md) ·
+[Live Prototype](https://prototype-yskhynz4la-as.a.run.app) · [Slides](demo/final-slides.pdf) · [PRODUCT](PRODUCT.md) ·
 [PRD](PRD.md) · [TRD](TRD.md) · [Architecture](ARCHITECTURE.md) · [Design](DESIGN.md)
 
 </div>
@@ -37,6 +37,7 @@
 <details>
   <summary>Expand</summary>
   <ol>
+    <li><a href="#0-demo-video">Demo Video</a></li>
     <li>
       <a href="#1-project-overview">Project Overview</a>
       <ol>
@@ -90,6 +91,12 @@
     <li><a href="#7-team">Team</a></li>
   </ol>
 </details>
+
+---
+
+## 0. Demo Video
+
+https://github.com/user-attachments/assets/f2a8027c-a6a8-4779-9c4f-4580c104f604
 
 ---
 
