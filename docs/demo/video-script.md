@@ -151,11 +151,45 @@ because Aisyah then drags a stop into a worse position on purpose, and the instr
 stopping her. The claim was never that the scheduler is clever. It is that it stays honest even when she overrules it,
 and that the call stays hers.
 
-### Stack (3:52-4:06)
+### Tech Stack And Build Plan (3:52-5:38)
 
-| Beat        | Seconds | Words | On Screen                                                                                                                                 | Spoken Line                                                                                                                                                                                                                                                            |
-| ----------- | ------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **`stack`** | 14      | 41    | Title card: React 19 - React Router - dnd-kit - TypeScript - Vite - Cloud Run. Second card: the three-week build span, 21 Sept to 11 Oct. | "React nineteen, React Router, dnd-kit, TypeScript and Vite, on Cloud Run, no backend, no API key, just the reel video streamed in. Real multi-user voting is build-phase work, and it's Supabase. Three weeks: twenty-first of September to the eleventh of October." |
+Was fourteen seconds on a bespoke title card. The submission template asks this to
+cover frontend, backend, database, services and hosting, and then what gets built
+in the three-week phase, and fourteen seconds could not carry it. It is now its
+own segment, filmed off slides 16 and 17 of the deck by
+[`scripts/demo/record-slides.mjs`](../../scripts/demo/record-slides.mjs), so the
+picture is the same artefact the judges already hold rather than a card built to
+be narrated over.
+
+The camera fits one named region of the slide at a time. Beat names below are the
+recorder's own, so a line and its picture cannot drift apart.
+
+| Beat            | Seconds | Words | On Screen                                                                                  | Spoken Line                                                                                                                                                          |
+| --------------- | ------- | ----- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`stack-1`**   | 4.5     | 12    | Slide 16 whole, pulled back: "The prototype runs on nothing. The build adds four services." | "Here is the whole stack. The point of it is how little there is."                                                                                                    |
+| **`stack-2`**   | 8       | 22    | The Prototype column, filling the frame.                                                   | "Frontend: React nineteen, React Router, Vite, TypeScript. One context mirrored to local storage, and twenty-four places with their transit times, committed."        |
+| **`stack-3`**   | 6.5     | 17    | Not In The Prototype, On Purpose - the four struck-through lines.                           | "No backend. No auth server. No API key. No database. Nothing on that list can fail while we are on stage."                                                            |
+| **`stack-4`**   | 6       | 16    | The Network, In Full.                                                                      | "Two network calls in the whole thing: the reel video from a public bucket, and map tiles from OpenStreetMap."                                                        |
+| **`stack-5`**   | 9.5     | 26    | The Build, From 21 September - the four services.                                          | "The build adds four. Supabase carries auth, votes and realtime: that is the database. Place seeding. Google Routes, one call per trip. And a model that writes the rationale line and never schedules." |
+| **`stack-6`**   | 6.5     | 17    | How It Ships.                                                                              | "Hosting is Cloud Run in Singapore, a two-stage container, redeployed by GitHub Actions on every merge to main."                                                      |
+| **`plan-1`**    | 4.5     | 12    | Slide 17 whole: "Three Weeks, Then Scope Freezes."                                         | "Then the plan. Three weeks of building, and then scope freezes."                                                                                                     |
+| **`plan-2`**    | 7.5     | 19    | The timeline, framed on Building and Deployment with their dates.                           | "Building runs the twenty-first of September to the eleventh of October. After that, deployment and bug fixes only."                                                  |
+| **`plan-3`**    | 5.5     | 14    | Week 1 card.                                                                               | "Week one: Supabase replaces the committed data, for auth and for votes."                                                                                             |
+| **`plan-4`**    | 5.5     | 14    | Week 2 card.                                                                               | "Week two: seeded place data, behind exactly the same shape."                                                                                                          |
+| **`plan-5`**    | 5.5     | 14    | Week 3 card.                                                                               | "Week three: the Routes call, and the one-line rationale per day."                                                                                                     |
+| **`plan-6`**    | 6.5     | 18    | What The Build Phase Will Not Build.                                                       | "What we will not build: multi-area Japan, native apps, or any screen beyond the nine we already have."                                                               |
+| **`plan-7`**    | 6       | 17    | What We Have To Spend.                                                                     | "Four members, three weeks, one toolchain. Cloud Run scales to zero, so the hosting costs nothing."                                                                   |
+| **`plan-8`**    | 4       | 10    | Slide 17 whole again, pulled back.                                                         | "Three weeks. Nine screens. Nothing added after the freeze."                                                                                                          |
+
+**Why this reads off the deck rather than a title card.** The old beat asserted a
+stack in a list nobody could check. These two slides already carry the same
+claims with their caveats attached - Google Places rejected on its caching terms,
+the model fenced out of scheduling - and filming them means the segment and the
+submitted PDF cannot disagree.
+
+**The one line to keep honest.** `stack-5` says the model "writes the rationale
+line and never schedules." The scheduler is a heuristic and the film never calls
+it AI; that rule holds here too.
 
 ### Close (4:06-4:20)
 

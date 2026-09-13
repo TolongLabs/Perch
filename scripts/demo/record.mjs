@@ -799,15 +799,17 @@ export async function recordDemo(options = {}) {
     await clickRailItem(railBook)
     await page.waitForURL(/\/t\/tokyo-nov-2026$/)
     await releaseRail()
-    const spreads = page.locator('.day-spread')
-    await must(spreads.first(), 'shot 10 book day plates')
-    // Since #281 each plate is a Leaflet map pulling OpenStreetMap tiles at record time, which is the first thing in
-    // this film that depends on somebody else's server. A tile still in flight paints as nothing, and nothing is
-    // invisible to every rect this beat asserts -- the same blind spot as the scrim. Wait for Leaflet's own
-    // leaflet-tile-loaded to catch up with the tiles it asked for, on every plate, before the camera moves.
+    // One flipbook for the whole trip since the v2-0.5 intake, not one per day: fourteen pages across seven
+    // spreads, with the day maps lifted out into their own row beneath it. This beat used to frame `.day-spread`,
+    // which no longer exists anywhere on the page, and the gate is what caught it rather than the camera.
+    const host = page.locator('.bookflip-host')
+    await must(host, 'shot 10 the flipbook')
+    // Every map is a Leaflet map pulling OpenStreetMap tiles at record time, which is the only thing in this film
+    // that depends on somebody else's server. A tile still in flight paints as nothing, and nothing is invisible to
+    // every rect this beat asserts. Wait for Leaflet's own count to catch up, on every map, before the camera moves.
     await page.waitForFunction(
       () =>
-        [...document.querySelectorAll('.day-spread .leaflet-container')].every((map) => {
+        [...document.querySelectorAll('.daymap-tiles')].every((map) => {
           const asked = map.querySelectorAll('.leaflet-tile').length
           return asked > 0 && map.querySelectorAll('.leaflet-tile-loaded').length === asked
         }),
@@ -815,19 +817,11 @@ export async function recordDemo(options = {}) {
       { timeout }
     )
     await mark('shot-10')
-    // One framing per spread, at its top. This beat used to take two, because #164 put the drawn route and the link
-    // at the foot of a spread far taller than the viewport, and framing only the top left both below the fold while
-    // the narration named them -- the film asserting something the viewer cannot see. #230 moved the link into the
-    // head and pinned the plate on the photograph, so band, link, title, picture and plate now sit between 48 and
-    // 522 of a spread 1470 tall. A second scroll is no longer merely unnecessary, it is wrong: it pushes both off
-    // the top and points the camera at the stops.
-    // The camera scrolls rather than jumps, because the day plates are taller than the viewport: an instant
-    // scrollIntoViewIfNeeded would satisfy itself by leaving a spread's top above the fold, with link and plate
-    // off-screen while every count still passes. So: glide to each spread's own top, then hold on the plate.
-    // The plates are turned by BookFlip's controls now (#354), not by the scroll position; scrolling only frames
-    // them, and the turn below films on day one after the glide.
-    const glideTo = async (locator, travelMs = 2_000, holdMs = 900) => {
-      const to = await locator.evaluate((el) => el.getBoundingClientRect().top + window.scrollY)
+    // The camera scrolls rather than jumps: the book is taller than the viewport, and an instant
+    // scrollIntoViewIfNeeded satisfies itself by leaving the host's top above the fold, with the controls and the
+    // pinned map off-screen while every count still passes.
+    const glideTo = async (locator, travelMs = 1_600, holdMs = 900) => {
+      const to = await locator.evaluate((el) => el.getBoundingClientRect().top + window.scrollY - 40)
       const from = await page.evaluate(() => window.scrollY)
       const steps = Math.max(1, Math.round(travelMs / 40))
       for (let step = 1; step <= steps; step += 1) {
@@ -836,60 +830,59 @@ export async function recordDemo(options = {}) {
       }
       await pause(holdMs)
     }
-    const count = await spreads.count()
-    for (let i = 0; i < count; i += 1) {
-      await glideTo(spreads.nth(i))
-    }
-    // Each day is a page-flip book on this desktop context (#354): BookFlip clones the day's folios into a host and
-    // turns them with prev/next controls, while the authored pages hide. Nothing in the counts below distinguishes
-    // the live book from the flat fallback, so the film asserts the book itself: a host on every day, then a real
-    // Next press on day one that the camera watches land on the second spread. The nav sits under the host, at the
-    // foot of the spread, so the turn, the controls and the day plate are all in one frame.
-    await claim('shot-10', 'four plates, each drawing its route, each with a Transit Route link', async () => {
-      const rail = await railCollapsed()
-      if (rail !== true) return rail
-      const live = await countOf('.day-spread:has(.bookflip-host)')
-      if (live !== 4) return `${live} days show the page-flip book, expected 4 -- the leaves filmed as the flat stack`
-      const maps = await countOf('a.day-route[href*="google.com/maps"]')
-      // Per day rather than a total, because the narration says each plate draws its own day. A global count of four
-      // is also satisfied by one day drawing four lines and three drawing none. The route is the layer under the
-      // tiles, so this still reads true on a plate whose tiles never arrived -- which is the point of it being there.
-      const drawing = await countOf('.day-spread:has(.daymap-under path)')
-      const painted = await countOf('.day-spread:has(.leaflet-tile-loaded)')
-      if (maps !== 4) return `${maps} Transit Route links, expected 4`
-      if (drawing !== 4) return `${drawing} days draw a route, expected 4 -- the rest are placeholders`
-      if (painted !== 4) return `${painted} plates have a painted tile, expected 4 -- the map filmed as bare tint`
-      // Counting the DOM is not enough here and never was: the first cut of this beat passed every count while the
-      // camera sat on the posters and never framed a plate. Both things the narration names are asserted against
-      // their own rects, never against a span that merely reaches them -- the link is 172px at the right end of an
-      // 1184px head, so a box taken from the spread would sit in frame whatever the link itself did.
-      for (const [what, locator] of [
-        ['Transit Route link', page.locator('a.day-route').last()],
-        ['plate', page.locator('.spread-pin').last()]
-      ]) {
-        const box = await locator.boundingBox()
-        if (!box) return `the ${what} has no box`
-        if (box.y < 0 || box.y + box.height > 900) return `the ${what} is on the page but not in frame`
-      }
-      return true
-    })
-    // The turn films on day one, which the glide loop above has just left framed at its top. The book is 770px tall
-    // and the nav sits 24px under it, so a frame that seats the host's top at 48px holds both full facing pages and
-    // the controls in one 900px viewport -- measured, not assumed: bringing the nav in with scrollIntoViewIfNeeded
-    // instead lands the host's top 322px above the fold and films three quarters of the pages. Framed like this, the
-    // Next press is the reader's own gesture, and the film holds on "Spread 2 of 2" while the leaf settles.
-    const dayOne = page.locator('.day-spread').first()
-    const dayOneStatus = dayOne.locator('.bookflip-status')
-    const dayOneNext = dayOne.locator('.bookflip-turn[aria-label="Next Spread"]')
-    await glideTo(dayOne.locator('.bookflip-host'), 1_200, 500)
-    await must(dayOneNext, 'shot 10 day one Next Spread control')
-    await dayOneNext.click()
-    // page-flip animates the turn itself; the status flips at the flip event, the leaf finishes after, and a still
-    // mid-turn frame would show the page half off its hinge. Wait for the stated state, then hold past the motion.
-    await page.waitForFunction((el) => el.textContent === 'Spread 2 of 2', await dayOneStatus.elementHandle(), {
+    await glideTo(host, 1_400, 1_800)
+
+    // Spread one is two destinations and their photographs. Spread two is the first to carry a pinned day map and
+    // its Transit Route link, so the turn is what brings the thing the narration names into frame, and it is the
+    // reader's own gesture rather than a jump.
+    const status = page.locator('.bookflip-status').first()
+    const next = page.locator('.bookflip-turn[aria-label="Next Spread"]')
+    await must(next, 'shot 10 Next Spread control')
+    await next.click()
+    // page-flip animates the turn itself; the status flips at the flip event and the leaf settles after it, so a
+    // frame taken on the status alone catches the page half off its hinge.
+    await page.waitForFunction((el) => /^Spread 2 of /.test(el.textContent.trim()), await status.elementHandle(), {
       timeout
     })
-    await pause(1_400)
+    await pause(1_800)
+
+    await claim(
+      'shot-10',
+      'one book the reader turns, a pinned day map with its transit link, and four day routes drawn',
+      async () => {
+        const rail = await railCollapsed()
+        if (rail !== true) return rail
+        const books = await countOf('.bookflip-host')
+        if (books !== 1) return `${books} flipbooks, expected 1 -- the leaves filmed as the flat stack`
+        const maps = await countOf('.book-map .daymap-tiles')
+        if (maps !== 4) return `${maps} day maps, expected 4`
+        // Per day rather than a total, because the narration says each day draws its own route. A global count of
+        // four is also satisfied by one day drawing four lines and three drawing none. The line is a Leaflet
+        // overlay: `.daymap-under` is the fallback plate, a rect and four ellipses, and holds no path to count.
+        const drawing = await countOf('.book-map:has(.leaflet-overlay-pane path)')
+        if (drawing !== 4) return `${drawing} day maps draw a route, expected 4 -- the rest are placeholders`
+        const painted = await countOf('.book-map:has(.leaflet-tile-loaded)')
+        if (painted !== 4) return `${painted} day maps have a painted tile, expected 4 -- the map filmed as bare tint`
+        const links = await countOf('a.pin-route[href*="google.com/maps"]')
+        if (links < 4) return `${links} Transit Route links, expected at least 4`
+        // Counting the DOM is not enough here and never was: the first cut of this beat passed every count while
+        // the camera sat on the reel posters and never framed a plate. Both things the narration names are asserted
+        // against their own rects, and against what is visible rather than what merely exists.
+        for (const [what, locator] of [
+          ['pinned day map', page.locator('.spread-pin:visible').first()],
+          ['Transit Route link', page.locator('a.pin-route:visible').first()]
+        ]) {
+          const box = await locator.boundingBox()
+          if (!box) return `the ${what} has no box`
+          if (box.y < 0 || box.y + box.height > 900) return `the ${what} is on the page but not in frame`
+        }
+        return true
+      }
+    )
+
+    // Then the row the book ends on: four days, four drawn routes, side by side, which is the shape the narration
+    // calls "one page per day" and the only place all four are in one frame.
+    await glideTo(page.locator('.book-maps'), 1_800, 2_800)
     await finishShot('shot-10', 21_000)
 
     await showCard(
