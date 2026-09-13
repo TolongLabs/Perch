@@ -29,7 +29,7 @@
 | **Team**                | **TolongLabs**: `@AlaskanTuna` (Fullstack, DevOps, Deployment), `@chaosiris` (Frontend, Backend, Design), `@DrxgClanPC` (Ideation, Prototyping, Testing), `@Doraemon-00` (Documentation, Research, Testing) |
 | **Problem Statement**   | Travel Planner, Track 1: Lifestyle & Personal Productivity                                                                                              |
 | **UI Prototype**        | **https://prototype-yskhynz4la-as.a.run.app** (public, opens in incognito, no account required)                                                         |
-| **Video Presentation**  | **https://youtu.be/2n6SeH6D5bg** (unlisted)                                                                                                             |
+| **Video Presentation**  | **https://youtu.be/2n6SeH6D5bg**                                                                                                             |
 | **Presentation Slides** | [`demo/final-slides.pdf`](demo/final-slides.pdf) (12 pages, structured against the judging rubric). The long cut, [`demo/slides.pdf`](demo/slides.pdf), carries all 19 |
 
 ## Table Of Contents
