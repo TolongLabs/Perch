@@ -19,24 +19,25 @@
 ![Leaflet](https://img.shields.io/badge/Leaflet-199900?style=for-the-badge&logo=leaflet&logoColor=white)
 ![dnd kit](https://img.shields.io/badge/@dnd--kit-C792EA?style=for-the-badge)
 
-[Live Prototype](https://prototype-yskhynz4la-as.a.run.app) · [Slides](demo/slides.pdf) · [PRODUCT](PRODUCT.md) ·
+[Live Prototype](https://prototype-yskhynz4la-as.a.run.app) · [Slides](demo/final-slides.pdf) · [PRODUCT](PRODUCT.md) ·
 [PRD](PRD.md) · [TRD](TRD.md) · [Architecture](ARCHITECTURE.md) · [Design](DESIGN.md)
 
 </div>
 
-| Submission Field        | Detail                                                                                                                                                  |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Submission Field        | Detail                                                                                                                                                                                                      |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Team**                | **TolongLabs**: `@AlaskanTuna` (Fullstack, DevOps, Deployment), `@chaosiris` (Frontend, Backend, Design), `@DrxgClanPC` (Ideation, Prototyping, Testing), `@Doraemon-00` (Documentation, Research, Testing) |
-| **Problem Statement**   | Travel Planner, Track 1: Lifestyle & Personal Productivity                                                                                              |
-| **UI Prototype**        | **https://prototype-yskhynz4la-as.a.run.app** (public, opens in incognito, no account required)                                                         |
-| **Video Presentation**  | **https://youtu.be/2n6SeH6D5bg**                                                                                                             |
-| **Presentation Slides** | [`demo/final-slides.pdf`](demo/final-slides.pdf) (12 pages, structured against the judging rubric). The long cut, [`demo/slides.pdf`](demo/slides.pdf), carries all 19 |
+| **Problem Statement**   | Travel Planner, Track 1: Lifestyle & Personal Productivity                                                                                                                                                  |
+| **UI Prototype**        | **https://prototype-yskhynz4la-as.a.run.app** (public, opens in incognito, no account required)                                                                                                             |
+| **Video Presentation**  | **https://youtu.be/2n6SeH6D5bg**                                                                                                                                                                            |
+| **Presentation Slides** | [`demo/final-slides.pdf`](demo/final-slides.pdf) (12 pages, structured against the judging rubric). The long cut, [`demo/slides.pdf`](demo/slides.pdf), carries all 19                                      |
 
 ## Table Of Contents
 
 <details>
   <summary>Expand</summary>
   <ol>
+    <li><a href="#0-demo-video">Demo Video</a></li>
     <li>
       <a href="#1-project-overview">Project Overview</a>
       <ol>
@@ -90,6 +91,12 @@
     <li><a href="#7-team">Team</a></li>
   </ol>
 </details>
+
+---
+
+## 0. Demo Video
+
+https://github.com/user-attachments/assets/f2a8027c-a6a8-4779-9c4f-4580c104f604
 
 ---
 
@@ -233,16 +240,16 @@ keepsake publishing.
 Source Obsidian Canvas diagrams and rendering pipelines live in [`research/diagrams/`](research/diagrams/). Additional
 research assets are catalogued below:
 
-| Record                                                                       | Contents                                                                       |
-| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Record                                                                       | Contents                                                                                       |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | [`research/decisions/iteration-log.md`](research/decisions/iteration-log.md) | 82 dated records: 52 log rows and 30 longer entries, each with what changed and what caused it |
-| [`research/decisions/dropped.md`](research/decisions/dropped.md)             | Architectural analysis and rationale behind discarded directions               |
-| [`research/market/`](research/market/)                                       | Direct competitive audits and breakdown matrices                               |
-| [`research/users/`](research/users/)                                         | Persona hypotheses, assumed constraints, and group dynamics models             |
-| [`research/inbox/`](research/inbox/)                                         | Unprocessed ideation fragments and workshop logs                               |
-| [`research/mentors/`](research/mentors/)                                     | Structured mentor session records, alongside the verbatim transcript in `source/` |
-| [`research/ideas/`](research/ideas/)                                         | The idea sheets each direction started from                                    |
-| [`research/prototype/`](research/prototype/)                                 | The v1 mockups the ideation ran against                                        |
+| [`research/decisions/dropped.md`](research/decisions/dropped.md)             | Architectural analysis and rationale behind discarded directions                               |
+| [`research/market/`](research/market/)                                       | Direct competitive audits and breakdown matrices                                               |
+| [`research/users/`](research/users/)                                         | Persona hypotheses, assumed constraints, and group dynamics models                             |
+| [`research/inbox/`](research/inbox/)                                         | Unprocessed ideation fragments and workshop logs                                               |
+| [`research/mentors/`](research/mentors/)                                     | Structured mentor session records, alongside the verbatim transcript in `source/`              |
+| [`research/ideas/`](research/ideas/)                                         | The idea sheets each direction started from                                                    |
+| [`research/prototype/`](research/prototype/)                                 | The v1 mockups the ideation ran against                                                        |
 
 ### 2.3 Mentor Consultation
 
@@ -352,21 +359,21 @@ The prototype executes entirely client-side with deterministic data contracts an
 
 ### 5.2 Tech Stack
 
-| Layer            | Choice                                         | Rationale & Tradeoffs                                                |
-| ---------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
-| **Frontend**     | React 19, react-router-dom 7, Vite 8           | Fast SPA rendering; eliminates unnecessary server rendering overhead |
-| **Language**     | TypeScript strict (`noUncheckedIndexedAccess`) | Enforces complete type safety across runtime state boundaries        |
-| **Tooling**      | Bun 1.2                                        | Ultra-fast package management and integrated test execution          |
-| **Styling**      | Plain CSS custom properties                    | Zero framework bloat; scoped stylesheets with design token hierarchy |
-| **Typography**   | Quicksand & Newsreader (self-hosted woff2)     | Bundled locally to eliminate CDN latency and tracking dependencies   |
-| **State**        | React Context + `localStorage`                 | Client persistence with runtime schema validation guards             |
-| **Interactions** | `@dnd-kit/core` 6.3                            | Accessible drag-and-drop primitives for calendar slot reordering     |
+| Layer            | Choice                                         | Rationale & Tradeoffs                                                                |
+| ---------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Frontend**     | React 19, react-router-dom 7, Vite 8           | Fast SPA rendering; eliminates unnecessary server rendering overhead                 |
+| **Language**     | TypeScript strict (`noUncheckedIndexedAccess`) | Enforces complete type safety across runtime state boundaries                        |
+| **Tooling**      | Bun 1.2                                        | Ultra-fast package management and integrated test execution                          |
+| **Styling**      | Plain CSS custom properties                    | Zero framework bloat; scoped stylesheets with design token hierarchy                 |
+| **Typography**   | Quicksand & Newsreader (self-hosted woff2)     | Bundled locally to eliminate CDN latency and tracking dependencies                   |
+| **State**        | React Context + `localStorage`                 | Client persistence with runtime schema validation guards                             |
+| **Interactions** | `@dnd-kit/core` 6.3                            | Accessible drag-and-drop primitives for calendar slot reordering                     |
 | **Maps**         | Leaflet 1.9 + OpenStreetMap tiles              | Draws each day's real route; no key, and the route still draws if tiles never arrive |
-| **Keepsake**     | `page-flip` 2.0                                | Turns the Book's seven spreads; vendored, so the demo needs no CDN   |
-| **Icons**        | `lucide-react` 1.43                            | One consistent stroke weight across the chrome, tree-shaken per icon |
-| **Backend**      | None (Prototype Phase)                         | Deliberately static for zero-latency, deterministic judge evaluation |
-| **Hosting**      | Google Cloud Run (`asia-southeast1`)           | Containerized serverless delivery with auto-scaling to zero          |
-| **CI/CD**        | GitHub Actions                                 | Automated build, test, and container deployment on merge to `main`   |
+| **Keepsake**     | `page-flip` 2.0                                | Turns the Book's seven spreads; vendored, so the demo needs no CDN                   |
+| **Icons**        | `lucide-react` 1.43                            | One consistent stroke weight across the chrome, tree-shaken per icon                 |
+| **Backend**      | None (Prototype Phase)                         | Deliberately static for zero-latency, deterministic judge evaluation                 |
+| **Hosting**      | Google Cloud Run (`asia-southeast1`)           | Containerized serverless delivery with auto-scaling to zero                          |
+| **CI/CD**        | GitHub Actions                                 | Automated build, test, and container deployment on merge to `main`                   |
 
 ### 5.3 Deployment And Hosting
 
@@ -442,20 +449,20 @@ vite.config.ts           Vite configuration rooting application in v2/
 
 ### 6.2 Documentation Index
 
-| Document                             | Purpose & Primary Audience                                          |
-| ------------------------------------ | ------------------------------------------------------------------- |
-| [`DEVELOPMENT.md`](DEVELOPMENT.md)   | Setup instructions, test runners, and contribution guidelines       |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | In-depth technical architecture, spatial matrices, and data schemas |
-| [`PRODUCT.md`](PRODUCT.md)           | Product vision, target personas, and scope boundaries               |
-| [`PRD.md`](PRD.md)                   | Functional requirements, user stories, and acceptance criteria      |
-| [`TRD.md`](TRD.md)                   | Algorithmic scheduler specifications and data models                |
-| [`DESIGN.md`](DESIGN.md)             | Design tokens, color system, and Japanese typographic studies       |
-| [`research/`](research/)             | 82 dated ideation records, mentor transcripts, and market research  |
-| [`demo/`](demo/)                     | Both decks, the video script, and the recorder's own notes          |
-| [`design/`](design/)                 | Design studies, kept as they were made                              |
-| [`coding-guidelines.md`](coding-guidelines.md) | House rules the code is written against                   |
-| [`agent-tooling.md`](agent-tooling.md) | How the repository's automation is wired                          |
-| [`brief.md`](brief.md)               | Official CodeNection 2026 rules, deadlines, and judging rubrics     |
+| Document                                       | Purpose & Primary Audience                                          |
+| ---------------------------------------------- | ------------------------------------------------------------------- |
+| [`DEVELOPMENT.md`](DEVELOPMENT.md)             | Setup instructions, test runners, and contribution guidelines       |
+| [`ARCHITECTURE.md`](ARCHITECTURE.md)           | In-depth technical architecture, spatial matrices, and data schemas |
+| [`PRODUCT.md`](PRODUCT.md)                     | Product vision, target personas, and scope boundaries               |
+| [`PRD.md`](PRD.md)                             | Functional requirements, user stories, and acceptance criteria      |
+| [`TRD.md`](TRD.md)                             | Algorithmic scheduler specifications and data models                |
+| [`DESIGN.md`](DESIGN.md)                       | Design tokens, color system, and Japanese typographic studies       |
+| [`research/`](research/)                       | 82 dated ideation records, mentor transcripts, and market research  |
+| [`demo/`](demo/)                               | Both decks, the video script, and the recorder's own notes          |
+| [`design/`](design/)                           | Design studies, kept as they were made                              |
+| [`coding-guidelines.md`](coding-guidelines.md) | House rules the code is written against                             |
+| [`agent-tooling.md`](agent-tooling.md)         | How the repository's automation is wired                            |
+| [`brief.md`](brief.md)                         | Official CodeNection 2026 rules, deadlines, and judging rubrics     |
 
 <p align="right"><a href="#readme-top">&uarr;</a></p>
 
