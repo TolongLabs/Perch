@@ -26,11 +26,11 @@
 
 | Submission Field        | Detail                                                                                                                                                  |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Team**                | **TolongLabs**: `@AlaskanTuna` (Fullstack, DevOps), `@chaosiris` (Frontend, Design), `@DrxgClanPC` (Ideation, Testing), `@Doraemon-00` (Docs, Research) |
+| **Team**                | **TolongLabs**: `@AlaskanTuna` (Fullstack, DevOps, Deployment), `@chaosiris` (Frontend, Backend, Design), `@DrxgClanPC` (Ideation, Prototyping, Testing), `@Doraemon-00` (Documentation, Research, Testing) |
 | **Problem Statement**   | Travel Planner, Track 1: Lifestyle & Personal Productivity                                                                                              |
 | **UI Prototype**        | **https://prototype-yskhynz4la-as.a.run.app** (public, opens in incognito, no account required)                                                         |
 | **Video Presentation**  | [Unlisted YouTube Link] _(Video walkthrough; mastering and final edit in progress)_                                                                     |
-| **Presentation Slides** | [`demo/slides.pdf`](demo/slides.pdf) (18 pages, structured directly against the judging rubric)                                                         |
+| **Presentation Slides** | [`demo/final-slides.pdf`](demo/final-slides.pdf) (12 pages, structured against the judging rubric). The long cut, [`demo/slides.pdf`](demo/slides.pdf), carries all 19 |
 
 ## Table Of Contents
 
@@ -215,8 +215,9 @@ Chosen directions appear first, followed by abandoned concepts with cited ration
 | **Automated group bill splitting**          | **Dropped**    | Solves basic arithmetic rather than collection friction; better handled by existing payment apps           |
 | **Mascot travel companion**                 | **Dropped**    | Artificial personality felt manufactured; travel plans derive authority from group consensus               |
 
-Detailed write-ups and cost assessments for dropped directions are preserved in
-[`research/decisions/dropped.md`](research/decisions/dropped.md).
+Two of these carry full write-ups and cost assessments in
+[`research/decisions/dropped.md`](research/decisions/dropped.md); the day each of the rest stopped being live is in
+[`research/decisions/iteration-log.md`](research/decisions/iteration-log.md).
 
 ### 2.2 Ideation Boards
 
@@ -234,11 +235,14 @@ research assets are catalogued below:
 
 | Record                                                                       | Contents                                                                       |
 | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| [`research/decisions/iteration-log.md`](research/decisions/iteration-log.md) | Fifty dated evolution records detailing design iterations and testing findings |
+| [`research/decisions/iteration-log.md`](research/decisions/iteration-log.md) | 82 dated records: 52 log rows and 30 longer entries, each with what changed and what caused it |
 | [`research/decisions/dropped.md`](research/decisions/dropped.md)             | Architectural analysis and rationale behind discarded directions               |
 | [`research/market/`](research/market/)                                       | Direct competitive audits and breakdown matrices                               |
 | [`research/users/`](research/users/)                                         | Persona hypotheses, assumed constraints, and group dynamics models             |
 | [`research/inbox/`](research/inbox/)                                         | Unprocessed ideation fragments and workshop logs                               |
+| [`research/mentors/`](research/mentors/)                                     | Structured mentor session records, alongside the verbatim transcript in `source/` |
+| [`research/ideas/`](research/ideas/)                                         | The idea sheets each direction started from                                    |
+| [`research/prototype/`](research/prototype/)                                 | The v1 mockups the ideation ran against                                        |
 
 ### 2.3 Mentor Consultation
 
@@ -268,7 +272,8 @@ The prototype is publicly deployed on Google Cloud Run:
 
 ### 3.1 Core Interface Walkthrough
 
-The user journey spans nine core surfaces, standardized and captured across desktop (1440×900) viewports:
+The user journey spans nine core surfaces, standardized and captured across desktop (1440×900) viewports. A tenth,
+`SignIn`, is drawn rather than wired, and sits outside the flow:
 
 |                                             Landing                                             |                                                Dashboard                                                 |                                                Onboarding                                                |
 | :---------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------: |
@@ -355,7 +360,10 @@ The prototype executes entirely client-side with deterministic data contracts an
 | **Styling**      | Plain CSS custom properties                    | Zero framework bloat; scoped stylesheets with design token hierarchy |
 | **Typography**   | Quicksand & Newsreader (self-hosted woff2)     | Bundled locally to eliminate CDN latency and tracking dependencies   |
 | **State**        | React Context + `localStorage`                 | Client persistence with runtime schema validation guards             |
-| **Interactions** | `@dnd-kit/core`                                | Accessible drag-and-drop primitives for calendar slot reordering     |
+| **Interactions** | `@dnd-kit/core` 6.3                            | Accessible drag-and-drop primitives for calendar slot reordering     |
+| **Maps**         | Leaflet 1.9 + OpenStreetMap tiles              | Draws each day's real route; no key, and the route still draws if tiles never arrive |
+| **Keepsake**     | `page-flip` 2.0                                | Turns the Book's seven spreads; vendored, so the demo needs no CDN   |
+| **Icons**        | `lucide-react` 1.43                            | One consistent stroke weight across the chrome, tree-shaken per icon |
 | **Backend**      | None (Prototype Phase)                         | Deliberately static for zero-latency, deterministic judge evaluation |
 | **Hosting**      | Google Cloud Run (`asia-southeast1`)           | Containerized serverless delivery with auto-scaling to zero          |
 | **CI/CD**        | GitHub Actions                                 | Automated build, test, and container deployment on merge to `main`   |
@@ -372,8 +380,8 @@ Full developer instructions reside in [`DEVELOPMENT.md`](DEVELOPMENT.md).
   [`ARCHITECTURE.md`](ARCHITECTURE.md#3-data-fixtures-and-spatial-matrix)).
 - **Zero third-party media keys**: Dawn aerial hero loop generated via Google Gemini Videos; video reels self-hosted on
   public cloud storage.
-- **Pure CSS 3D mechanics**: Keepsake flipbook uses hardware-accelerated CSS 3D transforms without Three.js or WebGL
-  overhead.
+- **No 3D engine**: the keepsake flipbook is the vendored `page-flip` library driving hardware-accelerated CSS 3D
+  transforms. No Three.js, no WebGL, and nothing fetched at run time.
 
 ### 5.5 Three-Week Build Plan
 
@@ -416,12 +424,17 @@ v2/
   index.html             Vite application entry point
   public/                Self-hosted fonts (Quicksand, Newsreader) and brand marks
   src/
+    App.tsx              Route table and the theme it applies on a cold load
+    main.tsx             Vite entry
+    state.tsx            The one context, mirrored to localStorage
     data/                Data models, Tokyo place fixtures, and seeded trip state
     lib/                 Deterministic scheduler, tally logic, persistence, and tests
-    surfaces/            Application surfaces: Landing, Dashboard, Onboarding, Deck, Tally, Desk, Book, Handbook
-    components/          Modular UI components: ReelCard, PlacedCard, Drawer, StateChip
-    styles/              Design tokens (tokens.css) and surface stylesheets (base.css)
+    surfaces/            The nine journey surfaces, plus SignIn, each with its own stylesheet
+    chrome/              The sidebar, top bar and dock that sit over every surface
+    components/          Modular UI components: ReelCard, PlacedCard, Perch, StateChip, BookFlip, DayMap
+    styles/              Design tokens (tokens.css) and the base stylesheet
 scripts/demo/            Demo recorder pipeline and audio narration scripts
+scripts/reels/           Reel capture and poster extraction
 Dockerfile               Two-stage multiplatform build (Bun compile + Nginx static server)
 nginx.conf               Production web server configuration with SPA routing fallback
 vite.config.ts           Vite configuration rooting application in v2/
@@ -437,7 +450,11 @@ vite.config.ts           Vite configuration rooting application in v2/
 | [`PRD.md`](PRD.md)                   | Functional requirements, user stories, and acceptance criteria      |
 | [`TRD.md`](TRD.md)                   | Algorithmic scheduler specifications and data models                |
 | [`DESIGN.md`](DESIGN.md)             | Design tokens, color system, and Japanese typographic studies       |
-| [`research/`](research/)             | 50+ dated ideation turns, mentor transcripts, and market research   |
+| [`research/`](research/)             | 82 dated ideation records, mentor transcripts, and market research  |
+| [`demo/`](demo/)                     | Both decks, the video script, and the recorder's own notes          |
+| [`design/`](design/)                 | Design studies, kept as they were made                              |
+| [`coding-guidelines.md`](coding-guidelines.md) | House rules the code is written against                   |
+| [`agent-tooling.md`](agent-tooling.md) | How the repository's automation is wired                          |
 | [`brief.md`](brief.md)               | Official CodeNection 2026 rules, deadlines, and judging rubrics     |
 
 <p align="right"><a href="#readme-top">&uarr;</a></p>
